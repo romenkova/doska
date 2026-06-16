@@ -1,0 +1,144 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/geist-mono";
+@import "@fontsource-variable/mulish";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-heading: var(--font-sans);
+  --font-sans: "Mulish Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, monospace;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+  --shade: #232939;
+}
+
+:root {
+  --background: #f7f7fa;
+  --foreground: #343c54;
+  --card: #ffffff;
+  --card-foreground: #343c54;
+  --popover: #ffffff;
+  --popover-foreground: #343c54;
+  --primary: #725cff;
+  --primary-foreground: #ffffff;
+  --secondary: #eeeff2;
+  --secondary-foreground: #343c54;
+  --muted: #f7f7f8;
+  --muted-foreground: #676d7f;
+  --accent: #f4f2ff;
+  --accent-foreground: #725cff;
+  --destructive: #ff5656;
+  --success: #f1f7f5;
+  --success-foreground: #2f6b57;
+  --border: #eeeff2;
+  --input: #eeeff2;
+  --ring: #725cff;
+  --chart-1: #725cff;
+  --chart-2: #66ae96;
+  --chart-3: #9585ff;
+  --chart-4: #a7cfc2;
+  --chart-5: #343c54;
+  --radius: 0.625rem;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #343c54;
+  --sidebar-primary: #725cff;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f4f2ff;
+  --sidebar-accent-foreground: #725cff;
+  --sidebar-border: #eeeff2;
+  --sidebar-ring: #725cff;
+}
+
+.dark {
+  --background: #232939;
+  --foreground: #f7f7f8;
+  --card: #2d3447;
+  --card-foreground: #f7f7f8;
+  --popover: #2d3447;
+  --popover-foreground: #f7f7f8;
+  --primary: #9585ff;
+  --primary-foreground: #f7f7f8;
+  --secondary: #343c54;
+  --secondary-foreground: #f7f7f8;
+  --muted: #343c54;
+  --muted-foreground: #999da9;
+  --accent: #343c54;
+  --accent-foreground: #f7f7f8;
+  --destructive: #ff5656;
+  --success: #2a3b34;
+  --success-foreground: #a7cfc2;
+  --border: #ffffff1f;
+  --input: #ffffff26;
+  --ring: #9585ff;
+  --chart-1: #9585ff;
+  --chart-2: #66ae96;
+  --chart-3: #b8adff;
+  --chart-4: #a7cfc2;
+  --chart-5: #ccced4;
+  --sidebar: #1d2230;
+  --sidebar-foreground: #f7f7f8;
+  --sidebar-primary: #9585ff;
+  --sidebar-primary-foreground: #232939;
+  --sidebar-accent: #343c54;
+  --sidebar-accent-foreground: #f7f7f8;
+  --sidebar-border: #ffffff1f;
+  --sidebar-ring: #9585ff;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+    font-size: 16px;
+  }
+}
+
+button {
+  cursor: pointer;
+}

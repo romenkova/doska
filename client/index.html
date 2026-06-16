@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>vite-app</title>
+    <script>
+      // Apply the persisted theme before first paint to avoid a light/dark
+      // flash on reload. Mirrors ThemeProvider (storageKey "theme", default
+      // "system"); the provider's effect re-affirms the same class on mount.
+      ;(function () {
+        try {
+          var t = localStorage.getItem("theme")
+          if (t !== "dark" && t !== "light" && t !== "system") t = "system"
+          var resolved =
+            t === "system"
+              ? window.matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light"
+              : t
+          document.documentElement.classList.add(resolved)
+        } catch (e) {}
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

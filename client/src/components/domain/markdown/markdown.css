@@ -1,0 +1,198 @@
+.markdown {
+  line-height: 1.6;
+  font-size: 16px;
+  color: var(--card-foreground);
+  word-break: break-word;
+}
+
+.markdown mark {
+  background: oklch(0.69 0.17 286.88 / 0.3);
+  color: inherit;
+  border-radius: 0.2em;
+  padding: 0 0.15em;
+}
+
+.markdown > :first-child {
+  margin-top: 0;
+}
+
+.markdown > :last-child {
+  margin-bottom: 0;
+}
+
+.markdown p {
+  margin: 0.5rem 0;
+}
+
+/* Headings */
+.markdown h1,
+.markdown h2,
+.markdown h3 {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.5rem;
+}
+
+.markdown h1 {
+  font-size: 1.0625rem;
+}
+
+.markdown h2 {
+  font-size: 0.9375rem;
+}
+
+.markdown h3 {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+/* Bold */
+.markdown strong,
+.markdown b {
+  font-weight: 500;
+}
+
+/* Links */
+.markdown a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in oklab, var(--primary) 35%, transparent);
+  text-underline-offset: 2px;
+  transition: text-decoration-color 0.15s ease;
+}
+
+.markdown a:hover {
+  text-decoration-color: var(--primary);
+}
+
+/* Blockquote */
+.markdown blockquote {
+  margin: 0.5rem 0;
+  padding: 0.125rem 0 0.125rem 0.75rem;
+  border-left: 2px solid color-mix(in oklab, var(--primary) 40%, var(--muted));
+  color: var(--muted-foreground);
+  font-style: italic;
+}
+
+/* Inline code */
+.markdown code {
+  font-family: var(--font-mono);
+  font-size: 0.8125em;
+  background: color-mix(in oklab, var(--muted) 70%, transparent);
+  border: 1px solid var(--border);
+  border-radius: 0.3125rem;
+  padding: 0.1em 0.35em;
+}
+
+/* Code blocks */
+.markdown pre {
+  margin: 0.625rem 0;
+  overflow-x: auto;
+  background: color-mix(in oklab, var(--muted) 60%, transparent);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 0.75rem 0.875rem;
+  line-height: 1.5;
+}
+
+.markdown pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.8125rem;
+}
+
+/* Lists */
+.markdown ul,
+.markdown ol {
+  margin: 0.5rem 0;
+  padding-left: 1.25rem;
+}
+
+.markdown ul {
+  list-style: disc;
+}
+
+.markdown ol {
+  list-style: decimal;
+}
+
+.markdown li {
+  margin: 0.2rem 0;
+}
+
+.markdown li::marker {
+  color: var(--muted-foreground);
+}
+
+/* GFM task lists */
+.markdown li:has(> input[type="checkbox"]) {
+  list-style: none;
+  margin-left: -1rem;
+}
+
+.markdown input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  margin-right: 0.4rem;
+  margin-top: -4px;
+  width: 1rem;
+  height: 1rem;
+  border: 1.5px solid var(--primary);
+  border-radius: 4px;
+  background-color: transparent;
+  vertical-align: middle;
+  opacity: 1;
+}
+
+.markdown input[type="checkbox"]:checked {
+  background-color: var(--primary);
+  /* white check mark */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23fff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 8.5l3 3 6-6'/%3E%3C/svg%3E");
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.markdown input[type="checkbox"]:not(:disabled) {
+  cursor: pointer;
+}
+
+.markdown li:has(> input[type="checkbox"]:checked) {
+  color: var(--muted-foreground);
+  text-decoration: line-through;
+  text-decoration-color: color-mix(
+    in oklab,
+    var(--muted-foreground) 50%,
+    transparent
+  );
+}
+
+/* Tables */
+.markdown table {
+  width: 100%;
+  margin: 0.625rem 0;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+}
+
+.markdown th,
+.markdown td {
+  padding: 0.375rem 0.625rem;
+  border: 1px solid var(--border);
+  text-align: left;
+}
+
+.markdown th {
+  font-weight: 600;
+  background: color-mix(in oklab, var(--muted) 50%, transparent);
+}
+
+/* Horizontal rule */
+.markdown hr {
+  margin: 0.875rem 0;
+  border: none;
+  border-top: 1px solid var(--border);
+}
