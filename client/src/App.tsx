@@ -32,15 +32,10 @@ export default function App({ deckId }: { deckId?: string }) {
     columns: BOARD_COLUMNS,
   }
 
-  // Resolve a stale deck link: a `deckId` that points at a board which no longer
-  // exists (deleted, or a bad link) lands on the first remaining board, or on the
-  // root page if none are left. The root URL itself (no `deckId`) is left alone —
-  // it intentionally shows <Home />. Guarded on a loaded list so it doesn't fire
-  // mid-fetch.
   useEffect(() => {
     if (dashboardsLoading || !deckId || active) return
-    navigate(dashboards.length ? `~${routes.deck.to(dashboards[0].id)}` : "~/")
-  }, [dashboardsLoading, deckId, active, dashboards, navigate])
+    navigate("~/")
+  }, [dashboardsLoading, deckId, active, navigate])
 
   function handleCreateDashboard() {
     createDashboard("Untitled board", {
