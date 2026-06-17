@@ -2,32 +2,12 @@ import { flushSync } from "react-dom"
 import {
   notifyManager,
   useMutation,
-  useQuery,
   useQueryClient,
 } from "@tanstack/react-query"
 import * as api from "@/lib/api"
 import type { Card } from "@/lib/card-data"
 import type { BoardItems } from "@/lib/dashboards"
-
-/**
- * The data layer the UI talks to: typed React Query hooks over the local-first
- * `api`. Boards and cards are cached by key; writes hit IndexedDB (instant) and
- * then invalidate, so create/delete/edit need no optimistic update. Drag is the
- * exception — see `useMoveCard`.
- */
-
-export const keys = {
-  dashboards: ["dashboards"] as const,
-  board: (deckId: string) => ["board", deckId] as const,
-  card: (id: string) => ["card", id] as const,
-}
-
-export function useDashboards() {
-  return useQuery({
-    queryKey: keys.dashboards,
-    queryFn: () => api.getDashboards(),
-  })
-}
+import { keys } from "./keys"
 
 export function useCreateDashboard() {
   const qc = useQueryClient()
@@ -54,19 +34,6 @@ export function useDeleteDashboard() {
   })
 }
 
-export function useBoard(deckId: string) {
-  return useQuery({
-    queryKey: keys.board(deckId),
-    queryFn: () => api.getBoard(deckId),
-  })
-}
-
-export function useCard(id: string) {
-  return useQuery({
-    queryKey: keys.card(id),
-    queryFn: () => api.getCard(id),
-  })
-}
 
 export function useCreateCard(deckId: string) {
   const qc = useQueryClient()
@@ -81,6 +48,14 @@ export function useDeleteCard(deckId: string) {
   return useMutation({
     mutationFn: (id: string) => api.deleteCard(deckId, id),
     onSettled: () => qc.invalidateQueries({ queryKey: keys.board(deckId) }),
+  })
+}
+
+export function useUpdateCard(id: string) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (card: Card) => api.updateCard(id, card),
+    onSettled: () => qc.invalidateQueries({ queryKey: keys.card(id) }),
   })
 }
 
@@ -124,13 +99,5 @@ export function useMoveCard(deckId: string) {
       if (ctx?.previous) qc.setQueryData(keys.board(deckId), ctx.previous)
     },
     onSettled: () => qc.invalidateQueries({ queryKey: keys.board(deckId) }),
-  })
-}
-
-export function useUpdateCard(id: string) {
-  const qc = useQueryClient()
-  return useMutation({
-    mutationFn: (card: Card) => api.updateCard(id, card),
-    onSettled: () => qc.invalidateQueries({ queryKey: keys.card(id) }),
   })
 }

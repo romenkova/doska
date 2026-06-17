@@ -13,7 +13,7 @@ export function TaskIndicator({ done, total }: IProps) {
     <span
       className={cn(
         "inline-flex items-center gap-1 rounded-full px-2 py-0.5",
-        "text-xs font-medium tabular-nums",
+        "text-xs font-semibold tabular-nums",
         complete
           ? "bg-success text-success-foreground"
           : "bg-muted text-muted-foreground"

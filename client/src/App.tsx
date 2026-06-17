@@ -4,17 +4,16 @@ import { useLocation } from "wouter"
 import { SidebarInset, SidebarProvider } from "./components/ui"
 import { AppSidebar, Deck, Home } from "@/components/domain"
 import { BOARD_COLUMNS, type Dashboard } from "@/lib/dashboards"
+import { routes } from "@/lib/routes"
 import {
-  useBoard,
   useCreateCard,
   useCreateDashboard,
-  useDashboards,
   useDeleteCard,
   useDeleteDashboard,
   useMoveCard,
   useRenameDashboard,
-} from "@/lib/queries"
-import { routes } from "@/lib/routes"
+} from "./lib/data/mutations"
+import { useBoard, useDashboards } from "./lib/data/queries"
 
 export default function App({ deckId }: { deckId?: string }) {
   const [, navigate] = useLocation()

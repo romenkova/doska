@@ -58,7 +58,6 @@ export function DeckHeader({ title, onRename, onDelete }: IProps) {
           {title}
         </h1>
       )}
-
       <Button
         variant="ghost"
         size="icon-sm"

@@ -6,7 +6,6 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from "@/components/ui"
-import { cn } from "@/lib/utils"
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react"
 
 interface IProps {
@@ -24,7 +23,7 @@ export function CardMenu({ onEdit, onDelete }: IProps) {
             size="icon-sm"
             aria-label="Card actions"
             onClick={(e) => e.stopPropagation()}
-            className={cn("-my-1 text-muted-foreground hover:text-foreground")}
+            className="-my-1 text-muted-foreground hover:text-foreground"
           />
         }
       >
@@ -38,7 +37,7 @@ export function CardMenu({ onEdit, onDelete }: IProps) {
         <MenuSeparator />
         <MenuItem
           onClick={onDelete}
-          className="text-destructive data-highlighted:bg-destructive data-highlighted:text-white"
+          className="ml-auto data-highlighted:text-destructive"
         >
           <Trash2 />
           Delete

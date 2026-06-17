@@ -2,8 +2,9 @@ import { Modal } from "@/components/ui"
 import { useState } from "react"
 import { useLocation, useRoute } from "wouter"
 import { routes } from "@/lib/routes"
-import { useCard, useUpdateCard } from "@/lib/queries"
 import { CardEditor } from "./card-editor"
+import { useCard } from "@/lib/data/queries"
+import { useUpdateCard } from "@/lib/data/mutations"
 
 interface IProps {
   /** Where to navigate when the modal closes (its deck root). */

@@ -11,9 +11,9 @@ import { cn } from "@/lib/utils"
 import { Draggable } from "@hello-pangea/dnd"
 import { useLocation } from "wouter"
 import { routes } from "@/lib/routes"
-import { useCard } from "@/lib/queries"
 import { CardMenu } from "./card-menu"
 import { TaskIndicator } from "./task-indicator"
+import { useCard } from "@/lib/data/queries"
 
 interface IProps {
   id: string

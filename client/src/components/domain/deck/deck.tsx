@@ -73,7 +73,6 @@ export function Deck({
           })}
         </div>
       </DragDropContext>
-
       <CardModal closeHref={`~${routes.deck.to(dashboard.id)}`} />
     </div>
   )
