@@ -19,8 +19,10 @@ jobs:
       image: mcr.microsoft.com/playwright:v1.61.0-noble
       options: --user 1001
     env:
-      # Browsers are baked into the image here; under --user 1001 GitHub sets
-      # HOME=/github/home, so Playwright would otherwise look in the wrong path.
+      # Browsers are baked into the image at /ms-playwright. The image already
+      # sets this, but we set it explicitly and pass it through turbo's strict
+      # env mode (see passThroughEnv in turbo.json) so `playwright test` finds
+      # them instead of the default $HOME/.cache/ms-playwright.
       PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
     if: >-
       github.event_name == 'workflow_dispatch' ||
