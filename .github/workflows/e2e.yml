@@ -15,6 +15,9 @@ permissions:
 jobs:
   e2e:
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.61.0-noble
+      options: --user 1001
     if: >-
       github.event_name == 'workflow_dispatch' ||
       contains(github.event.pull_request.labels.*.name, 'ready to test')
@@ -37,25 +40,6 @@ jobs:
           path: .turbo
           key: turbo-${{ github.sha }}
           restore-keys: turbo-
-
-      - name: Get Playwright version
-        id: pw
-        run: echo "version=$(pnpm --filter client exec playwright --version | sed 's/Version //')" >> "$GITHUB_OUTPUT"
-
-      - name: Cache Playwright browser
-        id: pw-cache
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ steps.pw.outputs.version }}
-
-      - name: Install Playwright browser
-        if: steps.pw-cache.outputs.cache-hit != 'true'
-        run: pnpm --filter client exec playwright install --with-deps chromium
-
-      - name: Install Playwright system deps
-        if: steps.pw-cache.outputs.cache-hit == 'true'
-        run: pnpm --filter client exec playwright install-deps chromium
 
       - name: E2E tests
         run: pnpm e2e
