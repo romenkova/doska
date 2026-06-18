@@ -15,20 +15,9 @@
     "type-check": "turbo run typecheck",
     "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\"",
     "e2e": "turbo run e2e",
-    "upd": "pnpm dlx npm-check-updates --workspaces --root -i",
-    "prepare": "husky"
-  },
-  "config": {
-    "commitizen": {
-      "path": "cz-git"
-    }
+    "upd": "pnpm dlx npm-check-updates --workspaces --root -i"
   },
   "devDependencies": {
-    "@commitlint/cli": "^21",
-    "@commitlint/config-conventional": "^21",
-    "commitizen": "^4",
-    "cz-git": "^1",
-    "husky": "^9",
     "prettier": "^3.8.4",
     "turbo": "^2"
   }

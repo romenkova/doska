@@ -18,6 +18,10 @@ jobs:
     container:
       image: mcr.microsoft.com/playwright:v1.61.0-noble
       options: --user 1001
+    env:
+      # Browsers are baked into the image here; under --user 1001 GitHub sets
+      # HOME=/github/home, so Playwright would otherwise look in the wrong path.
+      PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
     if: >-
       github.event_name == 'workflow_dispatch' ||
       contains(github.event.pull_request.labels.*.name, 'ready to test')
@@ -43,11 +47,3 @@ jobs:
 
       - name: E2E tests
         run: pnpm e2e
-
-      - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
-        with:
-          name: playwright-traces
-          path: apps/client/test-results
-          if-no-files-found: ignore
-          retention-days: 7
