@@ -7,6 +7,12 @@ settings:
 importers:
 
   .:
+    devDependencies:
+      prettier:
+        specifier: ^3.8.4
+        version: 3.8.4
+
+  apps/client:
     dependencies:
       '@base-ui/react':
         specifier: 1.5.0
@@ -66,9 +72,15 @@ importers:
         specifier: 3.10.0
         version: 3.10.0(react@19.2.7)
     devDependencies:
-      '@eslint/js':
-        specifier: ^10
-        version: 10.0.1(eslint@10.5.0(jiti@2.7.0))
+      '@deck/eslint-config':
+        specifier: workspace:*
+        version: link:../../packages/eslint-config
+      '@deck/prettier-config':
+        specifier: workspace:*
+        version: link:../../packages/prettier-config
+      '@deck/tsconfig':
+        specifier: workspace:*
+        version: link:../../packages/tsconfig
       '@playwright/test':
         specifier: 1.61.0
         version: 1.61.0
@@ -87,15 +99,6 @@ importers:
       eslint:
         specifier: ^10
         version: 10.5.0(jiti@2.7.0)
-      eslint-plugin-react-hooks:
-        specifier: ^7.1.1
-        version: 7.1.1(eslint@10.5.0(jiti@2.7.0))
-      eslint-plugin-react-refresh:
-        specifier: ^0.5.3
-        version: 0.5.3(eslint@10.5.0(jiti@2.7.0))
-      globals:
-        specifier: ^17
-        version: 17.6.0
       prettier:
         specifier: ^3.8.4
         version: 3.8.4
@@ -105,12 +108,34 @@ importers:
       typescript:
         specifier: ~6
         version: 6.0.3
-      typescript-eslint:
-        specifier: ^8
-        version: 8.61.0(eslint@10.5.0(jiti@2.7.0))(typescript@6.0.3)
       vite:
         specifier: ^8
         version: 8.0.16(@types/node@24.13.2)(jiti@2.7.0)
+
+  packages/eslint-config:
+    dependencies:
+      '@eslint/js':
+        specifier: ^10
+        version: 10.0.1(eslint@10.5.0(jiti@2.7.0))
+      eslint:
+        specifier: ^10
+        version: 10.5.0(jiti@2.7.0)
+      eslint-plugin-react-hooks:
+        specifier: ^7.1.1
+        version: 7.1.1(eslint@10.5.0(jiti@2.7.0))
+      eslint-plugin-react-refresh:
+        specifier: ^0.5.3
+        version: 0.5.3(eslint@10.5.0(jiti@2.7.0))
+      globals:
+        specifier: ^17
+        version: 17.6.0
+      typescript-eslint:
+        specifier: ^8
+        version: 8.61.0(eslint@10.5.0(jiti@2.7.0))(typescript@6.0.3)
+
+  packages/prettier-config: {}
+
+  packages/tsconfig: {}
 
 packages:
 

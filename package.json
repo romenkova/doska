@@ -1,0 +1,22 @@
+{
+  "name": "deck",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "engines": {
+    "node": ">=22",
+    "pnpm": ">=10"
+  },
+  "packageManager": "pnpm@10.33.0",
+  "scripts": {
+    "dev": "pnpm --filter client dev",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\"",
+    "typecheck": "pnpm -r typecheck",
+    "e2e": "pnpm --filter client e2e"
+  },
+  "devDependencies": {
+    "prettier": "^3.8.4"
+  }
+}
