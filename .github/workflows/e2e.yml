@@ -1,6 +1,8 @@
 name: E2E
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
   pull_request:
     types: [labeled, synchronize, reopened]
@@ -25,6 +27,7 @@ jobs:
       # them instead of the default $HOME/.cache/ms-playwright.
       PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
     if: >-
+      github.event_name == 'push' ||
       github.event_name == 'workflow_dispatch' ||
       contains(github.event.pull_request.labels.*.name, 'ready to test')
     steps:
