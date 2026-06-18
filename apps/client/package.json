@@ -39,7 +39,7 @@
     "@deck/prettier-config": "workspace:*",
     "@deck/tsconfig": "workspace:*",
     "@playwright/test": "1.61.0",
-    "@types/node": "^24",
+    "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^6",

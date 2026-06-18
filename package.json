@@ -5,16 +5,17 @@
   "type": "module",
   "engines": {
     "node": ">=22",
-    "pnpm": ">=10"
+    "pnpm": ">=11"
   },
-  "packageManager": "pnpm@10.33.0",
+  "packageManager": "pnpm@11.8.0",
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
     "lint": "turbo run lint",
-    "typecheck": "turbo run typecheck",
+    "type-check": "turbo run typecheck",
     "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\"",
-    "e2e": "turbo run e2e"
+    "e2e": "turbo run e2e",
+    "upd": "pnpm dlx npm-check-updates --workspaces --root -i"
   },
   "devDependencies": {
     "prettier": "^3.8.4",
