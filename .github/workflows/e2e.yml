@@ -1,0 +1,51 @@
+name: E2E
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [labeled, synchronize, reopened]
+
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.61.0-noble
+      options: --user 1001
+    env:
+      # Browsers are baked into the image at /ms-playwright. The image already
+      # sets this, but we set it explicitly and pass it through turbo's strict
+      # env mode (see passThroughEnv in turbo.json) so `playwright test` finds
+      # them instead of the default $HOME/.cache/ms-playwright.
+      PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      contains(github.event.pull_request.labels.*.name, 'ready to test')
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Cache turbo
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: turbo-${{ github.sha }}
+          restore-keys: turbo-
+
+      - name: E2E tests
+        run: pnpm e2e

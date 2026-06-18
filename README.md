@@ -1,5 +1,7 @@
 # Deck
 
+[![CI](https://github.com/romenkova/deck.md/actions/workflows/ci.yml/badge.svg)](https://github.com/romenkova/deck.md/actions/workflows/ci.yml)
+
 A Kanban board web app with markdown cards
 
 ## Features

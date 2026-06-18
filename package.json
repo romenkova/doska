@@ -1,0 +1,24 @@
+{
+  "name": "deck",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "engines": {
+    "node": ">=22",
+    "pnpm": ">=11"
+  },
+  "packageManager": "pnpm@11.8.0",
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "type-check": "turbo run typecheck",
+    "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\"",
+    "e2e": "turbo run e2e",
+    "upd": "pnpm dlx npm-check-updates --workspaces --root -i"
+  },
+  "devDependencies": {
+    "prettier": "^3.8.4",
+    "turbo": "^2"
+  }
+}

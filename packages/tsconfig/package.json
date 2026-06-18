@@ -1,0 +1,10 @@
+{
+  "name": "@deck/tsconfig",
+  "version": "0.0.1",
+  "private": true,
+  "exports": {
+    "./base.json": "./base.json",
+    "./dom.json": "./dom.json",
+    "./node.json": "./node.json"
+  }
+}
