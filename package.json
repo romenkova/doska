@@ -9,14 +9,15 @@
   },
   "packageManager": "pnpm@10.33.0",
   "scripts": {
-    "dev": "pnpm --filter client dev",
-    "build": "pnpm -r build",
-    "lint": "pnpm -r lint",
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
     "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\"",
-    "typecheck": "pnpm -r typecheck",
-    "e2e": "pnpm --filter client e2e"
+    "e2e": "turbo run e2e"
   },
   "devDependencies": {
-    "prettier": "^3.8.4"
+    "prettier": "^3.8.4",
+    "turbo": "^2"
   }
 }
