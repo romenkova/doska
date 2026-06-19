@@ -38,7 +38,7 @@ export function DraggableCard({ id, index, showBody, onDelete }: IProps) {
           {...provided.dragHandleProps}
           style={{
             ...provided.draggableProps.style,
-            ...(snapshot.isDropAnimating && { transitionDuration: "0.12s" }),
+            ...(snapshot.isDropAnimating && { transitionDuration: "0.5s" }),
           }}
           onClick={(e) => {
             if (snapshot.isDragging) return
