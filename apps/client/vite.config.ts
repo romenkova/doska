@@ -6,7 +6,13 @@ import { defineConfig } from "vite"
 // https://vite.dev/config/
 export default defineConfig({
   preview: {
-    port:3001
+    port: 3001,
+    // The e2e suite runs against `vite preview`, so it needs the same /rpc
+    // forward the dev server has — otherwise sync calls 404 in tests. Honors
+    // RPC_TARGET so the harness can point preview at the e2e sync server's port.
+    proxy: {
+      "/rpc": process.env.RPC_TARGET ?? "http://localhost:3000",
+    },
   },
   server: {
     // Proxy sync calls to the API so the browser stays same-origin (no CORS).

@@ -1,8 +1,5 @@
 import { test, expect } from "@playwright/test"
-import { addCard, createBoard, idbKeys, idbValues } from "./helpers"
-
-type ColumnRecord = { id: string; dashboardId: string }
-type CardRecord = { id: string; columnId: string }
+import { addCard, createBoard } from "./helpers"
 
 test.describe("board lifecycle", () => {
   test("a created board persists across a reload", async ({ page }) => {
@@ -40,35 +37,34 @@ test.describe("board lifecycle", () => {
     ).toBeVisible()
   })
 
-  test("deleting a board removes it and cascades to its cards", async ({
+  test("deleting a board removes it and its link goes dead", async ({
     page,
   }) => {
-    // Start on a fresh board so the cascade assertion is isolated.
+    // Name the board so its sidebar entry is unambiguous, and give it a card so
+    // there's real content riding along with the board.
     const deckId = await createBoard(page)
-
-    // Add one card, then capture the card ids the board owns. Card ownership is
-    // derived through the board's columns (cards reference a columnId, columns a
-    // dashboardId) now that ordering lives on the records themselves.
+    await page.getByRole("heading", { name: "Untitled board" }).click()
+    const input = page.getByRole("textbox", { name: "Board name" })
+    await input.fill("Doomed board")
+    await input.press("Enter")
+    await expect(
+      page.getByRole("button", { name: "Doomed board" })
+    ).toBeVisible()
     await addCard(page, "To Do")
 
-    const columnIds = new Set(
-      (await idbValues<ColumnRecord>(page, "columns"))
-        .filter((c) => c.dashboardId === deckId)
-        .map((c) => c.id)
-    )
-    const cardIds = (await idbValues<CardRecord>(page, "cards"))
-      .filter((c) => columnIds.has(c.columnId))
-      .map((c) => c.id)
-    expect(cardIds.length).toBeGreaterThan(0)
-
-    // Delete the board.
+    // Delete it.
     await page.getByRole("button", { name: "Delete board" }).click()
 
-    // Redirected off the deleted board, and it's gone from the dashboards store.
-    await expect.poll(() => idbKeys(page, "dashboards")).not.toContain(deckId)
+    // Bounced back to Home, and it's gone from the sidebar.
+    await expect(page.getByText("Pick a board to get started")).toBeVisible()
+    await expect(
+      page.getByRole("button", { name: "Doomed board" })
+    ).toHaveCount(0)
 
-    // Its cards were removed too (cascade).
-    const remainingCards = await idbKeys(page, "cards")
-    for (const id of cardIds) expect(remainingCards).not.toContain(id)
+    // The board (and everything on it) is really gone: its link no longer
+    // resolves and redirects to Home.
+    await page.goto(`/d/${deckId}`)
+    await page.waitForURL(/\/$/)
+    await expect(page.getByText("Pick a board to get started")).toBeVisible()
   })
 })

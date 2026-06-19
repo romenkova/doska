@@ -29,7 +29,18 @@ import { orpc } from "./orpc"
  * immediately on focus, which covers the "came back to a stale tab" case better
  * than any interval would.
  */
-const SYNC_INTERVAL = 10_000
+const DEFAULT_SYNC_INTERVAL = 10_000
+
+/**
+ * The poll interval, overridable at build time via `VITE_SYNC_INTERVAL_MS` so
+ * the e2e bundle can tick fast (sub-second) and observe a remote change without
+ * waiting out the 10s production cadence. Anything unset or invalid falls back
+ * to the default.
+ */
+function syncInterval(): number {
+  const ms = Number(import.meta.env.VITE_SYNC_INTERVAL_MS)
+  return Number.isFinite(ms) && ms > 0 ? ms : DEFAULT_SYNC_INTERVAL
+}
 
 /** localStorage key under which the pending dirty refs are persisted. */
 const DIRTY_KEY = "deck:sync:dirty"
@@ -218,7 +229,7 @@ export function startBackgroundSync(): () => void {
 
   const start = () => {
     if (id === undefined)
-      id = setInterval(() => void reconcile(), SYNC_INTERVAL)
+      id = setInterval(() => void reconcile(), syncInterval())
   }
   const stop = () => {
     if (id !== undefined) {
