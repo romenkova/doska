@@ -1,6 +1,6 @@
 import { DragDropContext, type DropResult } from "@hello-pangea/dnd"
-import type { BoardItems, Dashboard } from "@/lib/dashboards"
-import { cn } from "@/lib/utils"
+import type { Board, Dashboard } from "@/lib/types"
+import { byPosition, cn } from "@/lib/utils"
 import { routes } from "@/lib/routes"
 import { Column } from "../column/column"
 import { DraggableCard } from "../draggable-card/draggable-card"
@@ -9,7 +9,7 @@ import { DeckHeader } from "./deck-header"
 
 interface IProps {
   dashboard: Dashboard
-  items: BoardItems
+  board: Board
   isLoading: boolean
   showBodyFor: (columnId: string) => boolean
   onToggleBody: (columnId: string) => void
@@ -22,7 +22,7 @@ interface IProps {
 
 export function Deck({
   dashboard,
-  items,
+  board,
   isLoading,
   showBodyFor,
   onToggleBody,
@@ -32,10 +32,19 @@ export function Deck({
   onDeleteDashboard,
   onDragEnd,
 }: IProps) {
+  // Cards grouped by column, ordered by position.
+  const cardsByColumn = new Map<string, typeof board.cards>(
+    board.columns.map((c) => [c.id, []])
+  )
+  for (const card of [...board.cards].sort(byPosition)) {
+    cardsByColumn.get(card.columnId)?.push(card)
+  }
+  const columns = [...board.columns].sort(byPosition)
+
   return (
     <div className="relative flex min-h-0 flex-1 flex-col">
       <DeckHeader
-        title={dashboard.name}
+        title={dashboard.title}
         onRename={onRenameDashboard}
         onDelete={onDeleteDashboard}
       />
@@ -47,8 +56,8 @@ export function Deck({
             isLoading ? "opacity-0" : "opacity-100"
           )}
         >
-          {dashboard.columns.map((column) => {
-            const ids = items[column.id] ?? []
+          {columns.map((column) => {
+            const cards = cardsByColumn.get(column.id) ?? []
             const showBody = showBodyFor(column.id)
             return (
               <Column
@@ -59,13 +68,13 @@ export function Deck({
                 onToggleBody={() => onToggleBody(column.id)}
                 onAddCard={() => onAddCard(column.id)}
               >
-                {ids.map((id, index) => (
+                {cards.map((card, index) => (
                   <DraggableCard
-                    key={id}
-                    id={id}
+                    key={card.id}
+                    id={card.id}
                     index={index}
                     showBody={showBody}
-                    onDelete={() => onDeleteCard(id)}
+                    onDelete={() => onDeleteCard(card.id)}
                   />
                 ))}
               </Column>

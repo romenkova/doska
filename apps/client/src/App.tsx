@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react"
 import type { DropResult } from "@hello-pangea/dnd"
+import { generateKeyBetween } from "fractional-indexing"
 import { useLocation } from "wouter"
 import { SidebarInset, SidebarProvider } from "./components/ui"
 import { AppSidebar, Deck, Home } from "@/components/domain"
-import { BOARD_COLUMNS, type Dashboard } from "@/lib/dashboards"
+import type { Dashboard } from "@/lib/types"
 import { routes } from "@/lib/routes"
+import { byPosition } from "@/lib/utils"
+import { setActiveBoard } from "./lib/api/sync"
 import {
   useCreateCard,
   useCreateDashboard,
@@ -28,8 +31,10 @@ export default function App({ deckId }: { deckId?: string }) {
   const active = dashboards.find((d) => d.id === deckId)
   const dashboard: Dashboard = active ?? {
     id: deckId ?? "",
-    name: "",
-    columns: BOARD_COLUMNS,
+    title: "",
+    position: generateKeyBetween(null, null),
+    deletedAt: null,
+    updatedAt: 0,
   }
 
   useEffect(() => {
@@ -37,41 +42,51 @@ export default function App({ deckId }: { deckId?: string }) {
     navigate("~/")
   }, [dashboardsLoading, deckId, active, navigate])
 
+  // Point background sync at the open board (and reconcile on switch).
+  useEffect(() => {
+    setActiveBoard(deckId ?? null)
+  }, [deckId])
+
   function handleCreateDashboard() {
     createDashboard("Untitled board", {
       onSuccess: (created) => navigate(`~${routes.deck.to(created.id)}`),
     })
   }
 
-  const { data: items, isPending } = useBoard(dashboard.id)
+  const { data: board, isPending } = useBoard(dashboard.id)
   const { mutate: createCard } = useCreateCard(dashboard.id)
   const { mutate: deleteCard } = useDeleteCard(dashboard.id)
   const { mutate: moveCard } = useMoveCard(dashboard.id)
 
-  function handleDragEnd({ source, destination }: DropResult) {
-    if (!destination || !items) return
+  function handleDragEnd({ source, destination, draggableId }: DropResult) {
+    if (!destination || !board) return
     if (
       source.droppableId === destination.droppableId &&
       source.index === destination.index
     )
       return
 
-    const from = Array.from(items[source.droppableId] ?? [])
-    const [moved] = from.splice(source.index, 1)
+    const moved = board.cards.find((c) => c.id === draggableId)
+    if (!moved) return
 
-    if (source.droppableId === destination.droppableId) {
-      from.splice(destination.index, 0, moved)
-      moveCard({ ...items, [source.droppableId]: from })
-      return
-    }
+    // The destination column as rendered, minus the card being dropped, so the
+    // insertion index lines up with the neighbors at the drop site.
+    const destCards = board.cards
+      .filter(
+        (c) => c.columnId === destination.droppableId && c.id !== moved.id
+      )
+      .sort(byPosition)
 
-    const to = Array.from(items[destination.droppableId] ?? [])
-    to.splice(destination.index, 0, moved)
-    moveCard({
-      ...items,
-      [source.droppableId]: from,
-      [destination.droppableId]: to,
-    })
+    // Mint a key strictly between the neighbors — only the moved card changes,
+    // so concurrent reorders of other cards never collide with this write.
+    const before = destCards[destination.index - 1]
+    const after = destCards[destination.index]
+    const position = generateKeyBetween(
+      before?.position ?? null,
+      after?.position ?? null
+    )
+
+    moveCard([{ ...moved, columnId: destination.droppableId, position }])
   }
 
   return (
@@ -86,7 +101,7 @@ export default function App({ deckId }: { deckId?: string }) {
         {deckId ? (
           <Deck
             dashboard={dashboard}
-            items={items ?? {}}
+            board={board ?? { columns: [], cards: [] }}
             isLoading={isPending}
             showBodyFor={(columnId) => !hiddenBodies[columnId]}
             onToggleBody={(columnId) =>

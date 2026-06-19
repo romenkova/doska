@@ -14,7 +14,11 @@ interface IProps {
 
 export function Column({ children, ...props }: IProps) {
   return (
-    <div className="flex w-[90vw] max-w-96 shrink-0 flex-col">
+    <div
+      role="group"
+      aria-label={props.title}
+      className="flex w-[90vw] max-w-96 shrink-0 flex-col"
+    >
       <ColumnHead {...props} />
       <Droppable droppableId={props.id}>
         {(provided, snapshot) => (

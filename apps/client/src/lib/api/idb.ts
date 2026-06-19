@@ -6,9 +6,16 @@
  */
 
 const DB_NAME = "deck"
-const VERSION = 3
-const STORES = ["cards", "boards", "dashboards"] as const
+const VERSION = 8
+const STORES = ["cards", "columns", "dashboards"] as const
 export type StoreName = (typeof STORES)[number]
+
+/** Sync bookkeeping (the pull cursor) — kept in the DB so it shares the data's
+ * lifetime. Not dropped on upgrade, but gone if the whole DB is deleted. */
+const META_STORE = "meta"
+
+/** Stores from prior schema versions that are no longer used. */
+const LEGACY_STORES = ["kv", "boards"]
 
 let dbPromise: Promise<IDBDatabase> | null = null
 
@@ -18,10 +25,18 @@ function open(): Promise<IDBDatabase> {
       const req = indexedDB.open(DB_NAME, VERSION)
       req.onupgradeneeded = () => {
         const db = req.result
-        if (db.objectStoreNames.contains("kv")) db.deleteObjectStore("kv")
-        for (const store of STORES) {
-          if (!db.objectStoreNames.contains(store)) db.createObjectStore(store)
+        for (const store of LEGACY_STORES) {
+          if (db.objectStoreNames.contains(store)) db.deleteObjectStore(store)
         }
+        // Drop entity stores so stale integer-position records don't survive;
+        // they're recreated empty and reseeded on first read.
+        for (const store of STORES) {
+          if (db.objectStoreNames.contains(store)) db.deleteObjectStore(store)
+          db.createObjectStore(store)
+        }
+        // The meta store persists across upgrades — only create it if missing.
+        if (!db.objectStoreNames.contains(META_STORE))
+          db.createObjectStore(META_STORE)
       }
       req.onsuccess = () => resolve(req.result)
       req.onerror = () => reject(req.error)
@@ -31,7 +46,7 @@ function open(): Promise<IDBDatabase> {
 }
 
 async function run<T>(
-  store: StoreName,
+  store: StoreName | typeof META_STORE,
   mode: IDBTransactionMode,
   op: (store: IDBObjectStore) => IDBRequest
 ): Promise<T> {
@@ -45,11 +60,22 @@ async function run<T>(
   })
 }
 
-export function idbGet<T>(store: StoreName, key: string): Promise<T | undefined> {
+export function idbGet<T>(
+  store: StoreName,
+  key: string
+): Promise<T | undefined> {
   return run<T | undefined>(store, "readonly", (s) => s.get(key))
 }
 
-export function idbSet(store: StoreName, key: string, value: unknown): Promise<void> {
+export function idbGetAll<T>(store: StoreName): Promise<T[]> {
+  return run<T[]>(store, "readonly", (s) => s.getAll())
+}
+
+export function idbSet(
+  store: StoreName,
+  key: string,
+  value: unknown
+): Promise<void> {
   return run<void>(store, "readwrite", (s) => s.put(value, key))
 }
 
@@ -59,4 +85,14 @@ export function idbDelete(store: StoreName, key: string): Promise<void> {
 
 export function idbCount(store: StoreName): Promise<number> {
   return run<number>(store, "readonly", (s) => s.count())
+}
+
+/** Reads a value from the meta store (sync bookkeeping). */
+export function metaGet<T>(key: string): Promise<T | undefined> {
+  return run<T | undefined>(META_STORE, "readonly", (s) => s.get(key))
+}
+
+/** Writes a value to the meta store (sync bookkeeping). */
+export function metaSet(key: string, value: unknown): Promise<void> {
+  return run<void>(META_STORE, "readwrite", (s) => s.put(value, key))
 }

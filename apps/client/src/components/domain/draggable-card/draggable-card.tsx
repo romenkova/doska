@@ -6,7 +6,7 @@ import {
   CardTitle,
 } from "@/components/ui"
 import { Markdown } from "@/components/domain/markdown/markdown"
-import { fallbackCard, taskProgress } from "@/lib/card-data"
+import { fallbackCard } from "@/lib/seed"
 import { cn } from "@/lib/utils"
 import { Draggable } from "@hello-pangea/dnd"
 import { useLocation } from "wouter"
@@ -14,6 +14,7 @@ import { routes } from "@/lib/routes"
 import { CardMenu } from "./card-menu"
 import { TaskIndicator } from "./task-indicator"
 import { useCard } from "@/lib/data/queries"
+import { taskProgress } from "@/lib/utils/task-progress"
 
 interface IProps {
   id: string
@@ -37,7 +38,7 @@ export function DraggableCard({ id, index, showBody, onDelete }: IProps) {
           {...provided.dragHandleProps}
           style={{
             ...provided.draggableProps.style,
-            ...(snapshot.isDropAnimating && { transitionDuration: "0.12s" }),
+            ...(snapshot.isDropAnimating && { transitionDuration: "0.5s" }),
           }}
           onClick={(e) => {
             if (snapshot.isDragging) return

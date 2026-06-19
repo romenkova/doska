@@ -1,0 +1,17 @@
+{
+  "name": "@deck/contract",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@orpc/contract": "^1.14.6",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@deck/prettier-config": "workspace:*",
+    "@deck/tsconfig": "workspace:*"
+  }
+}

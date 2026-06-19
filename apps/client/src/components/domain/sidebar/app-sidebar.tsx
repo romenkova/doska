@@ -1,4 +1,4 @@
-import { type Dashboard } from "@/lib/dashboards"
+import { type Dashboard } from "@/lib/types"
 import {
   Button,
   Sidebar,

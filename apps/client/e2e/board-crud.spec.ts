@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test"
-import { addCard, createBoard, idbGet, idbKeys } from "./helpers"
+import { addCard, createBoard } from "./helpers"
 
 test.describe("board lifecycle", () => {
   test("a created board persists across a reload", async ({ page }) => {
@@ -37,31 +37,34 @@ test.describe("board lifecycle", () => {
     ).toBeVisible()
   })
 
-  test("deleting a board removes it and cascades to its cards", async ({
+  test("deleting a board removes it and its link goes dead", async ({
     page,
   }) => {
-    // Start on a fresh board so the cascade assertion is isolated.
+    // Name the board so its sidebar entry is unambiguous, and give it a card so
+    // there's real content riding along with the board.
     const deckId = await createBoard(page)
-
-    // Add one card, then capture the card ids the board owns.
+    await page.getByRole("heading", { name: "Untitled board" }).click()
+    const input = page.getByRole("textbox", { name: "Board name" })
+    await input.fill("Doomed board")
+    await input.press("Enter")
+    await expect(
+      page.getByRole("button", { name: "Doomed board" })
+    ).toBeVisible()
     await addCard(page, "To Do")
 
-    const board = await idbGet<Record<string, string[]>>(
-      page,
-      "boards",
-      deckId
-    )
-    const cardIds = Object.values(board).flat()
-    expect(cardIds.length).toBeGreaterThan(0)
-
-    // Delete the board.
+    // Delete it.
     await page.getByRole("button", { name: "Delete board" }).click()
 
-    // Redirected off the deleted board, and it's gone from the boards store.
-    await expect.poll(() => idbKeys(page, "boards")).not.toContain(deckId)
+    // Bounced back to Home, and it's gone from the sidebar.
+    await expect(page.getByText("Pick a board to get started")).toBeVisible()
+    await expect(
+      page.getByRole("button", { name: "Doomed board" })
+    ).toHaveCount(0)
 
-    // Its cards were removed too (cascade).
-    const remainingCards = await idbKeys(page, "cards")
-    for (const id of cardIds) expect(remainingCards).not.toContain(id)
+    // The board (and everything on it) is really gone: its link no longer
+    // resolves and redirects to Home.
+    await page.goto(`/d/${deckId}`)
+    await page.waitForURL(/\/$/)
+    await expect(page.getByText("Pick a board to get started")).toBeVisible()
   })
 })
