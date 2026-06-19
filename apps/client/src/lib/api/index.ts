@@ -1,19 +1,21 @@
+import { generateKeyBetween } from "fractional-indexing"
 import { BOARD_COLUMNS, fallbackCard } from "@/lib/seed"
 import type { Board, Card, Dashboard } from "@/lib/types"
+import { byPosition } from "@/lib/utils"
 import { db } from "./db"
 import { markDirty } from "./sync"
 
 /** Every board's metadata, in sidebar order. */
 export async function getDashboards(): Promise<Dashboard[]> {
   const list = await db.getDashboards()
-  return list.sort((a, b) => a.position - b.position)
+  return list.sort(byPosition)
 }
 
 /** A board's columns plus the cards that live in them. */
 export async function getBoard(deckId: string): Promise<Board> {
   const columns = (await db.getColumns())
     .filter((c) => c.dashboardId === deckId)
-    .sort((a, b) => a.position - b.position)
+    .sort(byPosition)
   const columnIds = new Set(columns.map((c) => c.id))
   const cards = (await db.getCards()).filter((c) => columnIds.has(c.columnId))
   return { columns, cards }
@@ -23,7 +25,11 @@ export async function getBoard(deckId: string): Promise<Board> {
 export async function createDashboard(name: string): Promise<Dashboard> {
   const id = `board-${crypto.randomUUID().slice(0, 8)}`
   const list = await db.getDashboards()
-  const position = list.reduce((max, d) => Math.max(max, d.position), -1) + 1
+  const last = list.reduce<string | null>(
+    (max, d) => (max === null || d.position > max ? d.position : max),
+    null
+  )
+  const position = generateKeyBetween(last, null)
   const dashboard: Dashboard = { id, title: name, position }
   await db.setDashboard(dashboard)
   markDirty("dashboards", id)
@@ -79,10 +85,13 @@ export async function createCard(
   columnId: string
 ): Promise<string> {
   const id = `card-${crypto.randomUUID().slice(0, 8)}`
-  const min = (await db.getCards())
+  const first = (await db.getCards())
     .filter((c) => c.columnId === columnId)
-    .reduce((min, c) => Math.min(min, c.position), 0)
-  await db.setCard({ ...fallbackCard, id, columnId, position: min - 1 })
+    .reduce<
+      string | null
+    >((min, c) => (min === null || c.position < min ? c.position : min), null)
+  const position = generateKeyBetween(null, first)
+  await db.setCard({ ...fallbackCard, id, columnId, position })
   markDirty("cards", id)
   return id
 }
@@ -104,7 +113,10 @@ export async function deleteCard(_deckId: string, id: string): Promise<void> {
 }
 
 /** Persists cards whose column/position changed during a drag. */
-export async function moveCard(_deckId: string, changed: Card[]): Promise<void> {
+export async function moveCard(
+  _deckId: string,
+  changed: Card[]
+): Promise<void> {
   await Promise.all(changed.map((card) => db.setCard(card)))
   for (const card of changed) markDirty("cards", card.id)
 }

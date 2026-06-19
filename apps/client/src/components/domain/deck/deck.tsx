@@ -1,6 +1,6 @@
 import { DragDropContext, type DropResult } from "@hello-pangea/dnd"
 import type { Board, Dashboard } from "@/lib/types"
-import { cn } from "@/lib/utils"
+import { byPosition, cn } from "@/lib/utils"
 import { routes } from "@/lib/routes"
 import { Column } from "../column/column"
 import { DraggableCard } from "../draggable-card/draggable-card"
@@ -36,10 +36,10 @@ export function Deck({
   const cardsByColumn = new Map<string, typeof board.cards>(
     board.columns.map((c) => [c.id, []])
   )
-  for (const card of [...board.cards].sort((a, b) => a.position - b.position)) {
+  for (const card of [...board.cards].sort(byPosition)) {
     cardsByColumn.get(card.columnId)?.push(card)
   }
-  const columns = [...board.columns].sort((a, b) => a.position - b.position)
+  const columns = [...board.columns].sort(byPosition)
 
   return (
     <div className="relative flex min-h-0 flex-1 flex-col">

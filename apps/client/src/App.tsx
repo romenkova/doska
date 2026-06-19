@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react"
 import type { DropResult } from "@hello-pangea/dnd"
+import { generateKeyBetween } from "fractional-indexing"
 import { useLocation } from "wouter"
 import { SidebarInset, SidebarProvider } from "./components/ui"
 import { AppSidebar, Deck, Home } from "@/components/domain"
-import type { Card, Dashboard } from "@/lib/types"
+import type { Dashboard } from "@/lib/types"
 import { routes } from "@/lib/routes"
+import { byPosition } from "@/lib/utils"
 import {
   useCreateCard,
   useCreateDashboard,
@@ -29,7 +31,7 @@ export default function App({ deckId }: { deckId?: string }) {
   const dashboard: Dashboard = active ?? {
     id: deckId ?? "",
     title: "",
-    position: 0,
+    position: generateKeyBetween(null, null),
   }
 
   useEffect(() => {
@@ -48,7 +50,7 @@ export default function App({ deckId }: { deckId?: string }) {
   const { mutate: deleteCard } = useDeleteCard(dashboard.id)
   const { mutate: moveCard } = useMoveCard(dashboard.id)
 
-  function handleDragEnd({ source, destination }: DropResult) {
+  function handleDragEnd({ source, destination, draggableId }: DropResult) {
     if (!destination || !board) return
     if (
       source.droppableId === destination.droppableId &&
@@ -56,35 +58,25 @@ export default function App({ deckId }: { deckId?: string }) {
     )
       return
 
-    // Group cards by column, ordered by position, to mirror what the UI renders.
-    const byColumn = new Map<string, Card[]>(board.columns.map((c) => [c.id, []]))
-    for (const card of [...board.cards].sort((a, b) => a.position - b.position)) {
-      byColumn.get(card.columnId)?.push(card)
-    }
-
-    const from = byColumn.get(source.droppableId)
-    const to = byColumn.get(destination.droppableId)
-    if (!from || !to) return
-
-    const [moved] = from.splice(source.index, 1)
+    const moved = board.cards.find((c) => c.id === draggableId)
     if (!moved) return
-    to.splice(destination.index, 0, moved)
 
-    // Reindex the affected column(s); emit only the cards that actually moved.
-    const original = new Map(board.cards.map((c) => [c.id, c]))
-    const changed: Card[] = []
-    for (const columnId of new Set([
-      source.droppableId,
-      destination.droppableId,
-    ])) {
-      byColumn.get(columnId)?.forEach((card, position) => {
-        const prev = original.get(card.id)
-        if (prev?.position !== position || prev?.columnId !== columnId) {
-          changed.push({ ...card, position, columnId })
-        }
-      })
-    }
-    if (changed.length) moveCard(changed)
+    // The destination column as rendered, minus the card being dropped, so the
+    // insertion index lines up with the neighbors at the drop site.
+    const destCards = board.cards
+      .filter((c) => c.columnId === destination.droppableId && c.id !== moved.id)
+      .sort(byPosition)
+
+    // Mint a key strictly between the neighbors — only the moved card changes,
+    // so concurrent reorders of other cards never collide with this write.
+    const before = destCards[destination.index - 1]
+    const after = destCards[destination.index]
+    const position = generateKeyBetween(
+      before?.position ?? null,
+      after?.position ?? null
+    )
+
+    moveCard([{ ...moved, columnId: destination.droppableId, position }])
   }
 
   return (

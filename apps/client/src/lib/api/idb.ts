@@ -6,7 +6,7 @@
  */
 
 const DB_NAME = "deck"
-const VERSION = 4
+const VERSION = 5
 const STORES = ["cards", "columns", "dashboards"] as const
 export type StoreName = (typeof STORES)[number]
 
@@ -24,8 +24,11 @@ function open(): Promise<IDBDatabase> {
         for (const store of LEGACY_STORES) {
           if (db.objectStoreNames.contains(store)) db.deleteObjectStore(store)
         }
+        // Drop entity stores so stale integer-position records don't survive;
+        // they're recreated empty and reseeded on first read.
         for (const store of STORES) {
-          if (!db.objectStoreNames.contains(store)) db.createObjectStore(store)
+          if (db.objectStoreNames.contains(store)) db.deleteObjectStore(store)
+          db.createObjectStore(store)
         }
       }
       req.onsuccess = () => resolve(req.result)
@@ -50,7 +53,10 @@ async function run<T>(
   })
 }
 
-export function idbGet<T>(store: StoreName, key: string): Promise<T | undefined> {
+export function idbGet<T>(
+  store: StoreName,
+  key: string
+): Promise<T | undefined> {
   return run<T | undefined>(store, "readonly", (s) => s.get(key))
 }
 
@@ -58,7 +64,11 @@ export function idbGetAll<T>(store: StoreName): Promise<T[]> {
   return run<T[]>(store, "readonly", (s) => s.getAll())
 }
 
-export function idbSet(store: StoreName, key: string, value: unknown): Promise<void> {
+export function idbSet(
+  store: StoreName,
+  key: string,
+  value: unknown
+): Promise<void> {
   return run<void>(store, "readwrite", (s) => s.put(value, key))
 }
 
