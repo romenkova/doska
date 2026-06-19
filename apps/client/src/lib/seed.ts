@@ -5,6 +5,8 @@ export const cards: Card[] = [
     id: "C1",
     columnId: "todo",
     position: "a0",
+    updatedAt: 0,
+    deletedAt: null,
     title: "Onboarding flow",
     body: `Wire up the **new user** onboarding screens.
 
@@ -20,15 +22,17 @@ export const fallbackCard: Card = {
   id: "1",
   columnId: "1",
   position: "a0",
+  updatedAt: 0,
+  deletedAt: null,
   title: "Untitled card",
   body: `Nothing here yet — _add some **markdown**!_`,
 }
 
 export const BOARD_COLUMNS: Column[] = [
-  { id: "todo", title: "To Do", position: "a0", dashboardId: "product" },
-  { id: "doing", title: "In Progress", position: "a1", dashboardId: "product" },
-  { id: "done", title: "Done", position: "a2", dashboardId: "product" },
-  { id: "paused", title: "Paused", position: "a3", dashboardId: "product" },
+  { id: "todo", title: "To Do", position: "a0", dashboardId: "product", updatedAt: 0, deletedAt: null },
+  { id: "doing", title: "In Progress", position: "a1", dashboardId: "product", updatedAt: 0, deletedAt: null },
+  { id: "done", title: "Done", position: "a2", dashboardId: "product", updatedAt: 0, deletedAt: null },
+  { id: "paused", title: "Paused", position: "a3", dashboardId: "product", updatedAt: 0, deletedAt: null },
 ]
 
 export const seedDashboards: Dashboard[] = [
@@ -36,5 +40,7 @@ export const seedDashboards: Dashboard[] = [
     id: "product",
     title: "Product Roadmap",
     position: "a0",
+    updatedAt: 0,
+    deletedAt: null,
   },
 ]

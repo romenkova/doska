@@ -1,19 +1,25 @@
-import type { StoreName } from "./idb"
+import type { Change } from "@deck/contract"
+import { keys } from "@/lib/data/keys"
+import { queryClient } from "@/lib/query-client"
+import type { Card, Column, Dashboard } from "@/lib/types"
+import { idbGet, idbSet, metaGet, metaSet, type StoreName } from "./idb"
+import { orpc } from "./orpc"
 
 /**
  * Background sync between the local IndexedDB store and the server.
  *
  * The app is local-first: mutations land in IndexedDB instantly, and this job
  * reconciles with the backend on an interval instead of round-tripping on every
- * action. Two directions ride the same tick:
+ * action. One `board.sync` call carries both directions of a tick:
  *
- *  - push: changed records (tracked per `store/key`) are sent to the server.
- *  - pull: changes made by *other* users on the same board are fetched since the
- *    last cursor and applied locally — this is what makes a board multi-user.
+ *  - push: records changed locally (tracked per `store/key`) that belong to the
+ *    open board are sent up; the server applies them last-writer-wins.
+ *  - pull: every record the board has seen past our cursor comes back and is
+ *    applied locally (also LWW) — this is what makes a board multi-user.
  *
- * There's no backend yet, so `pushToServer`/`pullFromServer` are stubbed: push
- * logs the pending records, pull is a no-op. The shape (cursor, dirty refs) is
- * what a real sync needs, so wiring the fetch in later is a drop-in.
+ * Scope is the currently open board (see `setActiveBoard`). Syncing the whole
+ * list of boards is a follow-up; until then, dashboard records sync only for the
+ * open board itself (so renaming the open board still propagates).
  */
 
 /**
@@ -28,8 +34,8 @@ const SYNC_INTERVAL = 10_000
 /** localStorage key under which the pending dirty refs are persisted. */
 const DIRTY_KEY = "deck:sync:dirty"
 
-/** localStorage key under which the last pull cursor (server seq) is persisted. */
-const CURSOR_KEY = "deck:sync:cursor"
+/** meta-store key prefix for the per-board pull cursor (server seq). */
+const CURSOR_PREFIX = "cursor:"
 
 /** Reads the persisted dirty refs, tolerating missing/corrupt storage. */
 function loadDirty(): Set<string> {
@@ -52,16 +58,20 @@ function saveDirty() {
   }
 }
 
-/** Reads the last pull cursor; 0 means "pull everything" on first sync. */
-function loadCursor(): number {
-  const raw = Number(localStorage.getItem(CURSOR_KEY))
-  return Number.isFinite(raw) ? raw : 0
+/**
+ * Reads a board's last pull cursor; 0 means "pull everything" on first sync.
+ * Lives in IndexedDB beside the data so clearing the local DB resets it too —
+ * otherwise a stale cursor would hide every server change after a wipe.
+ */
+async function loadCursor(boardId: string): Promise<number> {
+  const raw = await metaGet<number>(CURSOR_PREFIX + boardId)
+  return typeof raw === "number" && Number.isFinite(raw) ? raw : 0
 }
 
-/** Persists the cursor so a reload resumes the pull where it left off. */
-function saveCursor(value: number) {
+/** Persists a board's cursor so a reload resumes the pull where it left off. */
+async function saveCursor(boardId: string, value: number): Promise<void> {
   try {
-    localStorage.setItem(CURSOR_KEY, String(value))
+    await metaSet(CURSOR_PREFIX + boardId, value)
   } catch {
     // Storage unavailable; the next sync re-pulls from the in-memory cursor.
   }
@@ -73,8 +83,8 @@ function saveCursor(value: number) {
  */
 const dirty = loadDirty()
 
-/** Server high-water mark we've pulled up to; advanced after each pull. */
-const cursor = loadCursor()
+/** The board we sync; set by the UI when the open board changes. */
+let activeBoard: string | null = null
 
 /** Guards against overlapping reconciles (a slow tick + a focus-triggered one). */
 let inFlight = false
@@ -85,44 +95,114 @@ export function markDirty(store: StoreName, key: string) {
   saveDirty()
 }
 
-/** Pushes pending local changes to the server. Stubbed: logs instead of POSTing. */
-async function pushToServer(): Promise<void> {
-  if (dirty.size === 0) return
-  const pushing = [...dirty]
-  dirty.clear()
-  saveDirty()
-
-  // TODO: resolve each `store/key` ref to its current record and POST them, e.g.
-  //   await fetch("/board/:id/sync", { method: "POST", body: ... })
-  // On failure, re-add `pushing` to `dirty` (then `saveDirty()`) so the next
-  // tick retries.
-  console.info(
-    `[sync] would push ${pushing.length} change(s) to server`,
-    pushing
-  )
+/** Points sync at the open board and reconciles it immediately. */
+export function setActiveBoard(boardId: string | null) {
+  if (boardId === activeBoard) return
+  activeBoard = boardId
+  void reconcile()
 }
 
 /**
- * Pulls changes made by other users since `cursor` and applies them locally.
- * Stubbed: a real version would
- *   - GET /board/:id/sync?since=<cursor>
- *   - upsert/tombstone each returned record into IndexedDB by last-writer-wins
- *   - invalidate the affected react-query keys so the UI refreshes
- *   - advance `cursor` to the server's high-water mark
+ * Resolves the dirty refs that belong to `boardId` into a `Change[]` to push,
+ * alongside the refs consumed (so they can be restored if the push fails).
+ * Soft-deleted records still resolve (we never hard-delete), so tombstones push.
  */
-async function pullFromServer(): Promise<void> {
-  // TODO: fetch + apply remote changes; for now the cursor never advances.
-  void cursor
-  void saveCursor
+async function collectChanges(
+  boardId: string
+): Promise<{ changes: Change[]; refs: string[] }> {
+  const changes: Change[] = []
+  const refs: string[] = []
+
+  for (const ref of dirty) {
+    const slash = ref.indexOf("/")
+    const store = ref.slice(0, slash) as StoreName
+    const id = ref.slice(slash + 1)
+
+    if (store === "dashboards") {
+      if (id !== boardId) continue // other boards' metadata: follow-up
+      const record = await idbGet<Dashboard>("dashboards", id)
+      if (record) {
+        changes.push({ store, record })
+        refs.push(ref)
+      }
+    } else if (store === "columns") {
+      const record = await idbGet<Column>("columns", id)
+      if (record?.dashboardId === boardId) {
+        changes.push({ store, record })
+        refs.push(ref)
+      }
+    } else if (store === "cards") {
+      const record = await idbGet<Card>("cards", id)
+      if (!record) continue
+      const column = await idbGet<Column>("columns", record.columnId)
+      if (column?.dashboardId === boardId) {
+        changes.push({ store, record })
+        refs.push(ref)
+      }
+    }
+  }
+
+  return { changes, refs }
 }
 
-/** Runs one full reconcile (push then pull), skipping if one is already running. */
+/** Applies pulled changes to IndexedDB under last-writer-wins. */
+async function applyRemote(changes: Change[]) {
+  const touchedCards: string[] = []
+  let touchedBoard = false
+  let touchedDashboards = false
+
+  for (const { store, record } of changes) {
+    const existing = await idbGet<{ updatedAt: number }>(store, record.id)
+    if (existing && existing.updatedAt >= record.updatedAt) continue
+    await idbSet(store, record.id, record)
+
+    if (store === "cards") {
+      touchedCards.push(record.id)
+      touchedBoard = true
+    } else if (store === "columns") {
+      touchedBoard = true
+    } else {
+      touchedDashboards = true
+    }
+  }
+
+  return { touchedCards, touchedBoard, touchedDashboards }
+}
+
+/** Runs one full reconcile for the open board, skipping if one is already running. */
 export async function reconcile(): Promise<void> {
-  if (inFlight) return
+  if (inFlight || !activeBoard) return
   inFlight = true
+  const boardId = activeBoard
   try {
-    await pushToServer()
-    await pullFromServer()
+    const since = await loadCursor(boardId)
+    const { changes, refs } = await collectChanges(boardId)
+
+    // Optimistically clear the refs we're pushing; restore them on failure.
+    for (const ref of refs) dirty.delete(ref)
+    saveDirty()
+
+    let result: { cursor: number; changes: Change[] }
+    try {
+      result = await orpc.board.sync({ boardId, since, changes })
+    } catch (err) {
+      for (const ref of refs) dirty.add(ref)
+      saveDirty()
+      console.warn("[sync] reconcile failed; will retry next tick", err)
+      return
+    }
+
+    const { touchedCards, touchedBoard, touchedDashboards } = await applyRemote(
+      result.changes
+    )
+    await saveCursor(boardId, result.cursor)
+
+    if (touchedDashboards)
+      queryClient.invalidateQueries({ queryKey: keys.dashboards })
+    if (touchedBoard)
+      queryClient.invalidateQueries({ queryKey: keys.board(boardId) })
+    for (const id of touchedCards)
+      queryClient.invalidateQueries({ queryKey: keys.card(id) })
   } finally {
     inFlight = false
   }

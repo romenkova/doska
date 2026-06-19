@@ -1,0 +1,26 @@
+{
+  "name": "server",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@deck/contract": "workspace:*",
+    "@orpc/server": "^1.14.6",
+    "better-sqlite3": "^12.11.1",
+    "drizzle-orm": "^0.45.2",
+    "fastify": "^5.8.5"
+  },
+  "devDependencies": {
+    "@deck/tsconfig": "workspace:*",
+    "@deck/prettier-config": "workspace:*",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^22",
+    "tsx": "^4.22.4",
+    "typescript": "~6"
+  }
+}

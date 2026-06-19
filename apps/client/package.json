@@ -15,6 +15,9 @@
   },
   "dependencies": {
     "@base-ui/react": "1.6.0",
+    "@deck/contract": "workspace:*",
+    "@orpc/client": "^1.14.6",
+    "@orpc/contract": "^1.14.6",
     "@fontsource-variable/geist-mono": "5.2.8",
     "@fontsource-variable/mulish": "5.2.8",
     "@hello-pangea/dnd": "18.0.1",

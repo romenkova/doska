@@ -1,0 +1,43 @@
+import { z } from "zod";
+
+/**
+ * Entity schemas shared by client and server
+ *
+ *  - `updatedAt`: client clock (ms). The last-writer-wins tiebreaker.
+ *  - `deletedAt`: tombstone. `null` while live; set to a timestamp on delete so
+ *    the deletion propagates to other clients instead of vanishing silently.
+ */
+
+export const CardSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  body: z.string(),
+  position: z.string(),
+  columnId: z.string(),
+  updatedAt: z.number(),
+  deletedAt: z.number().nullable(),
+});
+
+export const ColumnSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  position: z.string(),
+  dashboardId: z.string(),
+  updatedAt: z.number(),
+  deletedAt: z.number().nullable(),
+});
+
+export const DashboardSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  position: z.string(),
+  updatedAt: z.number(),
+  deletedAt: z.number().nullable(),
+});
+
+/** One record change, tagged by the store it belongs to. */
+export const ChangeSchema = z.discriminatedUnion("store", [
+  z.object({ store: z.literal("cards"), record: CardSchema }),
+  z.object({ store: z.literal("columns"), record: ColumnSchema }),
+  z.object({ store: z.literal("dashboards"), record: DashboardSchema }),
+]);

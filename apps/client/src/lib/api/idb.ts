@@ -6,9 +6,13 @@
  */
 
 const DB_NAME = "deck"
-const VERSION = 5
+const VERSION = 8
 const STORES = ["cards", "columns", "dashboards"] as const
 export type StoreName = (typeof STORES)[number]
+
+/** Sync bookkeeping (the pull cursor) — kept in the DB so it shares the data's
+ * lifetime. Not dropped on upgrade, but gone if the whole DB is deleted. */
+const META_STORE = "meta"
 
 /** Stores from prior schema versions that are no longer used. */
 const LEGACY_STORES = ["kv", "boards"]
@@ -30,6 +34,9 @@ function open(): Promise<IDBDatabase> {
           if (db.objectStoreNames.contains(store)) db.deleteObjectStore(store)
           db.createObjectStore(store)
         }
+        // The meta store persists across upgrades — only create it if missing.
+        if (!db.objectStoreNames.contains(META_STORE))
+          db.createObjectStore(META_STORE)
       }
       req.onsuccess = () => resolve(req.result)
       req.onerror = () => reject(req.error)
@@ -39,7 +46,7 @@ function open(): Promise<IDBDatabase> {
 }
 
 async function run<T>(
-  store: StoreName,
+  store: StoreName | typeof META_STORE,
   mode: IDBTransactionMode,
   op: (store: IDBObjectStore) => IDBRequest
 ): Promise<T> {
@@ -78,4 +85,14 @@ export function idbDelete(store: StoreName, key: string): Promise<void> {
 
 export function idbCount(store: StoreName): Promise<number> {
   return run<number>(store, "readonly", (s) => s.count())
+}
+
+/** Reads a value from the meta store (sync bookkeeping). */
+export function metaGet<T>(key: string): Promise<T | undefined> {
+  return run<T | undefined>(META_STORE, "readonly", (s) => s.get(key))
+}
+
+/** Writes a value to the meta store (sync bookkeeping). */
+export function metaSet(key: string, value: unknown): Promise<void> {
+  return run<void>(META_STORE, "readwrite", (s) => s.put(value, key))
 }

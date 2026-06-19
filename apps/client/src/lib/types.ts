@@ -1,23 +1,6 @@
-export type Card = {
-  id: string
-  title: string
-  body: string
-  position: string
-  columnId: string
-}
+import type { Card, Column } from "@deck/contract"
 
-export type Column = {
-  id: string
-  title: string
-  position: string
-  dashboardId: string
-}
-
-export type Dashboard = {
-  id: string
-  title: string
-  position: string
-}
+export type { Card, Column, Dashboard } from "@deck/contract"
 
 /** A board assembled for the UI: its columns and the cards that live in them. */
 export type Board = {

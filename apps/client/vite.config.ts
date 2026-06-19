@@ -8,6 +8,12 @@ export default defineConfig({
   preview: {
     port:3001
   },
+  server: {
+    // Proxy sync calls to the API so the browser stays same-origin (no CORS).
+    proxy: {
+      "/rpc": "http://localhost:3000",
+    },
+  },
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {

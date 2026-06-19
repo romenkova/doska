@@ -7,6 +7,7 @@ import { AppSidebar, Deck, Home } from "@/components/domain"
 import type { Dashboard } from "@/lib/types"
 import { routes } from "@/lib/routes"
 import { byPosition } from "@/lib/utils"
+import { setActiveBoard } from "./lib/api/sync"
 import {
   useCreateCard,
   useCreateDashboard,
@@ -32,12 +33,19 @@ export default function App({ deckId }: { deckId?: string }) {
     id: deckId ?? "",
     title: "",
     position: generateKeyBetween(null, null),
+    deletedAt: null,
+    updatedAt: 0,
   }
 
   useEffect(() => {
     if (dashboardsLoading || !deckId || active) return
     navigate("~/")
   }, [dashboardsLoading, deckId, active, navigate])
+
+  // Point background sync at the open board (and reconcile on switch).
+  useEffect(() => {
+    setActiveBoard(deckId ?? null)
+  }, [deckId])
 
   function handleCreateDashboard() {
     createDashboard("Untitled board", {
@@ -64,7 +72,9 @@ export default function App({ deckId }: { deckId?: string }) {
     // The destination column as rendered, minus the card being dropped, so the
     // insertion index lines up with the neighbors at the drop site.
     const destCards = board.cards
-      .filter((c) => c.columnId === destination.droppableId && c.id !== moved.id)
+      .filter(
+        (c) => c.columnId === destination.droppableId && c.id !== moved.id
+      )
       .sort(byPosition)
 
     // Mint a key strictly between the neighbors — only the moved card changes,
