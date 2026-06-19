@@ -1,5 +1,8 @@
 import { test, expect } from "@playwright/test"
-import { addCard, createBoard, idbGet, idbKeys } from "./helpers"
+import { addCard, createBoard, idbKeys, idbValues } from "./helpers"
+
+type ColumnRecord = { id: string; dashboardId: string }
+type CardRecord = { id: string; columnId: string }
 
 test.describe("board lifecycle", () => {
   test("a created board persists across a reload", async ({ page }) => {
@@ -43,22 +46,26 @@ test.describe("board lifecycle", () => {
     // Start on a fresh board so the cascade assertion is isolated.
     const deckId = await createBoard(page)
 
-    // Add one card, then capture the card ids the board owns.
+    // Add one card, then capture the card ids the board owns. Card ownership is
+    // derived through the board's columns (cards reference a columnId, columns a
+    // dashboardId) now that ordering lives on the records themselves.
     await addCard(page, "To Do")
 
-    const board = await idbGet<Record<string, string[]>>(
-      page,
-      "boards",
-      deckId
+    const columnIds = new Set(
+      (await idbValues<ColumnRecord>(page, "columns"))
+        .filter((c) => c.dashboardId === deckId)
+        .map((c) => c.id)
     )
-    const cardIds = Object.values(board).flat()
+    const cardIds = (await idbValues<CardRecord>(page, "cards"))
+      .filter((c) => columnIds.has(c.columnId))
+      .map((c) => c.id)
     expect(cardIds.length).toBeGreaterThan(0)
 
     // Delete the board.
     await page.getByRole("button", { name: "Delete board" }).click()
 
-    // Redirected off the deleted board, and it's gone from the boards store.
-    await expect.poll(() => idbKeys(page, "boards")).not.toContain(deckId)
+    // Redirected off the deleted board, and it's gone from the dashboards store.
+    await expect.poll(() => idbKeys(page, "dashboards")).not.toContain(deckId)
 
     // Its cards were removed too (cascade).
     const remainingCards = await idbKeys(page, "cards")

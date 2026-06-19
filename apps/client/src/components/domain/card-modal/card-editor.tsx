@@ -1,5 +1,5 @@
 import { ModalContent, InvisibleInput, MarkdownTextarea } from "@/components/ui"
-import type { Card } from "@/lib/card-data"
+import type { Card } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { useState } from "react"
 import { useToggle } from "@/lib/hooks/use-toggle"
@@ -9,7 +9,7 @@ import { CardModalHeader } from "./card-modal-header"
 interface IProps {
   id: string
   content: Card
-  onSave: (next: Card) => void
+  onSave: (next: Pick<Card, "title" | "body">) => void
   onClose: () => void
 }
 

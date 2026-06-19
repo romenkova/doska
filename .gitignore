@@ -25,6 +25,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+.zed
+
 
 # Playwright
 test-results

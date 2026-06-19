@@ -12,7 +12,7 @@ test.describe("sync dirty-set persistence", () => {
     await page.goto("/")
     await page.getByRole("button", { name: "Create a board" }).click()
 
-    // A board create marks the dashboards list and the new board dirty.
+    // A board create marks the new dashboard and its default columns dirty.
     await expect
       .poll(() => readDirty(page))
       .toEqual(
@@ -20,7 +20,7 @@ test.describe("sync dirty-set persistence", () => {
       )
 
     const dirty = await readDirty(page)
-    expect(dirty.some((ref) => ref.startsWith("boards/"))).toBe(true)
+    expect(dirty.some((ref) => ref.startsWith("columns/"))).toBe(true)
   })
 
   test("pending dirty refs survive a reload", async ({ page }) => {

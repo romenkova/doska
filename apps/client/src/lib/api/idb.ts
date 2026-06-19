@@ -6,9 +6,12 @@
  */
 
 const DB_NAME = "deck"
-const VERSION = 3
-const STORES = ["cards", "boards", "dashboards"] as const
+const VERSION = 4
+const STORES = ["cards", "columns", "dashboards"] as const
 export type StoreName = (typeof STORES)[number]
+
+/** Stores from prior schema versions that are no longer used. */
+const LEGACY_STORES = ["kv", "boards"]
 
 let dbPromise: Promise<IDBDatabase> | null = null
 
@@ -18,7 +21,9 @@ function open(): Promise<IDBDatabase> {
       const req = indexedDB.open(DB_NAME, VERSION)
       req.onupgradeneeded = () => {
         const db = req.result
-        if (db.objectStoreNames.contains("kv")) db.deleteObjectStore("kv")
+        for (const store of LEGACY_STORES) {
+          if (db.objectStoreNames.contains(store)) db.deleteObjectStore(store)
+        }
         for (const store of STORES) {
           if (!db.objectStoreNames.contains(store)) db.createObjectStore(store)
         }
@@ -47,6 +52,10 @@ async function run<T>(
 
 export function idbGet<T>(store: StoreName, key: string): Promise<T | undefined> {
   return run<T | undefined>(store, "readonly", (s) => s.get(key))
+}
+
+export function idbGetAll<T>(store: StoreName): Promise<T[]> {
+  return run<T[]>(store, "readonly", (s) => s.getAll())
 }
 
 export function idbSet(store: StoreName, key: string, value: unknown): Promise<void> {

@@ -5,8 +5,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query"
 import * as api from "@/lib/api"
-import type { Card } from "@/lib/card-data"
-import type { BoardItems } from "@/lib/dashboards"
+import type { Board, Card } from "@/lib/types"
 import { keys } from "./keys"
 
 export function useCreateDashboard() {
@@ -54,7 +53,8 @@ export function useDeleteCard(deckId: string) {
 export function useUpdateCard(id: string) {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (card: Card) => api.updateCard(id, card),
+    mutationFn: (patch: Pick<Card, "title" | "body">) =>
+      api.updateCard(id, patch),
     onSettled: () => qc.invalidateQueries({ queryKey: keys.card(id) }),
   })
 }
@@ -87,15 +87,22 @@ function flushSyncUpdate(update: () => void) {
 export function useMoveCard(deckId: string) {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (next: BoardItems) => api.moveCard(deckId, next),
+    mutationFn: (changed: Card[]) => api.moveCard(deckId, changed),
     // Synchronous on purpose (no awaited `cancelQueries`) and flushed eagerly, so
     // the reorder is committed inside the drop event — see `flushSyncUpdate`.
-    onMutate: (next) => {
-      const previous = qc.getQueryData<BoardItems>(keys.board(deckId))
-      flushSyncUpdate(() => qc.setQueryData(keys.board(deckId), next))
+    onMutate: (changed) => {
+      const previous = qc.getQueryData<Board>(keys.board(deckId))
+      if (previous) {
+        const updates = new Map(changed.map((c) => [c.id, c]))
+        const next: Board = {
+          ...previous,
+          cards: previous.cards.map((c) => updates.get(c.id) ?? c),
+        }
+        flushSyncUpdate(() => qc.setQueryData(keys.board(deckId), next))
+      }
       return { previous }
     },
-    onError: (_err, _next, ctx) => {
+    onError: (_err, _changed, ctx) => {
       if (ctx?.previous) qc.setQueryData(keys.board(deckId), ctx.previous)
     },
     onSettled: () => qc.invalidateQueries({ queryKey: keys.board(deckId) }),

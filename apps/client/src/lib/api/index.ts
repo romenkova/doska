@@ -1,53 +1,71 @@
-import { fallbackCard, type Card } from "@/lib/card-data"
-import { BOARD_COLUMNS, type BoardItems, type Dashboard } from "@/lib/dashboards"
+import { BOARD_COLUMNS, fallbackCard } from "@/lib/seed"
+import type { Board, Card, Dashboard } from "@/lib/types"
 import { db } from "./db"
 import { markDirty } from "./sync"
 
-/** All card ids grouped by column for one board. */
-export async function getBoard(deckId: string): Promise<BoardItems> {
-  return (await db.getBoard(deckId)) ?? {}
-}
-
 /** Every board's metadata, in sidebar order. */
 export async function getDashboards(): Promise<Dashboard[]> {
-  return (await db.getDashboards()) ?? []
+  const list = await db.getDashboards()
+  return list.sort((a, b) => a.position - b.position)
 }
 
-/** Creates an empty board, appends it to the list, and returns it. */
+/** A board's columns plus the cards that live in them. */
+export async function getBoard(deckId: string): Promise<Board> {
+  const columns = (await db.getColumns())
+    .filter((c) => c.dashboardId === deckId)
+    .sort((a, b) => a.position - b.position)
+  const columnIds = new Set(columns.map((c) => c.id))
+  const cards = (await db.getCards()).filter((c) => columnIds.has(c.columnId))
+  return { columns, cards }
+}
+
+/** Creates a board with the default columns, appends it to the list, returns it. */
 export async function createDashboard(name: string): Promise<Dashboard> {
-  const dashboard: Dashboard = {
-    id: `board-${crypto.randomUUID().slice(0, 8)}`,
-    name,
-    columns: BOARD_COLUMNS,
-  }
-  const list = (await db.getDashboards()) ?? []
-  await db.setDashboards([...list, dashboard])
-  await db.setBoard(dashboard.id, {})
-  markDirty("dashboards", "list")
-  markDirty("boards", dashboard.id)
+  const id = `board-${crypto.randomUUID().slice(0, 8)}`
+  const list = await db.getDashboards()
+  const position = list.reduce((max, d) => Math.max(max, d.position), -1) + 1
+  const dashboard: Dashboard = { id, title: name, position }
+  await db.setDashboard(dashboard)
+  markDirty("dashboards", id)
+
+  await Promise.all(
+    BOARD_COLUMNS.map(async (template) => {
+      const column = {
+        ...template,
+        id: `col-${crypto.randomUUID().slice(0, 8)}`,
+        dashboardId: id,
+      }
+      await db.setColumn(column)
+      markDirty("columns", column.id)
+    })
+  )
   return dashboard
 }
 
 /** Renames a board. */
 export async function renameDashboard(id: string, name: string): Promise<void> {
-  const list = (await db.getDashboards()) ?? []
-  await db.setDashboards(list.map((d) => (d.id === id ? { ...d, name } : d)))
-  markDirty("dashboards", "list")
+  const list = await db.getDashboards()
+  const dashboard = list.find((d) => d.id === id)
+  if (!dashboard) return
+  await db.setDashboard({ ...dashboard, title: name })
+  markDirty("dashboards", id)
 }
 
-/** Removes a board, its arrangement, and all of its cards. */
+/** Removes a board, its columns, and all of their cards. */
 export async function deleteDashboard(id: string): Promise<void> {
-  const list = (await db.getDashboards()) ?? []
-  await db.setDashboards(list.filter((d) => d.id !== id))
+  const columns = (await db.getColumns()).filter((c) => c.dashboardId === id)
+  const columnIds = new Set(columns.map((c) => c.id))
+  const cards = (await db.getCards()).filter((c) => columnIds.has(c.columnId))
 
-  const board = (await db.getBoard(id)) ?? {}
-  const cardIds = Object.values(board).flat()
-  await Promise.all(cardIds.map((cardId) => db.deleteCard(cardId)))
-  await db.deleteBoard(id)
+  await Promise.all([
+    db.deleteDashboard(id),
+    ...columns.map((c) => db.deleteColumn(c.id)),
+    ...cards.map((c) => db.deleteCard(c.id)),
+  ])
 
-  markDirty("dashboards", "list")
-  markDirty("boards", id)
-  for (const cardId of cardIds) markDirty("cards", cardId)
+  markDirty("dashboards", id)
+  for (const c of columns) markDirty("columns", c.id)
+  for (const c of cards) markDirty("cards", c.id)
 }
 
 /** A single card (title + markdown body). */
@@ -57,42 +75,36 @@ export async function getCard(id: string): Promise<Card> {
 
 /** Creates an empty card at the top of a column and returns its new id. */
 export async function createCard(
-  deckId: string,
+  _deckId: string,
   columnId: string
 ): Promise<string> {
   const id = `card-${crypto.randomUUID().slice(0, 8)}`
-  await db.setCard(id, fallbackCard)
-  const board = (await db.getBoard(deckId)) ?? {}
-  await db.setBoard(deckId, {
-    ...board,
-    [columnId]: [id, ...(board[columnId] ?? [])],
-  })
+  const min = (await db.getCards())
+    .filter((c) => c.columnId === columnId)
+    .reduce((min, c) => Math.min(min, c.position), 0)
+  await db.setCard({ ...fallbackCard, id, columnId, position: min - 1 })
   markDirty("cards", id)
-  markDirty("boards", deckId)
   return id
 }
 
-/** Replaces a card. */
-export async function updateCard(id: string, card: Card): Promise<void> {
-  await db.setCard(id, card)
+/** Updates a card's title/body, preserving its column and position. */
+export async function updateCard(
+  id: string,
+  patch: Pick<Card, "title" | "body">
+): Promise<void> {
+  const existing = (await db.getCard(id)) ?? { ...fallbackCard, id }
+  await db.setCard({ ...existing, ...patch, id })
   markDirty("cards", id)
 }
 
-/** Removes a card from its board and drops its content. */
-export async function deleteCard(deckId: string, id: string): Promise<void> {
-  const board = (await db.getBoard(deckId)) ?? {}
-  const nextBoard: BoardItems = {}
-  for (const [columnId, ids] of Object.entries(board)) {
-    nextBoard[columnId] = ids.filter((cardId) => cardId !== id)
-  }
-  await db.setBoard(deckId, nextBoard)
+/** Removes a card. */
+export async function deleteCard(_deckId: string, id: string): Promise<void> {
   await db.deleteCard(id)
-  markDirty("boards", deckId)
   markDirty("cards", id)
 }
 
-/** Persists a reordered/moved board. The caller computes the new arrangement. */
-export async function moveCard(deckId: string, next: BoardItems): Promise<void> {
-  await db.setBoard(deckId, next)
-  markDirty("boards", deckId)
+/** Persists cards whose column/position changed during a drag. */
+export async function moveCard(_deckId: string, changed: Card[]): Promise<void> {
+  await Promise.all(changed.map((card) => db.setCard(card)))
+  for (const card of changed) markDirty("cards", card.id)
 }

@@ -6,7 +6,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui"
-import { type Dashboard } from "@/lib/dashboards"
+import { type Dashboard } from "@/lib/types"
 
 interface IProps {
   dashboards: Dashboard[]
@@ -29,10 +29,10 @@ export function DashboardsList({
             <SidebarMenuItem key={dashboard.id}>
               <SidebarMenuButton
                 isActive={dashboard.id === activeDashboardId}
-                tooltip={dashboard.name}
+                tooltip={dashboard.title}
                 onClick={() => onSelectDashboard(dashboard)}
               >
-                <span>{dashboard.name}</span>
+                <span>{dashboard.title}</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}

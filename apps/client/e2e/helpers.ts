@@ -72,6 +72,28 @@ export function idbKeys(page: Page, store: string): Promise<string[]> {
   )
 }
 
+/** Reads all records (values) of an IndexedDB object store from inside the page. */
+export function idbValues<T>(page: Page, store: string): Promise<T[]> {
+  return page.evaluate(
+    (storeName) =>
+      new Promise<T[]>((resolve, reject) => {
+        const req = indexedDB.open("deck")
+        req.onsuccess = () => {
+          const db = req.result
+          const tx = db.transaction(storeName, "readonly")
+          const r = tx.objectStore(storeName).getAll()
+          r.onsuccess = () => {
+            resolve(r.result as T[])
+            db.close()
+          }
+          r.onerror = () => reject(r.error)
+        }
+        req.onerror = () => reject(req.error)
+      }),
+    store
+  )
+}
+
 /** Reads a single record from an IndexedDB object store inside the page. */
 export function idbGet<T>(page: Page, store: string, key: string): Promise<T> {
   return page.evaluate(
