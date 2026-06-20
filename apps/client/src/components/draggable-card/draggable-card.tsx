@@ -13,8 +13,7 @@ import { routes } from "@/lib/routes"
 import { CardMenu } from "./card-menu"
 import { TaskIndicator } from "./task-indicator"
 import { useCard } from "@/lib/data/queries"
-import { taskProgress } from "@/lib/utils/task-progress"
-import { Markdown } from "@deck/markdown"
+import { Markdown, taskProgress } from "@deck/markdown"
 
 interface IProps {
   id: string
