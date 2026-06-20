@@ -1,0 +1,32 @@
+{
+  "name": "@deck/markdown",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@deck/ui-kit": "workspace:*",
+    "react-markdown": "10.1.0",
+    "remark-gfm": "4.0.1",
+    "remark-mark-highlight": "0.1.1"
+  },
+  "peerDependencies": {
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
+  "devDependencies": {
+    "@deck/eslint-config": "workspace:*",
+    "@deck/prettier-config": "workspace:*",
+    "@deck/tsconfig": "workspace:*",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^10",
+    "typescript": "~6"
+  }
+}

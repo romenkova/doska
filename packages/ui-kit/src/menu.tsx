@@ -1,0 +1,69 @@
+import { Menu as MenuPrimitive } from "@base-ui/react/menu"
+import { cn } from "./lib/cn"
+
+function Menu({ ...props }: MenuPrimitive.Root.Props) {
+  return <MenuPrimitive.Root data-slot="menu" {...props} />
+}
+
+function MenuTrigger({ ...props }: MenuPrimitive.Trigger.Props) {
+  return <MenuPrimitive.Trigger data-slot="menu-trigger" {...props} />
+}
+
+function MenuContent({
+  className,
+  children,
+  sideOffset = 4,
+  align = "end",
+  ...props
+}: MenuPrimitive.Popup.Props & {
+  sideOffset?: number
+  align?: MenuPrimitive.Positioner.Props["align"]
+}) {
+  return (
+    <MenuPrimitive.Portal>
+      <MenuPrimitive.Positioner sideOffset={sideOffset} align={align}>
+        <MenuPrimitive.Popup
+          data-slot="menu-content"
+          className={cn(
+            "z-50 min-w-36 overflow-hidden rounded-lg border bg-popover",
+            "text-sm text-popover-foreground shadow-md outline-none",
+            "transition-[opacity,transform] duration-150",
+            "data-ending-style:opacity-0 data-starting-style:opacity-0",
+            "data-starting-style:scale-95",
+            className
+          )}
+          {...props}
+        >
+          {children}
+        </MenuPrimitive.Popup>
+      </MenuPrimitive.Positioner>
+    </MenuPrimitive.Portal>
+  )
+}
+
+function MenuItem({ className, ...props }: MenuPrimitive.Item.Props) {
+  return (
+    <MenuPrimitive.Item
+      data-slot="menu-item"
+      className={cn(
+        "flex cursor-pointer items-center gap-2 px-3 py-1.5 outline-none",
+        "data-highlighted:bg-muted data-highlighted:text-foreground",
+        "[&_svg]:size-4 [&_svg]:shrink-0",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+function MenuSeparator({ className, ...props }: MenuPrimitive.Separator.Props) {
+  return (
+    <MenuPrimitive.Separator
+      data-slot="menu-separator"
+      className={cn("bg-border", className)}
+      {...props}
+    />
+  )
+}
+
+export { Menu, MenuTrigger, MenuContent, MenuItem, MenuSeparator }
