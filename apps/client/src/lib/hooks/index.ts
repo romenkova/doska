@@ -1,4 +1,5 @@
 export { useActiveDashboard } from "./use-active-dashboard"
+export { useAuth } from "./use-auth"
 export { useDragEnd } from "./use-drag-end"
 export { useHiddenBodies } from "./use-hidden-bodies"
 export { useSyncShortcut } from "./use-sync-shortcut"

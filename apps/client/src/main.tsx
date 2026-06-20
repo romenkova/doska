@@ -1,25 +1,32 @@
 import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
 import { QueryClientProvider } from "@tanstack/react-query"
+import { LoginPromptProvider } from "@/components/login/login-prompt"
 import { ThemeProvider } from "@/components/theme-provider.tsx"
 import { seed } from "@/lib/api/db/db.ts"
+import { keys } from "@/lib/data/keys"
 import { queryClient } from "@/lib/query-client"
 import { Router } from "./router.tsx"
 import { startBackgroundSync } from "./lib/api/sync"
 import "./index.css"
 
-// Local-first: mutations persist to IndexedDB instantly; this reconciles the open
-// board with the server every 10s in the background (and on tab focus).
+// Dispatched by the oRPC fetch wrapper.
+window.addEventListener("auth:expired", () => {
+  queryClient.setQueryData(keys.session, { authed: false, login: null })
+})
+
 startBackgroundSync()
 
-// Seed the local DB from fixtures on first run, before the first render reads it.
+// Seed the local DB from fixtures on first run
 await seed()
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <Router />
+        <LoginPromptProvider>
+          <Router />
+        </LoginPromptProvider>
       </ThemeProvider>
     </QueryClientProvider>
   </StrictMode>
