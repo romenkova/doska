@@ -1,8 +1,5 @@
 /**
- * A tiny promise-based wrapper over IndexedDB — enough for a local store without
- * pulling in a dependency. One object store per entity type, string keys,
- * structured-cloneable values. This is the app's durable, instant local cache;
- * `./sync` reconciles it with the backend in the background.
+ * A tiny promise-based wrapper over IndexedDB
  */
 
 const DB_NAME = "deck"
@@ -14,9 +11,6 @@ export type StoreName = (typeof STORES)[number]
  * lifetime. Not dropped on upgrade, but gone if the whole DB is deleted. */
 const META_STORE = "meta"
 
-/** Stores from prior schema versions that are no longer used. */
-const LEGACY_STORES = ["kv", "boards"]
-
 let dbPromise: Promise<IDBDatabase> | null = null
 
 function open(): Promise<IDBDatabase> {
@@ -25,14 +19,8 @@ function open(): Promise<IDBDatabase> {
       const req = indexedDB.open(DB_NAME, VERSION)
       req.onupgradeneeded = () => {
         const db = req.result
-        for (const store of LEGACY_STORES) {
-          if (db.objectStoreNames.contains(store)) db.deleteObjectStore(store)
-        }
-        // Drop entity stores so stale integer-position records don't survive;
-        // they're recreated empty and reseeded on first read.
         for (const store of STORES) {
-          if (db.objectStoreNames.contains(store)) db.deleteObjectStore(store)
-          db.createObjectStore(store)
+          if (!db.objectStoreNames.contains(store)) db.createObjectStore(store)
         }
         // The meta store persists across upgrades — only create it if missing.
         if (!db.objectStoreNames.contains(META_STORE))
