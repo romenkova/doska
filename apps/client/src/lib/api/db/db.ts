@@ -1,6 +1,6 @@
 import { CARDS_BY_COLUMN, idb } from "./idb"
-import { BOARD_COLUMNS, cards as seedCards, seedDashboards } from "../seed"
-import type { Card, Column, Dashboard } from "../types"
+import { BOARD_COLUMNS, cards as seedCards, seedDashboards } from "../../seed"
+import type { Card, Column, Dashboard } from "../../types"
 
 const CARDS = "cards"
 const COLUMNS = "columns"

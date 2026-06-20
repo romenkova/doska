@@ -2,7 +2,7 @@ import type { Change } from "@deck/contract"
 import { keys } from "@/lib/data/keys"
 import { queryClient } from "@/lib/query-client"
 import type { Card, Column, Dashboard } from "@/lib/types"
-import { idb, META_STORE, type StoreName } from "./idb"
+import { idb, META_STORE, type StoreName } from "../db/idb"
 import { orpc } from "./orpc"
 
 /**
@@ -29,12 +29,12 @@ import { orpc } from "./orpc"
  * immediately on focus, which covers the "came back to a stale tab" case better
  * than any interval would.
  */
-const DEFAULT_SYNC_INTERVAL = 10_000
+const DEFAULT_SYNC_INTERVAL = 5_000
 
 /**
  * The poll interval, overridable at build time via `VITE_SYNC_INTERVAL_MS` so
  * the e2e bundle can tick fast (sub-second) and observe a remote change without
- * waiting out the 10s production cadence. Anything unset or invalid falls back
+ * waiting out the production cadence. Anything unset or invalid falls back
  * to the default.
  */
 function syncInterval(): number {

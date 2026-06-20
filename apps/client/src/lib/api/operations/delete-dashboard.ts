@@ -1,5 +1,5 @@
-import { db } from "../db"
-import { markDirty } from "../sync"
+import { db } from "../db/db"
+import { markDirty } from "../sync/sync"
 
 /** Tombstones a board, its columns, and all of their cards. */
 export async function deleteDashboard(id: string): Promise<void> {

@@ -1,8 +1,8 @@
 import { generateKeyBetween } from "fractional-indexing"
 import { BOARD_COLUMNS } from "@/lib/seed"
 import type { Dashboard } from "@/lib/types"
-import { db } from "../db"
-import { markDirty } from "../sync"
+import { db } from "../db/db"
+import { markDirty } from "../sync/sync"
 
 /** Creates a board with the default columns, appends it to the list, returns it. */
 export async function createDashboard(name: string): Promise<Dashboard> {

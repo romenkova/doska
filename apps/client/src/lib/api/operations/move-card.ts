@@ -1,6 +1,6 @@
 import type { Card } from "@/lib/types"
-import { db } from "../db"
-import { markDirty } from "../sync"
+import { db } from "../db/db"
+import { markDirty } from "../sync/sync"
 
 /**
  * Persists cards whose column/position changed during a drag. Only the move is

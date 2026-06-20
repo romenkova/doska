@@ -1,5 +1,5 @@
-import { db } from "../db"
-import { markDirty } from "../sync"
+import { db } from "../db/db"
+import { markDirty } from "../sync/sync"
 
 /** Renames a board. */
 export async function renameDashboard(id: string, name: string): Promise<void> {

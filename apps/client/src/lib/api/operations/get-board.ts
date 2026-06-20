@@ -1,6 +1,6 @@
 import type { Board } from "@/lib/types"
 import { byPosition } from "@/lib/utils"
-import { db } from "../db"
+import { db } from "../db/db"
 import { live } from "./live"
 
 /** A board's columns plus the cards that live in them. */

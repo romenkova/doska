@@ -7,7 +7,7 @@ import { AppSidebar, Deck, Home } from "@/components"
 import type { Dashboard } from "@/lib/types"
 import { routes } from "@/lib/routes"
 import { byPosition } from "@/lib/utils"
-import { setActiveBoard } from "./lib/api/sync"
+import { setActiveBoard } from "./lib/api/sync/sync"
 import {
   useCreateCard,
   useCreateDashboard,

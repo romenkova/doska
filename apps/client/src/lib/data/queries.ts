@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import * as api from "@/lib/api"
+import * as api from "@/lib/api/operations"
 import { keys } from "./keys"
 
 export function useDashboards() {
