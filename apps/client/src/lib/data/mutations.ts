@@ -33,11 +33,10 @@ export function useDeleteDashboard() {
   })
 }
 
-
 export function useCreateCard(deckId: string) {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (columnId: string) => api.createCard(deckId, columnId),
+    mutationFn: (columnId: string) => api.createCard(columnId),
     onSettled: () => qc.invalidateQueries({ queryKey: keys.board(deckId) }),
   })
 }

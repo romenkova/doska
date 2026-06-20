@@ -1,4 +1,4 @@
-import { idbCount, idbDelete, idbGet, idbGetAll, idbSet } from "./idb"
+import { CARDS_BY_COLUMN, idb } from "./idb"
 import { BOARD_COLUMNS, cards as seedCards, seedDashboards } from "../seed"
 import type { Card, Column, Dashboard } from "../types"
 
@@ -6,63 +6,66 @@ const CARDS = "cards"
 const COLUMNS = "columns"
 const DASHBOARDS = "dashboards"
 
-let seedPromise: Promise<void> | null = null
+/**
+ * Populates the stores from the fixtures on an empty DB. Called once at page
+ * load; a non-empty store is left untouched so an existing user keeps their data.
+ */
+export async function seed(): Promise<void> {
+  if ((await idb.count(DASHBOARDS)) > 0) return
+  await Promise.all([
+    ...seedDashboards.map((d) => idb.set(DASHBOARDS, d.id, d)),
+    ...BOARD_COLUMNS.map((c) => idb.set(COLUMNS, c.id, c)),
+    ...seedCards.map((c) => idb.set(CARDS, c.id, c)),
+  ])
+}
 
-/** Populates the stores from the fixtures on first run (once per session). */
-function ensureSeeded(): Promise<void> {
-  if (!seedPromise) {
-    seedPromise = (async () => {
-      // Seed only on a truly empty store, so an existing user keeps their data.
-      if ((await idbCount(DASHBOARDS)) > 0) return
-      await Promise.all([
-        ...seedDashboards.map((d) => idbSet(DASHBOARDS, d.id, d)),
-        ...BOARD_COLUMNS.map((c) => idbSet(COLUMNS, c.id, c)),
-        ...seedCards.map((c) => idbSet(CARDS, c.id, c)),
-      ])
-    })()
-  }
-  return seedPromise
+/**
+ * Tombstones a record instead of removing it: sets `deletedAt` and bumps
+ * `updatedAt` (the last-writer-wins version). We never hard-delete, because a
+ * removed row can't push its own deletion and would be re-created on the next
+ * pull — see sync.ts. `live()` is what hides tombstones from the UI.
+ */
+function tombstone<T extends { deletedAt: number | null; updatedAt: number }>(
+  record: T
+): T {
+  const now = Date.now()
+  return { ...record, deletedAt: now, updatedAt: now }
 }
 
 export const db = {
-  async getCard(id: string): Promise<Card | undefined> {
-    await ensureSeeded()
-    return idbGet<Card>(CARDS, id)
+  getCard(id: string): Promise<Card | undefined> {
+    return idb.get<Card>(CARDS, id)
   },
-  async getCards(): Promise<Card[]> {
-    await ensureSeeded()
-    return idbGetAll<Card>(CARDS)
+  getCards(columnId?: string): Promise<Card[]> {
+    return idb.getAll<Card>(
+      CARDS,
+      columnId
+        ? { index: CARDS_BY_COLUMN, range: IDBKeyRange.only(columnId) }
+        : undefined
+    )
   },
-  async setCard(card: Card): Promise<void> {
-    await ensureSeeded()
-    await idbSet(CARDS, card.id, card)
+  setCard(card: Card): Promise<void> {
+    return idb.set(CARDS, card.id, card)
   },
-  async deleteCard(id: string): Promise<void> {
-    await ensureSeeded()
-    await idbDelete(CARDS, id)
+  softDeleteCard(card: Card): Promise<void> {
+    return idb.set(CARDS, card.id, tombstone(card))
   },
-  async getColumns(): Promise<Column[]> {
-    await ensureSeeded()
-    return idbGetAll<Column>(COLUMNS)
+  getColumns(): Promise<Column[]> {
+    return idb.getAll<Column>(COLUMNS)
   },
-  async setColumn(column: Column): Promise<void> {
-    await ensureSeeded()
-    await idbSet(COLUMNS, column.id, column)
+  setColumn(column: Column): Promise<void> {
+    return idb.set(COLUMNS, column.id, column)
   },
-  async deleteColumn(id: string): Promise<void> {
-    await ensureSeeded()
-    await idbDelete(COLUMNS, id)
+  softDeleteColumn(column: Column): Promise<void> {
+    return idb.set(COLUMNS, column.id, tombstone(column))
   },
-  async getDashboards(): Promise<Dashboard[]> {
-    await ensureSeeded()
-    return idbGetAll<Dashboard>(DASHBOARDS)
+  getDashboards(): Promise<Dashboard[]> {
+    return idb.getAll<Dashboard>(DASHBOARDS)
   },
-  async setDashboard(dashboard: Dashboard): Promise<void> {
-    await ensureSeeded()
-    await idbSet(DASHBOARDS, dashboard.id, dashboard)
+  setDashboard(dashboard: Dashboard): Promise<void> {
+    return idb.set(DASHBOARDS, dashboard.id, dashboard)
   },
-  async deleteDashboard(id: string): Promise<void> {
-    await ensureSeeded()
-    await idbDelete(DASHBOARDS, id)
+  softDeleteDashboard(dashboard: Dashboard): Promise<void> {
+    return idb.set(DASHBOARDS, dashboard.id, tombstone(dashboard))
   },
 }

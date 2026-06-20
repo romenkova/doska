@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Vite app",
+  "extends": "./dom.json",
+  "compilerOptions": {
+    "types": ["vite/client"]
+  }
+}
