@@ -3,20 +3,16 @@ import { markDirty } from "../sync"
 
 /** Tombstones a board, its columns, and all of their cards. */
 export async function deleteDashboard(id: string): Promise<void> {
-  const now = Date.now()
   const dashboard = (await db.getDashboards()).find((d) => d.id === id)
   const columns = (await db.getColumns()).filter((c) => c.dashboardId === id)
-  const columnIds = new Set(columns.map((c) => c.id))
-  const cards = (await db.getCards()).filter((c) => columnIds.has(c.columnId))
+  const cards = (
+    await Promise.all(columns.map((c) => db.getCards(c.id)))
+  ).flat()
 
   await Promise.all([
-    ...(dashboard
-      ? [db.setDashboard({ ...dashboard, deletedAt: now, updatedAt: now })]
-      : []),
-    ...columns.map((c) =>
-      db.setColumn({ ...c, deletedAt: now, updatedAt: now })
-    ),
-    ...cards.map((c) => db.setCard({ ...c, deletedAt: now, updatedAt: now })),
+    ...(dashboard ? [db.softDeleteDashboard(dashboard)] : []),
+    ...columns.map((c) => db.softDeleteColumn(c)),
+    ...cards.map((c) => db.softDeleteCard(c)),
   ])
 
   markDirty("dashboards", id)

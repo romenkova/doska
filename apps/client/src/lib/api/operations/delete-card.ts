@@ -5,7 +5,6 @@ import { markDirty } from "../sync"
 export async function deleteCard(_deckId: string, id: string): Promise<void> {
   const existing = await db.getCard(id)
   if (!existing) return
-  const now = Date.now()
-  await db.setCard({ ...existing, deletedAt: now, updatedAt: now })
+  await db.softDeleteCard(existing)
   markDirty("cards", id)
 }

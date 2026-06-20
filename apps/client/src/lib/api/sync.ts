@@ -2,7 +2,7 @@ import type { Change } from "@deck/contract"
 import { keys } from "@/lib/data/keys"
 import { queryClient } from "@/lib/query-client"
 import type { Card, Column, Dashboard } from "@/lib/types"
-import { idbGet, idbSet, metaGet, metaSet, type StoreName } from "./idb"
+import { idb, META_STORE, type StoreName } from "./idb"
 import { orpc } from "./orpc"
 
 /**
@@ -75,14 +75,14 @@ function saveDirty() {
  * otherwise a stale cursor would hide every server change after a wipe.
  */
 async function loadCursor(boardId: string): Promise<number> {
-  const raw = await metaGet<number>(CURSOR_PREFIX + boardId)
+  const raw = await idb.get<number>(META_STORE, CURSOR_PREFIX + boardId)
   return typeof raw === "number" && Number.isFinite(raw) ? raw : 0
 }
 
 /** Persists a board's cursor so a reload resumes the pull where it left off. */
 async function saveCursor(boardId: string, value: number): Promise<void> {
   try {
-    await metaSet(CURSOR_PREFIX + boardId, value)
+    await idb.set(META_STORE, CURSOR_PREFIX + boardId, value)
   } catch {
     // Storage unavailable; the next sync re-pulls from the in-memory cursor.
   }
@@ -131,21 +131,21 @@ async function collectChanges(
 
     if (store === "dashboards") {
       if (id !== boardId) continue // other boards' metadata: follow-up
-      const record = await idbGet<Dashboard>("dashboards", id)
+      const record = await idb.get<Dashboard>("dashboards", id)
       if (record) {
         changes.push({ store, record })
         refs.push(ref)
       }
     } else if (store === "columns") {
-      const record = await idbGet<Column>("columns", id)
+      const record = await idb.get<Column>("columns", id)
       if (record?.dashboardId === boardId) {
         changes.push({ store, record })
         refs.push(ref)
       }
     } else if (store === "cards") {
-      const record = await idbGet<Card>("cards", id)
+      const record = await idb.get<Card>("cards", id)
       if (!record) continue
-      const column = await idbGet<Column>("columns", record.columnId)
+      const column = await idb.get<Column>("columns", record.columnId)
       if (column?.dashboardId === boardId) {
         changes.push({ store, record })
         refs.push(ref)
@@ -163,9 +163,9 @@ async function applyRemote(changes: Change[]) {
   let touchedDashboards = false
 
   for (const { store, record } of changes) {
-    const existing = await idbGet<{ updatedAt: number }>(store, record.id)
+    const existing = await idb.get<{ updatedAt: number }>(store, record.id)
     if (existing && existing.updatedAt >= record.updatedAt) continue
-    await idbSet(store, record.id, record)
+    await idb.set(store, record.id, record)
 
     if (store === "cards") {
       touchedCards.push(record.id)

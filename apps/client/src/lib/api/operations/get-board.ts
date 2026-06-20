@@ -8,9 +8,10 @@ export async function getBoard(deckId: string): Promise<Board> {
   const columns = (await db.getColumns())
     .filter((c) => c.dashboardId === deckId && live(c))
     .sort(byPosition)
-  const columnIds = new Set(columns.map((c) => c.id))
-  const cards = (await db.getCards()).filter(
-    (c) => columnIds.has(c.columnId) && live(c)
-  )
+  // One index seek per column (concurrent) reads only this board's cards,
+  // instead of scanning every board's cards and filtering in JS.
+  const cards = (await Promise.all(columns.map((c) => db.getCards(c.id))))
+    .flat()
+    .filter(live)
   return { columns, cards }
 }

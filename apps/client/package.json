@@ -12,6 +12,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@deck/client-db": "workspace:*",
     "@deck/contract": "workspace:*",
     "@deck/markdown": "workspace:*",
     "@deck/ui-kit": "workspace:*",

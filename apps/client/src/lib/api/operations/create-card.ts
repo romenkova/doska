@@ -7,9 +7,9 @@ import { markDirty } from "../sync"
 /** Creates an empty card at the top of a column and returns its new id. */
 export async function createCard(columnId: string): Promise<string> {
   const id = `card-${crypto.randomUUID().slice(0, 8)}`
-  const allCards = await db.getCards()
-  const first = allCards
-    .filter((c) => c.columnId === columnId && live(c))
+  const cards = await db.getCards(columnId)
+  const first = cards
+    .filter(live)
     .reduce<
       string | null
     >((min, c) => (min === null || c.position < min ? c.position : min), null)
