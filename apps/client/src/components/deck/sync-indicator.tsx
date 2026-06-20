@@ -2,7 +2,7 @@ import type { SyncState } from "@deck/sync"
 import { Button, cn } from "@deck/ui-kit"
 import { Check, LoaderCircle, PencilLine, TriangleAlert } from "lucide-react"
 import { sync } from "@/lib/api/sync"
-import { useSyncStatus } from "@/lib/hooks/use-sync-status"
+import { useSyncStatus } from "@/lib/hooks"
 
 /** Resolves the live sync state into the icon, label, and tint to render. */
 function view({ status, pending }: SyncState) {
