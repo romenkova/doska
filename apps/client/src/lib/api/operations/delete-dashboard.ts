@@ -1,5 +1,5 @@
 import { db } from "../db/db"
-import { markDirty } from "../sync/sync"
+import { sync } from "../sync"
 
 /** Tombstones a board, its columns, and all of their cards. */
 export async function deleteDashboard(id: string): Promise<void> {
@@ -15,7 +15,7 @@ export async function deleteDashboard(id: string): Promise<void> {
     ...cards.map((c) => db.softDeleteCard(c)),
   ])
 
-  markDirty("dashboards", id)
-  for (const c of columns) markDirty("columns", c.id)
-  for (const c of cards) markDirty("cards", c.id)
+  sync.markDirty("dashboards", id)
+  for (const c of columns) sync.markDirty("columns", c.id)
+  for (const c of cards) sync.markDirty("cards", c.id)
 }

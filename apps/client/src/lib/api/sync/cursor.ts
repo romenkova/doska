@@ -1,5 +1,7 @@
 import { idb, META_STORE } from "../db/idb"
-import { CURSOR_PREFIX } from "./constants"
+
+/** meta-store key prefix for the per-board pull cursor (server seq). */
+const CURSOR_PREFIX = "cursor:"
 
 /**
  * Reads a board's last pull cursor; 0 means "pull everything" on first sync.

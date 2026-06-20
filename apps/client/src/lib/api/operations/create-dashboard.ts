@@ -2,7 +2,7 @@ import { generateKeyBetween } from "fractional-indexing"
 import { BOARD_COLUMNS } from "@/lib/seed"
 import type { Dashboard } from "@/lib/types"
 import { db } from "../db/db"
-import { markDirty } from "../sync/sync"
+import { sync } from "../sync"
 
 /** Creates a board with the default columns, appends it to the list, returns it. */
 export async function createDashboard(name: string): Promise<Dashboard> {
@@ -21,7 +21,7 @@ export async function createDashboard(name: string): Promise<Dashboard> {
     deletedAt: null,
   }
   await db.setDashboard(dashboard)
-  markDirty("dashboards", id)
+  sync.markDirty("dashboards", id)
 
   await Promise.all(
     BOARD_COLUMNS.map(async (template) => {
@@ -33,7 +33,7 @@ export async function createDashboard(name: string): Promise<Dashboard> {
         deletedAt: null,
       }
       await db.setColumn(column)
-      markDirty("columns", column.id)
+      sync.markDirty("columns", column.id)
     })
   )
   return dashboard

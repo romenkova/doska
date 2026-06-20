@@ -5,7 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider.tsx"
 import { seed } from "@/lib/api/db/db.ts"
 import { queryClient } from "@/lib/query-client"
 import { Router } from "./router.tsx"
-import { startBackgroundSync } from "./lib/api/sync/background-sync.ts"
+import { startBackgroundSync } from "./lib/api/sync"
 import "./index.css"
 
 // Local-first: mutations persist to IndexedDB instantly; this reconciles the open

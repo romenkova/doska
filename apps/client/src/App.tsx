@@ -7,7 +7,7 @@ import { AppSidebar, Deck, Home } from "@/components"
 import type { Dashboard } from "@/lib/types"
 import { routes } from "@/lib/routes"
 import { byPosition } from "@/lib/utils"
-import { setActiveBoard } from "./lib/api/sync/sync"
+import { sync } from "./lib/api/sync"
 import {
   useCreateCard,
   useCreateDashboard,
@@ -44,7 +44,7 @@ export default function App({ deckId }: { deckId?: string }) {
 
   // Point background sync at the open board (and reconcile on switch).
   useEffect(() => {
-    setActiveBoard(deckId ?? null)
+    sync.setActiveBoard(deckId ?? null)
   }, [deckId])
 
   function handleCreateDashboard() {

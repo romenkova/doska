@@ -2,7 +2,7 @@ import { generateKeyBetween } from "fractional-indexing"
 import { fallbackCard } from "@/lib/seed"
 import { db } from "../db/db"
 import { live } from "./live"
-import { markDirty } from "../sync/sync"
+import { sync } from "../sync"
 
 /** Creates an empty card at the top of a column and returns its new id. */
 export async function createCard(columnId: string): Promise<string> {
@@ -22,6 +22,6 @@ export async function createCard(columnId: string): Promise<string> {
     updatedAt: Date.now(),
     deletedAt: null,
   })
-  markDirty("cards", id)
+  sync.markDirty("cards", id)
   return id
 }
