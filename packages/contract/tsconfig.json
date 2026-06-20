@@ -1,4 +1,4 @@
 {
-  "extends": "@deck/tsconfig/base.json",
+  "extends": "@deck/configs/tsconfig/base.json",
   "include": ["src"],
 }

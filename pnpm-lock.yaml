@@ -17,12 +17,15 @@ importers:
 
   apps/client:
     dependencies:
-      '@base-ui/react':
-        specifier: 1.6.0
-        version: 1.6.0(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@deck/contract':
         specifier: workspace:*
         version: link:../../packages/contract
+      '@deck/markdown':
+        specifier: workspace:*
+        version: link:../../packages/markdown
+      '@deck/ui-kit':
+        specifier: workspace:*
+        version: link:../../packages/ui-kit
       '@fontsource-variable/geist-mono':
         specifier: 5.2.8
         version: 5.2.8
@@ -44,9 +47,6 @@ importers:
       '@tanstack/react-query':
         specifier: 5.101.0
         version: 5.101.0(react@19.2.7)
-      class-variance-authority:
-        specifier: 0.7.1
-        version: 0.7.1
       clsx:
         specifier: 2.1.1
         version: 2.1.1
@@ -62,15 +62,6 @@ importers:
       react-dom:
         specifier: ^19.2.7
         version: 19.2.7(react@19.2.7)
-      react-markdown:
-        specifier: 10.1.0
-        version: 10.1.0(@types/react@19.2.17)(react@19.2.7)
-      remark-gfm:
-        specifier: 4.0.1
-        version: 4.0.1
-      remark-mark-highlight:
-        specifier: 0.1.1
-        version: 0.1.1
       shadcn:
         specifier: 4.11.0
         version: 4.11.0(typescript@6.0.3)
@@ -87,18 +78,9 @@ importers:
         specifier: 3.10.0
         version: 3.10.0(react@19.2.7)
     devDependencies:
-      '@deck/eslint-config':
+      '@deck/configs':
         specifier: workspace:*
-        version: link:../../packages/eslint-config
-      '@deck/prettier-config':
-        specifier: workspace:*
-        version: link:../../packages/prettier-config
-      '@deck/tsconfig':
-        specifier: workspace:*
-        version: link:../../packages/tsconfig
-      '@playwright/test':
-        specifier: 1.61.0
-        version: 1.61.0
+        version: link:../../packages/configs
       '@types/node':
         specifier: ^22
         version: 22.19.21
@@ -145,12 +127,9 @@ importers:
         specifier: ^5.8.5
         version: 5.8.5
     devDependencies:
-      '@deck/prettier-config':
+      '@deck/configs':
         specifier: workspace:*
-        version: link:../../packages/prettier-config
-      '@deck/tsconfig':
-        specifier: workspace:*
-        version: link:../../packages/tsconfig
+        version: link:../../packages/configs
       '@types/better-sqlite3':
         specifier: ^7.6.13
         version: 7.6.13
@@ -164,23 +143,7 @@ importers:
         specifier: ~6
         version: 6.0.3
 
-  packages/contract:
-    dependencies:
-      '@orpc/contract':
-        specifier: ^1.14.6
-        version: 1.14.6
-      zod:
-        specifier: ^4.4.3
-        version: 4.4.3
-    devDependencies:
-      '@deck/prettier-config':
-        specifier: workspace:*
-        version: link:../prettier-config
-      '@deck/tsconfig':
-        specifier: workspace:*
-        version: link:../tsconfig
-
-  packages/eslint-config:
+  packages/configs:
     dependencies:
       '@eslint/js':
         specifier: ^10
@@ -197,17 +160,120 @@ importers:
       globals:
         specifier: ^17
         version: 17.6.0
+      prettier:
+        specifier: ^3.8.4
+        version: 3.8.4
       typescript-eslint:
         specifier: ^8
         version: 8.61.1(eslint@10.5.0(jiti@2.7.0))(typescript@6.0.3)
 
-  packages/prettier-config:
+  packages/contract:
+    dependencies:
+      '@orpc/contract':
+        specifier: ^1.14.6
+        version: 1.14.6
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
     devDependencies:
-      prettier:
-        specifier: ^3.8.4
-        version: 3.8.4
+      '@deck/configs':
+        specifier: workspace:*
+        version: link:../configs
 
-  packages/tsconfig: {}
+  packages/e2e:
+    devDependencies:
+      '@deck/configs':
+        specifier: workspace:*
+        version: link:../configs
+      '@deck/contract':
+        specifier: workspace:*
+        version: link:../contract
+      '@playwright/test':
+        specifier: 1.61.0
+        version: 1.61.0
+      '@types/node':
+        specifier: ^22
+        version: 22.19.21
+      typescript:
+        specifier: ~6
+        version: 6.0.3
+
+  packages/markdown:
+    dependencies:
+      '@deck/ui-kit':
+        specifier: workspace:*
+        version: link:../ui-kit
+      react:
+        specifier: ^19.2.7
+        version: 19.2.7
+      react-dom:
+        specifier: ^19.2.7
+        version: 19.2.7(react@19.2.7)
+      react-markdown:
+        specifier: 10.1.0
+        version: 10.1.0(@types/react@19.2.17)(react@19.2.7)
+      remark-gfm:
+        specifier: 4.0.1
+        version: 4.0.1
+      remark-mark-highlight:
+        specifier: 0.1.1
+        version: 0.1.1
+    devDependencies:
+      '@deck/configs':
+        specifier: workspace:*
+        version: link:../configs
+      '@types/react':
+        specifier: ^19
+        version: 19.2.17
+      '@types/react-dom':
+        specifier: ^19
+        version: 19.2.3(@types/react@19.2.17)
+      eslint:
+        specifier: ^10
+        version: 10.5.0(jiti@2.7.0)
+      typescript:
+        specifier: ~6
+        version: 6.0.3
+
+  packages/ui-kit:
+    dependencies:
+      '@base-ui/react':
+        specifier: 1.6.0
+        version: 1.6.0(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      class-variance-authority:
+        specifier: 0.7.1
+        version: 0.7.1
+      clsx:
+        specifier: 2.1.1
+        version: 2.1.1
+      lucide-react:
+        specifier: 1.21.0
+        version: 1.21.0(react@19.2.7)
+      react:
+        specifier: ^19.2.7
+        version: 19.2.7
+      react-dom:
+        specifier: ^19.2.7
+        version: 19.2.7(react@19.2.7)
+      tailwind-merge:
+        specifier: 3.6.0
+        version: 3.6.0
+    devDependencies:
+      '@deck/configs':
+        specifier: workspace:*
+        version: link:../configs
+      '@types/react':
+        specifier: ^19
+        version: 19.2.17
+      '@types/react-dom':
+        specifier: ^19
+        version: 19.2.3(@types/react@19.2.17)
+      eslint:
+        specifier: ^10
+        version: 10.5.0(jiti@2.7.0)
+      typescript:
+        specifier: ~6
+        version: 6.0.3
 
 packages:
 

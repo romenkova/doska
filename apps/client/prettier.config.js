@@ -1,4 +1,4 @@
-import base from "@deck/prettier-config"
+import base from "@deck/configs/prettier"
 
 /**
  * Client formatting = shared base + Tailwind class sorting. The Tailwind plugin
