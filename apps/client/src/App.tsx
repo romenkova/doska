@@ -7,7 +7,7 @@ import { AppSidebar, Deck, Home } from "@/components"
 import type { Dashboard } from "@/lib/types"
 import { routes } from "@/lib/routes"
 import { byPosition } from "@/lib/utils"
-import { setActiveBoard } from "./lib/api/sync"
+import { sync } from "./lib/api/sync"
 import {
   useCreateCard,
   useCreateDashboard,
@@ -17,10 +17,14 @@ import {
   useRenameDashboard,
 } from "./lib/data/mutations"
 import { useBoard, useDashboards } from "./lib/data/queries"
+import { useSyncShortcut } from "./lib/hooks/use-sync-shortcut"
 
 export default function App({ deckId }: { deckId?: string }) {
   const [, navigate] = useLocation()
   const [hiddenBodies, setHiddenBodies] = useState<Record<string, boolean>>({})
+
+  // ⌘S / Ctrl+S flushes a sync immediately
+  useSyncShortcut()
 
   const { data: dashboards = [], isPending: dashboardsLoading } =
     useDashboards()
@@ -44,7 +48,7 @@ export default function App({ deckId }: { deckId?: string }) {
 
   // Point background sync at the open board (and reconcile on switch).
   useEffect(() => {
-    setActiveBoard(deckId ?? null)
+    sync.setActiveBoard(deckId ?? null)
   }, [deckId])
 
   function handleCreateDashboard() {

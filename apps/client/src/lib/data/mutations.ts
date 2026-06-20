@@ -4,7 +4,7 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query"
-import * as api from "@/lib/api"
+import * as api from "@/lib/api/operations"
 import type { Board, Card } from "@/lib/types"
 import { keys } from "./keys"
 

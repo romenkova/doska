@@ -15,6 +15,7 @@
     "@deck/client-db": "workspace:*",
     "@deck/contract": "workspace:*",
     "@deck/markdown": "workspace:*",
+    "@deck/sync": "workspace:*",
     "@deck/ui-kit": "workspace:*",
     "@orpc/client": "^1.14.6",
     "@orpc/contract": "^1.14.6",

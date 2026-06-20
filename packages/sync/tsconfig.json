@@ -1,0 +1,4 @@
+{
+  "extends": "@deck/configs/tsconfig/dom.json",
+  "include": ["src"],
+}

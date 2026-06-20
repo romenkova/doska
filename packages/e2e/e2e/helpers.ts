@@ -53,6 +53,17 @@ export function card(page: Page, title: string) {
   return page.locator("[data-rfd-draggable-id]", { hasText: title })
 }
 
+/**
+ * The sync indicator in the header. Its accessible name *is* the current status
+ * ("All changes saved", "1 unsaved change", "Saving...", "Sync failed"), so a
+ * test reads status straight off the locator's accessible name.
+ */
+export function syncIndicator(page: Page) {
+  return page.getByRole("button", {
+    name: /saved|unsaved|Saving|Sync failed/,
+  })
+}
+
 /** A column, located by its accessible name (its visible heading). */
 export function column(page: Page, name: string) {
   return page.getByRole("group", { name })

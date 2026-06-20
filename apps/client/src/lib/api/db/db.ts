@@ -1,10 +1,7 @@
 import { CARDS_BY_COLUMN, idb } from "./idb"
-import { BOARD_COLUMNS, cards as seedCards, seedDashboards } from "../seed"
-import type { Card, Column, Dashboard } from "../types"
-
-const CARDS = "cards"
-const COLUMNS = "columns"
-const DASHBOARDS = "dashboards"
+import { BOARD_COLUMNS, cards as seedCards, seedDashboards } from "../../seed"
+import type { Card, Column, Dashboard } from "../../types"
+import { CARDS, COLUMNS, DASHBOARDS } from "../constants"
 
 /**
  * Populates the stores from the fixtures on an empty DB. Called once at page

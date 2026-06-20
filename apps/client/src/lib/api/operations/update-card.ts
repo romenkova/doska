@@ -1,7 +1,7 @@
 import { fallbackCard } from "@/lib/seed"
 import type { Card } from "@/lib/types"
-import { db } from "../db"
-import { markDirty } from "../sync"
+import { db } from "../db/db"
+import { sync } from "../sync"
 
 /** Updates a card's title/body, preserving its column and position. */
 export async function updateCard(
@@ -10,5 +10,5 @@ export async function updateCard(
 ): Promise<void> {
   const existing = (await db.getCard(id)) ?? { ...fallbackCard, id }
   await db.setCard({ ...existing, ...patch, id, updatedAt: Date.now() })
-  markDirty("cards", id)
+  sync.markDirty("cards", id)
 }

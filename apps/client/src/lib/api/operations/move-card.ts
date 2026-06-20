@@ -1,6 +1,6 @@
 import type { Card } from "@/lib/types"
-import { db } from "../db"
-import { markDirty } from "../sync"
+import { db } from "../db/db"
+import { sync } from "../sync"
 
 /**
  * Persists cards whose column/position changed during a drag. Only the move is
@@ -25,5 +25,5 @@ export async function moveCard(
       })
     })
   )
-  for (const card of changed) markDirty("cards", card.id)
+  for (const card of changed) sync.markDirty("cards", card.id)
 }

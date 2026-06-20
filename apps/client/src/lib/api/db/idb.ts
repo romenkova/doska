@@ -1,9 +1,8 @@
 import { IDB } from "@deck/client-db"
+import { STORES } from "../constants"
 
 const DB_NAME = "deck"
 const VERSION = 9
-const STORES = ["cards", "columns", "dashboards"] as const
-export type StoreName = (typeof STORES)[number]
 
 /** Sync bookkeeping (the pull cursor) — kept in the DB so it shares the data's
  * lifetime. Not dropped on upgrade, but gone if the whole DB is deleted. */
