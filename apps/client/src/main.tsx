@@ -3,9 +3,9 @@ import { createRoot } from "react-dom/client"
 import { QueryClientProvider } from "@tanstack/react-query"
 import { ThemeProvider } from "@/components/theme-provider.tsx"
 import { seed } from "@/lib/api/db/db.ts"
-import { startBackgroundSync } from "@/lib/api/sync/sync.ts"
 import { queryClient } from "@/lib/query-client"
 import { Router } from "./router.tsx"
+import { startBackgroundSync } from "./lib/api/sync/background-sync.ts"
 import "./index.css"
 
 // Local-first: mutations persist to IndexedDB instantly; this reconciles the open
