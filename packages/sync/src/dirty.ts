@@ -43,6 +43,11 @@ export class DirtyStore {
     return this.refs
   }
 
+  /** How many refs are still awaiting a push; drives the "unsaved" indicator. */
+  get size(): number {
+    return this.refs.size
+  }
+
   /** True if `ref` is still pending a push (so it must not be compacted). */
   has(ref: string): boolean {
     return this.refs.has(ref)

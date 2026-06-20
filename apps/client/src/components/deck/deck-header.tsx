@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { Button, SidebarTrigger, cn } from "@deck/ui-kit"
 import { Trash2 } from "lucide-react"
+import { SyncIndicator } from "./sync-indicator"
 
 interface IProps {
   title: string
@@ -57,15 +58,18 @@ export function DeckHeader({ title, onRename, onDelete }: IProps) {
           {title}
         </h1>
       )}
-      <Button
-        variant="ghost"
-        size="icon-sm"
-        aria-label="Delete board"
-        onClick={onDelete}
-        className="ml-auto text-muted-foreground hover:text-destructive"
-      >
-        <Trash2 />
-      </Button>
+      <div className="ml-auto flex items-center gap-1">
+        <SyncIndicator />
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          aria-label="Delete board"
+          onClick={onDelete}
+          className="text-muted-foreground hover:text-destructive"
+        >
+          <Trash2 />
+        </Button>
+      </div>
     </header>
   )
 }

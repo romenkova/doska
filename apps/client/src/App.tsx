@@ -17,10 +17,14 @@ import {
   useRenameDashboard,
 } from "./lib/data/mutations"
 import { useBoard, useDashboards } from "./lib/data/queries"
+import { useSyncShortcut } from "./lib/hooks/use-sync-shortcut"
 
 export default function App({ deckId }: { deckId?: string }) {
   const [, navigate] = useLocation()
   const [hiddenBodies, setHiddenBodies] = useState<Record<string, boolean>>({})
+
+  // ⌘S / Ctrl+S flushes a sync immediately
+  useSyncShortcut()
 
   const { data: dashboards = [], isPending: dashboardsLoading } =
     useDashboards()
