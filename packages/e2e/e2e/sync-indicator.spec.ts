@@ -4,6 +4,7 @@ import {
   card,
   createBoard,
   retitleCard,
+  signIn,
   syncIndicator,
 } from "./helpers";
 
@@ -15,6 +16,12 @@ import {
  * fleeting "Saving..." mid-tick, which would be racy to catch.
  */
 test.describe("sync indicator", () => {
+  // Sync is gated, so sign in first — otherwise the indicator reads
+  // "Sign in to sync" instead of reconciling.
+  test.beforeEach(async ({ page }) => {
+    await signIn(page);
+  });
+
   test("a fresh board settles to All changes saved", async ({ page }) => {
     await createBoard(page);
 

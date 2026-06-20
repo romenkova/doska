@@ -15,6 +15,10 @@ dist-ssr
 *.tsbuildinfo
 .turbo
 
+# Env files (secrets); keep .env.example tracked
+.env
+!.env.example
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

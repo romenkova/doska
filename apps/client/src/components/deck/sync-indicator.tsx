@@ -1,8 +1,15 @@
 import type { SyncState } from "@deck/sync"
 import { Button, cn } from "@deck/ui-kit"
-import { Check, LoaderCircle, PencilLine, TriangleAlert } from "lucide-react"
+import {
+  Check,
+  LoaderCircle,
+  LogIn,
+  PencilLine,
+  TriangleAlert,
+} from "lucide-react"
+import { useLoginPrompt } from "@/components/login/login-prompt-context"
 import { sync } from "@/lib/api/sync"
-import { useSyncStatus } from "@/lib/hooks/use-sync-status"
+import { useAuth, useSyncStatus } from "@/lib/hooks"
 
 /** Resolves the live sync state into the icon, label, and tint to render. */
 function view({ status, pending }: SyncState) {
@@ -42,6 +49,27 @@ function view({ status, pending }: SyncState) {
  */
 export function SyncIndicator() {
   const state = useSyncStatus()
+  const { authed } = useAuth()
+  const openLogin = useLoginPrompt()
+
+  // Signed out, sync can't run — point the user at the login prompt instead of
+  // showing a misleading "sync failed". (`authed === null` is the pre-check
+  // state; treat it as signed-in to avoid a flash.)
+  if (authed === false) {
+    return (
+      <Button
+        variant="ghost"
+        aria-label="Sign in to sync"
+        title="Sign in to sync"
+        onClick={openLogin}
+        className="text-muted-foreground"
+      >
+        <span>Sign in to sync</span>
+        <LogIn />
+      </Button>
+    )
+  }
+
   const { Icon, label, spin, className } = view(state)
 
   return (

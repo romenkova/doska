@@ -1,12 +1,14 @@
 import { test, expect } from "@playwright/test"
 import {
   addCard,
+  authenticate,
   columnCardTitles,
   createBoard,
   remoteAddCard,
   remoteDeleteCard,
   remoteEditCard,
   retitleCard,
+  signIn,
 } from "./helpers"
 
 /**
@@ -20,6 +22,13 @@ import {
  * see each other's data on the shared server.
  */
 test.describe("sync across clients", () => {
+  // Sync is gated: sign the page in through the UI, and authorize the simulated
+  // second client (the `request` context) over the API.
+  test.beforeEach(async ({ page, request }) => {
+    await signIn(page)
+    await authenticate(request)
+  })
+
   test("a card another client renames updates on the board", async ({
     page,
     request,

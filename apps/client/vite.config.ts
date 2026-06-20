@@ -12,12 +12,14 @@ export default defineConfig({
     // RPC_TARGET so the harness can point preview at the e2e sync server's port.
     proxy: {
       "/rpc": process.env.RPC_TARGET ?? "http://localhost:3000",
+      "/auth": process.env.RPC_TARGET ?? "http://localhost:3000",
     },
   },
   server: {
-    // Proxy sync calls to the API so the browser stays same-origin (no CORS).
+    // Proxy sync + auth calls to the API so the browser stays same-origin (no CORS).
     proxy: {
       "/rpc": "http://localhost:3000",
+      "/auth": "http://localhost:3000",
     },
   },
   plugins: [react(), tailwindcss()],

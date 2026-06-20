@@ -2,7 +2,7 @@ import { ModalContent, InvisibleInput, cn } from "@deck/ui-kit"
 import { MarkdownTextarea } from "@deck/markdown"
 import type { Card } from "@/lib/types"
 import { useState } from "react"
-import { useToggle } from "@/lib/hooks/use-toggle"
+import { useToggle } from "@/lib/hooks"
 import { CardContentLayout } from "./card-content-layout"
 import { CardModalHeader } from "./card-modal-header"
 

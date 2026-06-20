@@ -34,7 +34,15 @@ export default defineConfig({
       // from an empty server; `tsx` (the start script) recreates the schema.
       command: `rm -f "${DB_FILE}"* && pnpm run start`,
       cwd: SERVER_DIR,
-      env: { PORT: String(SYNC_PORT), DB_FILE },
+      // Sync is gated; boot the API with the single credential pair the specs
+      // sign in with (see `TEST_CREDENTIALS` in helpers).
+      env: {
+        PORT: String(SYNC_PORT),
+        DB_FILE,
+        AUTH_LOGIN: "e2e",
+        AUTH_PASSWORD: "e2e-secret",
+        AUTH_SECRET: "e2e-test-secret",
+      },
       port: SYNC_PORT,
       reuseExistingServer: !process.env.CI,
       timeout: 60_000,
