@@ -180,6 +180,24 @@ async function applyRemote(changes: Change[]) {
   return { touchedCards, touchedBoard, touchedDashboards }
 }
 
+/**
+ * Hard-deletes local tombstones that have already reached the server, reclaiming
+ * IndexedDB space so deleted records don't accumulate forever.
+ */
+async function compactTombstones(
+  candidates: Array<{ store: StoreName; id: string }>
+): Promise<void> {
+  for (const { store, id } of candidates) {
+    if (dirty.has(`${store}/${id}`)) continue
+    try {
+      const record = await idb.get<{ deletedAt: number | null }>(store, id)
+      if (record?.deletedAt != null) await idb.delete(store, id)
+    } catch (err) {
+      console.warn("[sync] compaction failed for", store, id, err)
+    }
+  }
+}
+
 /** Runs one full reconcile for the open board, skipping if one is already running. */
 export async function reconcile(): Promise<void> {
   if (inFlight || !activeBoard) return
@@ -214,6 +232,17 @@ export async function reconcile(): Promise<void> {
       queryClient.invalidateQueries({ queryKey: keys.board(boardId) })
     for (const id of touchedCards)
       queryClient.invalidateQueries({ queryKey: keys.card(id) })
+
+    await compactTombstones([
+      ...refs.map((ref) => {
+        const slash = ref.indexOf("/")
+        return {
+          store: ref.slice(0, slash) as StoreName,
+          id: ref.slice(slash + 1),
+        }
+      }),
+      ...result.changes.map((c) => ({ store: c.store, id: c.record.id })),
+    ])
   } finally {
     inFlight = false
   }
