@@ -1,0 +1,32 @@
+{
+  "name": "@deck/configs",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./eslint/base": {
+      "types": "./eslint/base.d.ts",
+      "default": "./eslint/base.js"
+    },
+    "./eslint/react": {
+      "types": "./eslint/react.d.ts",
+      "default": "./eslint/react.js"
+    },
+    "./prettier": {
+      "types": "./prettier/index.d.ts",
+      "default": "./prettier/index.js"
+    },
+    "./tsconfig/*.json": "./tsconfig/*.json"
+  },
+  "dependencies": {
+    "@eslint/js": "^10",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.3",
+    "globals": "^17",
+    "typescript-eslint": "^8"
+  },
+  "peerDependencies": {
+    "eslint": "^10",
+    "prettier": "^3.8.4"
+  }
+}

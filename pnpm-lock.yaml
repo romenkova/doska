@@ -78,15 +78,9 @@ importers:
         specifier: 3.10.0
         version: 3.10.0(react@19.2.7)
     devDependencies:
-      '@deck/eslint-config':
+      '@deck/configs':
         specifier: workspace:*
-        version: link:../../packages/eslint-config
-      '@deck/prettier-config':
-        specifier: workspace:*
-        version: link:../../packages/prettier-config
-      '@deck/tsconfig':
-        specifier: workspace:*
-        version: link:../../packages/tsconfig
+        version: link:../../packages/configs
       '@types/node':
         specifier: ^22
         version: 22.19.21
@@ -133,12 +127,9 @@ importers:
         specifier: ^5.8.5
         version: 5.8.5
     devDependencies:
-      '@deck/prettier-config':
+      '@deck/configs':
         specifier: workspace:*
-        version: link:../../packages/prettier-config
-      '@deck/tsconfig':
-        specifier: workspace:*
-        version: link:../../packages/tsconfig
+        version: link:../../packages/configs
       '@types/better-sqlite3':
         specifier: ^7.6.13
         version: 7.6.13
@@ -152,44 +143,7 @@ importers:
         specifier: ~6
         version: 6.0.3
 
-  packages/contract:
-    dependencies:
-      '@orpc/contract':
-        specifier: ^1.14.6
-        version: 1.14.6
-      zod:
-        specifier: ^4.4.3
-        version: 4.4.3
-    devDependencies:
-      '@deck/prettier-config':
-        specifier: workspace:*
-        version: link:../prettier-config
-      '@deck/tsconfig':
-        specifier: workspace:*
-        version: link:../tsconfig
-
-  packages/e2e:
-    devDependencies:
-      '@deck/contract':
-        specifier: workspace:*
-        version: link:../contract
-      '@deck/prettier-config':
-        specifier: workspace:*
-        version: link:../prettier-config
-      '@deck/tsconfig':
-        specifier: workspace:*
-        version: link:../tsconfig
-      '@playwright/test':
-        specifier: 1.61.0
-        version: 1.61.0
-      '@types/node':
-        specifier: ^22
-        version: 22.19.21
-      typescript:
-        specifier: ~6
-        version: 6.0.3
-
-  packages/eslint-config:
+  packages/configs:
     dependencies:
       '@eslint/js':
         specifier: ^10
@@ -206,9 +160,43 @@ importers:
       globals:
         specifier: ^17
         version: 17.6.0
+      prettier:
+        specifier: ^3.8.4
+        version: 3.8.4
       typescript-eslint:
         specifier: ^8
         version: 8.61.1(eslint@10.5.0(jiti@2.7.0))(typescript@6.0.3)
+
+  packages/contract:
+    dependencies:
+      '@orpc/contract':
+        specifier: ^1.14.6
+        version: 1.14.6
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
+    devDependencies:
+      '@deck/configs':
+        specifier: workspace:*
+        version: link:../configs
+
+  packages/e2e:
+    devDependencies:
+      '@deck/configs':
+        specifier: workspace:*
+        version: link:../configs
+      '@deck/contract':
+        specifier: workspace:*
+        version: link:../contract
+      '@playwright/test':
+        specifier: 1.61.0
+        version: 1.61.0
+      '@types/node':
+        specifier: ^22
+        version: 22.19.21
+      typescript:
+        specifier: ~6
+        version: 6.0.3
 
   packages/markdown:
     dependencies:
@@ -231,15 +219,9 @@ importers:
         specifier: 0.1.1
         version: 0.1.1
     devDependencies:
-      '@deck/eslint-config':
+      '@deck/configs':
         specifier: workspace:*
-        version: link:../eslint-config
-      '@deck/prettier-config':
-        specifier: workspace:*
-        version: link:../prettier-config
-      '@deck/tsconfig':
-        specifier: workspace:*
-        version: link:../tsconfig
+        version: link:../configs
       '@types/react':
         specifier: ^19
         version: 19.2.17
@@ -252,14 +234,6 @@ importers:
       typescript:
         specifier: ~6
         version: 6.0.3
-
-  packages/prettier-config:
-    devDependencies:
-      prettier:
-        specifier: ^3.8.4
-        version: 3.8.4
-
-  packages/tsconfig: {}
 
   packages/ui-kit:
     dependencies:
@@ -285,15 +259,9 @@ importers:
         specifier: 3.6.0
         version: 3.6.0
     devDependencies:
-      '@deck/eslint-config':
+      '@deck/configs':
         specifier: workspace:*
-        version: link:../eslint-config
-      '@deck/prettier-config':
-        specifier: workspace:*
-        version: link:../prettier-config
-      '@deck/tsconfig':
-        specifier: workspace:*
-        version: link:../tsconfig
+        version: link:../configs
       '@types/react':
         specifier: ^19
         version: 19.2.17

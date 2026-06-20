@@ -22,9 +22,7 @@
     "react-dom": "^19.2.7"
   },
   "devDependencies": {
-    "@deck/eslint-config": "workspace:*",
-    "@deck/prettier-config": "workspace:*",
-    "@deck/tsconfig": "workspace:*",
+    "@deck/configs": "workspace:*",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^10",

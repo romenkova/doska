@@ -1,3 +1,3 @@
-import react from "@deck/eslint-config/react"
+import react from "@deck/configs/eslint/react"
 
 export default react

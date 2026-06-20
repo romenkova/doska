@@ -34,9 +34,7 @@
     "wouter": "3.10.0"
   },
   "devDependencies": {
-    "@deck/eslint-config": "workspace:*",
-    "@deck/prettier-config": "workspace:*",
-    "@deck/tsconfig": "workspace:*",
+    "@deck/configs": "workspace:*",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",

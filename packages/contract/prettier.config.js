@@ -1,1 +1,1 @@
-export { default } from "@deck/prettier-config"
+export { default } from "@deck/configs/prettier"

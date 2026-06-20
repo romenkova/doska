@@ -1,4 +1,4 @@
 {
-  "extends": "@deck/tsconfig/node.json",
+  "extends": "@deck/configs/tsconfig/node.json",
   "include": ["e2e", "playwright.config.ts"],
 }
