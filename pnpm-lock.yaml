@@ -26,6 +26,9 @@ importers:
       '@deck/markdown':
         specifier: workspace:*
         version: link:../../packages/markdown
+      '@deck/sync':
+        specifier: workspace:*
+        version: link:../../packages/sync
       '@deck/ui-kit':
         specifier: workspace:*
         version: link:../../packages/ui-kit
@@ -243,6 +246,12 @@ importers:
       typescript:
         specifier: ~6
         version: 6.0.3
+
+  packages/sync:
+    devDependencies:
+      '@deck/configs':
+        specifier: workspace:*
+        version: link:../configs
 
   packages/ui-kit:
     dependencies:

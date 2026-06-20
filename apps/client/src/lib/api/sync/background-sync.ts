@@ -1,3 +1,4 @@
+import { startBackgroundSync as start } from "@deck/sync"
 import { sync } from "./sync-engine"
 
 const DEFAULT_SYNC_INTERVAL = 5_000
@@ -14,39 +15,9 @@ const SYNC_INTERVAL = (() => {
 })()
 
 /**
- * Starts the periodic background sync. Reconciles every `SYNC_INTERVAL` while the
- * tab is visible, and once immediately whenever it becomes visible (covering the
- * stale-tab case). Returns a stop function that clears the timer and listener.
+ * Starts the periodic background sync at the deck cadence. Returns a stop
+ * function that clears the timer and listener.
  */
 export function startBackgroundSync(): () => void {
-  let id: ReturnType<typeof setInterval> | undefined
-
-  const start = () => {
-    if (id === undefined)
-      id = setInterval(() => void sync.reconcile(), SYNC_INTERVAL)
-  }
-
-  const stop = () => {
-    if (id !== undefined) {
-      clearInterval(id)
-      id = undefined
-    }
-  }
-
-  const onVisibility = () => {
-    if (document.visibilityState === "visible") {
-      void sync.reconcile()
-      start()
-    } else {
-      stop()
-    }
-  }
-
-  document.addEventListener("visibilitychange", onVisibility)
-  if (document.visibilityState === "visible") start()
-
-  return () => {
-    document.removeEventListener("visibilitychange", onVisibility)
-    stop()
-  }
+  return start(() => void sync.reconcile(), SYNC_INTERVAL)
 }
