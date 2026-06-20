@@ -1,11 +1,12 @@
 import { DragDropContext, type DropResult } from "@hello-pangea/dnd"
 import type { Board, Dashboard } from "@/lib/types"
-import { byPosition, cn } from "@/lib/utils"
+import { byPosition } from "@/lib/utils"
 import { routes } from "@/lib/routes"
 import { Column } from "../column/column"
 import { DraggableCard } from "../draggable-card/draggable-card"
 import { CardModal } from "../card-modal/card-modal"
 import { DeckHeader } from "./deck-header"
+import { cn } from "@deck/ui-kit"
 
 interface IProps {
   dashboard: Dashboard
