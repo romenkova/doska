@@ -45,6 +45,8 @@ export class DeckSyncDriver implements SyncDriver<string, Change> {
   ): Promise<{ changes: Change[]; refs: string[] }> {
     const changes: Change[] = []
     const refs: string[] = []
+    // Refs that can never be pushed because their record deleted
+    const dead: string[] = []
 
     for (const ref of dirty.all()) {
       const [store, id] = ref.split("/")
@@ -52,8 +54,10 @@ export class DeckSyncDriver implements SyncDriver<string, Change> {
       switch (store) {
         case DASHBOARDS: {
           const record = await idb.get<Dashboard>(DASHBOARDS, id)
-          // The dashboard *is* the board, so its id is the boardId.
-          if (record && record.id === boardId) {
+          if (!record) dead.push(ref)
+
+          if (record?.id === boardId) {
+            // The dashboard *is* the board, so its id is the boardId.
             changes.push({ store, record })
             refs.push(ref)
           }
@@ -61,7 +65,8 @@ export class DeckSyncDriver implements SyncDriver<string, Change> {
         }
         case COLUMNS: {
           const record = await idb.get<Column>(COLUMNS, id)
-          if (record && record.dashboardId === boardId) {
+          if (!record) dead.push(ref)
+          if (record?.dashboardId === boardId) {
             changes.push({ store, record })
             refs.push(ref)
           }
@@ -69,16 +74,28 @@ export class DeckSyncDriver implements SyncDriver<string, Change> {
         }
         case CARDS: {
           const record = await idb.get<Card>(CARDS, id)
-          if (!record) continue
+          if (!record) {
+            dead.push(ref)
+            break
+          }
+
           const column = await idb.get<Column>(COLUMNS, record.columnId)
-          if (column && column.dashboardId === boardId) {
+          // Orphaned: the owning column is gone
+          if (!column) dead.push(ref)
+
+          if (column?.dashboardId === boardId) {
             changes.push({ store, record })
             refs.push(ref)
           }
           break
         }
+        default:
+          // Unknown store: nothing can resolve or push it.
+          dead.push(ref)
       }
     }
+
+    if (dead.length) dirty.clear(dead)
 
     return { changes, refs }
   }
