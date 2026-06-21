@@ -1,5 +1,5 @@
 import { expect, type APIRequestContext, type Page } from "@playwright/test"
-import type { Change } from "@deck/contract"
+import type { Change, DashboardChange } from "@deck/contract"
 
 /**
  * The single credential pair the e2e API server is booted with (see
@@ -177,6 +177,76 @@ async function waitForChange<S extends Change["store"]>(
       throw new Error(`timed out waiting for ${store} "${title}" on the server`)
     await new Promise((r) => setTimeout(r, 150))
   }
+}
+
+/**
+ * Calls the dashboard-list sync RPC — the board-independent channel that carries
+ * the dashboard list. Same `{ json }` envelope as the board channel.
+ */
+async function dashboardSync(
+  request: APIRequestContext,
+  body: { since: number; changes: DashboardChange[] }
+): Promise<{ cursor: number; changes: DashboardChange[] }> {
+  const res = await request.post("/rpc/dashboards/sync", {
+    data: { json: body },
+  })
+  if (!res.ok())
+    throw new Error(`dashboard sync failed (${res.status()}): ${await res.text()}`)
+  const payload = (await res.json()) as {
+    json: { cursor: number; changes: DashboardChange[] }
+  }
+  return payload.json
+}
+
+/**
+ * Another client creates a board, so it should appear in the open page's sidebar
+ * list even though the page never opens it. Returns the new board's id.
+ */
+export async function remoteCreateDashboard(
+  request: APIRequestContext,
+  title: string
+): Promise<string> {
+  const id = `board-${crypto.randomUUID().slice(0, 8)}`
+  await dashboardSync(request, {
+    since: 0,
+    changes: [
+      {
+        store: "dashboards",
+        record: {
+          id,
+          title,
+          position: "a5",
+          updatedAt: Date.now(),
+          deletedAt: null,
+        },
+      },
+    ],
+  })
+  return id
+}
+
+/** Another client renames the board titled `fromTitle`. */
+export async function remoteRenameDashboard(
+  request: APIRequestContext,
+  id: string,
+  toTitle: string
+): Promise<void> {
+  await dashboardSync(request, {
+    since: 0,
+    changes: [
+      {
+        store: "dashboards",
+        record: {
+          id,
+          title: toTitle,
+          position: "a5",
+          // A strictly newer clock so the rename wins last-writer-wins.
+          updatedAt: Date.now() + 10_000,
+          deletedAt: null,
+        },
+      },
+    ],
+  })
 }
 
 /** Another client adds a card to the named column. */

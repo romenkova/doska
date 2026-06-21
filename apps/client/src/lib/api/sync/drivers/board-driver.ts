@@ -1,9 +1,9 @@
 import type { Change } from "@deck/contract"
 import type { DirtyStore, SyncDriver } from "@deck/sync"
-import type { Card, Column, Dashboard } from "@/lib/types"
-import { CARDS, COLUMNS, DASHBOARDS } from "../constants"
-import { idb, META_STORE } from "../db/idb"
-import { orpc } from "./orpc"
+import type { Card, Column } from "@/lib/types"
+import { CARDS, COLUMNS } from "../../constants"
+import { idb, META_STORE } from "../../db/idb"
+import { orpc } from "../orpc"
 import { queryClient } from "@/lib/query-client"
 import { keys } from "@/lib/data/keys"
 
@@ -12,7 +12,9 @@ const CURSOR_PREFIX = "cursor:"
 
 /**
  * Wires the generic sync engine to deck: a board is the sync scope, oRPC's
- * `board.sync` is the transport, and changes/cursors live in IndexedDB.
+ * `board.sync` is the transport, and changes/cursors live in IndexedDB. Carries
+ * a board's columns and cards only — the dashboard list rides its own
+ * board-independent channel (see `dashboard-list-driver`).
  */
 export class DeckSyncDriver implements SyncDriver<string, Change> {
   /**
@@ -52,17 +54,6 @@ export class DeckSyncDriver implements SyncDriver<string, Change> {
       const [store, id] = ref.split("/")
 
       switch (store) {
-        case DASHBOARDS: {
-          const record = await idb.get<Dashboard>(DASHBOARDS, id)
-          if (!record) dead.push(ref)
-
-          if (record?.id === boardId) {
-            // The dashboard *is* the board, so its id is the boardId.
-            changes.push({ store, record })
-            refs.push(ref)
-          }
-          break
-        }
         case COLUMNS: {
           const record = await idb.get<Column>(COLUMNS, id)
           if (!record) dead.push(ref)
@@ -90,7 +81,8 @@ export class DeckSyncDriver implements SyncDriver<string, Change> {
           break
         }
         default:
-          // Unknown store: nothing can resolve or push it.
+          // Not a board entity (e.g. a dashboards ref left over from before the
+          // list moved to its own channel): nothing here can push it.
           dead.push(ref)
       }
     }
@@ -111,7 +103,6 @@ export class DeckSyncDriver implements SyncDriver<string, Change> {
   async applyRemote(boardId: string, changes: Change[]): Promise<void> {
     const touchedCards: string[] = []
     let touchedBoard = false
-    let touchedDashboards = false
 
     for (const { store, record } of changes) {
       const existing = await idb.get<{ updatedAt: number }>(store, record.id)
@@ -123,13 +114,9 @@ export class DeckSyncDriver implements SyncDriver<string, Change> {
         touchedBoard = true
       } else if (store === COLUMNS) {
         touchedBoard = true
-      } else {
-        touchedDashboards = true
       }
     }
 
-    if (touchedDashboards)
-      queryClient.invalidateQueries({ queryKey: keys.dashboards })
     if (touchedBoard)
       queryClient.invalidateQueries({ queryKey: keys.board(boardId) })
     for (const id of touchedCards)

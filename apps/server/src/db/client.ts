@@ -11,6 +11,10 @@ sqlite.exec(`
     id TEXT PRIMARY KEY,
     seq_counter INTEGER NOT NULL DEFAULT 0
   );
+  CREATE TABLE IF NOT EXISTS counters (
+    id TEXT PRIMARY KEY,
+    value INTEGER NOT NULL DEFAULT 0
+  );
   CREATE TABLE IF NOT EXISTS dashboards (
     id TEXT PRIMARY KEY,
     title TEXT NOT NULL,
