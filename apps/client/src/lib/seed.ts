@@ -53,14 +53,6 @@ export const BOARD_COLUMNS: Column[] = [
     updatedAt: 0,
     deletedAt: null,
   },
-  {
-    id: "paused",
-    title: "Paused",
-    position: "a3",
-    dashboardId: "product",
-    updatedAt: 0,
-    deletedAt: null,
-  },
 ]
 
 export const seedDashboards: Dashboard[] = [
