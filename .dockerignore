@@ -1,0 +1,13 @@
+**/node_modules
+**/dist
+**/dist-ssr
+**/.turbo
+.git
+.github
+**/*.local
+**/*.log
+**/.env
+**/test-results
+**/playwright-report
+**/playwright/.cache
+**/*.tsbuildinfo
