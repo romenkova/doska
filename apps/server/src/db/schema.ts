@@ -7,6 +7,17 @@ export const boards = sqliteTable("boards", {
 })
 
 /**
+ * Named monotonic counters that aren't owned by a single board. The dashboard
+ * list uses one (id `"dashboards"`) so list changes get an account-level
+ * ordering, letting a client pull every board's metadata past its cursor
+ * regardless of which board is open.
+ */
+export const counters = sqliteTable("counters", {
+  id: text("id").primaryKey(),
+  value: integer("value").notNull().default(0),
+})
+
+/**
  * The three entity tables mirror `@deck/contract` (= the client's `types.ts`),
  * each augmented with sync metadata:
  *
@@ -19,6 +30,10 @@ export const boards = sqliteTable("boards", {
  * indexed scan with no joins. A dashboard *is* a board, so it's keyed by `id`.
  * Relationships are by id only — no FK constraints, so an out-of-order tick
  * (a card arriving before its column) is never rejected.
+ *
+ * A dashboard's `seq` is stamped from the account-level `counters` row, not a
+ * board counter: the list is board-independent, so its pull is `seq > since`
+ * across every dashboard.
  */
 export const dashboards = sqliteTable("dashboards", {
   id: text("id").primaryKey(),

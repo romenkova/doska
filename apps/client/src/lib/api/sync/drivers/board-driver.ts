@@ -1,9 +1,9 @@
 import type { Change } from "@deck/contract"
 import type { DirtyStore, SyncDriver } from "@deck/sync"
 import type { Card, Column, Dashboard } from "@/lib/types"
-import { CARDS, COLUMNS, DASHBOARDS } from "../constants"
-import { idb, META_STORE } from "../db/idb"
-import { orpc } from "./orpc"
+import { CARDS, COLUMNS, DASHBOARDS } from "../../constants"
+import { idb, META_STORE } from "../../db/idb"
+import { orpc } from "../orpc"
 import { queryClient } from "@/lib/query-client"
 import { keys } from "@/lib/data/keys"
 
@@ -12,7 +12,9 @@ const CURSOR_PREFIX = "cursor:"
 
 /**
  * Wires the generic sync engine to deck: a board is the sync scope, oRPC's
- * `board.sync` is the transport, and changes/cursors live in IndexedDB.
+ * `board.sync` is the transport, and changes/cursors live in IndexedDB. Carries
+ * a board's columns and cards only — the dashboard list rides its own
+ * board-independent channel (see `dashboard-list-driver`).
  */
 export class DeckSyncDriver implements SyncDriver<string, Change> {
   /**
@@ -37,7 +39,7 @@ export class DeckSyncDriver implements SyncDriver<string, Change> {
   /**
    * Resolves the dirty refs that belong to `boardId` into a `Change[]` to push,
    * alongside the refs consumed (so they can be restored if the push fails).
-   * Refs for other boards stay dirty and push when their board is active.
+   * Refs for other *live* boards stay dirty and push when their board is active.
    */
   async collectChanges(
     boardId: string,
@@ -45,28 +47,24 @@ export class DeckSyncDriver implements SyncDriver<string, Change> {
   ): Promise<{ changes: Change[]; refs: string[] }> {
     const changes: Change[] = []
     const refs: string[] = []
-    // Refs that can never be pushed because their record deleted
+    // Refs that can never be pushed because their record (or its board) is gone.
     const dead: string[] = []
 
     for (const ref of dirty.all()) {
       const [store, id] = ref.split("/")
 
       switch (store) {
-        case DASHBOARDS: {
-          const record = await idb.get<Dashboard>(DASHBOARDS, id)
-          if (!record) dead.push(ref)
-
-          if (record?.id === boardId) {
-            // The dashboard *is* the board, so its id is the boardId.
-            changes.push({ store, record })
-            refs.push(ref)
-          }
-          break
-        }
         case COLUMNS: {
           const record = await idb.get<Column>(COLUMNS, id)
-          if (!record) dead.push(ref)
-          if (record?.dashboardId === boardId) {
+          if (!record) {
+            dead.push(ref)
+            break
+          }
+          if (await this.boardDeleted(record.dashboardId)) {
+            dead.push(ref)
+            break
+          }
+          if (record.dashboardId === boardId) {
             changes.push({ store, record })
             refs.push(ref)
           }
@@ -80,17 +78,25 @@ export class DeckSyncDriver implements SyncDriver<string, Change> {
           }
 
           const column = await idb.get<Column>(COLUMNS, record.columnId)
-          // Orphaned: the owning column is gone
-          if (!column) dead.push(ref)
-
-          if (column?.dashboardId === boardId) {
+          // Orphaned: the owning column is gone.
+          if (!column) {
+            dead.push(ref)
+            break
+          }
+          // The owning board was deleted
+          if (await this.boardDeleted(column.dashboardId)) {
+            dead.push(ref)
+            break
+          }
+          if (column.dashboardId === boardId) {
             changes.push({ store, record })
             refs.push(ref)
           }
           break
         }
         default:
-          // Unknown store: nothing can resolve or push it.
+          // Not a board entity (e.g. a dashboards ref left over from before the
+          // list moved to its own channel): nothing here can push it.
           dead.push(ref)
       }
     }
@@ -98,6 +104,11 @@ export class DeckSyncDriver implements SyncDriver<string, Change> {
     if (dead.length) dirty.clear(dead)
 
     return { changes, refs }
+  }
+
+  private async boardDeleted(dashboardId: string): Promise<boolean> {
+    const dashboard = await idb.get<Dashboard>(DASHBOARDS, dashboardId)
+    return !dashboard || dashboard.deletedAt != null
   }
 
   push(input: { scope: string; since: number; changes: Change[] }) {
@@ -111,7 +122,6 @@ export class DeckSyncDriver implements SyncDriver<string, Change> {
   async applyRemote(boardId: string, changes: Change[]): Promise<void> {
     const touchedCards: string[] = []
     let touchedBoard = false
-    let touchedDashboards = false
 
     for (const { store, record } of changes) {
       const existing = await idb.get<{ updatedAt: number }>(store, record.id)
@@ -123,13 +133,9 @@ export class DeckSyncDriver implements SyncDriver<string, Change> {
         touchedBoard = true
       } else if (store === COLUMNS) {
         touchedBoard = true
-      } else {
-        touchedDashboards = true
       }
     }
 
-    if (touchedDashboards)
-      queryClient.invalidateQueries({ queryKey: keys.dashboards })
     if (touchedBoard)
       queryClient.invalidateQueries({ queryKey: keys.board(boardId) })
     for (const id of touchedCards)
