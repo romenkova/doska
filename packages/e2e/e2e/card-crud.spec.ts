@@ -1,10 +1,16 @@
 import { test, expect } from "@playwright/test"
-import { addCard, card, createBoard } from "./helpers"
+import { addCard, card, column, createBoard } from "./helpers"
 
 test.describe("card lifecycle", () => {
   test("create, edit, persist, then delete a card", async ({ page }) => {
     // Create the board under test rather than relying on a seeded fixture.
     await createBoard(page)
+
+    // The "add card" control now lives as a full-width button at the top of the
+    // column body, not in the column header — make sure that's where it is.
+    await expect(
+      column(page, "To Do").getByRole("button", { name: "Add card to To Do" })
+    ).toBeVisible()
 
     // Create a card in To Do — it seeds with the fallback title.
     await addCard(page, "To Do")
