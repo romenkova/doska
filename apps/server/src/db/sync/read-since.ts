@@ -1,7 +1,8 @@
 import type { Change } from "@deck/contract"
 import { and, eq, gt } from "drizzle-orm"
 import { db } from "../client"
-import { boards, cards, columns } from "../schema"
+import { boardCounter } from "./counter"
+import { cards, columns } from "../schema"
 
 /**
  * Returns every column and card changed past `since` for the board, plus the
@@ -12,12 +13,7 @@ export async function readSince(
   boardId: string,
   since: number
 ): Promise<{ cursor: number; changes: Change[] }> {
-  const [board] = await db
-    .select({ seq: boards.seqCounter })
-    .from(boards)
-    .where(eq(boards.id, boardId))
-    .limit(1)
-  const cursor = board?.seq ?? 0
+  const cursor = await boardCounter(boardId).read(db)
 
   const changes: Change[] = []
 

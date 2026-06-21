@@ -1,10 +1,8 @@
 import type { DashboardChange } from "@deck/contract"
-import { eq, gt } from "drizzle-orm"
+import { gt } from "drizzle-orm"
 import { db } from "../client"
-import { counters, dashboards } from "../schema"
-
-/** The `counters` row that orders dashboard-list changes account-wide. */
-const DASHBOARDS_COUNTER = "dashboards"
+import { dashboardsCounter } from "./counter"
+import { dashboards } from "../schema"
 
 /**
  * Returns every dashboard changed past `since`, plus the dashboards counter's
@@ -15,12 +13,7 @@ export async function readDashboardsSince(since: number): Promise<{
   cursor: number
   changes: DashboardChange[]
 }> {
-  const [counter] = await db
-    .select({ value: counters.value })
-    .from(counters)
-    .where(eq(counters.id, DASHBOARDS_COUNTER))
-    .limit(1)
-  const cursor = counter?.value ?? 0
+  const cursor = await dashboardsCounter().read(db)
 
   const changes: DashboardChange[] = []
   for (const r of await db

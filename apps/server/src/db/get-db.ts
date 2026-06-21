@@ -17,8 +17,10 @@ export type DB = NodePgDatabase<typeof schema>
 
 const url = process.env.DATABASE_URL
 
+let database: DB | undefined
+
 export function getDB() {
-  let database: DB
+  if (database) return database
 
   if (url) {
     const pool = new Pool({ connectionString: url })

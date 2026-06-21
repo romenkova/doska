@@ -4,20 +4,14 @@ import { bigint, index, integer, pgTable, text } from "drizzle-orm/pg-core"
  * Timestamps and sequence numbers are stored as plain integers, but a board's
  * `updatedAt`/`deletedAt` are epoch milliseconds (~1.7e12) and overflow a
  * 32-bit `integer`, so they use `bigint` in `number` mode. Sequence counters
- * stay `integer`: a per-board monotonic tick never approaches 2^31.
+ * stay `integer`: a single channel's monotonic tick never approaches 2^31.
  */
 
-/** Per-board sequence counter; created lazily on a board's first sync. */
-export const boards = pgTable("boards", {
-  id: text("id").primaryKey(),
-  seqCounter: integer("seq_counter").notNull().default(0),
-})
-
 /**
- * Named monotonic counters that aren't owned by a single board. The dashboard
- * list uses one (id `"dashboards"`) so list changes get an account-level
- * ordering, letting a client pull every board's metadata past its cursor
- * regardless of which board is open.
+ * Named monotonic counters, one per sync channel, created lazily on first sync.
+ * Each board keeps its per-board tick under id `board:<id>`; the dashboard list
+ * uses id `"dashboards"` for an account-level ordering, letting a client pull
+ * every board's metadata past its cursor regardless of which board is open.
  */
 export const counters = pgTable("counters", {
   id: text("id").primaryKey(),

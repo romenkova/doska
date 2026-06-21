@@ -1,35 +1,9 @@
 {
-  "id": "4daf25fe-bcab-49dc-bfad-0de8ecc00608",
+  "id": "c5dd74ec-7193-4531-944b-c05864008f94",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.boards": {
-      "name": "boards",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "seq_counter": {
-          "name": "seq_counter",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "default": 0
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
     "public.cards": {
       "name": "cards",
       "schema": "",
