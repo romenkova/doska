@@ -21,7 +21,7 @@ export function DeckHeader({ title, onRename, onDelete, onAddColumn }: IProps) {
         value={title}
         onCommit={onRename}
         label="Board name"
-        className="min-w-67.5 text-base font-semibold"
+        className="min-w-40 text-base font-semibold sm:min-w-68"
       />
       <div className="ml-auto flex items-center gap-1">
         <Button variant="ghost" aria-label="Add column" onClick={onAddColumn}>
