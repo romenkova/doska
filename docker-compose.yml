@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: apps/server/Dockerfile
     environment:
-      # Postgres is external — point this at your managed/remote instance.
+      # Points at the Dokploy-managed Postgres via its internal host.
       DATABASE_URL: ${DATABASE_URL:?set DATABASE_URL in .env}
       AUTH_LOGIN: ${AUTH_LOGIN:?set AUTH_LOGIN in .env}
       AUTH_PASSWORD: ${AUTH_PASSWORD:?set AUTH_PASSWORD in .env}
@@ -13,8 +13,10 @@ services:
       NODE_ENV: production
     expose:
       - "3000"
+    # On dokploy-network so it can resolve the DB's internal host and be
+    # reached by web. (Dokploy's canonical pattern: every service here, no
+    # separate default network.)
     networks:
-      - default
       - dokploy-network
     restart: unless-stopped
 
@@ -29,13 +31,10 @@ services:
     expose:
       - "80"
     networks:
-      # `default` keeps web↔server DNS working; `dokploy-network` lets Traefik
-      # reach this container to serve the configured Domain.
-      - default
       - dokploy-network
     restart: unless-stopped
 
 networks:
-  # Shared network Dokploy's Traefik uses to reach app containers.
+  # Shared Dokploy network: where the managed DB lives and Traefik routes from.
   dokploy-network:
     external: true
