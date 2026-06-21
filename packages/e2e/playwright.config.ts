@@ -1,5 +1,4 @@
 import path from "node:path"
-import os from "node:os"
 import { fileURLToPath } from "node:url"
 import { defineConfig, devices } from "@playwright/test"
 
@@ -10,11 +9,11 @@ const SERVER_DIR = path.resolve(here, "../../apps/server")
 /**
  * The sync e2e tests need a real backend, so the harness boots two servers:
  * the API and the `vite preview` bundle (which proxies `/rpc` to the API via
- * `RPC_TARGET`, see vite.config). The API runs on its own port with a throwaway
- * SQLite file so a run never inherits another run's board state.
+ * `RPC_TARGET`, see vite.config). The API runs on its own port backed by an
+ * in-memory PGlite (no DB_FILE), so each boot starts from an empty server and a
+ * run never inherits another run's board state.
  */
 const SYNC_PORT = 3100
-const DB_FILE = path.join(os.tmpdir(), "deck-e2e.db")
 
 export default defineConfig({
   testDir: "./e2e",
@@ -30,15 +29,14 @@ export default defineConfig({
   ],
   webServer: [
     {
-      // Sync API. `rm -f` drops any DB left by a prior run so each suite starts
-      // from an empty server; `tsx` (the start script) recreates the schema.
-      command: `rm -f "${DB_FILE}"* && pnpm run start`,
+      // Sync API. No DB_FILE, so PGlite runs in-memory and each boot starts from
+      // an empty server; the start script migrates the schema before listening.
+      command: "pnpm run start",
       cwd: SERVER_DIR,
       // Sync is gated; boot the API with the single credential pair the specs
       // sign in with (see `TEST_CREDENTIALS` in helpers).
       env: {
         PORT: String(SYNC_PORT),
-        DB_FILE,
         AUTH_LOGIN: "e2e",
         AUTH_PASSWORD: "e2e-secret",
         AUTH_SECRET: "e2e-test-secret",

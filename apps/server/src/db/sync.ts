@@ -17,22 +17,22 @@ const DASHBOARDS_COUNTER = "dashboards"
  * channel ({@link applyDashboardPush}), so a stray dashboard change arriving on
  * the board channel is skipped rather than misfiled under the board's counter.
  */
-function applyOne(
+async function applyOne(
   tx: Tx,
   boardId: string,
   change: Change,
   nextSeq: number
-): boolean {
+): Promise<boolean> {
   const { store, record } = change
 
   if (store === "dashboards") return false
 
   if (store === "columns") {
-    const current = tx
+    const [current] = await tx
       .select({ updatedAt: columns.updatedAt })
       .from(columns)
       .where(eq(columns.id, record.id))
-      .get()
+      .limit(1)
     if (current && current.updatedAt >= record.updatedAt) return false
     const row = {
       id: record.id,
@@ -43,18 +43,18 @@ function applyOne(
       deletedAt: record.deletedAt,
       seq: nextSeq,
     }
-    tx.insert(columns)
+    await tx
+      .insert(columns)
       .values(row)
       .onConflictDoUpdate({ target: columns.id, set: row })
-      .run()
     return true
   }
 
-  const current = tx
+  const [current] = await tx
     .select({ updatedAt: cards.updatedAt })
     .from(cards)
     .where(eq(cards.id, record.id))
-    .get()
+    .limit(1)
   if (current && current.updatedAt >= record.updatedAt) return false
   const row = {
     id: record.id,
@@ -67,10 +67,10 @@ function applyOne(
     deletedAt: record.deletedAt,
     seq: nextSeq,
   }
-  tx.insert(cards)
+  await tx
+    .insert(cards)
     .values(row)
     .onConflictDoUpdate({ target: cards.id, set: row })
-    .run()
   return true
 }
 
@@ -79,29 +79,32 @@ function applyOne(
  * sequence counter once per accepted write. Runs in one transaction so the
  * counter and the rows it stamps never drift apart.
  */
-export function applyPush(boardId: string, changes: Change[]): void {
+export async function applyPush(
+  boardId: string,
+  changes: Change[]
+): Promise<void> {
   if (changes.length === 0) return
 
-  db.transaction((tx) => {
-    tx.insert(boards)
+  await db.transaction(async (tx) => {
+    await tx
+      .insert(boards)
       .values({ id: boardId, seqCounter: 0 })
       .onConflictDoNothing()
-      .run()
-    const board = tx
+    const [board] = await tx
       .select({ seq: boards.seqCounter })
       .from(boards)
       .where(eq(boards.id, boardId))
-      .get()
+      .limit(1)
     let seq = board?.seq ?? 0
 
     for (const change of changes) {
-      if (applyOne(tx, boardId, change, seq + 1)) seq += 1
+      if (await applyOne(tx, boardId, change, seq + 1)) seq += 1
     }
 
-    tx.update(boards)
+    await tx
+      .update(boards)
       .set({ seqCounter: seq })
       .where(eq(boards.id, boardId))
-      .run()
   })
 }
 
@@ -114,27 +117,29 @@ export function applyPush(boardId: string, changes: Change[]): void {
  * `seq` it stamps orders dashboards across every board, so any client can pull
  * the whole list past its cursor.
  */
-export function applyDashboardPush(changes: DashboardChange[]): void {
+export async function applyDashboardPush(
+  changes: DashboardChange[]
+): Promise<void> {
   if (changes.length === 0) return
 
-  db.transaction((tx) => {
-    tx.insert(counters)
+  await db.transaction(async (tx) => {
+    await tx
+      .insert(counters)
       .values({ id: DASHBOARDS_COUNTER, value: 0 })
       .onConflictDoNothing()
-      .run()
-    const counter = tx
+    const [counter] = await tx
       .select({ value: counters.value })
       .from(counters)
       .where(eq(counters.id, DASHBOARDS_COUNTER))
-      .get()
+      .limit(1)
     let seq = counter?.value ?? 0
 
     for (const { record } of changes) {
-      const current = tx
+      const [current] = await tx
         .select({ updatedAt: dashboards.updatedAt })
         .from(dashboards)
         .where(eq(dashboards.id, record.id))
-        .get()
+        .limit(1)
       if (current && current.updatedAt >= record.updatedAt) continue
       const row = {
         id: record.id,
@@ -144,17 +149,17 @@ export function applyDashboardPush(changes: DashboardChange[]): void {
         deletedAt: record.deletedAt,
         seq: seq + 1,
       }
-      tx.insert(dashboards)
+      await tx
+        .insert(dashboards)
         .values(row)
         .onConflictDoUpdate({ target: dashboards.id, set: row })
-        .run()
       seq += 1
     }
 
-    tx.update(counters)
+    await tx
+      .update(counters)
       .set({ value: seq })
       .where(eq(counters.id, DASHBOARDS_COUNTER))
-      .run()
   })
 }
 
@@ -163,23 +168,22 @@ export function applyDashboardPush(changes: DashboardChange[]): void {
  * high-water mark to hand back as the next cursor. Board-independent: a client
  * gets every board's metadata regardless of which one it has open.
  */
-export function readDashboardsSince(since: number): {
+export async function readDashboardsSince(since: number): Promise<{
   cursor: number
   changes: DashboardChange[]
-} {
-  const counter = db
+}> {
+  const [counter] = await db
     .select({ value: counters.value })
     .from(counters)
     .where(eq(counters.id, DASHBOARDS_COUNTER))
-    .get()
+    .limit(1)
   const cursor = counter?.value ?? 0
 
   const changes: DashboardChange[] = []
-  for (const r of db
+  for (const r of await db
     .select()
     .from(dashboards)
-    .where(gt(dashboards.seq, since))
-    .all()) {
+    .where(gt(dashboards.seq, since))) {
     changes.push({
       store: "dashboards",
       record: {
@@ -200,24 +204,23 @@ export function readDashboardsSince(since: number): {
  * board's current high-water mark to hand back as the next cursor. The
  * dashboard's own metadata travels on {@link readDashboardsSince}, not here.
  */
-export function readSince(
+export async function readSince(
   boardId: string,
   since: number
-): { cursor: number; changes: Change[] } {
-  const board = db
+): Promise<{ cursor: number; changes: Change[] }> {
+  const [board] = await db
     .select({ seq: boards.seqCounter })
     .from(boards)
     .where(eq(boards.id, boardId))
-    .get()
+    .limit(1)
   const cursor = board?.seq ?? 0
 
   const changes: Change[] = []
 
-  for (const r of db
+  for (const r of await db
     .select()
     .from(columns)
-    .where(and(eq(columns.boardId, boardId), gt(columns.seq, since)))
-    .all()) {
+    .where(and(eq(columns.boardId, boardId), gt(columns.seq, since)))) {
     changes.push({
       store: "columns",
       record: {
@@ -231,11 +234,10 @@ export function readSince(
     })
   }
 
-  for (const r of db
+  for (const r of await db
     .select()
     .from(cards)
-    .where(and(eq(cards.boardId, boardId), gt(cards.seq, since)))
-    .all()) {
+    .where(and(eq(cards.boardId, boardId), gt(cards.seq, since)))) {
     changes.push({
       store: "cards",
       record: {

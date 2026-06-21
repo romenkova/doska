@@ -3,7 +3,9 @@ packages:
   - "packages/*"
 
 allowBuilds:
-  better-sqlite3: true
+  # Pulled in only as drizzle-orm's optional peer; we use pg/PGlite, so it never
+  # needs its native build.
+  better-sqlite3: false
   esbuild: true
   msw: false
 

@@ -9,6 +9,7 @@ import {
   readJson,
   sessionCookie,
 } from "./auth"
+import { runMigrations } from "./db/client"
 import { router } from "./router"
 
 const handler = new RPCHandler(router)
@@ -59,7 +60,10 @@ app.all("/rpc/*", async (req, reply) => {
 })
 
 const port = Number(process.env.PORT ?? 3000)
-app.listen({ port }).catch((err) => {
-  app.log.error(err)
-  process.exit(1)
-})
+// Bring the schema up to date before accepting any sync writes.
+runMigrations()
+  .then(() => app.listen({ port }))
+  .catch((err) => {
+    app.log.error(err)
+    process.exit(1)
+  })
