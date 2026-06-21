@@ -16,6 +16,9 @@ interface IProps {
   onToggleBody: (columnId: string) => void
   onAddCard: (columnId: string) => void
   onDeleteCard: (id: string) => void
+  onAddColumn: () => void
+  onRenameColumn: (columnId: string, title: string) => void
+  onDeleteColumn: (columnId: string) => void
   onRenameDashboard: (name: string) => void
   onDeleteDashboard: () => void
   onDragEnd: (result: DropResult) => void
@@ -29,6 +32,9 @@ export function Deck({
   onToggleBody,
   onAddCard,
   onDeleteCard,
+  onAddColumn,
+  onRenameColumn,
+  onDeleteColumn,
   onRenameDashboard,
   onDeleteDashboard,
   onDragEnd,
@@ -48,6 +54,7 @@ export function Deck({
         title={dashboard.title}
         onRename={onRenameDashboard}
         onDelete={onDeleteDashboard}
+        onAddColumn={onAddColumn}
       />
       <DragDropContext onDragEnd={onDragEnd}>
         <div
@@ -68,6 +75,8 @@ export function Deck({
                 showBody={showBody}
                 onToggleBody={() => onToggleBody(column.id)}
                 onAddCard={() => onAddCard(column.id)}
+                onRename={(title) => onRenameColumn(column.id, title)}
+                onDelete={() => onDeleteColumn(column.id)}
               >
                 {cards.map((card, index) => (
                   <DraggableCard

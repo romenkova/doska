@@ -1,8 +1,11 @@
 import {
   useCreateCard,
+  useCreateColumn,
   useDeleteCard,
+  useDeleteColumn,
   useDeleteDashboard,
   useMoveCard,
+  useRenameColumn,
   useRenameDashboard,
 } from "@/lib/data/mutations"
 import { useBoard } from "@/lib/data/queries"
@@ -29,6 +32,9 @@ export function DeckView({ dashboard }: { dashboard: Dashboard }) {
   const { mutate: createCard } = useCreateCard(id)
   const { mutate: deleteCard } = useDeleteCard(id)
   const { mutate: moveCard } = useMoveCard(id)
+  const { mutate: createColumn } = useCreateColumn(id)
+  const { mutate: renameColumn } = useRenameColumn(id)
+  const { mutate: deleteColumn } = useDeleteColumn(id)
   const handleDragEnd = useDragEnd(board, moveCard)
 
   return (
@@ -40,6 +46,9 @@ export function DeckView({ dashboard }: { dashboard: Dashboard }) {
       onToggleBody={toggleBody}
       onAddCard={createCard}
       onDeleteCard={deleteCard}
+      onAddColumn={() => createColumn("New column")}
+      onRenameColumn={(columnId, title) => renameColumn({ id: columnId, title })}
+      onDeleteColumn={deleteColumn}
       onRenameDashboard={(name) => renameDashboard({ id, name })}
       onDeleteDashboard={() => deleteDashboard(id)}
       onDragEnd={handleDragEnd}

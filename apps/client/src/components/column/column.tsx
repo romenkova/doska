@@ -10,6 +10,8 @@ interface IProps {
   showBody: boolean
   onToggleBody: () => void
   onAddCard: () => void
+  onRename: (title: string) => void
+  onDelete: () => void
 }
 
 export function Column({ children, ...props }: IProps) {

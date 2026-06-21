@@ -11,7 +11,7 @@ export function AppSidebarHeader() {
             <div className="flex items-center space-x-2">
               <Anchor className="size-4" />
               <span className="cn-font-heading text-base font-semibold">
-                Deck
+                Doska
               </span>
             </div>
           </Link>

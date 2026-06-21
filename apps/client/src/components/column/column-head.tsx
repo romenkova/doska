@@ -1,16 +1,21 @@
 import { Button, cn } from "@doska/ui-kit"
-import { Eye, EyeOff, Plus } from "lucide-react"
+import { Eye, EyeOff, Plus, Trash2 } from "lucide-react"
+import { EditableTitle } from "../editable-title"
 
 interface IProps {
   title: string
   showBody: boolean
   onToggleBody: () => void
   onAddCard: () => void
+  onRename: (title: string) => void
+  onDelete: () => void
 }
 
 export function ColumnHead({
   onAddCard,
   onToggleBody,
+  onRename,
+  onDelete,
   showBody,
   title,
 }: IProps) {
@@ -22,7 +27,12 @@ export function ColumnHead({
         "text-muted-foreground uppercase"
       )}
     >
-      {title}
+      <EditableTitle
+        value={title}
+        onCommit={onRename}
+        label={`Rename ${title}`}
+        className="uppercase"
+      />
       <div className="flex items-center gap-2">
         <Button
           variant="ghost"
@@ -42,6 +52,15 @@ export function ColumnHead({
           aria-label={`Add card to ${title}`}
         >
           <Plus />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon-lg"
+          onClick={onDelete}
+          aria-label={`Delete ${title}`}
+          className="hover:text-destructive"
+        >
+          <Trash2 />
         </Button>
       </div>
     </div>

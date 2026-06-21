@@ -16,7 +16,7 @@ function view({ status, pending }: SyncState) {
   if (status === "syncing")
     return {
       Icon: LoaderCircle,
-      label: "Saving...",
+      label: "",
       spin: true,
       className: "text-muted-foreground",
     }
@@ -30,13 +30,13 @@ function view({ status, pending }: SyncState) {
   if (pending > 0)
     return {
       Icon: PencilLine,
-      label: `${pending} unsaved ${pending === 1 ? "change" : "changes"}`,
+      label: `${pending} ${pending === 1 ? "change" : "changes"}`,
       spin: false,
       className: "text-muted-foreground",
     }
   return {
     Icon: Check,
-    label: "All changes saved",
+    label: "Saved",
     spin: false,
     className: "text-muted-foreground",
   }
@@ -80,8 +80,8 @@ export function SyncIndicator() {
       onClick={() => void sync.reconcile()}
       className={cn("text-muted-foreground", className)}
     >
-      <span>{label}</span>
       <Icon className={cn(spin && "animate-spin")} />
+      <span>{label}</span>
     </Button>
   )
 }
