@@ -1,0 +1,30 @@
+# Dokploy deploy. Point Dokploy's Compose path at this file.
+# No host ports: Dokploy's Traefik routes to web (container :80). Point a
+# Domain at the web service in the Dokploy UI. Every service sits on
+# dokploy-network so it can resolve the managed Postgres and be reached by
+# Traefik (Dokploy's canonical single-network pattern).
+services:
+  server:
+    extends:
+      file: docker-compose.base.yml
+      service: server
+    expose:
+      - "3000"
+    networks:
+      - dokploy-network
+
+  web:
+    extends:
+      file: docker-compose.base.yml
+      service: web
+    depends_on:
+      - server
+    expose:
+      - "80"
+    networks:
+      - dokploy-network
+
+networks:
+  # Shared Dokploy network: where the managed DB lives and Traefik routes from.
+  dokploy-network:
+    external: true

@@ -1,40 +1,19 @@
+# Generic standalone deploy: any Docker host.
+#   docker compose up -d --build
+# Web UI is published on WEB_PORT (default 8080); server stays internal.
 services:
   server:
-    build:
-      context: .
-      dockerfile: apps/server/Dockerfile
-    environment:
-      # Points at the Dokploy-managed Postgres via its internal host.
-      DATABASE_URL: ${DATABASE_URL:?set DATABASE_URL in .env}
-      AUTH_LOGIN: ${AUTH_LOGIN:?set AUTH_LOGIN in .env}
-      AUTH_PASSWORD: ${AUTH_PASSWORD:?set AUTH_PASSWORD in .env}
-      AUTH_SECRET: ${AUTH_SECRET:?set AUTH_SECRET in .env}
-      PORT: 3000
-      NODE_ENV: production
+    extends:
+      file: docker-compose.base.yml
+      service: server
     expose:
       - "3000"
-    # On dokploy-network so it can resolve the DB's internal host and be
-    # reached by web. (Dokploy's canonical pattern: every service here, no
-    # separate default network.)
-    networks:
-      - dokploy-network
-    restart: unless-stopped
 
   web:
-    build:
-      context: .
-      dockerfile: apps/client/Dockerfile
+    extends:
+      file: docker-compose.base.yml
+      service: web
     depends_on:
       - server
-    # No host port binding: Dokploy's Traefik routes to this container on :80.
-    # Point a Domain at this service (container port 80) in the Dokploy UI.
-    expose:
-      - "80"
-    networks:
-      - dokploy-network
-    restart: unless-stopped
-
-networks:
-  # Shared Dokploy network: where the managed DB lives and Traefik routes from.
-  dokploy-network:
-    external: true
+    ports:
+      - "${WEB_PORT:-8080}:80"
