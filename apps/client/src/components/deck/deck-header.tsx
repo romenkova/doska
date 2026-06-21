@@ -1,7 +1,6 @@
 import { Button, SidebarTrigger } from "@doska/ui-kit"
 import { Plus, Trash2 } from "lucide-react"
 import { EditableTitle } from "../editable-title"
-import { SyncIndicator } from "./sync-indicator"
 
 interface IProps {
   title: string
@@ -21,7 +20,6 @@ export function DeckHeader({ title, onRename, onDelete, onAddColumn }: IProps) {
         className="min-w-67.5 text-base font-semibold"
       />
       <div className="ml-auto flex items-center gap-1">
-        <SyncIndicator />
         <Button variant="ghost" aria-label="Add column" onClick={onAddColumn}>
           <Plus /> <span>Column</span>
         </Button>
@@ -31,7 +29,7 @@ export function DeckHeader({ title, onRename, onDelete, onAddColumn }: IProps) {
           onClick={onDelete}
           className="text-muted-foreground hover:text-destructive"
         >
-          <Trash2 /> <span>Delete board</span>
+          <Trash2 />
         </Button>
       </div>
     </header>

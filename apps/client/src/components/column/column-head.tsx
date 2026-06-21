@@ -1,18 +1,16 @@
 import { Button, cn } from "@doska/ui-kit"
-import { Eye, EyeOff, Plus, Trash2 } from "lucide-react"
+import { Eye, EyeOff, Trash2 } from "lucide-react"
 import { EditableTitle } from "../editable-title"
 
 interface IProps {
   title: string
   showBody: boolean
   onToggleBody: () => void
-  onAddCard: () => void
   onRename: (title: string) => void
   onDelete: () => void
 }
 
 export function ColumnHead({
-  onAddCard,
   onToggleBody,
   onRename,
   onDelete,
@@ -44,14 +42,6 @@ export function ColumnHead({
           onClick={onToggleBody}
         >
           {showBody ? <EyeOff /> : <Eye />}
-        </Button>
-        <Button
-          variant="secondary"
-          size="icon-lg"
-          onClick={onAddCard}
-          aria-label={`Add card to ${title}`}
-        >
-          <Plus />
         </Button>
         <Button
           variant="ghost"

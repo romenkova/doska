@@ -6,6 +6,7 @@ import { Column } from "../column/column"
 import { DraggableCard } from "../draggable-card/draggable-card"
 import { CardModal } from "../card-modal/card-modal"
 import { DeckHeader } from "./deck-header"
+import { SyncIndicator } from "./sync-indicator"
 import { cn } from "@doska/ui-kit"
 
 interface IProps {
@@ -92,6 +93,9 @@ export function Deck({
           })}
         </div>
       </DragDropContext>
+      <div className="fixed right-4 bottom-4 z-50">
+        <SyncIndicator />
+      </div>
       <CardModal closeHref={`~${routes.deck.to(dashboard.id)}`} />
     </div>
   )

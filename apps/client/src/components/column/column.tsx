@@ -1,7 +1,8 @@
 import { Droppable } from "@hello-pangea/dnd"
 import type { ReactNode } from "react"
+import { Button, cn } from "@doska/ui-kit"
+import { Plus } from "lucide-react"
 import { ColumnHead } from "./column-head"
-import { cn } from "@doska/ui-kit"
 
 interface IProps {
   children: ReactNode
@@ -14,7 +15,7 @@ interface IProps {
   onDelete: () => void
 }
 
-export function Column({ children, ...props }: IProps) {
+export function Column({ children, onAddCard, ...props }: IProps) {
   return (
     <div
       role="group"
@@ -34,6 +35,14 @@ export function Column({ children, ...props }: IProps) {
               snapshot.isDraggingOver && "bg-primary/5 dark:bg-sidebar"
             )}
           >
+            <Button
+              variant="dashed"
+              onClick={onAddCard}
+              aria-label={`Add card to ${props.title}`}
+              className="mb-3 w-full"
+            >
+              <Plus />
+            </Button>
             {children}
             {provided.placeholder}
           </div>
