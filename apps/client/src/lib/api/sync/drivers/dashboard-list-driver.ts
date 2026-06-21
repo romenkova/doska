@@ -1,10 +1,10 @@
 import type { DashboardChange } from "@deck/contract"
 import type { DirtyStore, SyncDriver } from "@deck/sync"
-import type { Dashboard } from "@/lib/types"
+import type { Card, Column, Dashboard } from "@/lib/types"
 import { keys } from "@/lib/data/keys"
 import { queryClient } from "@/lib/query-client"
-import { DASHBOARDS } from "../../constants"
-import { idb, META_STORE } from "../../db/idb"
+import { CARDS, COLUMNS, DASHBOARDS } from "../../constants"
+import { CARDS_BY_COLUMN, idb, META_STORE } from "../../db/idb"
 import { orpc } from "../orpc"
 
 /**
@@ -23,7 +23,10 @@ const CURSOR_KEY = "cursor:dashboards-list"
  * Without this the list could only ever pull the open board's own dashboard, so
  * other boards' create/rename/delete never reached an authorized session.
  */
-export class DashboardListDriver implements SyncDriver<string, DashboardChange> {
+export class DashboardListDriver implements SyncDriver<
+  string,
+  DashboardChange
+> {
   /** Reads the list's last pull cursor; 0 means "pull every dashboard" on first sync. */
   async loadCursor(): Promise<number> {
     const raw = await idb.get<number>(META_STORE, CURSOR_KEY)
@@ -81,13 +84,32 @@ export class DashboardListDriver implements SyncDriver<string, DashboardChange> 
     let touched = false
 
     for (const { record } of changes) {
-      const existing = await idb.get<{ updatedAt: number }>(DASHBOARDS, record.id)
+      const existing = await idb.get<{ updatedAt: number }>(
+        DASHBOARDS,
+        record.id
+      )
       if (existing && existing.updatedAt >= record.updatedAt) continue
       await idb.set(DASHBOARDS, record.id, record)
       touched = true
+      if (record.deletedAt != null) await this.purgeBoard(record.id)
     }
 
     if (touched) queryClient.invalidateQueries({ queryKey: keys.dashboards })
+  }
+
+  /** Hard-deletes a deleted board's columns and cards from idb. */
+  private async purgeBoard(boardId: string): Promise<void> {
+    const columns = await idb.getAll<Column>(COLUMNS)
+    for (const column of columns) {
+      if (column.dashboardId !== boardId) continue
+      const cards = await idb.getAll<Card>(CARDS, {
+        index: CARDS_BY_COLUMN,
+        range: IDBKeyRange.only(column.id),
+      })
+      for (const card of cards) await idb.delete(CARDS, card.id)
+      await idb.delete(COLUMNS, column.id)
+    }
+    queryClient.invalidateQueries({ queryKey: keys.board(boardId) })
   }
 
   refOf(change: DashboardChange): string {

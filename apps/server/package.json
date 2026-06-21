@@ -4,21 +4,29 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch --env-file-if-exists=.env src/index.ts",
+    "dev": "concurrently -k -n db,api -c magenta,cyan \"pnpm db:serve\" \"DATABASE_URL=postgres://127.0.0.1:5432/postgres tsx watch --env-file-if-exists=.env src/index.ts\"",
     "start": "tsx src/index.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio",
+    "db:serve": "tsx --env-file-if-exists=.env src/serve-dev.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@deck/contract": "workspace:*",
+    "@electric-sql/pglite": "^0.5.3",
     "@orpc/server": "^1.14.6",
-    "better-sqlite3": "^12.11.1",
     "drizzle-orm": "^0.45.2",
-    "fastify": "^5.8.5"
+    "fastify": "^5.8.5",
+    "pg": "^8.22.0"
   },
   "devDependencies": {
     "@deck/configs": "workspace:*",
-    "@types/better-sqlite3": "^7.6.13",
+    "@electric-sql/pglite-socket": "^0.2.4",
     "@types/node": "^22",
+    "@types/pg": "^8.20.0",
+    "concurrently": "^9.2.3",
+    "drizzle-kit": "^0.31.10",
     "tsx": "^4.22.4",
     "typescript": "~6"
   }

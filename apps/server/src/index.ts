@@ -10,6 +10,7 @@ import {
   sessionCookie,
 } from "./auth"
 import { router } from "./router"
+import { runMigrations } from "./db/utils/run-migrations"
 
 const handler = new RPCHandler(router)
 const app = Fastify({ logger: true })
@@ -59,7 +60,10 @@ app.all("/rpc/*", async (req, reply) => {
 })
 
 const port = Number(process.env.PORT ?? 3000)
-app.listen({ port }).catch((err) => {
-  app.log.error(err)
-  process.exit(1)
-})
+// Bring the schema up to date before accepting any sync writes.
+runMigrations()
+  .then(() => app.listen({ port }))
+  .catch((err) => {
+    app.log.error(err)
+    process.exit(1)
+  })

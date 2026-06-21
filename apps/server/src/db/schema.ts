@@ -1,18 +1,19 @@
-import { index, integer, sqliteTable, text } from "drizzle-orm/sqlite-core"
-
-/** Per-board sequence counter; created lazily on a board's first sync. */
-export const boards = sqliteTable("boards", {
-  id: text("id").primaryKey(),
-  seqCounter: integer("seq_counter").notNull().default(0),
-})
+import { bigint, index, integer, pgTable, text } from "drizzle-orm/pg-core"
 
 /**
- * Named monotonic counters that aren't owned by a single board. The dashboard
- * list uses one (id `"dashboards"`) so list changes get an account-level
- * ordering, letting a client pull every board's metadata past its cursor
- * regardless of which board is open.
+ * Timestamps and sequence numbers are stored as plain integers, but a board's
+ * `updatedAt`/`deletedAt` are epoch milliseconds (~1.7e12) and overflow a
+ * 32-bit `integer`, so they use `bigint` in `number` mode. Sequence counters
+ * stay `integer`: a single channel's monotonic tick never approaches 2^31.
  */
-export const counters = sqliteTable("counters", {
+
+/**
+ * Named monotonic counters, one per sync channel, created lazily on first sync.
+ * Each board keeps its per-board tick under id `board:<id>`; the dashboard list
+ * uses id `"dashboards"` for an account-level ordering, letting a client pull
+ * every board's metadata past its cursor regardless of which board is open.
+ */
+export const counters = pgTable("counters", {
   id: text("id").primaryKey(),
   value: integer("value").notNull().default(0),
 })
@@ -35,30 +36,30 @@ export const counters = sqliteTable("counters", {
  * board counter: the list is board-independent, so its pull is `seq > since`
  * across every dashboard.
  */
-export const dashboards = sqliteTable("dashboards", {
+export const dashboards = pgTable("dashboards", {
   id: text("id").primaryKey(),
   title: text("title").notNull(),
   position: text("position").notNull(),
-  updatedAt: integer("updated_at").notNull(),
-  deletedAt: integer("deleted_at"),
+  updatedAt: bigint("updated_at", { mode: "number" }).notNull(),
+  deletedAt: bigint("deleted_at", { mode: "number" }),
   seq: integer("seq").notNull(),
 })
 
-export const columns = sqliteTable(
+export const columns = pgTable(
   "columns",
   {
     id: text("id").primaryKey(),
     boardId: text("board_id").notNull(),
     title: text("title").notNull(),
     position: text("position").notNull(),
-    updatedAt: integer("updated_at").notNull(),
-    deletedAt: integer("deleted_at"),
+    updatedAt: bigint("updated_at", { mode: "number" }).notNull(),
+    deletedAt: bigint("deleted_at", { mode: "number" }),
     seq: integer("seq").notNull(),
   },
   (t) => [index("columns_board_seq").on(t.boardId, t.seq)]
 )
 
-export const cards = sqliteTable(
+export const cards = pgTable(
   "cards",
   {
     id: text("id").primaryKey(),
@@ -67,8 +68,8 @@ export const cards = sqliteTable(
     title: text("title").notNull(),
     body: text("body").notNull(),
     position: text("position").notNull(),
-    updatedAt: integer("updated_at").notNull(),
-    deletedAt: integer("deleted_at"),
+    updatedAt: bigint("updated_at", { mode: "number" }).notNull(),
+    deletedAt: bigint("deleted_at", { mode: "number" }),
     seq: integer("seq").notNull(),
   },
   (t) => [index("cards_board_seq").on(t.boardId, t.seq)]

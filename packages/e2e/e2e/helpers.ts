@@ -81,6 +81,11 @@ export async function retitleCard(
   await expect(page.getByText(toTitle)).toBeVisible()
 }
 
+/** Deletes the open board via its header trash action. */
+export async function deleteBoard(page: Page): Promise<void> {
+  await page.getByRole("button", { name: "Delete board" }).click()
+}
+
 /** A card on the board, located by its visible title. */
 export function card(page: Page, title: string) {
   return page.locator("[data-rfd-draggable-id]", { hasText: title })
@@ -158,7 +163,7 @@ async function sync(
  * it. Lets a test reference "the card titled X" or "the To Do column" without
  * waiting on or knowing about the client's push timing.
  */
-async function waitForChange<S extends Change["store"]>(
+export async function waitForChange<S extends Change["store"]>(
   request: APIRequestContext,
   boardId: string,
   store: S,
@@ -319,4 +324,68 @@ export async function remoteDeleteCard(
       },
     ],
   })
+}
+
+/** Another client deletes the board `id` (tombstones it on the list channel). */
+export async function remoteDeleteDashboard(
+  request: APIRequestContext,
+  id: string
+): Promise<void> {
+  await dashboardSync(request, {
+    since: 0,
+    changes: [
+      {
+        store: "dashboards",
+        record: {
+          id,
+          title: "",
+          position: "a5",
+          deletedAt: Date.now(),
+          // A strictly newer clock so the delete wins last-writer-wins.
+          updatedAt: Date.now() + 10_000,
+        },
+      },
+    ],
+  })
+}
+
+/** Polls until the server reports board `id` as deleted (its tombstone landed). */
+export async function waitForDashboardDeleted(
+  request: APIRequestContext,
+  id: string,
+  timeoutMs = 8000
+): Promise<void> {
+  const deadline = Date.now() + timeoutMs
+  for (;;) {
+    const { changes } = await dashboardSync(request, { since: 0, changes: [] })
+    const hit = changes.find((c) => c.record.id === id)
+    if (hit && hit.record.deletedAt != null) return
+    if (Date.now() > deadline)
+      throw new Error(`timed out waiting for board ${id} to be deleted on the server`)
+    await new Promise((r) => setTimeout(r, 150))
+  }
+}
+
+/**
+ * Reads the card titled `title` straight off the server (tombstones included),
+ * or null if it never shows up — letting a test assert on its stored
+ * `deletedAt` rather than on what the UI happens to render.
+ */
+export async function serverCard(
+  request: APIRequestContext,
+  boardId: string,
+  title: string,
+  timeoutMs = 8000
+): Promise<Extract<Change, { store: "cards" }>["record"] | null> {
+  const deadline = Date.now() + timeoutMs
+  for (;;) {
+    const { changes } = await sync(request, { boardId, since: 0, changes: [] })
+    const hit = changes.find(
+      (c): c is Extract<Change, { store: "cards" }> =>
+        c.store === "cards" && c.record.title === title
+    )
+    if (hit) return hit.record
+    if (Date.now() > deadline) return null
+    await new Promise((r) => setTimeout(r, 150))
+  }
 }
