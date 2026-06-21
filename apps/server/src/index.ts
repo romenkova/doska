@@ -60,9 +60,12 @@ app.all("/rpc/*", async (req, reply) => {
 })
 
 const port = Number(process.env.PORT ?? 3000)
+// Bind all interfaces, not Fastify's default loopback — in a container the
+// reverse proxy reaches this from another container, so 127.0.0.1 isn't enough.
+const host = process.env.HOST ?? "0.0.0.0"
 // Bring the schema up to date before accepting any sync writes.
 runMigrations()
-  .then(() => app.listen({ port }))
+  .then(() => app.listen({ port, host }))
   .catch((err) => {
     app.log.error(err)
     process.exit(1)
