@@ -1,8 +1,3 @@
-CREATE TABLE "boards" (
-	"id" text PRIMARY KEY NOT NULL,
-	"seq_counter" integer DEFAULT 0 NOT NULL
-);
---> statement-breakpoint
 CREATE TABLE "cards" (
 	"id" text PRIMARY KEY NOT NULL,
 	"board_id" text NOT NULL,

@@ -1,14 +1,11 @@
 import type { Change } from "@deck/contract"
-import { eq } from "drizzle-orm"
-import type { db } from "../client"
+import type { Tx } from "./counter"
 import { cards, columns } from "../schema"
-
-type Tx = Parameters<Parameters<typeof db.transaction>[0]>[0]
+import { upsertLWW } from "./core/upsert-lww"
 
 /**
- * Upserts one change into its table under last-writer-wins, stamping `nextSeq`.
- * Returns whether it wrote (i.e. consumed a sequence number) — a change older
- * than what we already hold is ignored and consumes nothing.
+ * Upserts one board change into its table under last-writer-wins, stamping
+ * `nextSeq`. Returns whether it wrote (i.e. consumed a sequence number).
  *
  * Dashboards aren't handled here: the list syncs on its own board-independent
  * channel ({@link applyDashboardPush}), so a stray dashboard change arriving on
@@ -22,16 +19,8 @@ export async function applyOne(
 ): Promise<boolean> {
   const { store, record } = change
 
-  if (store === "dashboards") return false
-
   if (store === "columns") {
-    const [current] = await tx
-      .select({ updatedAt: columns.updatedAt })
-      .from(columns)
-      .where(eq(columns.id, record.id))
-      .limit(1)
-    if (current && current.updatedAt >= record.updatedAt) return false
-    const row = {
+    return upsertLWW(tx, columns, columns.id, columns.updatedAt, {
       id: record.id,
       boardId,
       title: record.title,
@@ -39,34 +28,22 @@ export async function applyOne(
       updatedAt: record.updatedAt,
       deletedAt: record.deletedAt,
       seq: nextSeq,
-    }
-    await tx
-      .insert(columns)
-      .values(row)
-      .onConflictDoUpdate({ target: columns.id, set: row })
-    return true
+    })
   }
 
-  const [current] = await tx
-    .select({ updatedAt: cards.updatedAt })
-    .from(cards)
-    .where(eq(cards.id, record.id))
-    .limit(1)
-  if (current && current.updatedAt >= record.updatedAt) return false
-  const row = {
-    id: record.id,
-    boardId,
-    columnId: record.columnId,
-    title: record.title,
-    body: record.body,
-    position: record.position,
-    updatedAt: record.updatedAt,
-    deletedAt: record.deletedAt,
-    seq: nextSeq,
+  if (store === "cards") {
+    return upsertLWW(tx, cards, cards.id, cards.updatedAt, {
+      id: record.id,
+      boardId,
+      columnId: record.columnId,
+      title: record.title,
+      body: record.body,
+      position: record.position,
+      updatedAt: record.updatedAt,
+      deletedAt: record.deletedAt,
+      seq: nextSeq,
+    })
   }
-  await tx
-    .insert(cards)
-    .values(row)
-    .onConflictDoUpdate({ target: cards.id, set: row })
-  return true
+
+  return false
 }

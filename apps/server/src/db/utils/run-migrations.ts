@@ -13,13 +13,13 @@ export async function runMigrations(): Promise<void> {
   const migrationsFolder = path.resolve(here, "../../../drizzle")
 
   const url = process.env.DATABASE_URL
-  const pool = new Pool({ connectionString: url })
 
-  await waitForConnection(pool)
-
+  // PGlite runs in-process, so it needs no connection wait; only the real
+  // Postgres path waits for the server to accept connections before migrating.
   if (url) {
-    await migrateNodePg(db, { migrationsFolder })
-  } else {
-    migratePglite(db, { migrationsFolder })
+    await waitForConnection(new Pool({ connectionString: url }))
+    return migrateNodePg(db, { migrationsFolder })
   }
+
+  return migratePglite(db, { migrationsFolder })
 }
