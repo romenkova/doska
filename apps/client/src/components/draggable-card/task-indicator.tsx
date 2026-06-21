@@ -1,4 +1,4 @@
-import { cn } from "@deck/ui-kit"
+import { cn } from "@doska/ui-kit"
 import { CircleCheck, ListChecks } from "lucide-react"
 
 interface IProps {

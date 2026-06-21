@@ -1,4 +1,4 @@
-import { IDB } from "@deck/client-db"
+import { IDB } from "@doska/client-db"
 import { STORES } from "../constants"
 
 const DB_NAME = "deck"

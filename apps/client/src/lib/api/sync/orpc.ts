@@ -1,4 +1,4 @@
-import { contract } from "@deck/contract"
+import { contract } from "@doska/contract"
 import { createORPCClient } from "@orpc/client"
 import { RPCLink } from "@orpc/client/fetch"
 import type { ContractRouterClient } from "@orpc/contract"

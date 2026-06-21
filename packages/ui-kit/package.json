@@ -1,5 +1,5 @@
 {
-  "name": "@deck/ui-kit",
+  "name": "@doska/ui-kit",
   "version": "0.0.1",
   "private": true,
   "type": "module",
@@ -22,7 +22,7 @@
     "react-dom": "^19.2.7"
   },
   "devDependencies": {
-    "@deck/configs": "workspace:*",
+    "@doska/configs": "workspace:*",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^10",

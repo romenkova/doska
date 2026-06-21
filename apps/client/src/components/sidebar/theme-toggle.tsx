@@ -1,5 +1,5 @@
 import { useTheme } from "@/components/theme-provider"
-import { Button } from "@deck/ui-kit"
+import { Button } from "@doska/ui-kit"
 import { MonitorCog, Moon, Sun } from "lucide-react"
 
 const THEME_ORDER = ["light", "dark", "system"] as const

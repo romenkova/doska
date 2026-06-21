@@ -1,5 +1,5 @@
 {
-  "name": "@deck/contract",
+  "name": "@doska/contract",
   "version": "0.0.1",
   "private": true,
   "type": "module",
@@ -11,6 +11,6 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@deck/configs": "workspace:*"
+    "@doska/configs": "workspace:*"
   }
 }

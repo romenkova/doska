@@ -1,4 +1,4 @@
-import { Button } from "@deck/ui-kit"
+import { Button } from "@doska/ui-kit"
 import { Eye } from "lucide-react"
 
 interface IProps {

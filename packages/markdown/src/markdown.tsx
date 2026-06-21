@@ -1,7 +1,7 @@
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import { remarkMark } from "remark-mark-highlight"
-import { cn } from "@deck/ui-kit"
+import { cn } from "@doska/ui-kit"
 import "./markdown.css"
 
 interface IProps {

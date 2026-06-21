@@ -1,4 +1,4 @@
-import { SidebarInset, SidebarProvider } from "@deck/ui-kit"
+import { SidebarInset, SidebarProvider } from "@doska/ui-kit"
 import { AppSidebar, DeckView, Home } from "@/components"
 import { useActiveDashboard } from "@/lib/hooks"
 

@@ -1,5 +1,5 @@
 # API server. It runs TypeScript directly with tsx in production — the
-# @deck/contract workspace package is consumed as .ts source, so there is no
+# @doska/contract workspace package is consumed as .ts source, so there is no
 # separate compile step. The build context is the monorepo root (see compose).
 FROM node:22-slim AS base
 RUN corepack enable

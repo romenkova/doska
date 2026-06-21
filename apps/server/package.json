@@ -13,7 +13,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@deck/contract": "workspace:*",
+    "@doska/contract": "workspace:*",
     "@electric-sql/pglite": "^0.5.3",
     "@orpc/server": "^1.14.6",
     "drizzle-orm": "^0.45.2",
@@ -21,7 +21,7 @@
     "pg": "^8.22.0"
   },
   "devDependencies": {
-    "@deck/configs": "workspace:*",
+    "@doska/configs": "workspace:*",
     "@electric-sql/pglite-socket": "^0.2.4",
     "@types/node": "^22",
     "@types/pg": "^8.20.0",

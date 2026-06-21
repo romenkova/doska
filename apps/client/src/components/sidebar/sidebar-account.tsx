@@ -6,7 +6,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@deck/ui-kit"
+} from "@doska/ui-kit"
 import { LogIn, LogOut, UserRound } from "lucide-react"
 import { useLoginPrompt } from "@/components/login/login-prompt-context"
 import { useLogout } from "@/lib/data/mutations"

@@ -1,4 +1,4 @@
-import { cn } from "@deck/ui-kit"
+import { cn } from "@doska/ui-kit"
 import { Markdown } from "./markdown"
 
 interface IProps extends React.ComponentProps<"textarea"> {

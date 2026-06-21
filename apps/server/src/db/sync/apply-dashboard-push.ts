@@ -1,4 +1,4 @@
-import type { DashboardChange } from "@deck/contract"
+import type { DashboardChange } from "@doska/contract"
 import { applyChanges } from "./apply-changes"
 import { dashboardsCounter } from "./counter"
 import { dashboards } from "../schema"

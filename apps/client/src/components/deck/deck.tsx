@@ -6,7 +6,7 @@ import { Column } from "../column/column"
 import { DraggableCard } from "../draggable-card/draggable-card"
 import { CardModal } from "../card-modal/card-modal"
 import { DeckHeader } from "./deck-header"
-import { cn } from "@deck/ui-kit"
+import { cn } from "@doska/ui-kit"
 
 interface IProps {
   dashboard: Dashboard

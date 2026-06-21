@@ -1,4 +1,4 @@
-import { startBackgroundSync as start } from "@deck/sync"
+import { startBackgroundSync as start } from "@doska/sync"
 import { sync } from "./sync-engine"
 
 const DEFAULT_SYNC_INTERVAL = 15_000

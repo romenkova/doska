@@ -1,5 +1,5 @@
 {
-  "name": "@deck/e2e",
+  "name": "@doska/e2e",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -9,8 +9,8 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@deck/contract": "workspace:*",
-    "@deck/configs": "workspace:*",
+    "@doska/contract": "workspace:*",
+    "@doska/configs": "workspace:*",
     "@playwright/test": "1.61.0",
     "@types/node": "^22",
     "typescript": "~6"

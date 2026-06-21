@@ -1,5 +1,5 @@
-import type { SyncState } from "@deck/sync"
-import { Button, cn } from "@deck/ui-kit"
+import type { SyncState } from "@doska/sync"
+import { Button, cn } from "@doska/ui-kit"
 import {
   Check,
   LoaderCircle,

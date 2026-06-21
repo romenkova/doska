@@ -1,7 +1,7 @@
 import { Droppable } from "@hello-pangea/dnd"
 import type { ReactNode } from "react"
 import { ColumnHead } from "./column-head"
-import { cn } from "@deck/ui-kit"
+import { cn } from "@doska/ui-kit"
 
 interface IProps {
   children: ReactNode

@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from "react"
-import type { SyncState } from "@deck/sync"
+import type { SyncState } from "@doska/sync"
 import { sync } from "@/lib/api/sync"
 
 /**

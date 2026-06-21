@@ -5,7 +5,7 @@ import {
   ModalContent,
   ModalDescription,
   ModalTitle,
-} from "@deck/ui-kit"
+} from "@doska/ui-kit"
 import { useState } from "react"
 import { useLogin } from "@/lib/data/mutations"
 

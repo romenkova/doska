@@ -1,4 +1,4 @@
-import type { DashboardChange } from "@deck/contract"
+import type { DashboardChange } from "@doska/contract"
 import { gt } from "drizzle-orm"
 import { db } from "../client"
 import { dashboardsCounter } from "./counter"

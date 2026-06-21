@@ -1,5 +1,5 @@
 {
-  "name": "@deck/sync",
+  "name": "@doska/sync",
   "version": "0.0.1",
   "private": true,
   "type": "module",
@@ -9,6 +9,6 @@
   "dependencies": {
   },
   "devDependencies": {
-    "@deck/configs": "workspace:*"
+    "@doska/configs": "workspace:*"
   }
 }

@@ -1,4 +1,4 @@
-import { Modal } from "@deck/ui-kit"
+import { Modal } from "@doska/ui-kit"
 import { useState } from "react"
 import { useLocation, useRoute } from "wouter"
 import { routes } from "@/lib/routes"

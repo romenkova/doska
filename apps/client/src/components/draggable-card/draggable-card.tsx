@@ -4,8 +4,8 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-} from "@deck/ui-kit"
-import { cn } from "@deck/ui-kit"
+} from "@doska/ui-kit"
+import { cn } from "@doska/ui-kit"
 import { fallbackCard } from "@/lib/seed"
 import { Draggable } from "@hello-pangea/dnd"
 import { useLocation } from "wouter"
@@ -13,7 +13,7 @@ import { routes } from "@/lib/routes"
 import { CardMenu } from "./card-menu"
 import { TaskIndicator } from "./task-indicator"
 import { useCard } from "@/lib/data/queries"
-import { Markdown, taskProgress } from "@deck/markdown"
+import { Markdown, taskProgress } from "@doska/markdown"
 
 interface IProps {
   id: string

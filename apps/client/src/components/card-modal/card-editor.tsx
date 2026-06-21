@@ -1,5 +1,5 @@
-import { ModalContent, InvisibleInput, cn } from "@deck/ui-kit"
-import { MarkdownTextarea } from "@deck/markdown"
+import { ModalContent, InvisibleInput, cn } from "@doska/ui-kit"
+import { MarkdownTextarea } from "@doska/markdown"
 import type { Card } from "@/lib/types"
 import { useState } from "react"
 import { useToggle } from "@/lib/hooks"

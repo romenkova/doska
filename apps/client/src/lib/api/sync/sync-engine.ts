@@ -1,4 +1,4 @@
-import { SyncEngine, type SyncState, type SyncStatus } from "@deck/sync"
+import { SyncEngine, type SyncState, type SyncStatus } from "@doska/sync"
 import { DASHBOARDS } from "../constants"
 import type { StoreName } from "../constants"
 import { DeckSyncDriver } from "./drivers/board-driver"

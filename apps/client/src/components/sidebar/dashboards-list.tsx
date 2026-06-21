@@ -5,7 +5,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@deck/ui-kit"
+} from "@doska/ui-kit"
 import { type Dashboard } from "@/lib/types"
 
 interface IProps {

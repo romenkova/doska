@@ -1,4 +1,4 @@
-import { contract } from "@deck/contract"
+import { contract } from "@doska/contract"
 import { implement } from "@orpc/server"
 import {
   applyDashboardPush,

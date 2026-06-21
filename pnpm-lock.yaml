@@ -17,19 +17,19 @@ importers:
 
   apps/client:
     dependencies:
-      '@deck/client-db':
+      '@doska/client-db':
         specifier: workspace:*
         version: link:../../packages/client-db
-      '@deck/contract':
+      '@doska/contract':
         specifier: workspace:*
         version: link:../../packages/contract
-      '@deck/markdown':
+      '@doska/markdown':
         specifier: workspace:*
         version: link:../../packages/markdown
-      '@deck/sync':
+      '@doska/sync':
         specifier: workspace:*
         version: link:../../packages/sync
-      '@deck/ui-kit':
+      '@doska/ui-kit':
         specifier: workspace:*
         version: link:../../packages/ui-kit
       '@fontsource-variable/geist-mono':
@@ -84,7 +84,7 @@ importers:
         specifier: 3.10.0
         version: 3.10.0(react@19.2.7)
     devDependencies:
-      '@deck/configs':
+      '@doska/configs':
         specifier: workspace:*
         version: link:../../packages/configs
       '@types/node':
@@ -117,7 +117,7 @@ importers:
 
   apps/server:
     dependencies:
-      '@deck/contract':
+      '@doska/contract':
         specifier: workspace:*
         version: link:../../packages/contract
       '@electric-sql/pglite':
@@ -136,7 +136,7 @@ importers:
         specifier: ^8.22.0
         version: 8.22.0
     devDependencies:
-      '@deck/configs':
+      '@doska/configs':
         specifier: workspace:*
         version: link:../../packages/configs
       '@electric-sql/pglite-socket':
@@ -163,7 +163,7 @@ importers:
 
   packages/client-db:
     devDependencies:
-      '@deck/configs':
+      '@doska/configs':
         specifier: workspace:*
         version: link:../configs
 
@@ -200,16 +200,16 @@ importers:
         specifier: ^4.4.3
         version: 4.4.3
     devDependencies:
-      '@deck/configs':
+      '@doska/configs':
         specifier: workspace:*
         version: link:../configs
 
   packages/e2e:
     devDependencies:
-      '@deck/configs':
+      '@doska/configs':
         specifier: workspace:*
         version: link:../configs
-      '@deck/contract':
+      '@doska/contract':
         specifier: workspace:*
         version: link:../contract
       '@playwright/test':
@@ -224,7 +224,7 @@ importers:
 
   packages/markdown:
     dependencies:
-      '@deck/ui-kit':
+      '@doska/ui-kit':
         specifier: workspace:*
         version: link:../ui-kit
       react:
@@ -243,7 +243,7 @@ importers:
         specifier: 0.1.1
         version: 0.1.1
     devDependencies:
-      '@deck/configs':
+      '@doska/configs':
         specifier: workspace:*
         version: link:../configs
       '@types/react':
@@ -261,7 +261,7 @@ importers:
 
   packages/sync:
     devDependencies:
-      '@deck/configs':
+      '@doska/configs':
         specifier: workspace:*
         version: link:../configs
 
@@ -289,7 +289,7 @@ importers:
         specifier: 3.6.0
         version: 3.6.0
     devDependencies:
-      '@deck/configs':
+      '@doska/configs':
         specifier: workspace:*
         version: link:../configs
       '@types/react':

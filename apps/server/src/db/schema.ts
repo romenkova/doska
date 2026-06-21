@@ -19,7 +19,7 @@ export const counters = pgTable("counters", {
 })
 
 /**
- * The three entity tables mirror `@deck/contract` (= the client's `types.ts`),
+ * The three entity tables mirror `@doska/contract` (= the client's `types.ts`),
  * each augmented with sync metadata:
  *
  *  - `updatedAt`: client clock, the last-writer-wins tiebreaker.

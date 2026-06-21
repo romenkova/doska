@@ -1,5 +1,5 @@
-import type { Change } from "@deck/contract"
-import type { DirtyStore, SyncDriver } from "@deck/sync"
+import type { Change } from "@doska/contract"
+import type { DirtyStore, SyncDriver } from "@doska/sync"
 import type { Card, Column, Dashboard } from "@/lib/types"
 import { CARDS, COLUMNS, DASHBOARDS } from "../../constants"
 import { idb, META_STORE } from "../../db/idb"

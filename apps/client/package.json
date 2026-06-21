@@ -12,11 +12,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@deck/client-db": "workspace:*",
-    "@deck/contract": "workspace:*",
-    "@deck/markdown": "workspace:*",
-    "@deck/sync": "workspace:*",
-    "@deck/ui-kit": "workspace:*",
+    "@doska/client-db": "workspace:*",
+    "@doska/contract": "workspace:*",
+    "@doska/markdown": "workspace:*",
+    "@doska/sync": "workspace:*",
+    "@doska/ui-kit": "workspace:*",
     "@orpc/client": "^1.14.6",
     "@orpc/contract": "^1.14.6",
     "@fontsource-variable/geist-mono": "5.2.8",
@@ -36,7 +36,7 @@
     "wouter": "3.10.0"
   },
   "devDependencies": {
-    "@deck/configs": "workspace:*",
+    "@doska/configs": "workspace:*",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",

@@ -1,4 +1,4 @@
-import type { Change } from "@deck/contract"
+import type { Change } from "@doska/contract"
 import type { Tx } from "./counter"
 import { cards, columns } from "../schema"
 import { upsertLWW } from "./core/upsert-lww"

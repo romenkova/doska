@@ -1,4 +1,4 @@
 {
-  "extends": "@deck/configs/tsconfig/dom.json",
+  "extends": "@doska/configs/tsconfig/dom.json",
   "include": ["src"],
 }

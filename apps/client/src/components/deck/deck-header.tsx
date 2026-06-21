@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import { Button, SidebarTrigger, cn } from "@deck/ui-kit"
+import { Button, SidebarTrigger, cn } from "@doska/ui-kit"
 import { Trash2 } from "lucide-react"
 import { SyncIndicator } from "./sync-indicator"
 

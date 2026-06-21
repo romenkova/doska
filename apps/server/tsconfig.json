@@ -1,4 +1,4 @@
 {
-  "extends": "@deck/configs/tsconfig/node.json",
+  "extends": "@doska/configs/tsconfig/node.json",
   "include": ["src", "drizzle.config.ts"]
 }

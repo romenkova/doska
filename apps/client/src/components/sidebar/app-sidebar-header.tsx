@@ -1,4 +1,4 @@
-import { SidebarHeader, SidebarMenu, SidebarMenuItem } from "@deck/ui-kit"
+import { SidebarHeader, SidebarMenu, SidebarMenuItem } from "@doska/ui-kit"
 import { Anchor } from "lucide-react"
 import { Link } from "wouter"
 

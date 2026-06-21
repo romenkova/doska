@@ -1,5 +1,5 @@
-import type { DashboardChange } from "@deck/contract"
-import type { DirtyStore, SyncDriver } from "@deck/sync"
+import type { DashboardChange } from "@doska/contract"
+import type { DirtyStore, SyncDriver } from "@doska/sync"
 import type { Card, Column, Dashboard } from "@/lib/types"
 import { keys } from "@/lib/data/keys"
 import { queryClient } from "@/lib/query-client"

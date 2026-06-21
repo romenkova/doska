@@ -1,5 +1,5 @@
 import { Anchor, Plus } from "lucide-react"
-import { Button, SidebarTrigger } from "@deck/ui-kit"
+import { Button, SidebarTrigger } from "@doska/ui-kit"
 
 interface IProps {
   hasBoards: boolean

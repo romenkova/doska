@@ -1,4 +1,4 @@
-import type { Change } from "@deck/contract"
+import type { Change } from "@doska/contract"
 import { eq } from "drizzle-orm"
 import { dashboards } from "../schema"
 import { applyChanges } from "./apply-changes"

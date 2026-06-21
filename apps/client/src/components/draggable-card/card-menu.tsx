@@ -5,7 +5,7 @@ import {
   MenuItem,
   MenuSeparator,
   MenuTrigger,
-} from "@deck/ui-kit"
+} from "@doska/ui-kit"
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react"
 
 interface IProps {

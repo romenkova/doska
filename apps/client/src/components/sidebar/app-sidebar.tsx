@@ -5,7 +5,7 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
-} from "@deck/ui-kit"
+} from "@doska/ui-kit"
 import { AppSidebarHeader } from "./app-sidebar-header"
 import { DashboardsList } from "./dashboards-list"
 import { ThemeToggle } from "./theme-toggle"

@@ -1,4 +1,4 @@
-import type { Change } from "@deck/contract"
+import type { Change } from "@doska/contract"
 import { and, eq, gt } from "drizzle-orm"
 import { db } from "../client"
 import { boardCounter } from "./counter"

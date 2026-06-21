@@ -1,5 +1,5 @@
 import { expect, type APIRequestContext, type Page } from "@playwright/test"
-import type { Change, DashboardChange } from "@deck/contract"
+import type { Change, DashboardChange } from "@doska/contract"
 
 /**
  * The single credential pair the e2e API server is booted with (see
