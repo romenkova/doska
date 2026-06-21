@@ -21,6 +21,18 @@ services:
       dockerfile: apps/client/Dockerfile
     depends_on:
       - server
-    ports:
-      - "${WEB_PORT:-8080}:80"
+    # No host port binding: Dokploy's Traefik routes to this container on :80.
+    # Point a Domain at this service (container port 80) in the Dokploy UI.
+    expose:
+      - "80"
+    networks:
+      # `default` keeps web↔server DNS working; `dokploy-network` lets Traefik
+      # reach this container to serve the configured Domain.
+      - default
+      - dokploy-network
     restart: unless-stopped
+
+networks:
+  # Shared network Dokploy's Traefik uses to reach app containers.
+  dokploy-network:
+    external: true
