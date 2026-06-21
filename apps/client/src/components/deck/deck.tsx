@@ -6,6 +6,7 @@ import { Column } from "../column/column"
 import { DraggableCard } from "../draggable-card/draggable-card"
 import { CardModal } from "../card-modal/card-modal"
 import { DeckHeader } from "./deck-header"
+import { SyncIndicator } from "./sync-indicator"
 import { cn } from "@doska/ui-kit"
 
 interface IProps {
@@ -16,6 +17,9 @@ interface IProps {
   onToggleBody: (columnId: string) => void
   onAddCard: (columnId: string) => void
   onDeleteCard: (id: string) => void
+  onAddColumn: () => void
+  onRenameColumn: (columnId: string, title: string) => void
+  onDeleteColumn: (columnId: string) => void
   onRenameDashboard: (name: string) => void
   onDeleteDashboard: () => void
   onDragEnd: (result: DropResult) => void
@@ -29,6 +33,9 @@ export function Deck({
   onToggleBody,
   onAddCard,
   onDeleteCard,
+  onAddColumn,
+  onRenameColumn,
+  onDeleteColumn,
   onRenameDashboard,
   onDeleteDashboard,
   onDragEnd,
@@ -48,6 +55,7 @@ export function Deck({
         title={dashboard.title}
         onRename={onRenameDashboard}
         onDelete={onDeleteDashboard}
+        onAddColumn={onAddColumn}
       />
       <DragDropContext onDragEnd={onDragEnd}>
         <div
@@ -68,6 +76,8 @@ export function Deck({
                 showBody={showBody}
                 onToggleBody={() => onToggleBody(column.id)}
                 onAddCard={() => onAddCard(column.id)}
+                onRename={(title) => onRenameColumn(column.id, title)}
+                onDelete={() => onDeleteColumn(column.id)}
               >
                 {cards.map((card, index) => (
                   <DraggableCard
@@ -83,6 +93,9 @@ export function Deck({
           })}
         </div>
       </DragDropContext>
+      <div className="fixed right-4 bottom-4 z-50">
+        <SyncIndicator />
+      </div>
       <CardModal closeHref={`~${routes.deck.to(dashboard.id)}`} />
     </div>
   )

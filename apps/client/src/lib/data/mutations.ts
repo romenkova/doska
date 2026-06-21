@@ -73,6 +73,31 @@ export function useDeleteCard(deckId: string) {
   })
 }
 
+export function useCreateColumn(deckId: string) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (title: string) => api.createColumn(deckId, title),
+    onSettled: () => qc.invalidateQueries({ queryKey: keys.board(deckId) }),
+  })
+}
+
+export function useRenameColumn(deckId: string) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, title }: { id: string; title: string }) =>
+      api.renameColumn(id, title),
+    onSettled: () => qc.invalidateQueries({ queryKey: keys.board(deckId) }),
+  })
+}
+
+export function useDeleteColumn(deckId: string) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => api.deleteColumn(deckId, id),
+    onSettled: () => qc.invalidateQueries({ queryKey: keys.board(deckId) }),
+  })
+}
+
 export function useUpdateCard(id: string) {
   const qc = useQueryClient()
   return useMutation({

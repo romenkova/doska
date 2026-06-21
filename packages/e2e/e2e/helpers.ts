@@ -42,8 +42,8 @@ export async function authenticate(request: APIRequestContext): Promise<void> {
 /**
  * Creates a fresh board from Home and returns its generated deck id (read off
  * the URL — the one identifier a user can actually see, in their address bar).
- * A new board lands with the four default columns (To Do / In Progress / Done /
- * Paused) and no cards; seed any cards a test needs with `addCard`.
+ * A new board lands with the three default columns (To Do / In Progress / Done)
+ * and no cards; seed any cards a test needs with `addCard`.
  */
 export async function createBoard(page: Page): Promise<string> {
   await page.goto("/")
@@ -53,14 +53,18 @@ export async function createBoard(page: Page): Promise<string> {
 }
 
 /**
- * Adds a card to the named column. New cards seed with the "Untitled card"
- * fallback title, so this waits on that count rising rather than on a specific
- * title; pair with `retitleCard` to give it a distinct name.
+ * Adds a card to the named column via the column's "add card" control, which now
+ * lives as a full-width button at the top of the column body (it used to sit in
+ * the column header). New cards seed with the "Untitled card" fallback title, so
+ * this waits on that count rising rather than on a specific title; pair with
+ * `retitleCard` to give it a distinct name.
  */
-export async function addCard(page: Page, column: string): Promise<void> {
+export async function addCard(page: Page, name: string): Promise<void> {
   const seeded = page.getByText("Untitled card")
   const before = await seeded.count()
-  await page.getByRole("button", { name: `Add card to ${column}` }).click()
+  await column(page, name)
+    .getByRole("button", { name: `Add card to ${name}` })
+    .click()
   await expect(seeded).toHaveCount(before + 1)
 }
 
@@ -81,9 +85,65 @@ export async function retitleCard(
   await expect(page.getByText(toTitle)).toBeVisible()
 }
 
-/** Deletes the open board via its header trash action. */
+/**
+ * Deletes the open board via its header trash action, then confirms the "are you
+ * sure?" dialog. The dialog's confirm button shares the "Delete board" name with
+ * the header trigger, so the confirm click is scoped to the dialog.
+ */
 export async function deleteBoard(page: Page): Promise<void> {
   await page.getByRole("button", { name: "Delete board" }).click()
+  await page
+    .getByRole("dialog")
+    .getByRole("button", { name: "Delete board" })
+    .click()
+}
+
+/**
+ * The open board's title in the deck header — an inline-editable span (it flips
+ * to an input on click), not a heading. Scoped to the header carrying the "Add
+ * column" control so it isn't confused with the same board name in the sidebar.
+ */
+export function boardTitle(page: Page, name: string) {
+  return page
+    .locator("header", { has: page.getByRole("button", { name: "Add column" }) })
+    .getByText(name, { exact: true })
+}
+
+/**
+ * Adds a column via the deck header's "Add column" action. New columns land with
+ * the "New column" fallback title, appended after the existing ones; this waits
+ * for it to render. Pair with `renameColumn` to give it a distinct name.
+ */
+export async function addColumn(page: Page): Promise<void> {
+  await page.getByRole("button", { name: "Add column" }).click()
+  await expect(column(page, "New column")).toBeVisible()
+}
+
+/**
+ * Renames the column titled `fromTitle` in place — its heading flips to an
+ * inline input on click, same as the board name — and waits for the column to
+ * show the new name.
+ */
+export async function renameColumn(
+  page: Page,
+  fromTitle: string,
+  toTitle: string
+): Promise<void> {
+  await column(page, fromTitle).getByText(fromTitle).click()
+  const input = page.getByRole("textbox", { name: `Rename ${fromTitle}` })
+  await input.fill(toTitle)
+  await input.press("Enter")
+  await expect(column(page, toTitle)).toBeVisible()
+}
+
+/**
+ * Deletes the column titled `title` via its header trash action, then confirms
+ * the "are you sure?" dialog, and waits for the column to disappear.
+ */
+export async function deleteColumn(page: Page, title: string): Promise<void> {
+  await page.getByRole("button", { name: `Delete ${title}` }).click()
+  await page.getByRole("button", { name: "Delete column" }).click()
+  await expect(column(page, title)).toHaveCount(0)
 }
 
 /** A card on the board, located by its visible title. */
@@ -92,13 +152,14 @@ export function card(page: Page, title: string) {
 }
 
 /**
- * The sync indicator in the header. Its accessible name *is* the current status
- * ("All changes saved", "1 unsaved change", "Saving...", "Sync failed"), so a
- * test reads status straight off the locator's accessible name.
+ * The sync indicator (a floating button at the bottom-right of the board). Its
+ * accessible name *is* the current status ("Saved", "1 change", "2 changes",
+ * "Sync failed"), so a test reads status straight off the locator's accessible
+ * name. (While syncing the label is blank — but tests assert the settled states.)
  */
 export function syncIndicator(page: Page) {
   return page.getByRole("button", {
-    name: /saved|unsaved|Saving|Sync failed/,
+    name: /Saved|change|Sync failed/,
   })
 }
 

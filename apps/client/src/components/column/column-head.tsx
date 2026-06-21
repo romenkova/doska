@@ -1,19 +1,26 @@
+import { useState } from "react"
 import { Button, cn } from "@doska/ui-kit"
-import { Eye, EyeOff, Plus } from "lucide-react"
+import { Eye, EyeOff, Trash2 } from "lucide-react"
+import { EditableTitle } from "../editable-title"
+import { ConfirmDialog } from "../confirm-dialog"
 
 interface IProps {
   title: string
   showBody: boolean
   onToggleBody: () => void
-  onAddCard: () => void
+  onRename: (title: string) => void
+  onDelete: () => void
 }
 
 export function ColumnHead({
-  onAddCard,
   onToggleBody,
+  onRename,
+  onDelete,
   showBody,
   title,
 }: IProps) {
+  const [confirmOpen, setConfirmOpen] = useState(false)
+
   return (
     <div
       className={cn(
@@ -22,7 +29,12 @@ export function ColumnHead({
         "text-muted-foreground uppercase"
       )}
     >
-      {title}
+      <EditableTitle
+        value={title}
+        onCommit={onRename}
+        label={`Rename ${title}`}
+        className="uppercase"
+      />
       <div className="flex items-center gap-2">
         <Button
           variant="ghost"
@@ -36,14 +48,23 @@ export function ColumnHead({
           {showBody ? <EyeOff /> : <Eye />}
         </Button>
         <Button
-          variant="secondary"
+          variant="ghost"
           size="icon-lg"
-          onClick={onAddCard}
-          aria-label={`Add card to ${title}`}
+          onClick={() => setConfirmOpen(true)}
+          aria-label={`Delete ${title}`}
+          className="hover:text-destructive"
         >
-          <Plus />
+          <Trash2 />
         </Button>
       </div>
+      <ConfirmDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        title="Delete column?"
+        description={`"${title}" and all of its cards will be permanently deleted.`}
+        confirmLabel="Delete column"
+        onConfirm={onDelete}
+      />
     </div>
   )
 }
