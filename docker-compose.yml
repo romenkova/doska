@@ -13,6 +13,9 @@ services:
       NODE_ENV: production
     expose:
       - "3000"
+    networks:
+      - default
+      - dokploy-network
     restart: unless-stopped
 
   web:
