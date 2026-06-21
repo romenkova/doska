@@ -9,8 +9,8 @@ import {
   readJson,
   sessionCookie,
 } from "./auth"
-import { runMigrations } from "./db/client"
 import { router } from "./router"
+import { runMigrations } from "./db/utils/run-migrations"
 
 const handler = new RPCHandler(router)
 const app = Fastify({ logger: true })
