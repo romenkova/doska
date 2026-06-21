@@ -35,9 +35,17 @@ export const DashboardSchema = z.object({
   deletedAt: z.number().nullable(),
 });
 
+/** A dashboard list change. The dashboard list syncs on its own account-level
+ * channel (see `dashboards.sync`), independent of any open board, so it carries
+ * only dashboard records. */
+export const DashboardChangeSchema = z.object({
+  store: z.literal("dashboards"),
+  record: DashboardSchema,
+});
+
 /** One record change, tagged by the store it belongs to. */
 export const ChangeSchema = z.discriminatedUnion("store", [
   z.object({ store: z.literal("cards"), record: CardSchema }),
   z.object({ store: z.literal("columns"), record: ColumnSchema }),
-  z.object({ store: z.literal("dashboards"), record: DashboardSchema }),
+  DashboardChangeSchema,
 ]);
