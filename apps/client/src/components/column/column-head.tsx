@@ -1,6 +1,8 @@
+import { useState } from "react"
 import { Button, cn } from "@doska/ui-kit"
 import { Eye, EyeOff, Trash2 } from "lucide-react"
 import { EditableTitle } from "../editable-title"
+import { ConfirmDialog } from "../confirm-dialog"
 
 interface IProps {
   title: string
@@ -17,6 +19,8 @@ export function ColumnHead({
   showBody,
   title,
 }: IProps) {
+  const [confirmOpen, setConfirmOpen] = useState(false)
+
   return (
     <div
       className={cn(
@@ -46,13 +50,21 @@ export function ColumnHead({
         <Button
           variant="ghost"
           size="icon-lg"
-          onClick={onDelete}
+          onClick={() => setConfirmOpen(true)}
           aria-label={`Delete ${title}`}
           className="hover:text-destructive"
         >
           <Trash2 />
         </Button>
       </div>
+      <ConfirmDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        title="Delete column?"
+        description={`"${title}" and all of its cards will be permanently deleted.`}
+        confirmLabel="Delete column"
+        onConfirm={onDelete}
+      />
     </div>
   )
 }

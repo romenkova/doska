@@ -1,6 +1,8 @@
+import { useState } from "react"
 import { Button, SidebarTrigger } from "@doska/ui-kit"
 import { Plus, Trash2 } from "lucide-react"
 import { EditableTitle } from "../editable-title"
+import { ConfirmDialog } from "../confirm-dialog"
 
 interface IProps {
   title: string
@@ -10,6 +12,8 @@ interface IProps {
 }
 
 export function DeckHeader({ title, onRename, onDelete, onAddColumn }: IProps) {
+  const [confirmOpen, setConfirmOpen] = useState(false)
+
   return (
     <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
       <SidebarTrigger />
@@ -26,12 +30,20 @@ export function DeckHeader({ title, onRename, onDelete, onAddColumn }: IProps) {
         <Button
           variant="ghost"
           aria-label="Delete board"
-          onClick={onDelete}
+          onClick={() => setConfirmOpen(true)}
           className="text-muted-foreground hover:text-destructive"
         >
           <Trash2 />
         </Button>
       </div>
+      <ConfirmDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        title="Delete board?"
+        description={`"${title}" and all of its columns and cards will be permanently deleted.`}
+        confirmLabel="Delete board"
+        onConfirm={onDelete}
+      />
     </header>
   )
 }
