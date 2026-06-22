@@ -7,7 +7,7 @@ import {
 import * as authApi from "@/lib/api/auth"
 import * as api from "@/lib/api/operations"
 import { sync } from "@/lib/api/sync"
-import type { Board, Card } from "@/lib/types"
+import type { Board, Card, Column } from "@/lib/types"
 import { keys } from "./keys"
 
 export function useLogin() {
@@ -94,6 +94,34 @@ export function useDeleteColumn(deckId: string) {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (id: string) => api.deleteColumn(deckId, id),
+    onSettled: () => qc.invalidateQueries({ queryKey: keys.board(deckId) }),
+  })
+}
+
+/**
+ * Persists a reordered set of columns. Updates the board cache optimistically
+ * so the board behind the reorder modal reflects the new order immediately,
+ * then reconciles on settle.
+ */
+export function useMoveColumn(deckId: string) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (changed: Column[]) => api.moveColumn(changed),
+    onMutate: (changed) => {
+      const previous = qc.getQueryData<Board>(keys.board(deckId))
+      if (previous) {
+        const updates = new Map(changed.map((c) => [c.id, c]))
+        const next: Board = {
+          ...previous,
+          columns: previous.columns.map((c) => updates.get(c.id) ?? c),
+        }
+        qc.setQueryData(keys.board(deckId), next)
+      }
+      return { previous }
+    },
+    onError: (_err, _changed, ctx) => {
+      if (ctx?.previous) qc.setQueryData(keys.board(deckId), ctx.previous)
+    },
     onSettled: () => qc.invalidateQueries({ queryKey: keys.board(deckId) }),
   })
 }
