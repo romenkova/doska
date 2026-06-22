@@ -3,6 +3,7 @@
   font-size: 16px;
   color: var(--card-foreground);
   word-break: break-word;
+  position: relative;
 }
 
 .markdown mark {
@@ -32,7 +33,7 @@
   font-weight: 700;
   line-height: 1.25;
   letter-spacing: -0.01em;
-  margin: 0 0 0.5rem;
+  margin: 1rem 0 0.5rem;
 }
 
 /*.markdown h1 {
@@ -195,4 +196,25 @@
   margin: 0.875rem 0;
   border: none;
   border-top: 1px solid var(--border);
+}
+
+/* Cut marker divider — full-width dashed line, no added vertical space */
+.markdown .cut-divider {
+  display: block;
+  height: 0;
+  margin: 0;
+  border-top: 2px dashed var(--border);
+  width: 85px;
+  right: 0;
+  position: absolute;
+}
+
+.cut-divider::before {
+    content: "preview cut";
+    position: absolute;
+    font-size: 0.8rem;
+    color: var(--border);
+    font-family: var(--font-mono);
+    text-align: end;
+    width: 100%;
 }

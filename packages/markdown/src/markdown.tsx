@@ -2,6 +2,7 @@ import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import { remarkMark } from "remark-mark-highlight"
 import { cn } from "@doska/ui-kit"
+import { remarkCut } from "./plugins/remark-cut"
 import "./markdown.css"
 
 interface IProps {
@@ -13,7 +14,7 @@ export function Markdown({ children, className }: IProps) {
   return (
     <div className={cn("markdown", className)}>
       <ReactMarkdown
-        remarkPlugins={[remarkGfm, remarkMark]}
+        remarkPlugins={[remarkGfm, remarkMark, remarkCut]}
         components={{
           a: (props) => (
             <a

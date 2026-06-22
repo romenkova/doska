@@ -81,7 +81,7 @@ export function DraggableCard({ id, index, showBody, onDelete }: IProps) {
                     <Markdown>{preview}</Markdown>
                     {hasMore && (
                       <span className="text-muted-foreground select-none">
-                        …
+                        Open to see more
                       </span>
                     )}
                   </CardContent>
