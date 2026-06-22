@@ -101,7 +101,7 @@ export function useDeleteColumn(deckId: string) {
 export function useUpdateCard(id: string) {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (patch: Pick<Card, "title" | "body">) =>
+    mutationFn: (patch: Partial<Pick<Card, "title" | "body" | "locked">>) =>
       api.updateCard(id, patch),
     onSettled: () => qc.invalidateQueries({ queryKey: keys.card(id) }),
   })

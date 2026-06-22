@@ -1,4 +1,11 @@
-import { bigint, index, integer, pgTable, text } from "drizzle-orm/pg-core"
+import {
+  bigint,
+  boolean,
+  index,
+  integer,
+  pgTable,
+  text,
+} from "drizzle-orm/pg-core"
 
 /**
  * Timestamps and sequence numbers are stored as plain integers, but a board's
@@ -68,6 +75,7 @@ export const cards = pgTable(
     title: text("title").notNull(),
     body: text("body").notNull(),
     position: text("position").notNull(),
+    locked: boolean("locked").notNull().default(false),
     updatedAt: bigint("updated_at", { mode: "number" }).notNull(),
     deletedAt: bigint("deleted_at", { mode: "number" }),
     seq: integer("seq").notNull(),

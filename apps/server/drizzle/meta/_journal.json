@@ -8,6 +8,13 @@
       "when": 1782058609722,
       "tag": "0000_yellow_stranger",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1782159881619,
+      "tag": "0001_mixed_amphibian",
+      "breakpoints": true
     }
   ]
 }
