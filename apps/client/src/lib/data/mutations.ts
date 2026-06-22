@@ -99,9 +99,10 @@ export function useDeleteColumn(deckId: string) {
 }
 
 /**
- * Persists a reordered set of columns. Updates the board cache optimistically
- * so the board behind the reorder modal reflects the new order immediately,
- * then reconciles on settle.
+ * Persists a reordered column (computed by the reorder modal). Like
+ * {@link useMoveCard}, the board cache is updated up front and flushed eagerly
+ * so the new order is committed inside the drop event — the modal renders its
+ * blocks straight from `keys.board`, sorted by position.
  */
 export function useMoveColumn(deckId: string) {
   const qc = useQueryClient()
@@ -115,7 +116,7 @@ export function useMoveColumn(deckId: string) {
           ...previous,
           columns: previous.columns.map((c) => updates.get(c.id) ?? c),
         }
-        qc.setQueryData(keys.board(deckId), next)
+        flushSyncUpdate(() => qc.setQueryData(keys.board(deckId), next))
       }
       return { previous }
     },
