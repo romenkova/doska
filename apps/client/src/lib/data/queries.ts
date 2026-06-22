@@ -25,9 +25,10 @@ export function useBoard(deckId: string) {
   })
 }
 
-export function useCard(id: string) {
+export function useCard(id: string | null) {
   return useQuery({
-    queryKey: keys.card(id),
-    queryFn: () => api.getCard(id),
+    queryKey: keys.card(id ?? ""),
+    queryFn: () => api.getCard(id as string),
+    enabled: id != null,
   })
 }

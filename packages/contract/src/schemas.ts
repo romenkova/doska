@@ -14,6 +14,8 @@ export const CardSchema = z.object({
   body: z.string(),
   position: z.string(),
   columnId: z.string(),
+  /** When true the card opens read-only (preview) instead of the editor. */
+  locked: z.boolean().default(false),
   updatedAt: z.number(),
   deletedAt: z.number().nullable(),
 });

@@ -3,6 +3,7 @@
   font-size: 16px;
   color: var(--card-foreground);
   word-break: break-word;
+  position: relative;
 }
 
 .markdown mark {
@@ -29,22 +30,22 @@
 .markdown h2,
 .markdown h3 {
   font-family: var(--font-heading);
-  font-weight: 500;
+  font-weight: 700;
   line-height: 1.25;
   letter-spacing: -0.01em;
-  margin: 0 0 0.5rem;
+  margin: 1rem 0 0.5rem;
 }
 
-.markdown h1 {
-  font-size: 1.0625rem;
-}
+/*.markdown h1 {
+  font-size: 1.2rem;
+}*/
 
 .markdown h2 {
-  font-size: 0.9375rem;
+  font-size: 1rem;
 }
 
 .markdown h3 {
-  font-size: 0.875rem;
+  font-size: 1rem;
   color: var(--muted-foreground);
 }
 
@@ -127,10 +128,19 @@
   color: var(--muted-foreground);
 }
 
-/* GFM task lists */
-.markdown li:has(> input[type="checkbox"]) {
+/* GFM task lists. A "loose" list (blank lines between items) wraps each item's
+   content in a <p>, while a "tight" list puts it directly in the <li>. Key off
+   the item class (set on both) rather than a direct-child checkbox so the two
+   render identically. */
+.markdown li.task-list-item {
   list-style: none;
   margin-left: -1rem;
+}
+
+/* Drop the paragraph the loose variant adds, so its spacing matches the tight
+   variant instead of picking up the default `.markdown p` margin. */
+.markdown li.task-list-item > p {
+  margin: 0;
 }
 
 .markdown input[type="checkbox"] {
@@ -160,7 +170,8 @@
   cursor: pointer;
 }
 
-.markdown li:has(> input[type="checkbox"]:checked) {
+.markdown li.task-list-item:has(> input[type="checkbox"]:checked),
+.markdown li.task-list-item:has(> p > input[type="checkbox"]:checked) {
   color: var(--muted-foreground);
   text-decoration: line-through;
   text-decoration-color: color-mix(
@@ -195,4 +206,25 @@
   margin: 0.875rem 0;
   border: none;
   border-top: 1px solid var(--border);
+}
+
+/* Cut marker divider — full-width dashed line, no added vertical space */
+.markdown .cut-divider {
+  display: block;
+  height: 0;
+  margin: 0;
+  border-top: 2px dashed var(--border);
+  width: 85px;
+  right: 0;
+  position: absolute;
+}
+
+.cut-divider::before {
+    content: "preview cut";
+    position: absolute;
+    font-size: 0.8rem;
+    color: var(--border);
+    font-family: var(--font-mono);
+    text-align: end;
+    width: 100%;
 }

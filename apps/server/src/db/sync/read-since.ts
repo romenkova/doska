@@ -46,6 +46,7 @@ export async function readSince(
         body: r.body,
         position: r.position,
         columnId: r.columnId,
+        locked: r.locked,
         updatedAt: r.updatedAt,
         deletedAt: r.deletedAt,
       },

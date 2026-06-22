@@ -13,7 +13,8 @@ import { routes } from "@/lib/routes"
 import { CardMenu } from "./card-menu"
 import { TaskIndicator } from "./task-indicator"
 import { useCard } from "@/lib/data/queries"
-import { Markdown, taskProgress } from "@doska/markdown"
+import { useUpdateCard } from "@/lib/data/mutations"
+import { MarkdownCardPreview, taskProgress } from "@doska/markdown"
 
 interface IProps {
   id: string
@@ -25,6 +26,7 @@ interface IProps {
 export function DraggableCard({ id, index, showBody, onDelete }: IProps) {
   const [, navigate] = useLocation()
   const { data: card = fallbackCard } = useCard(id)
+  const { mutate: updateCard } = useUpdateCard(id)
   const { title, body } = card
   const { done, total } = taskProgress(body)
 
@@ -74,7 +76,10 @@ export function DraggableCard({ id, index, showBody, onDelete }: IProps) {
               >
                 <div className="overflow-hidden">
                   <CardContent className="space-y-3 pt-4">
-                    <Markdown>{body}</Markdown>
+                    <MarkdownCardPreview
+                      body={body}
+                      onChangeBody={(body) => updateCard({ body })}
+                    />
                   </CardContent>
                 </div>
               </div>

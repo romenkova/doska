@@ -1,41 +1,49 @@
 import { ModalContent, InvisibleInput, cn } from "@doska/ui-kit"
-import { MarkdownTextarea } from "@doska/markdown"
-import type { Card } from "@/lib/types"
-import { useState } from "react"
-import { useToggle } from "@/lib/hooks"
+import { MarkdownTextarea, cut } from "@doska/markdown"
 import { CardContentLayout } from "./card-content-layout"
 import { CardModalHeader } from "./card-modal-header"
 
+const PREVIEW_MARKERS = [cut]
+
 interface IProps {
-  id: string
-  content: Card
-  onSave: (next: Pick<Card, "title" | "body">) => void
+  title: string
+  body: string
+  isPreview: boolean
+  isLocked: boolean
+  onChangeTitle: (value: string) => void
+  onChangeBody: (value: string) => void
+  onTogglePreview: () => void
+  onToggleLock: () => void
   onClose: () => void
 }
 
-export function CardEditor({ content, onSave, onClose }: IProps) {
-  const [isPreview, togglePreview] = useToggle(false)
-  const [draftTitle, setDraftTitle] = useState(content.title)
-  const [draftBody, setDraftBody] = useState(content.body)
-
-  const save = () => {
-    onSave({ title: draftTitle, body: draftBody })
-    onClose()
-  }
-
+/** Presentational card editor: renders the draft and reports edits upward. */
+export function CardEditor({
+  title,
+  body,
+  isPreview,
+  isLocked,
+  onChangeTitle,
+  onChangeBody,
+  onTogglePreview,
+  onToggleLock,
+  onClose,
+}: IProps) {
   return (
     <ModalContent className="md:h-[85vh]">
       <CardModalHeader
         isPreview={isPreview}
+        isLocked={isLocked}
         onClose={onClose}
-        onSave={save}
-        onTogglePreivew={togglePreview}
+        onSave={onClose}
+        onToggleLock={onToggleLock}
+        onTogglePreivew={onTogglePreview}
       />
       <CardContentLayout>
         <InvisibleInput
           autoFocus
-          value={draftTitle}
-          onChange={(e) => setDraftTitle(e.target.value)}
+          value={title}
+          onChange={(e) => onChangeTitle(e.target.value)}
           placeholder="Title"
           isPreview={isPreview}
           className={cn(
@@ -44,10 +52,12 @@ export function CardEditor({ content, onSave, onClose }: IProps) {
           )}
         />
         <MarkdownTextarea
-          value={draftBody}
-          onChange={(e) => setDraftBody(e.target.value)}
+          value={body}
+          onChange={(e) => onChangeBody(e.target.value)}
+          onToggleTask={onChangeBody}
           placeholder="Notes"
           isPreview={isPreview}
+          markers={PREVIEW_MARKERS}
         />
       </CardContentLayout>
     </ModalContent>
