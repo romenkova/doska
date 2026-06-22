@@ -13,7 +13,9 @@ import { routes } from "@/lib/routes"
 import { CardMenu } from "./card-menu"
 import { TaskIndicator } from "./task-indicator"
 import { useCard } from "@/lib/data/queries"
-import { Markdown, taskProgress } from "@doska/markdown"
+import { Markdown, taskProgress, cut, useMarkers } from "@doska/markdown"
+
+const BOARD_MARKERS = [cut]
 
 interface IProps {
   id: string
@@ -27,6 +29,8 @@ export function DraggableCard({ id, index, showBody, onDelete }: IProps) {
   const { data: card = fallbackCard } = useCard(id)
   const { title, body } = card
   const { done, total } = taskProgress(body)
+  const { body: preview, applied } = useMarkers(body, BOARD_MARKERS, "card")
+  const hasMore = applied.includes(cut.name)
 
   return (
     <Draggable draggableId={id} index={index}>
@@ -65,7 +69,7 @@ export function DraggableCard({ id, index, showBody, onDelete }: IProps) {
                 />
               </CardAction>
             </CardHeader>
-            {body && (
+            {preview && (
               <div
                 className={cn(
                   "grid transition-[grid-template-rows] duration-200 ease-out",
@@ -74,7 +78,12 @@ export function DraggableCard({ id, index, showBody, onDelete }: IProps) {
               >
                 <div className="overflow-hidden">
                   <CardContent className="space-y-3 pt-4">
-                    <Markdown>{body}</Markdown>
+                    <Markdown>{preview}</Markdown>
+                    {hasMore && (
+                      <span className="text-muted-foreground select-none">
+                        …
+                      </span>
+                    )}
                   </CardContent>
                 </div>
               </div>

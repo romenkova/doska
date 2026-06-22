@@ -1,16 +1,28 @@
 import { cn } from "@doska/ui-kit"
 import { Markdown } from "./markdown"
+import { useMarkers } from "./markers"
+import type { Marker } from "./markers"
 
 interface IProps extends React.ComponentProps<"textarea"> {
   isPreview?: boolean
   value?: string
+  markers?: Marker[]
 }
 
-export function MarkdownTextarea({ isPreview, ...props }: IProps) {
+const NO_MARKERS: Marker[] = []
+
+export function MarkdownTextarea({
+  isPreview,
+  markers = NO_MARKERS,
+  ...props
+}: IProps) {
+  const value = typeof props.value === "string" ? props.value : ""
+  const { body } = useMarkers(value, markers, "preview")
+
   if (isPreview)
     return (
       <div className="min-h-0 flex-1 space-y-4 overflow-y-auto pt-3 select-text">
-        {props.value && <Markdown>{props.value}</Markdown>}
+        {body && <Markdown>{body}</Markdown>}
       </div>
     )
   return (

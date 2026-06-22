@@ -1,8 +1,10 @@
 import { ModalContent, InvisibleInput, cn } from "@doska/ui-kit"
-import { MarkdownTextarea } from "@doska/markdown"
+import { MarkdownTextarea, cut } from "@doska/markdown"
 import type { Card } from "@/lib/types"
 import { useState } from "react"
 import { useToggle } from "@/lib/hooks"
+
+const PREVIEW_MARKERS = [cut]
 import { CardContentLayout } from "./card-content-layout"
 import { CardModalHeader } from "./card-modal-header"
 
@@ -48,6 +50,7 @@ export function CardEditor({ content, onSave, onClose }: IProps) {
           onChange={(e) => setDraftBody(e.target.value)}
           placeholder="Notes"
           isPreview={isPreview}
+          markers={PREVIEW_MARKERS}
         />
       </CardContentLayout>
     </ModalContent>
