@@ -29,22 +29,22 @@
 .markdown h2,
 .markdown h3 {
   font-family: var(--font-heading);
-  font-weight: 500;
+  font-weight: 700;
   line-height: 1.25;
   letter-spacing: -0.01em;
   margin: 0 0 0.5rem;
 }
 
-.markdown h1 {
-  font-size: 1.0625rem;
-}
+/*.markdown h1 {
+  font-size: 1.2rem;
+}*/
 
 .markdown h2 {
-  font-size: 0.9375rem;
+  font-size: 1rem;
 }
 
 .markdown h3 {
-  font-size: 0.875rem;
+  font-size: 1rem;
   color: var(--muted-foreground);
 }
 
