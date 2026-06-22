@@ -26,13 +26,11 @@ export function Column({ children, onAddCard, ...props }: IProps) {
       <Droppable droppableId={props.id}>
         {(provided, snapshot) => (
           <div
-            ref={provided.innerRef}
-            {...provided.droppableProps}
             className={cn(
-              "flex min-h-40 w-full flex-col rounded-3xl bg-background p-4",
-              "border border-sidebar-primary-foreground transition-all",
+              "flex min-h-40 w-full flex-col rounded-3xl bg-background p-4 transition-colors",
+              "border border-sidebar-primary-foreground",
               "shadow-[inset_0_1px_3px_rgba(0,0,0,0.1)] dark:shadow-[inset_0_1px_3px_rgba(0,0,0,0.4)]",
-              snapshot.isDraggingOver && "bg-primary/5 dark:bg-sidebar"
+              snapshot.isDraggingOver && "bg-primary/5 dark:bg-sidebar/50"
             )}
           >
             <Button
@@ -43,8 +41,14 @@ export function Column({ children, onAddCard, ...props }: IProps) {
             >
               <Plus />
             </Button>
-            {children}
-            {provided.placeholder}
+            <div
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+              className="flex flex-1 flex-col"
+            >
+              {children}
+              {provided.placeholder}
+            </div>
           </div>
         )}
       </Droppable>

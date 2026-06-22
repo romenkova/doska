@@ -18,6 +18,7 @@ interface IProps {
   onAddCard: (columnId: string) => void
   onDeleteCard: (id: string) => void
   onAddColumn: () => void
+  onReorderColumns: (changed: Board["columns"]) => void
   onRenameColumn: (columnId: string, title: string) => void
   onDeleteColumn: (columnId: string) => void
   onRenameDashboard: (name: string) => void
@@ -34,6 +35,7 @@ export function Deck({
   onAddCard,
   onDeleteCard,
   onAddColumn,
+  onReorderColumns,
   onRenameColumn,
   onDeleteColumn,
   onRenameDashboard,
@@ -56,6 +58,8 @@ export function Deck({
         onRename={onRenameDashboard}
         onDelete={onDeleteDashboard}
         onAddColumn={onAddColumn}
+        columns={columns}
+        onReorderColumns={onReorderColumns}
       />
       <DragDropContext onDragEnd={onDragEnd}>
         <div
