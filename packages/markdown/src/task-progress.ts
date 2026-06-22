@@ -14,3 +14,17 @@ export function taskProgress(markdown: string): {
   }
   return { done, total }
 }
+
+/**
+ * Toggles the checkbox of the task-list item at `index` (0-based, in document
+ * order — the same order `taskProgress` counts them) and returns the new
+ * markdown. Out-of-range indices leave the markdown unchanged.
+ */
+export function toggleTaskByIndex(markdown: string, index: number): string {
+  let i = 0
+  return markdown.replace(TASK_RE, (full, prefix, mark) => {
+    if (i++ !== index) return full
+    const next = mark.toLowerCase() === "x" ? " " : "x"
+    return `${prefix}[${next}]`
+  })
+}

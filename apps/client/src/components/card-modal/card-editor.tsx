@@ -54,6 +54,7 @@ export function CardEditor({
         <MarkdownTextarea
           value={body}
           onChange={(e) => onChangeBody(e.target.value)}
+          onToggleTask={onChangeBody}
           placeholder="Notes"
           isPreview={isPreview}
           markers={PREVIEW_MARKERS}

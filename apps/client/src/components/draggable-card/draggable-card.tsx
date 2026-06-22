@@ -13,9 +13,8 @@ import { routes } from "@/lib/routes"
 import { CardMenu } from "./card-menu"
 import { TaskIndicator } from "./task-indicator"
 import { useCard } from "@/lib/data/queries"
-import { Markdown, taskProgress, cut, useMarkers } from "@doska/markdown"
-
-const BOARD_MARKERS = [cut]
+import { useUpdateCard } from "@/lib/data/mutations"
+import { MarkdownCardPreview, taskProgress } from "@doska/markdown"
 
 interface IProps {
   id: string
@@ -27,10 +26,9 @@ interface IProps {
 export function DraggableCard({ id, index, showBody, onDelete }: IProps) {
   const [, navigate] = useLocation()
   const { data: card = fallbackCard } = useCard(id)
+  const { mutate: updateCard } = useUpdateCard(id)
   const { title, body } = card
   const { done, total } = taskProgress(body)
-  const { body: preview, applied } = useMarkers(body, BOARD_MARKERS, "card")
-  const hasMore = applied.includes(cut.name)
 
   return (
     <Draggable draggableId={id} index={index}>
@@ -69,7 +67,7 @@ export function DraggableCard({ id, index, showBody, onDelete }: IProps) {
                 />
               </CardAction>
             </CardHeader>
-            {preview && (
+            {body && (
               <div
                 className={cn(
                   "grid transition-[grid-template-rows] duration-200 ease-out",
@@ -78,12 +76,10 @@ export function DraggableCard({ id, index, showBody, onDelete }: IProps) {
               >
                 <div className="overflow-hidden">
                   <CardContent className="space-y-3 pt-4">
-                    <Markdown>{preview}</Markdown>
-                    {hasMore && (
-                      <span className="text-muted-foreground select-none">
-                        Open to see more
-                      </span>
-                    )}
+                    <MarkdownCardPreview
+                      body={body}
+                      onChangeBody={(body) => updateCard({ body })}
+                    />
                   </CardContent>
                 </div>
               </div>
