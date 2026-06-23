@@ -208,6 +208,48 @@
   border-top: 1px solid var(--border);
 }
 
+/* Tags — `[content]` rendered as a colored pill. The color index (0–9) is
+   chosen by hashing the tag text in remark-tags, so the same text always gets
+   the same color. Each index sets a hue (`--tag-h`) plus its own foreground
+   lightness (`--tag-l` light / `--tag-dl` dark); neighbors alternate light/dark
+   so they stay distinguishable. The hues sweep a wide cool arc — cold yellow →
+   cyan → blue → indigo → violet → magenta → rose (the green/teal band is
+   skipped) — all chosen to pair with the purple primary. Chroma is moderate —
+   coloured but not vibrant.
+   Light mode is a pale tint with coloured text; dark mode a translucent fill
+   with light text. */
+.markdown .tag {
+  display: inline-block;
+  font-style: normal;
+  font-size: 0.8125em;
+  font-weight: 500;
+  line-height: 1.4;
+  padding: 0.05em 0.5em;
+  border-radius: 999px;
+  white-space: nowrap;
+  vertical-align: baseline;
+  background: oklch(0.95 0.05 var(--tag-h));
+  color: oklch(var(--tag-l, 0.46) 0.14 var(--tag-h));
+}
+
+.dark .markdown .tag {
+  background: oklch(0.62 0.14 var(--tag-h) / 0.24);
+  color: oklch(var(--tag-dl, 0.82) 0.11 var(--tag-h));
+}
+
+/* cold yellow → cyan → blue → indigo → violet → magenta → rose
+   (green/teal band skipped). Neighbours alternate fg lightness. */
+.markdown .tag[data-tag-color="0"] { --tag-h: 90; --tag-l: 0.48; --tag-dl: 0.84; }
+.markdown .tag[data-tag-color="1"] { --tag-h: 212; --tag-l: 0.5; --tag-dl: 0.84; }
+.markdown .tag[data-tag-color="2"] { --tag-h: 233; --tag-l: 0.44; --tag-dl: 0.78; }
+.markdown .tag[data-tag-color="3"] { --tag-h: 252; --tag-l: 0.52; --tag-dl: 0.86; }
+.markdown .tag[data-tag-color="4"] { --tag-h: 270; --tag-l: 0.42; --tag-dl: 0.78; }
+.markdown .tag[data-tag-color="5"] { --tag-h: 288; --tag-l: 0.52; --tag-dl: 0.86; }
+.markdown .tag[data-tag-color="6"] { --tag-h: 306; --tag-l: 0.42; --tag-dl: 0.78; }
+.markdown .tag[data-tag-color="7"] { --tag-h: 324; --tag-l: 0.52; --tag-dl: 0.86; }
+.markdown .tag[data-tag-color="8"] { --tag-h: 342; --tag-l: 0.44; --tag-dl: 0.79; }
+.markdown .tag[data-tag-color="9"] { --tag-h: 358; --tag-l: 0.52; --tag-dl: 0.85; }
+
 /* Cut marker divider — full-width dashed line, no added vertical space */
 .markdown .cut-divider {
   display: block;

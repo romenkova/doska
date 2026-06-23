@@ -3,6 +3,7 @@ import remarkGfm from "remark-gfm"
 import { remarkMark } from "remark-mark-highlight"
 import { cn } from "@doska/ui-kit"
 import { remarkCut } from "./plugins/remark-cut"
+import { remarkTags } from "./plugins/remark-tags"
 import { rehypeTaskIndex } from "./plugins/rehype-task-index"
 import "./markdown.css"
 
@@ -21,7 +22,7 @@ export function Markdown({ children, className, onToggleTask }: IProps) {
   return (
     <div className={cn("markdown", className)}>
       <ReactMarkdown
-        remarkPlugins={[remarkGfm, remarkMark, remarkCut]}
+        remarkPlugins={[remarkGfm, remarkMark, remarkCut, remarkTags]}
         rehypePlugins={[rehypeTaskIndex]}
         components={{
           a: (props) => (
