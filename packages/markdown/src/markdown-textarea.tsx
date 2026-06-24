@@ -40,13 +40,14 @@ export function MarkdownTextarea({
     )
   return (
     <textarea
+      {...props}
       className={cn(
         "w-full resize-none bg-transparent outline-none",
         "placeholder:text-muted-foreground/50",
         "field-sizing-content py-2 font-mono",
-        "text-base leading-relaxed [font-variant-ligatures:none]"
+        "text-base leading-relaxed [font-variant-ligatures:none]",
+        props.className
       )}
-      {...props}
     />
   )
 }

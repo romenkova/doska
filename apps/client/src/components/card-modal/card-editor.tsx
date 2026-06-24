@@ -58,6 +58,7 @@ export function CardEditor({
           placeholder="Notes"
           isPreview={isPreview}
           markers={PREVIEW_MARKERS}
+          className="flex-1 resize-none"
         />
       </CardContentLayout>
     </ModalContent>
