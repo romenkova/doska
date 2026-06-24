@@ -16,7 +16,7 @@ export function TaskIndicator({ done, total }: IProps) {
         "text-xs font-semibold tabular-nums",
         complete
           ? "bg-success text-success-foreground"
-          : "bg-muted text-muted-foreground"
+          : "bg-muted text-foreground/80"
       )}
     >
       <Icon className="size-3.5" />
