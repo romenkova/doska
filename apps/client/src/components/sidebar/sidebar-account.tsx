@@ -4,7 +4,6 @@ import {
   AvatarFallback,
   Button,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
 } from "@doska/ui-kit"
 import { LogIn, LogOut, UserRound } from "lucide-react"
@@ -27,7 +26,7 @@ export function SidebarAccount() {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <SidebarMenuButton size="lg" className="pointer-events-none">
+        <div className="flex h-12 w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm [&>svg]:size-4 [&>svg]:shrink-0">
           <Avatar className="size-8 rounded-full">
             <AvatarFallback className="rounded-full text-xs">
               {authed && login ? (
@@ -49,7 +48,7 @@ export function SidebarAccount() {
               size="icon-sm"
               aria-label="Sign out"
               title="Sign out"
-              className="pointer-events-auto ml-auto text-muted-foreground"
+              className="ml-auto text-muted-foreground"
               onClick={() => logout()}
             >
               <LogOut />
@@ -61,13 +60,13 @@ export function SidebarAccount() {
               size="icon-sm"
               aria-label="Sign in to sync"
               title="Sign in to sync"
-              className="pointer-events-auto ml-auto text-muted-foreground"
+              className="ml-auto text-muted-foreground"
               onClick={openLogin}
             >
               <LogIn />
             </Button>
           )}
-        </SidebarMenuButton>
+        </div>
       </SidebarMenuItem>
     </SidebarMenu>
   )

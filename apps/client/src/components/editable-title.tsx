@@ -82,7 +82,7 @@ export function EditableTitle({ value, onCommit, label, className }: IProps) {
     <span
       onClick={startEditing}
       title="Click to rename"
-      className={cn("cursor-text px-2", className)}
+      className={cn("line-clamp-1 cursor-text px-2", className)}
     >
       {draft}
     </span>

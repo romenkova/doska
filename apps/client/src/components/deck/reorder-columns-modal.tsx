@@ -66,7 +66,9 @@ export function ReorderColumnsModal({
   const blockBody = (column: Column) => (
     <>
       <GripVertical className="size-4 shrink-0 text-muted-foreground" />
-      <span className="truncate">{column.title || "Untitled column"}</span>
+      <span className="truncate uppercase">
+        {column.title || "Untitled column"}
+      </span>
     </>
   )
 

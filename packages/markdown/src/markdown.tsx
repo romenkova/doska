@@ -38,10 +38,11 @@ export function Markdown({ children, className, onToggleTask }: IProps) {
             const raw = node?.properties?.dataTaskIndex
             const index = typeof raw === "number" ? raw : undefined
             if (props.type !== "checkbox" || index == null || !onToggleTask)
-              return <input {...props} />
+              return <input aria-label="Checkbox" {...props} />
             return (
               <input
                 {...props}
+                aria-label="Checkbox"
                 disabled={false}
                 className="cursor-pointer"
                 onClick={(e) => e.stopPropagation()}
