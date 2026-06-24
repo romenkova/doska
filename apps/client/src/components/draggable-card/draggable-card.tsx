@@ -67,7 +67,7 @@ export function DraggableCard({ id, index, showBody, onDelete }: IProps) {
                 />
               </CardAction>
             </CardHeader>
-            {body && (
+            {body.trim() && (
               <div
                 className={cn(
                   "grid transition-[grid-template-rows] duration-200 ease-out",
