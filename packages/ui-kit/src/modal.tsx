@@ -43,6 +43,22 @@ function ModalContent({
   )
 }
 
+export function ModalContentCentered({
+  children,
+  className,
+}: React.PropsWithChildren & { className?: string }) {
+  return (
+    <div
+      className={cn(
+        "flex flex-1 flex-col justify-center gap-2 p-6 md:flex-none md:p-0",
+        className
+      )}
+    >
+      {children}
+    </div>
+  )
+}
+
 function ModalTitle({ className, ...props }: DialogPrimitive.Title.Props) {
   return (
     <DialogPrimitive.Title

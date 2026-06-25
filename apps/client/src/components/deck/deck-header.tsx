@@ -3,7 +3,7 @@ import { Button, SidebarTrigger } from "@doska/ui-kit"
 import { ArrowRightLeft, Plus, Trash2 } from "lucide-react"
 import { EditableTitle } from "../editable-title"
 import { ConfirmDialog } from "../confirm-dialog"
-import { ReorderColumnsModal } from "./reorder-columns-modal"
+import { ReorderColumnsModal } from "./reorder-columns/reorder-columns-modal"
 import type { Column } from "@/lib/types"
 
 interface IProps {
