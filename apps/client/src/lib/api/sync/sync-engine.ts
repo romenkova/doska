@@ -6,6 +6,7 @@ import {
   DashboardListDriver,
   DASHBOARDS_SCOPE,
 } from "./drivers/dashboard-list-driver"
+import { isAuthed } from "@/lib/utils"
 
 /** Worst-case across the two channels: any syncing wins, then any error. */
 function mergeStatus(a: SyncStatus, b: SyncStatus): SyncStatus {
@@ -25,13 +26,16 @@ function mergeStatus(a: SyncStatus, b: SyncStatus): SyncStatus {
  * sees a single merged {@link SyncState}. There's one open board and one of each
  * dirty queue, so it's a singleton.
  */
+
 class DeckSync {
   private readonly board = new SyncEngine(new DeckSyncDriver(), {
     storageKey: "deck:sync:dirty",
+    canSync: isAuthed,
   })
 
   private readonly list = new SyncEngine(new DashboardListDriver(), {
     storageKey: "deck:sync:dirty:dashboards",
+    canSync: isAuthed,
   })
 
   /** Merged snapshot, recomputed on either engine's transition and kept stable
@@ -56,7 +60,10 @@ class DeckSync {
       status: mergeStatus(a.status, b.status),
       pending: a.pending + b.pending,
     }
-    if (next.status === this.state.status && next.pending === this.state.pending)
+    if (
+      next.status === this.state.status &&
+      next.pending === this.state.pending
+    )
       return
     this.state = next
     for (const listener of this.listeners) listener()
@@ -87,7 +94,7 @@ class DeckSync {
     void this.list.reconcile()
   }
 
-  /** Reconciles both channels once. */
+  /** Reconciles both channels once. Each engine no-ops while signed out. */
   async reconcile(): Promise<void> {
     await Promise.all([this.board.reconcile(), this.list.reconcile()])
   }
