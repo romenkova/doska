@@ -11,7 +11,7 @@ import {
   signIn,
   waitForChange,
   waitForDashboardDeleted,
-} from "./helpers"
+} from "../helpers"
 
 /**
  * Deleting a board has to cascade to its contents across clients. A board is a

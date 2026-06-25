@@ -9,7 +9,7 @@ import {
   remoteEditCard,
   retitleCard,
   signIn,
-} from "./helpers"
+} from "../helpers"
 
 /**
  * Multi-client sync, from the user's seat. The page is one client; the test

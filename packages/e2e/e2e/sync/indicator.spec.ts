@@ -7,7 +7,7 @@ import {
   retitleCard,
   signIn,
   syncIndicator,
-} from "./helpers";
+} from "../helpers";
 
 /**
  * The sync indicator, from the user's seat. Local edits land in IndexedDB

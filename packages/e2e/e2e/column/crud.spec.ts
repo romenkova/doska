@@ -7,7 +7,7 @@ import {
   createBoard,
   deleteColumn,
   renameColumn,
-} from "./helpers"
+} from "../helpers"
 
 test.describe("column lifecycle", () => {
   test("adding a column appends it and it persists across a reload", async ({

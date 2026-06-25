@@ -4,7 +4,7 @@ import {
   remoteCreateDashboard,
   remoteRenameDashboard,
   signIn,
-} from "./helpers"
+} from "../helpers"
 
 /**
  * The dashboard *list* syncs on its own board-independent channel, so a board

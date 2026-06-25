@@ -5,7 +5,7 @@ import {
   createBoard,
   dragCardByTitle,
   retitleCard,
-} from "./helpers"
+} from "../helpers"
 
 /**
  * @hello-pangea/dnd has first-class keyboard dragging, which is far more

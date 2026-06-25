@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test"
-import { addCard, boardTitle, createBoard, deleteBoard } from "./helpers"
+import { addCard, boardTitle, createBoard, deleteBoard } from "../helpers"
 
 test.describe("board lifecycle", () => {
   test("a created board persists across a reload", async ({ page }) => {

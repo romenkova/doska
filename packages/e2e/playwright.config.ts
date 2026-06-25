@@ -19,10 +19,17 @@ export default defineConfig({
   testDir: "./e2e",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
+  // Retry locally too (not just on CI): a test that only passes on retry is
+  // reported as "flaky", which surfaces the race instead of letting it slip
+  // through green and reappear on CI.
+  retries: process.env.CI ? 2 : 1,
   reporter: "list",
   use: {
     baseURL: "http://localhost:4173",
+    // Keep a trace from the failing attempt so a rare flake is debuggable after
+    // the fact (`npx playwright show-trace`), without the cost on green runs.
+    trace: "retain-on-failure",
+    actionTimeout: 10_000,
   },
   projects: [
     { name: "chromium", use: { ...devices["Desktop Chrome"] } },

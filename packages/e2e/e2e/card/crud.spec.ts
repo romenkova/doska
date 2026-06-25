@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test"
-import { addCard, card, column, createBoard } from "./helpers"
+import { addCard, card, column, createBoard } from "../helpers"
 
 test.describe("card lifecycle", () => {
   test("create, edit, persist, then delete a card", async ({ page }) => {
