@@ -32,6 +32,9 @@ export class SyncEngine<Scope, Change> {
 
   private readonly driver: SyncDriver<Scope, Change>
 
+  /** Gate consulted before every reconcile;  */
+  private readonly canSync: () => boolean
+
   /** The latest snapshot handed to subscribers; replaced (never mutated) on change. */
   private state: SyncState
 
@@ -40,11 +43,12 @@ export class SyncEngine<Scope, Change> {
 
   constructor(
     driver: SyncDriver<Scope, Change>,
-    options: { storageKey: string }
+    options: { storageKey: string; canSync?: () => boolean }
   ) {
     this.driver = driver
     this.dirty = new DirtyStore(options.storageKey)
     this.state = { status: "idle", pending: this.dirty.size }
+    this.canSync = options.canSync ?? (() => true)
   }
 
   /**
@@ -96,7 +100,7 @@ export class SyncEngine<Scope, Change> {
 
   /** Pushes/pulls a single scope, skipping if one is already running or there's no scope. */
   private async run(scope: Scope | null): Promise<void> {
-    if (this.inFlight || scope === null) return
+    if (this.inFlight || scope === null || !this.canSync()) return
     this.inFlight = true
     this.setState({ status: "syncing", pending: this.dirty.size })
     let failed = false
