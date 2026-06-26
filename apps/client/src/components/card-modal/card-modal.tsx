@@ -12,7 +12,7 @@ interface IProps {
   closeHref: string
 }
 
-type Draft = Partial<Pick<Card, "title" | "body" | "locked">>
+type Draft = Partial<Pick<Card, "title" | "body" | "locked" | "deadline">>
 
 /**
  * Loads the card and renders the presentational editor. Edits are kept as an
@@ -41,7 +41,12 @@ export function CardModal({ closeHref }: IProps) {
   const close = () => {
     if (content) {
       const next = { ...content, ...draft }
-      save({ title: next.title, body: next.body, locked: next.locked })
+      save({
+        title: next.title,
+        body: next.body,
+        locked: next.locked,
+        deadline: next.deadline,
+      })
     }
     navigate(closeHref)
   }
@@ -63,10 +68,12 @@ export function CardModal({ closeHref }: IProps) {
         <CardEditor
           title={draft.title ?? content.title}
           body={draft.body ?? content.body}
+          deadline={"deadline" in draft ? draft.deadline! : content.deadline}
           isPreview={isPreview}
           isLocked={isLocked}
           onChangeTitle={(title) => setDraft((d) => ({ ...d, title }))}
           onChangeBody={(body) => setDraft((d) => ({ ...d, body }))}
+          onChangeDeadline={(deadline) => setDraft((d) => ({ ...d, deadline }))}
           onToggleLock={() => {
             setDraft((d) => ({ ...d, locked: !isLocked }))
             setPreview(true)

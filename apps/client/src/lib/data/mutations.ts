@@ -130,8 +130,9 @@ export function useMoveColumn(deckId: string) {
 export function useUpdateCard(id: string) {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (patch: Partial<Pick<Card, "title" | "body" | "locked">>) =>
-      api.updateCard(id, patch),
+    mutationFn: (
+      patch: Partial<Pick<Card, "title" | "body" | "locked" | "deadline">>
+    ) => api.updateCard(id, patch),
     onSettled: () => qc.invalidateQueries({ queryKey: keys.card(id) }),
   })
 }

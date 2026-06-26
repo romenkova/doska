@@ -2,16 +2,19 @@ import { ModalContent, cn } from "@doska/ui-kit"
 import { MarkdownTextarea, cut } from "@doska/markdown"
 import { CardContentLayout } from "./card-content-layout"
 import { CardModalHeader } from "./card-modal-header"
+import { CardDeadline } from "../card/deadline/card-deadline"
 
 const PREVIEW_MARKERS = [cut]
 
 interface IProps {
   title: string
   body: string
+  deadline: string | null
   isPreview: boolean
   isLocked: boolean
   onChangeTitle: (value: string) => void
   onChangeBody: (value: string) => void
+  onChangeDeadline: (value: string | null) => void
   onTogglePreview: () => void
   onToggleLock: () => void
   onClose: () => void
@@ -21,10 +24,12 @@ interface IProps {
 export function CardEditor({
   title,
   body,
+  deadline,
   isPreview,
   isLocked,
   onChangeTitle,
   onChangeBody,
+  onChangeDeadline,
   onTogglePreview,
   onToggleLock,
   onClose,
@@ -47,9 +52,14 @@ export function CardEditor({
           placeholder="Title"
           isPreview={isPreview}
           className={cn(
-            "border-b-2 border-dashed py-1.5 text-lg font-semibold",
-            !isPreview && "font-mono"
+            "py-1.5 text-xl! font-semibold",
+            !isPreview && "border-b-2 border-dashed font-mono"
           )}
+        />
+        <CardDeadline
+          variant={isPreview ? "chip" : "field"}
+          value={deadline}
+          onChange={onChangeDeadline}
         />
         <MarkdownTextarea
           value={body}
@@ -61,7 +71,7 @@ export function CardEditor({
           isPreview={isPreview}
           markers={PREVIEW_MARKERS}
           className="flex-1 resize-none"
-          containerClassName="flex-1"
+          containerClassName="flex-1 mt-4"
         />
       </CardContentLayout>
     </ModalContent>

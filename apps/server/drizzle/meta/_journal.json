@@ -15,6 +15,13 @@
       "when": 1782159881619,
       "tag": "0001_mixed_amphibian",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1782512712298,
+      "tag": "0002_add_card_deadline",
+      "breakpoints": true
     }
   ]
 }

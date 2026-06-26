@@ -53,6 +53,7 @@ export function MarkdownTextarea({
                 ? (index) => onToggleTask(toggleTaskByIndex(value, index))
                 : undefined
             }
+            className={props.className}
           >
             {body}
           </Markdown>

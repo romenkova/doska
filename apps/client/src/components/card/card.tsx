@@ -10,6 +10,7 @@ import { fallbackCard } from "@/lib/seed"
 import { useLocation } from "wouter"
 import { routes } from "@/lib/routes"
 import { CardContextMenu, CardMenu } from "./menu/card-menu"
+import { CardDeadline } from "./deadline/card-deadline"
 import { TaskIndicator } from "./task-indicator"
 import { useCard } from "@/lib/data/queries"
 import { useUpdateCard } from "@/lib/data/mutations"
@@ -44,7 +45,7 @@ export function Card({
   const [, navigate] = useLocation()
   const { data: card = fallbackCard } = useCard(id)
   const { mutate: updateCard } = useUpdateCard(id)
-  const { title, body } = card
+  const { title, body, deadline } = card
   const { done, total } = taskProgress(body)
 
   return (
@@ -63,7 +64,7 @@ export function Card({
         onMoveToColumn={onMoveToColumn}
       >
         <CardBase
-          className={cn("gap-0", isDragging && "shadow-shade/5 shadow-xl")}
+          className={cn("gap-2", isDragging && "shadow-shade/5 shadow-xl")}
         >
           <CardHeader>
             {title && <CardTitle>{title}</CardTitle>}
@@ -78,6 +79,17 @@ export function Card({
               />
             </CardAction>
           </CardHeader>
+          {!!deadline && (
+            <CardContent>
+              <div className="mt-2 flex items-center gap-2 text-sm">
+                <CardDeadline
+                  value={deadline}
+                  onChange={(deadline) => updateCard({ deadline })}
+                />
+              </div>
+            </CardContent>
+          )}
+
           {body.trim() && (
             <div
               className={cn(
@@ -86,7 +98,7 @@ export function Card({
               )}
             >
               <div className="overflow-hidden">
-                <CardContent className="space-y-3 pt-4">
+                <CardContent className="space-y-3 pt-2">
                   <MarkdownCardPreview
                     body={body}
                     onChangeBody={(body) => updateCard({ body })}

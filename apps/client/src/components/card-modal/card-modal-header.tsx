@@ -1,5 +1,5 @@
 import { Button } from "@doska/ui-kit"
-import { Eye, Lock, LockOpen } from "lucide-react"
+import { Eye, Lock, LockOpen, PencilLine, X } from "lucide-react"
 
 interface IProps {
   onClose: () => void
@@ -21,8 +21,8 @@ export function CardModalHeader({
   return (
     <div className="flex shrink-0 items-center justify-between gap-2 border-b px-3 pt-[max(0.625rem,env(safe-area-inset-top))] pb-2">
       <div className="flex w-20 justify-start">
-        <Button variant="ghost" size="sm" onClick={onClose}>
-          Close
+        <Button variant="ghost" size="icon-sm" onClick={onClose}>
+          <X />
         </Button>
       </div>
       <div className="flex justify-end space-x-2">
@@ -36,8 +36,8 @@ export function CardModalHeader({
           {isLocked ? "Locked" : "Lock"}
         </Button>
         <Button variant="ghost" size="sm" onClick={onTogglePreivew}>
-          <Eye />
-          {isPreview ? "Back to edit" : "Preview"}
+          {isPreview ? <PencilLine /> : <Eye />}
+          {isPreview ? "Edit" : "Preview"}
         </Button>
         <Button size="sm" onClick={onSave}>
           Save
