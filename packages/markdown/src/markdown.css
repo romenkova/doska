@@ -34,18 +34,10 @@
   line-height: 1.25;
   letter-spacing: -0.01em;
   margin: 1rem 0 0.5rem;
-}
-
-/*.markdown h1 {
-  font-size: 1.2rem;
-}*/
-
-.markdown h2 {
   font-size: 1rem;
 }
 
 .markdown h3 {
-  font-size: 1rem;
   color: var(--muted-foreground);
 }
 
