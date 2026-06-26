@@ -1,4 +1,6 @@
 import { Menu as MenuPrimitive } from "@base-ui/react/menu"
+import { ContextMenu as ContextMenuPrimitive } from "@base-ui/react/context-menu"
+import { ChevronRight } from "lucide-react"
 import { cn } from "./lib/cn"
 
 function Menu({ ...props }: MenuPrimitive.Root.Props) {
@@ -7,6 +9,16 @@ function Menu({ ...props }: MenuPrimitive.Root.Props) {
 
 function MenuTrigger({ ...props }: MenuPrimitive.Trigger.Props) {
   return <MenuPrimitive.Trigger data-slot="menu-trigger" {...props} />
+}
+
+function ContextMenu({ ...props }: ContextMenuPrimitive.Root.Props) {
+  return <ContextMenuPrimitive.Root data-slot="context-menu" {...props} />
+}
+
+function ContextMenuTrigger({ ...props }: ContextMenuPrimitive.Trigger.Props) {
+  return (
+    <ContextMenuPrimitive.Trigger data-slot="context-menu-trigger" {...props} />
+  )
 }
 
 function MenuContent({
@@ -27,7 +39,7 @@ function MenuContent({
           className={cn(
             "z-50 min-w-36 overflow-hidden rounded-lg border bg-popover",
             "text-sm text-popover-foreground shadow-md outline-none",
-            "transition-[opacity,transform] duration-150",
+            "transition-[opacity,transform] duration-50",
             "data-ending-style:opacity-0 data-starting-style:opacity-0",
             "data-starting-style:scale-95",
             className
@@ -56,6 +68,33 @@ function MenuItem({ className, ...props }: MenuPrimitive.Item.Props) {
   )
 }
 
+function MenuSub({ ...props }: MenuPrimitive.SubmenuRoot.Props) {
+  return <MenuPrimitive.SubmenuRoot {...props} />
+}
+
+function MenuSubTrigger({
+  className,
+  children,
+  ...props
+}: MenuPrimitive.SubmenuTrigger.Props) {
+  return (
+    <MenuPrimitive.SubmenuTrigger
+      data-slot="menu-sub-trigger"
+      className={cn(
+        "flex cursor-pointer items-center gap-2 px-3 py-1.5 outline-none",
+        "data-highlighted:bg-muted data-highlighted:text-foreground",
+        "data-popup-open:bg-muted data-popup-open:text-foreground",
+        "[&_svg]:size-4 [&_svg]:shrink-0",
+        className
+      )}
+      {...props}
+    >
+      {children}
+      <ChevronRight className="ml-auto text-muted-foreground" />
+    </MenuPrimitive.SubmenuTrigger>
+  )
+}
+
 function MenuSeparator({ className, ...props }: MenuPrimitive.Separator.Props) {
   return (
     <MenuPrimitive.Separator
@@ -66,4 +105,14 @@ function MenuSeparator({ className, ...props }: MenuPrimitive.Separator.Props) {
   )
 }
 
-export { Menu, MenuTrigger, MenuContent, MenuItem, MenuSeparator }
+export {
+  Menu,
+  MenuTrigger,
+  ContextMenu,
+  ContextMenuTrigger,
+  MenuContent,
+  MenuItem,
+  MenuSub,
+  MenuSubTrigger,
+  MenuSeparator,
+}

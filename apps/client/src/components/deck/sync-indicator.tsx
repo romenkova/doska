@@ -58,7 +58,7 @@ export function SyncIndicator() {
   if (authed === false) {
     return (
       <Button
-        variant="ghost"
+        variant="secondary"
         aria-label="Sign in to sync"
         title="Sign in to sync"
         onClick={openLogin}
@@ -74,7 +74,7 @@ export function SyncIndicator() {
 
   return (
     <Button
-      variant="ghost"
+      variant="secondary"
       aria-label={label}
       title={label}
       onClick={() => void sync.reconcile()}
