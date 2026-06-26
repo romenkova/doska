@@ -17,6 +17,7 @@ interface IProps {
   onToggleBody: (columnId: string) => void
   onAddCard: (columnId: string) => void
   onDeleteCard: (id: string) => void
+  onMoveCard: (cardId: string, columnId: string) => void
   onAddColumn: () => void
   onReorderColumns: (changed: Board["columns"]) => void
   onRenameColumn: (columnId: string, title: string) => void
@@ -34,6 +35,7 @@ export function Deck({
   onToggleBody,
   onAddCard,
   onDeleteCard,
+  onMoveCard,
   onAddColumn,
   onReorderColumns,
   onRenameColumn,
@@ -90,6 +92,9 @@ export function Deck({
                     index={index}
                     showBody={showBody}
                     onDelete={() => onDeleteCard(card.id)}
+                    columns={columns}
+                    currentColumnId={column.id}
+                    onMoveToColumn={(columnId) => onMoveCard(card.id, columnId)}
                   />
                 ))}
               </Column>

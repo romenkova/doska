@@ -1,5 +1,6 @@
 import { Menu as MenuPrimitive } from "@base-ui/react/menu"
 import { ContextMenu as ContextMenuPrimitive } from "@base-ui/react/context-menu"
+import { ChevronRight } from "lucide-react"
 import { cn } from "./lib/cn"
 
 function Menu({ ...props }: MenuPrimitive.Root.Props) {
@@ -67,6 +68,33 @@ function MenuItem({ className, ...props }: MenuPrimitive.Item.Props) {
   )
 }
 
+function MenuSub({ ...props }: MenuPrimitive.SubmenuRoot.Props) {
+  return <MenuPrimitive.SubmenuRoot {...props} />
+}
+
+function MenuSubTrigger({
+  className,
+  children,
+  ...props
+}: MenuPrimitive.SubmenuTrigger.Props) {
+  return (
+    <MenuPrimitive.SubmenuTrigger
+      data-slot="menu-sub-trigger"
+      className={cn(
+        "flex cursor-pointer items-center gap-2 px-3 py-1.5 outline-none",
+        "data-highlighted:bg-muted data-highlighted:text-foreground",
+        "data-popup-open:bg-muted data-popup-open:text-foreground",
+        "[&_svg]:size-4 [&_svg]:shrink-0",
+        className
+      )}
+      {...props}
+    >
+      {children}
+      <ChevronRight className="ml-auto text-muted-foreground" />
+    </MenuPrimitive.SubmenuTrigger>
+  )
+}
+
 function MenuSeparator({ className, ...props }: MenuPrimitive.Separator.Props) {
   return (
     <MenuPrimitive.Separator
@@ -84,5 +112,7 @@ export {
   ContextMenuTrigger,
   MenuContent,
   MenuItem,
+  MenuSub,
+  MenuSubTrigger,
   MenuSeparator,
 }

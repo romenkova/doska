@@ -1,20 +1,7 @@
-import {
-  Card as CardBase,
-  CardAction,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@doska/ui-kit"
-import { cn } from "@doska/ui-kit"
-import { fallbackCard } from "@/lib/seed"
 import { Draggable } from "@hello-pangea/dnd"
 import { useLocation } from "wouter"
 import { routes } from "@/lib/routes"
-import { CardContextMenu, CardMenu } from "./card-menu"
-import { TaskIndicator } from "./task-indicator"
-import { useCard } from "@/lib/data/queries"
-import { useUpdateCard } from "@/lib/data/mutations"
-import { MarkdownCardPreview, taskProgress } from "@doska/markdown"
+import type { Column } from "@/lib/types"
 import { Card } from "./card"
 
 interface IProps {
@@ -22,14 +9,21 @@ interface IProps {
   index: number
   showBody: boolean
   onDelete: () => void
+  columns: Column[]
+  currentColumnId: string
+  onMoveToColumn: (columnId: string) => void
 }
 
-export function DraggableCard({ id, index, showBody, onDelete }: IProps) {
+export function DraggableCard({
+  id,
+  index,
+  showBody,
+  onDelete,
+  columns,
+  currentColumnId,
+  onMoveToColumn,
+}: IProps) {
   const [, navigate] = useLocation()
-  const { data: card = fallbackCard } = useCard(id)
-  const { mutate: updateCard } = useUpdateCard(id)
-  const { title, body } = card
-  const { done, total } = taskProgress(body)
 
   return (
     <Draggable draggableId={id} index={index}>
@@ -52,6 +46,9 @@ export function DraggableCard({ id, index, showBody, onDelete }: IProps) {
           onDelete={onDelete}
           showBody={showBody}
           id={id}
+          columns={columns}
+          currentColumnId={currentColumnId}
+          onMoveToColumn={onMoveToColumn}
         />
       )}
     </Draggable>

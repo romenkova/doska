@@ -10,7 +10,12 @@ import {
   useRenameDashboard,
 } from "@/lib/data/mutations"
 import { useBoard } from "@/lib/data/queries"
-import { useDragEnd, useHiddenBodies, useSyncShortcut } from "@/lib/hooks"
+import {
+  useDragEnd,
+  useHiddenBodies,
+  useMoveCardToColumn,
+  useSyncShortcut,
+} from "@/lib/hooks"
 import type { Dashboard } from "@/lib/types"
 import { Deck } from "./deck"
 
@@ -38,6 +43,7 @@ export function DeckView({ dashboard }: { dashboard: Dashboard }) {
   const { mutate: renameColumn } = useRenameColumn(id)
   const { mutate: deleteColumn } = useDeleteColumn(id)
   const handleDragEnd = useDragEnd(board, moveCard)
+  const moveCardToColumn = useMoveCardToColumn(board, moveCard)
 
   return (
     <Deck
@@ -48,6 +54,7 @@ export function DeckView({ dashboard }: { dashboard: Dashboard }) {
       onToggleBody={toggleBody}
       onAddCard={createCard}
       onDeleteCard={deleteCard}
+      onMoveCard={moveCardToColumn}
       onAddColumn={() => createColumn("New column")}
       onReorderColumns={moveColumn}
       onRenameColumn={(columnId, title) => renameColumn({ id: columnId, title })}

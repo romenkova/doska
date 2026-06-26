@@ -9,12 +9,13 @@ import { cn } from "@doska/ui-kit"
 import { fallbackCard } from "@/lib/seed"
 import { useLocation } from "wouter"
 import { routes } from "@/lib/routes"
-import { CardContextMenu, CardMenu } from "./card-menu"
+import { CardContextMenu, CardMenu } from "./menu/card-menu"
 import { TaskIndicator } from "./task-indicator"
 import { useCard } from "@/lib/data/queries"
 import { useUpdateCard } from "@/lib/data/mutations"
 import { MarkdownCardPreview, taskProgress } from "@doska/markdown"
 import type { DetailedHTMLProps, HTMLAttributes } from "react"
+import type { Column } from "@/lib/types"
 
 interface IProps extends DetailedHTMLProps<
   HTMLAttributes<HTMLDivElement>,
@@ -25,9 +26,21 @@ interface IProps extends DetailedHTMLProps<
   showBody: boolean
   onDelete: () => void
   isDragging: boolean
+  columns: Column[]
+  currentColumnId: string
+  onMoveToColumn: (columnId: string) => void
 }
 
-export function Card({ id, showBody, onDelete, isDragging, ...props }: IProps) {
+export function Card({
+  id,
+  showBody,
+  onDelete,
+  isDragging,
+  columns,
+  currentColumnId,
+  onMoveToColumn,
+  ...props
+}: IProps) {
   const [, navigate] = useLocation()
   const { data: card = fallbackCard } = useCard(id)
   const { mutate: updateCard } = useUpdateCard(id)
@@ -45,6 +58,9 @@ export function Card({ id, showBody, onDelete, isDragging, ...props }: IProps) {
       <CardContextMenu
         onEdit={() => navigate(routes.card.to(id))}
         onDelete={onDelete}
+        columns={columns}
+        currentColumnId={currentColumnId}
+        onMoveToColumn={onMoveToColumn}
       >
         <CardBase
           className={cn("gap-0", isDragging && "shadow-shade/5 shadow-xl")}
@@ -56,6 +72,9 @@ export function Card({ id, showBody, onDelete, isDragging, ...props }: IProps) {
               <CardMenu
                 onEdit={() => navigate(routes.card.to(id))}
                 onDelete={onDelete}
+                columns={columns}
+                currentColumnId={currentColumnId}
+                onMoveToColumn={onMoveToColumn}
               />
             </CardAction>
           </CardHeader>
