@@ -18,6 +18,7 @@ interface IProps extends React.ComponentProps<"textarea"> {
   slashCommands?: SlashCommand[]
   /** Required when `slashMenu` is on, to apply inserted commands. */
   onChangeValue?: (value: string) => void
+  containerClassName?: string
 }
 
 const NO_MARKERS: Marker[] = []
@@ -30,6 +31,7 @@ export function MarkdownTextarea({
   slashMenu,
   slashCommands,
   onChangeValue,
+  containerClassName,
   ...props
 }: IProps) {
   const value = typeof props.value === "string" ? props.value : ""
@@ -38,7 +40,12 @@ export function MarkdownTextarea({
 
   if (isPreview)
     return (
-      <div className="min-h-0 flex-1 space-y-4 overflow-y-auto pt-3 select-text">
+      <div
+        className={cn(
+          "min-h-0 space-y-4 overflow-y-auto pt-3 select-text",
+          containerClassName
+        )}
+      >
         {body && (
           <Markdown
             onToggleTask={
@@ -53,7 +60,12 @@ export function MarkdownTextarea({
       </div>
     )
   return (
-    <div className="relative flex min-h-0 w-full flex-1 flex-col">
+    <div
+      className={cn(
+        "relative flex min-h-0 w-full flex-col",
+        containerClassName
+      )}
+    >
       <textarea
         {...props}
         ref={textareaRef}
