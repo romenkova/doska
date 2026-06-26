@@ -16,9 +16,13 @@ interface IProps {
   onDelete: () => void
 }
 
-function CardMenuItems({ onEdit, onDelete }: IProps) {
+function CardMenuItems({
+  onEdit,
+  onDelete,
+  align = "end",
+}: IProps & { align?: "start" | "center" | "end" }) {
   return (
-    <MenuContent onClick={(e) => e.stopPropagation()}>
+    <MenuContent align={align} onClick={(e) => e.stopPropagation()}>
       <MenuItem onClick={onEdit}>
         <Pencil />
         Edit
@@ -64,7 +68,7 @@ export function CardContextMenu({
   return (
     <ContextMenu>
       <ContextMenuTrigger>{children}</ContextMenuTrigger>
-      <CardMenuItems onEdit={onEdit} onDelete={onDelete} />
+      <CardMenuItems align="start" onEdit={onEdit} onDelete={onDelete} />
     </ContextMenu>
   )
 }
