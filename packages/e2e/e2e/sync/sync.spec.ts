@@ -2,6 +2,7 @@ import { test, expect } from "@playwright/test"
 import {
   addCard,
   authenticate,
+  card,
   columnCardTitles,
   createBoard,
   remoteAddCard,
@@ -41,8 +42,8 @@ test.describe("sync across clients", () => {
     // our edit reached the server, and seeing it land proves we pull too.
     await remoteEditCard(request, boardId, "Plan launch", "Launch shipped")
 
-    await expect(page.getByText("Launch shipped")).toBeVisible()
-    await expect(page.getByText("Plan launch")).toHaveCount(0)
+    await expect(card(page, "Launch shipped")).toBeVisible()
+    await expect(card(page, "Plan launch")).toHaveCount(0)
   })
 
   test("a card another client deletes disappears", async ({
@@ -57,8 +58,8 @@ test.describe("sync across clients", () => {
 
     await remoteDeleteCard(request, boardId, "Delete me")
 
-    await expect(page.getByText("Delete me")).toHaveCount(0)
-    await expect(page.getByText("Keep me")).toBeVisible()
+    await expect(card(page, "Delete me")).toHaveCount(0)
+    await expect(card(page, "Keep me")).toBeVisible()
   })
 
   test("a card another client adds appears in the right column", async ({
@@ -70,13 +71,13 @@ test.describe("sync across clients", () => {
     // The helper waits for our board's columns to reach the server first.
     await remoteAddCard(request, boardId, "To Do", "From a teammate")
 
-    await expect(page.getByText("From a teammate")).toBeVisible()
+    await expect(card(page, "From a teammate")).toBeVisible()
     await expect
       .poll(() => columnCardTitles(page, "To Do"))
       .toContain("From a teammate")
 
     // It's been stored locally, so it survives a reload.
     await page.reload()
-    await expect(page.getByText("From a teammate")).toBeVisible()
+    await expect(card(page, "From a teammate")).toBeVisible()
   })
 })

@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test"
-import { addCard, createBoard, openCard, retitleCard } from "../helpers"
+import { addCard, card, createBoard, openCard, retitleCard } from "../helpers"
 
 /**
  * Locking a card is the user's "this is final" switch: a locked card reopens in
@@ -22,9 +22,9 @@ test.describe("card lock & preview", () => {
 
     // Reopen: it comes up locked and in preview — the editable Notes field is
     // gone and the note renders read-only instead.
-    await page.getByText("Final notes").click()
+    await card(page, "Final notes").click()
     await expect(page.getByRole("button", { name: "Locked" })).toBeVisible()
-    await expect(page.getByRole("button", { name: "Back to edit" })).toBeVisible()
+    await expect(page.getByRole("button", { name: "Edit" })).toBeVisible()
     await expect(page.getByPlaceholder("Notes")).toHaveCount(0)
     await expect(
       page.getByRole("dialog").getByText("Decision: ship it")
@@ -39,12 +39,12 @@ test.describe("card lock & preview", () => {
     await retitleCard(page, "Untitled card", "Toggle me")
 
     await openCard(page, "Toggle me")
-    // Preview shows the rendered note; "Back to edit" returns to the field.
+    // Preview shows the rendered note; "Edit" returns to the field.
     await page.getByPlaceholder("Notes").fill("Some content")
     await page.getByRole("button", { name: "Preview" }).click()
     await expect(page.getByPlaceholder("Notes")).toHaveCount(0)
 
-    await page.getByRole("button", { name: "Back to edit" }).click()
+    await page.getByRole("button", { name: "Edit" }).click()
     await expect(page.getByPlaceholder("Notes")).toHaveValue("Some content")
   })
 })

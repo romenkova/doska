@@ -8,7 +8,12 @@ import { column } from "./column"
 /*  text a user reads, never the markdown source or markup.                    */
 /* -------------------------------------------------------------------------- */
 
-/** A card on the board, located by its visible title. */
+/**
+ * A card on the board, located by its visible title. Scoped to the draggable so
+ * it never collides with the modal editor's title field, which is a `<textarea>`
+ * holding the same text — a bare `getByText(title)` matches both while the modal
+ * is open (or mid-close), so always reach for the board card through this.
+ */
 export function card(page: Page, title: string) {
   return page.locator("[data-rfd-draggable-id]", { hasText: title })
 }
@@ -21,7 +26,7 @@ export function card(page: Page, title: string) {
  * `retitleCard` to give it a distinct name.
  */
 export async function addCard(page: Page, name: string): Promise<void> {
-  const seeded = page.getByText("Untitled card")
+  const seeded = card(page, "Untitled card")
   const before = await seeded.count()
   await column(page, name)
     .getByRole("button", { name: `Add card to ${name}` })
@@ -38,12 +43,12 @@ export async function retitleCard(
   fromTitle: string,
   toTitle: string
 ): Promise<void> {
-  await page.getByText(fromTitle).click()
+  await card(page, fromTitle).click()
   const title = page.getByPlaceholder("Title")
   await expect(title).toBeFocused()
   await title.fill(toTitle)
   await page.getByRole("button", { name: "Save" }).click()
-  await expect(page.getByText(toTitle)).toBeVisible()
+  await expect(card(page, toTitle)).toBeVisible()
 }
 
 /**
@@ -52,7 +57,7 @@ export async function retitleCard(
  * `retitleCard`, or drive the modal directly for lock/preview tests.
  */
 export async function openCard(page: Page, title: string): Promise<void> {
-  await page.getByText(title).click()
+  await card(page, title).click()
   await expect(page.getByPlaceholder("Title")).toBeFocused()
 }
 
