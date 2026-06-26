@@ -30,13 +30,13 @@ export const DEFAULT_SLASH_COMMANDS: SlashCommand[] = [
     keywords: ["task", "checkbox", "x"],
     insert: "- [ ] $",
   },
-  {
-    id: "h1",
-    title: "Heading 1",
-    hint: "Large heading",
-    keywords: ["title"],
-    insert: "# $",
-  },
+  // {
+  //   id: "h1",
+  //   title: "Heading 1",
+  //   hint: "Large heading",
+  //   keywords: ["title"],
+  //   insert: "# $",
+  // },
   { id: "h2", title: "Heading 2", hint: "Medium heading", insert: "## $" },
   { id: "h3", title: "Heading 3", hint: "Small heading", insert: "### $" },
   {
