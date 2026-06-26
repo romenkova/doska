@@ -1,0 +1,83 @@
+import {
+  Card as CardBase,
+  CardAction,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@doska/ui-kit"
+import { cn } from "@doska/ui-kit"
+import { fallbackCard } from "@/lib/seed"
+import { useLocation } from "wouter"
+import { routes } from "@/lib/routes"
+import { CardContextMenu, CardMenu } from "./card-menu"
+import { TaskIndicator } from "./task-indicator"
+import { useCard } from "@/lib/data/queries"
+import { useUpdateCard } from "@/lib/data/mutations"
+import { MarkdownCardPreview, taskProgress } from "@doska/markdown"
+import type { DetailedHTMLProps, HTMLAttributes } from "react"
+
+interface IProps extends DetailedHTMLProps<
+  HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+> {
+  id: string
+  index: number
+  showBody: boolean
+  onDelete: () => void
+  isDragging: boolean
+}
+
+export function Card({ id, showBody, onDelete, isDragging, ...props }: IProps) {
+  const [, navigate] = useLocation()
+  const { data: card = fallbackCard } = useCard(id)
+  const { mutate: updateCard } = useUpdateCard(id)
+  const { title, body } = card
+  const { done, total } = taskProgress(body)
+
+  return (
+    <div
+      {...props}
+      className={cn(
+        "group relative mb-3 w-full max-w-sm cursor-pointer rounded-lg",
+        "touch-manipulation select-none [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none]"
+      )}
+    >
+      <CardContextMenu
+        onEdit={() => navigate(routes.card.to(id))}
+        onDelete={onDelete}
+      >
+        <CardBase
+          className={cn("gap-0", isDragging && "shadow-shade/5 shadow-xl")}
+        >
+          <CardHeader>
+            {title && <CardTitle>{title}</CardTitle>}
+            <CardAction className="flex items-center gap-1">
+              {total > 0 && <TaskIndicator done={done} total={total} />}
+              <CardMenu
+                onEdit={() => navigate(routes.card.to(id))}
+                onDelete={onDelete}
+              />
+            </CardAction>
+          </CardHeader>
+          {body.trim() && (
+            <div
+              className={cn(
+                "grid transition-[grid-template-rows] duration-200 ease-out",
+                showBody ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+              )}
+            >
+              <div className="overflow-hidden">
+                <CardContent className="space-y-3 pt-4">
+                  <MarkdownCardPreview
+                    body={body}
+                    onChangeBody={(body) => updateCard({ body })}
+                  />
+                </CardContent>
+              </div>
+            </div>
+          )}
+        </CardBase>
+      </CardContextMenu>
+    </div>
+  )
+}

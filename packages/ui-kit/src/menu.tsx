@@ -1,4 +1,5 @@
 import { Menu as MenuPrimitive } from "@base-ui/react/menu"
+import { ContextMenu as ContextMenuPrimitive } from "@base-ui/react/context-menu"
 import { cn } from "./lib/cn"
 
 function Menu({ ...props }: MenuPrimitive.Root.Props) {
@@ -7,6 +8,16 @@ function Menu({ ...props }: MenuPrimitive.Root.Props) {
 
 function MenuTrigger({ ...props }: MenuPrimitive.Trigger.Props) {
   return <MenuPrimitive.Trigger data-slot="menu-trigger" {...props} />
+}
+
+function ContextMenu({ ...props }: ContextMenuPrimitive.Root.Props) {
+  return <ContextMenuPrimitive.Root data-slot="context-menu" {...props} />
+}
+
+function ContextMenuTrigger({ ...props }: ContextMenuPrimitive.Trigger.Props) {
+  return (
+    <ContextMenuPrimitive.Trigger data-slot="context-menu-trigger" {...props} />
+  )
 }
 
 function MenuContent({
@@ -66,4 +77,12 @@ function MenuSeparator({ className, ...props }: MenuPrimitive.Separator.Props) {
   )
 }
 
-export { Menu, MenuTrigger, MenuContent, MenuItem, MenuSeparator }
+export {
+  Menu,
+  MenuTrigger,
+  ContextMenu,
+  ContextMenuTrigger,
+  MenuContent,
+  MenuItem,
+  MenuSeparator,
+}
