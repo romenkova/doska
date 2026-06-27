@@ -36,3 +36,13 @@ dist-ssr
 test-results
 playwright-report
 playwright/.cache
+
+# Tauri
+# Rust build output / generated capability schemas (also covered locally in
+# apps/desktop/src-tauri/.gitignore; kept here as a safety net).
+apps/desktop/src-tauri/target
+apps/desktop/src-tauri/gen/schemas
+# Tauri updater signing keys — the private key must NEVER be committed (it lives
+# in CI secrets). The .pub is public, but ignore both to be safe.
+*.key
+*.key.pub
