@@ -16,8 +16,8 @@ export function AppSidebarHeader() {
               <span className="cn-font-heading text-base font-semibold">
                 Doska
               </span>
-              <span className="text-xs font-normal text-muted-foreground">
-                {version}
+              <span className="line-clamp-1 text-sm font-normal text-muted-foreground">
+                v{version.replace("v", "")}
               </span>
             </div>
           </Link>

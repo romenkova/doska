@@ -4,6 +4,7 @@ import {
   ContextMenuTrigger,
   Menu,
   MenuTrigger,
+  useIsMobile,
 } from "@doska/ui-kit"
 import { MoreHorizontal } from "lucide-react"
 import type { ReactNode } from "react"
@@ -54,11 +55,16 @@ export function CardMenu({
 
 export function CardContextMenu({
   children,
+  isEnabled = true,
   onEdit,
   onDelete,
   onAddDeadline,
   ...move
-}: IProps & IMove & { children: ReactNode }) {
+}: IProps & IMove & { children: ReactNode; isEnabled?: boolean }) {
+  const isMobile = useIsMobile()
+
+  if (!isEnabled || isMobile) return children
+
   return (
     <ContextMenu>
       <ContextMenuTrigger>{children}</ContextMenuTrigger>

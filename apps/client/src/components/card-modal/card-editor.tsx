@@ -1,4 +1,4 @@
-import { ModalContent, cn } from "@doska/ui-kit"
+import { CardContent, ModalContent, cn } from "@doska/ui-kit"
 import { MarkdownTextarea, cut } from "@doska/markdown"
 import { CardContentLayout } from "./card-content-layout"
 import { CardModalHeader } from "./card-modal-header"
@@ -44,35 +44,40 @@ export function CardEditor({
         onToggleLock={onToggleLock}
         onTogglePreivew={onTogglePreview}
       />
+
       <CardContentLayout>
-        <MarkdownTextarea
-          autoFocus
-          value={title}
-          onChange={(e) => onChangeTitle(e.target.value)}
-          placeholder="Title"
-          isPreview={isPreview}
-          className={cn(
-            "py-1.5 text-xl! font-semibold",
-            !isPreview && "border-b-2 border-dashed font-mono"
-          )}
-        />
-        <CardDeadline
-          variant={isPreview ? "chip" : "field"}
-          value={deadline}
-          onChange={onChangeDeadline}
-        />
-        <MarkdownTextarea
-          value={body}
-          onChange={(e) => onChangeBody(e.target.value)}
-          onChangeValue={onChangeBody}
-          onToggleTask={onChangeBody}
-          slashMenu
-          placeholder="Notes"
-          isPreview={isPreview}
-          markers={PREVIEW_MARKERS}
-          className="flex-1 resize-none"
-          containerClassName="flex-1 mt-4"
-        />
+        <CardContent className="border-t-0 px-4">
+          <CardDeadline
+            variant={isPreview ? "chip" : "field"}
+            value={deadline}
+            onChange={onChangeDeadline}
+          />
+        </CardContent>
+        <CardContent className="px-4 pt-2">
+          <MarkdownTextarea
+            autoFocus
+            value={title}
+            onChange={(e) => onChangeTitle(e.target.value)}
+            placeholder="Title"
+            isPreview={isPreview}
+            className={cn(
+              "py-1.5 text-xl! font-semibold",
+              !isPreview && "font-mono"
+            )}
+          />
+          <MarkdownTextarea
+            value={body}
+            onChange={(e) => onChangeBody(e.target.value)}
+            onChangeValue={onChangeBody}
+            onToggleTask={onChangeBody}
+            slashMenu
+            placeholder="Notes"
+            isPreview={isPreview}
+            markers={PREVIEW_MARKERS}
+            className="min-h-full shrink-0 resize-none"
+            containerClassName="flex-1"
+          />
+        </CardContent>
       </CardContentLayout>
     </ModalContent>
   )

@@ -25,7 +25,7 @@ export function CardDeadline({
     return (
       <label
         className={cn(
-          "flex w-fit items-center gap-2 border-b-2 border-dashed py-3 font-mono text-sm",
+          "flex w-fit items-center gap-2 py-3 font-mono text-sm",
           "text-muted-foreground focus-within:text-foreground",
           className
         )}

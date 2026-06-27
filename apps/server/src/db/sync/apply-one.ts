@@ -33,6 +33,7 @@ export async function applyOne(
       boardId,
       title: record.title,
       position: record.position,
+      collapsed: record.collapsed,
       updatedAt: record.updatedAt,
       deletedAt,
       seq: nextSeq,

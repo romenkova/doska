@@ -34,7 +34,7 @@ export function Column({ children, onAddCard, ...props }: IProps) {
             )}
           >
             <Button
-              variant="dashed"
+              variant="muted"
               onClick={onAddCard}
               aria-label={`Add card to ${props.title}`}
               className="mb-3 w-full"

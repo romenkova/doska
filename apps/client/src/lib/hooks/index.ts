@@ -1,7 +1,6 @@
 export { useActiveDashboard } from "./use-active-dashboard"
 export { useAuth } from "./use-auth"
 export { useDragEnd } from "./use-drag-end"
-export { useHiddenBodies } from "./use-hidden-bodies"
 export { useMoveCardToColumn } from "./use-move-card-to-column"
 export { useSyncShortcut } from "./use-sync-shortcut"
 export { useSyncStatus } from "./use-sync-status"

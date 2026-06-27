@@ -4,6 +4,7 @@ import { Markdown } from "./markdown"
 import { useMarkers } from "./markers"
 import { type SlashCommand } from "./slash-menu"
 import { toggleTaskByIndex } from "./task-progress"
+import { useCutLine } from "./hooks/use-cut-line"
 import type { Marker } from "./markers"
 import { SlashMenu } from "./slash-menu/slash-menu"
 
@@ -38,14 +39,15 @@ export function MarkdownTextarea({
   const { body } = useMarkers(value, markers, "preview")
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
+  useCutLine(textareaRef, {
+    value,
+    onChangeValue: onChangeValue ?? NOOP,
+    enabled: !isPreview && Boolean(onChangeValue),
+  })
+
   if (isPreview)
     return (
-      <div
-        className={cn(
-          "min-h-0 space-y-4 overflow-y-auto pt-3 select-text",
-          containerClassName
-        )}
-      >
+      <div className={cn("space-y-4 pt-3 select-text", containerClassName)}>
         {body && (
           <Markdown
             onToggleTask={
@@ -73,8 +75,9 @@ export function MarkdownTextarea({
         className={cn(
           "w-full resize-none bg-transparent outline-none",
           "placeholder:text-muted-foreground/50",
-          "field-sizing-content py-2 font-mono",
+          "py-2 font-mono",
           "text-base leading-relaxed [font-variant-ligatures:none]",
+          "field-sizing-content",
           props.className
         )}
       />
