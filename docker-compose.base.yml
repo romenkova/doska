@@ -14,6 +14,12 @@ services:
       AUTH_SECRET: ${AUTH_SECRET:?set AUTH_SECRET in .env}
       PORT: 3000
       NODE_ENV: production
+      # Desktop auto-update proxy (src/updates.ts). Optional — when UPDATE_REPO
+      # is empty the /desktop routes stay disabled. Defaults keep deploys from
+      # failing when they're unset.
+      UPDATE_REPO: ${UPDATE_REPO:-}
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+      UPDATE_PUBLIC_BASE: ${UPDATE_PUBLIC_BASE:-}
     restart: unless-stopped
 
   web:
