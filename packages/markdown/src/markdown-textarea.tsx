@@ -4,6 +4,7 @@ import { Markdown } from "./markdown"
 import { useMarkers } from "./markers"
 import { type SlashCommand } from "./slash-menu"
 import { toggleTaskByIndex } from "./task-progress"
+import { useCutLine } from "./hooks/use-cut-line"
 import type { Marker } from "./markers"
 import { SlashMenu } from "./slash-menu/slash-menu"
 
@@ -37,6 +38,12 @@ export function MarkdownTextarea({
   const value = typeof props.value === "string" ? props.value : ""
   const { body } = useMarkers(value, markers, "preview")
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  useCutLine(textareaRef, {
+    value,
+    onChangeValue: onChangeValue ?? NOOP,
+    enabled: !isPreview && Boolean(onChangeValue),
+  })
 
   if (isPreview)
     return (
