@@ -7,6 +7,9 @@ import { useDashboards } from "@/lib/data/queries"
 import { routes } from "@/lib/routes"
 import type { Dashboard } from "@/lib/types"
 
+/** localStorage key holding the id of the board that was open most recently. */
+const LAST_BOARD_KEY = "doska:last-board"
+
 /**
  * Resolves the dashboard for the open route: the list, the active board (or a
  * blank placeholder while one loads), and the navigation/sync side effects that
@@ -27,11 +30,23 @@ export function useActiveDashboard(deckId?: string) {
     updatedAt: 0,
   }
 
+  // The board open most recently, surfaced on Home as a "continue editing"
+  // shortcut. Resolved against the live list so a deleted board never lingers.
+  const lastBoardId = localStorage.getItem(LAST_BOARD_KEY)
+  const lastBoard = lastBoardId
+    ? (dashboards.find((d) => d.id === lastBoardId) ?? null)
+    : null
+
   // The requested board doesn't exist (once the list has loaded) — go home.
   useEffect(() => {
     if (dashboardsLoading || !deckId || active) return
     navigate("~/")
   }, [dashboardsLoading, deckId, active, navigate])
+
+  // Remember the open board so Home can offer to reopen it.
+  useEffect(() => {
+    if (deckId) localStorage.setItem(LAST_BOARD_KEY, deckId)
+  }, [deckId])
 
   // Point background sync at the open board (and reconcile on switch).
   useEffect(() => {
@@ -48,5 +63,11 @@ export function useActiveDashboard(deckId?: string) {
     })
   }
 
-  return { dashboards, dashboard, selectDashboard, createAndOpenDashboard }
+  return {
+    dashboards,
+    dashboard,
+    lastBoard,
+    selectDashboard,
+    createAndOpenDashboard,
+  }
 }

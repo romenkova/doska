@@ -19,6 +19,7 @@ export async function createCard(columnId: string): Promise<string> {
     id,
     columnId,
     position,
+    title: "",
     updatedAt: Date.now(),
     deletedAt: null,
   })

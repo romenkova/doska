@@ -14,6 +14,7 @@ import { CardDeadline } from "./deadline/card-deadline"
 import { TaskIndicator } from "./task-indicator"
 import { useCard } from "@/lib/data/queries"
 import { useUpdateCard } from "@/lib/data/mutations"
+import { todayIso } from "@/lib/utils"
 import { MarkdownCardPreview, taskProgress } from "@doska/markdown"
 import type { DetailedHTMLProps, HTMLAttributes } from "react"
 import type { Column } from "@/lib/types"
@@ -47,6 +48,9 @@ export function Card({
   const { mutate: updateCard } = useUpdateCard(id)
   const { title, body, deadline } = card
   const { done, total } = taskProgress(body)
+  const onAddDeadline = deadline
+    ? undefined
+    : () => updateCard({ deadline: todayIso() })
 
   return (
     <div
@@ -59,6 +63,7 @@ export function Card({
       <CardContextMenu
         onEdit={() => navigate(routes.card.to(id))}
         onDelete={onDelete}
+        onAddDeadline={onAddDeadline}
         columns={columns}
         currentColumnId={currentColumnId}
         onMoveToColumn={onMoveToColumn}
@@ -67,12 +72,13 @@ export function Card({
           className={cn("gap-2", isDragging && "shadow-shade/5 shadow-xl")}
         >
           <CardHeader>
-            {title && <CardTitle>{title}</CardTitle>}
+            <CardTitle>{title || "Untitled card"}</CardTitle>
             <CardAction className="flex items-center gap-1">
               {total > 0 && <TaskIndicator done={done} total={total} />}
               <CardMenu
                 onEdit={() => navigate(routes.card.to(id))}
                 onDelete={onDelete}
+                onAddDeadline={onAddDeadline}
                 columns={columns}
                 currentColumnId={currentColumnId}
                 onMoveToColumn={onMoveToColumn}

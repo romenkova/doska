@@ -21,9 +21,9 @@ export function card(page: Page, title: string) {
 /**
  * Adds a card to the named column via the column's "add card" control, which now
  * lives as a full-width button at the top of the column body (it used to sit in
- * the column header). New cards seed with the "Untitled card" fallback title, so
- * this waits on that count rising rather than on a specific title; pair with
- * `retitleCard` to give it a distinct name.
+ * the column header). New cards have an empty title and render the "Untitled
+ * card" fallback on the board, so this waits on that count rising rather than on
+ * a specific title; pair with `retitleCard` to give it a distinct name.
  */
 export async function addCard(page: Page, name: string): Promise<void> {
   const seeded = card(page, "Untitled card")
