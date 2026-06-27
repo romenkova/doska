@@ -1,7 +1,7 @@
 export type DeadlineStatus = "overdue" | "soon" | "upcoming"
 
 /** Local `YYYY-MM-DD` for today, used as the reference point for the status. */
-function todayIso(): string {
+export function todayIso(): string {
   const d = new Date()
   const month = String(d.getMonth() + 1).padStart(2, "0")
   const day = String(d.getDate()).padStart(2, "0")

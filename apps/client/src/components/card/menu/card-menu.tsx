@@ -13,6 +13,7 @@ import { CardMenuItems } from "./menu-items"
 interface IProps {
   onEdit: () => void
   onDelete: () => void
+  onAddDeadline?: () => void
 }
 
 interface IMove {
@@ -21,7 +22,12 @@ interface IMove {
   onMoveToColumn: (columnId: string) => void
 }
 
-export function CardMenu({ onEdit, onDelete, ...move }: IProps & IMove) {
+export function CardMenu({
+  onEdit,
+  onDelete,
+  onAddDeadline,
+  ...move
+}: IProps & IMove) {
   return (
     <Menu>
       <MenuTrigger
@@ -36,7 +42,12 @@ export function CardMenu({ onEdit, onDelete, ...move }: IProps & IMove) {
       >
         <MoreHorizontal />
       </MenuTrigger>
-      <CardMenuItems onEdit={onEdit} onDelete={onDelete} move={move} />
+      <CardMenuItems
+        onEdit={onEdit}
+        onDelete={onDelete}
+        onAddDeadline={onAddDeadline}
+        move={move}
+      />
     </Menu>
   )
 }
@@ -45,6 +56,7 @@ export function CardContextMenu({
   children,
   onEdit,
   onDelete,
+  onAddDeadline,
   ...move
 }: IProps & IMove & { children: ReactNode }) {
   return (
@@ -54,6 +66,7 @@ export function CardContextMenu({
         align="start"
         onEdit={onEdit}
         onDelete={onDelete}
+        onAddDeadline={onAddDeadline}
         move={move}
       />
     </ContextMenu>
