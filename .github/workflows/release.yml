@@ -37,6 +37,9 @@ jobs:
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Fetch tags so `git describe` (client version stamp) resolves.
+          fetch-depth: 0
 
       - name: Install Linux build deps
         if: matrix.platform == 'ubuntu-latest'
@@ -68,6 +71,18 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      # The git tag is the single source of truth for the version. Stamp it into
+      # tauri.conf.json so the built app, latest.json and the updater comparison
+      # all match the tag — no hand-maintained version field. (Local edit on the
+      # runner only; not committed.)
+      - name: Stamp version from tag
+        if: github.ref_type == 'tag'
+        shell: bash
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          node -e "const f='apps/desktop/src-tauri/tauri.conf.json';const fs=require('fs');const j=JSON.parse(fs.readFileSync(f,'utf8'));j.version='$VERSION';fs.writeFileSync(f,JSON.stringify(j,null,2)+'\n')"
+          echo "Stamped tauri.conf.json version = $VERSION"
 
       - uses: tauri-apps/tauri-action@v0
         env:

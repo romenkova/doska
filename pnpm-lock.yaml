@@ -53,6 +53,9 @@ importers:
       '@tanstack/react-query':
         specifier: 5.101.0
         version: 5.101.0(react@19.2.7)
+      '@tauri-apps/api':
+        specifier: ^2
+        version: 2.11.1
       '@tauri-apps/plugin-http':
         specifier: ^2
         version: 2.5.9

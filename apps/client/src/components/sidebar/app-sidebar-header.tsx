@@ -1,8 +1,11 @@
 import { SidebarHeader, SidebarMenu, SidebarMenuItem } from "@doska/ui-kit"
 import { Anchor } from "lucide-react"
 import { Link } from "wouter"
+import { useAppVersion } from "@/lib/version"
 
 export function AppSidebarHeader() {
+  const version = useAppVersion()
+
   return (
     <SidebarHeader>
       <SidebarMenu>
@@ -12,6 +15,9 @@ export function AppSidebarHeader() {
               <Anchor className="size-4" />
               <span className="cn-font-heading text-base font-semibold">
                 Doska
+              </span>
+              <span className="text-xs font-normal text-muted-foreground">
+                {version}
               </span>
             </div>
           </Link>

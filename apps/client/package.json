@@ -19,6 +19,7 @@
     "@doska/ui-kit": "workspace:*",
     "@orpc/client": "^1.14.6",
     "@orpc/contract": "^1.14.6",
+    "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-http": "^2",
     "@tauri-apps/plugin-process": "^2",
     "@tauri-apps/plugin-updater": "^2",
