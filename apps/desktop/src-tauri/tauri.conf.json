@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "Deck",
+  "productName": "Doska",
   "version": "0.1.0",
   "identifier": "com.deck.desktop",
   "build": {
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "Deck",
+        "title": "Doska",
         "width": 1280,
         "height": 800,
         "minWidth": 640,

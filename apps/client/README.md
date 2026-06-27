@@ -1,4 +1,4 @@
-# Deck
+# Doska
 
 A Kanban board web app with markdown cards
 
