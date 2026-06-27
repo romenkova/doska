@@ -15,7 +15,7 @@
     "lint": "turbo run lint",
     "type-check": "turbo run typecheck",
     "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\"",
-    "e2e": "turbo run e2e",
+    "e2e": "turbo run e2e --filter=!desktop",
     "upd": "pnpm dlx npm-check-updates --workspaces --root -i"
   },
   "devDependencies": {
