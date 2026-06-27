@@ -13,8 +13,7 @@ interface IProps {
   dashboard: Dashboard
   board: Board
   isLoading: boolean
-  showBodyFor: (columnId: string) => boolean
-  onToggleBody: (columnId: string) => void
+  onToggleBody: (columnId: string, collapsed: boolean) => void
   onAddCard: (columnId: string) => void
   onDeleteCard: (id: string) => void
   onMoveCard: (cardId: string, columnId: string) => void
@@ -31,7 +30,6 @@ export function Deck({
   dashboard,
   board,
   isLoading,
-  showBodyFor,
   onToggleBody,
   onAddCard,
   onDeleteCard,
@@ -73,14 +71,14 @@ export function Deck({
         >
           {columns.map((column) => {
             const cards = cardsByColumn.get(column.id) ?? []
-            const showBody = showBodyFor(column.id)
+            const showBody = !column.collapsed
             return (
               <Column
                 key={column.id}
                 id={column.id}
                 title={column.title}
                 showBody={showBody}
-                onToggleBody={() => onToggleBody(column.id)}
+                onToggleBody={() => onToggleBody(column.id, showBody)}
                 onAddCard={() => onAddCard(column.id)}
                 onRename={(title) => onRenameColumn(column.id, title)}
                 onDelete={() => onDeleteColumn(column.id)}

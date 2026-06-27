@@ -1,0 +1,1 @@
+ALTER TABLE "columns" ADD COLUMN "collapsed" boolean DEFAULT false NOT NULL;

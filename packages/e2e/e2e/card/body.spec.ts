@@ -91,6 +91,12 @@ test.describe("card body", () => {
     ).toBeVisible()
     await expect(card(page, "Titled card")).toBeVisible()
 
+    // The collapse is persisted on the column, so it survives a reload.
+    await page.reload()
+    await expect(
+      page.getByRole("button", { name: "Show body in To Do" })
+    ).toBeVisible()
+
     // Toggling back returns the control to "hide".
     await page.getByRole("button", { name: "Show body in To Do" }).click()
     await expect(

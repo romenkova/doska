@@ -8,11 +8,11 @@ import {
   useMoveColumn,
   useRenameColumn,
   useRenameDashboard,
+  useSetColumnCollapsed,
 } from "@/lib/data/mutations"
 import { useBoard } from "@/lib/data/queries"
 import {
   useDragEnd,
-  useHiddenBodies,
   useMoveCardToColumn,
   useSyncShortcut,
 } from "@/lib/hooks"
@@ -29,7 +29,7 @@ export function DeckView({ dashboard }: { dashboard: Dashboard }) {
   // ⌘S / Ctrl+S flushes a sync immediately
   useSyncShortcut()
 
-  const { showBody, toggleBody } = useHiddenBodies()
+  const { mutate: setColumnCollapsed } = useSetColumnCollapsed(id)
 
   const { mutate: renameDashboard } = useRenameDashboard()
   const { mutate: deleteDashboard } = useDeleteDashboard()
@@ -50,8 +50,9 @@ export function DeckView({ dashboard }: { dashboard: Dashboard }) {
       dashboard={dashboard}
       board={board ?? { columns: [], cards: [] }}
       isLoading={isPending}
-      showBodyFor={showBody}
-      onToggleBody={toggleBody}
+      onToggleBody={(columnId, collapsed) =>
+        setColumnCollapsed({ id: columnId, collapsed })
+      }
       onAddCard={createCard}
       onDeleteCard={deleteCard}
       onMoveCard={moveCardToColumn}

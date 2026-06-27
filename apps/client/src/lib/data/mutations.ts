@@ -90,6 +90,35 @@ export function useRenameColumn(deckId: string) {
   })
 }
 
+/**
+ * Toggles a column's collapse state (card bodies hidden down to titles). The
+ * board cache is patched up front so the toggle is instant, then synced.
+ */
+export function useSetColumnCollapsed(deckId: string) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, collapsed }: { id: string; collapsed: boolean }) =>
+      api.setColumnCollapsed(id, collapsed),
+    onMutate: ({ id, collapsed }) => {
+      const previous = qc.getQueryData<Board>(keys.board(deckId))
+      if (previous) {
+        const next: Board = {
+          ...previous,
+          columns: previous.columns.map((c) =>
+            c.id === id ? { ...c, collapsed } : c
+          ),
+        }
+        qc.setQueryData(keys.board(deckId), next)
+      }
+      return { previous }
+    },
+    onError: (_err, _vars, ctx) => {
+      if (ctx?.previous) qc.setQueryData(keys.board(deckId), ctx.previous)
+    },
+    onSettled: () => qc.invalidateQueries({ queryKey: keys.board(deckId) }),
+  })
+}
+
 export function useDeleteColumn(deckId: string) {
   const qc = useQueryClient()
   return useMutation({

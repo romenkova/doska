@@ -21,6 +21,7 @@ export async function createColumn(
     title,
     position,
     dashboardId,
+    collapsed: false,
     updatedAt: Date.now(),
     deletedAt: null,
   })
