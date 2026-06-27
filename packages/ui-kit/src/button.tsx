@@ -23,7 +23,7 @@ const buttonVariants = cva(
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)]",
         ghost: "hover:bg-muted hover:text-foreground dark:hover:bg-muted/50",
-        dashed:
+        muted:
           "bg-muted-foreground/5 hover:bg-muted-foreground/10 dark:bg-border/20 dark:hover:bg-border/30 text-muted-foreground",
       },
       size: {
