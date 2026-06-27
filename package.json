@@ -9,8 +9,9 @@
   },
   "packageManager": "pnpm@11.8.0",
   "scripts": {
-    "dev": "turbo run dev",
-    "build": "turbo run build",
+    "dev": "turbo run dev --filter=!desktop",
+    "build": "turbo run build --filter=!desktop",
+    "desktop": "pnpm --filter desktop dev",
     "lint": "turbo run lint",
     "type-check": "turbo run typecheck",
     "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\"",

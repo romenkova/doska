@@ -7,6 +7,14 @@ import {
   DASHBOARDS_SCOPE,
 } from "./drivers/dashboard-list-driver"
 import { isAuthed } from "@/lib/utils"
+import { isSyncConfigured } from "../runtime"
+
+/**
+ * Sync runs only when there's a server to reach (always so on web; a configured
+ * URL on desktop) and the user is signed in. Otherwise every engine no-ops and
+ * the app stays purely local.
+ */
+const canSync = () => isSyncConfigured() && isAuthed()
 
 /** Worst-case across the two channels: any syncing wins, then any error. */
 function mergeStatus(a: SyncStatus, b: SyncStatus): SyncStatus {
@@ -30,12 +38,12 @@ function mergeStatus(a: SyncStatus, b: SyncStatus): SyncStatus {
 class DeckSync {
   private readonly board = new SyncEngine(new DeckSyncDriver(), {
     storageKey: "deck:sync:dirty",
-    canSync: isAuthed,
+    canSync,
   })
 
   private readonly list = new SyncEngine(new DashboardListDriver(), {
     storageKey: "deck:sync:dirty:dashboards",
-    canSync: isAuthed,
+    canSync,
   })
 
   /** Merged snapshot, recomputed on either engine's transition and kept stable

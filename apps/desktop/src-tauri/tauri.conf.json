@@ -1,0 +1,37 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Deck",
+  "version": "0.1.0",
+  "identifier": "com.deck.desktop",
+  "build": {
+    "beforeDevCommand": "pnpm --filter client dev",
+    "devUrl": "http://localhost:5173",
+    "beforeBuildCommand": "pnpm --filter client build",
+    "frontendDist": "../../client/dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Deck",
+        "width": 1280,
+        "height": 800,
+        "minWidth": 640,
+        "minHeight": 480
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
+  }
+}
