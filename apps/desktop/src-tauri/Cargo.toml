@@ -1,7 +1,7 @@
 [package]
 name = "deck-desktop"
 version = "0.1.0"
-description = "Deck desktop"
+description = "Doska desktop"
 authors = ["Rita Romenkova"]
 edition = "2021"
 

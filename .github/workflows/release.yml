@@ -93,7 +93,7 @@ jobs:
         with:
           projectPath: apps/desktop
           tagName: ${{ github.ref_type == 'tag' && github.ref_name || format('v{0}', github.run_number) }}
-          releaseName: "Deck ${{ github.ref_type == 'tag' && github.ref_name || github.run_number }}"
+          releaseName: "Doska ${{ github.ref_type == 'tag' && github.ref_name || github.run_number }}"
           releaseDraft: true
           prerelease: false
           includeUpdaterJson: true

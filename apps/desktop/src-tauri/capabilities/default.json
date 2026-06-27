@@ -1,7 +1,7 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "Default capabilities for the Deck desktop window.",
+  "description": "Default capabilities for the Doska desktop window.",
   "windows": ["main"],
   "permissions": [
     "core:default",
