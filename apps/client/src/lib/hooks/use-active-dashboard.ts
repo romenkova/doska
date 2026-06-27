@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react"
+import { useEffect } from "react"
 import { generateKeyBetween } from "fractional-indexing"
 import { useLocation } from "wouter"
 import { sync } from "@/lib/api/sync"
@@ -21,7 +21,6 @@ export function useActiveDashboard(deckId?: string) {
     useDashboards()
   const { mutate: createDashboard } = useCreateDashboard()
 
-  const restored = useRef(false)
   const active = dashboards.find((d) => d.id === deckId)
   const dashboard: Dashboard = active ?? {
     id: deckId ?? "",
@@ -31,26 +30,23 @@ export function useActiveDashboard(deckId?: string) {
     updatedAt: 0,
   }
 
+  // The board open most recently, surfaced on Home as a "continue editing"
+  // shortcut. Resolved against the live list so a deleted board never lingers.
+  const lastBoardId = localStorage.getItem(LAST_BOARD_KEY)
+  const lastBoard = lastBoardId
+    ? (dashboards.find((d) => d.id === lastBoardId) ?? null)
+    : null
+
   // The requested board doesn't exist (once the list has loaded) — go home.
   useEffect(() => {
     if (dashboardsLoading || !deckId || active) return
     navigate("~/")
   }, [dashboardsLoading, deckId, active, navigate])
 
-  // Remember the open board so the next launch can reopen it.
+  // Remember the open board so Home can offer to reopen it.
   useEffect(() => {
     if (deckId) localStorage.setItem(LAST_BOARD_KEY, deckId)
   }, [deckId])
-
-  // On the first landing at the root, reopen the last board if it still exists.
-  useEffect(() => {
-    if (restored.current || deckId || dashboardsLoading) return
-    restored.current = true
-    const last = localStorage.getItem(LAST_BOARD_KEY)
-    if (last && dashboards.some((d) => d.id === last)) {
-      navigate(`~${routes.deck.to(last)}`)
-    }
-  }, [deckId, dashboardsLoading, dashboards, navigate])
 
   // Point background sync at the open board (and reconcile on switch).
   useEffect(() => {
@@ -67,5 +63,11 @@ export function useActiveDashboard(deckId?: string) {
     })
   }
 
-  return { dashboards, dashboard, selectDashboard, createAndOpenDashboard }
+  return {
+    dashboards,
+    dashboard,
+    lastBoard,
+    selectDashboard,
+    createAndOpenDashboard,
+  }
 }

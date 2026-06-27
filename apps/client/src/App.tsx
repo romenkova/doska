@@ -3,8 +3,13 @@ import { AppSidebar, DeckView, Home } from "@/components"
 import { useActiveDashboard } from "@/lib/hooks"
 
 export default function App({ deckId }: { deckId?: string }) {
-  const { dashboards, dashboard, selectDashboard, createAndOpenDashboard } =
-    useActiveDashboard(deckId)
+  const {
+    dashboards,
+    dashboard,
+    lastBoard,
+    selectDashboard,
+    createAndOpenDashboard,
+  } = useActiveDashboard(deckId)
 
   return (
     <SidebarProvider className="h-svh">
@@ -20,6 +25,8 @@ export default function App({ deckId }: { deckId?: string }) {
         ) : (
           <Home
             hasBoards={dashboards.length > 0}
+            lastBoard={lastBoard}
+            onContinue={() => lastBoard && selectDashboard(lastBoard.id)}
             onCreateDashboard={createAndOpenDashboard}
           />
         )}

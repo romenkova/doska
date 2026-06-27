@@ -47,4 +47,19 @@ test.describe("board navigation", () => {
     await page.reload()
     await expect(boardTitle(page, "Sticky board")).toBeVisible()
   })
+
+  test("Home offers to continue editing the last opened board", async ({
+    page,
+  }) => {
+    await createBoard(page)
+    await renameBoard(page, "Untitled board", "Resume me")
+
+    // Land on Home, which should remember the board we just had open.
+    await page.goto("/")
+    await page
+      .getByRole("button", { name: "Continue editing Resume me" })
+      .click()
+
+    await expect(boardTitle(page, "Resume me")).toBeVisible()
+  })
 })

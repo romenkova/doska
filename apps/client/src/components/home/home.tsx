@@ -1,12 +1,21 @@
-import { Anchor, Plus } from "lucide-react"
+import { Anchor, ArrowRight, Plus } from "lucide-react"
 import { Button, SidebarTrigger } from "@doska/ui-kit"
+import type { Dashboard } from "@/lib/types"
 
 interface IProps {
   hasBoards: boolean
+  /** The board open most recently, offered as a "continue editing" shortcut. */
+  lastBoard: Dashboard | null
+  onContinue: () => void
   onCreateDashboard: () => void
 }
 
-export function Home({ hasBoards, onCreateDashboard }: IProps) {
+export function Home({
+  hasBoards,
+  lastBoard,
+  onContinue,
+  onCreateDashboard,
+}: IProps) {
   return (
     <div className="flex h-full flex-1 flex-col">
       <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
@@ -24,10 +33,18 @@ export function Home({ hasBoards, onCreateDashboard }: IProps) {
               : "Create a board to start organizing your work into columns and cards."}
           </p>
         </div>
-        <Button onClick={onCreateDashboard}>
-          <Plus className="size-4" />
-          Create a board
-        </Button>
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          {lastBoard && (
+            <Button variant="secondary" onClick={onContinue}>
+              Continue editing {lastBoard.title || "Untitled board"}
+              <ArrowRight className="size-4" />
+            </Button>
+          )}
+          <Button onClick={onCreateDashboard}>
+            <Plus className="size-4" />
+            Create a board
+          </Button>
+        </div>
       </div>
     </div>
   )
