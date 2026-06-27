@@ -16,3 +16,10 @@ tauri-build = { version = "2", features = [] }
 tauri = { version = "2", features = [] }
 tauri-plugin-http = "2"
 tauri-plugin-window-state = "2"
+# Referenced by the generate_context! macro once the updater pubkey is embedded.
+serde_json = "1"
+
+# Auto-update is desktop-only; the updater crate doesn't build for mobile.
+[target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
+tauri-plugin-updater = "2"
+tauri-plugin-process = "2"
