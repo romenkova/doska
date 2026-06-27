@@ -8,6 +8,7 @@ import {
 } from "@doska/ui-kit"
 import { useState } from "react"
 import { useLogin } from "@/lib/data/mutations"
+import { getServerUrl, isDesktop, setServerUrl } from "@/lib/api/runtime"
 
 interface IProps {
   open: boolean
@@ -18,12 +19,17 @@ interface IProps {
  * Sign-in dialog for the sync session.
  */
 export function LoginModal({ open, onOpenChange }: IProps) {
+  const desktop = isDesktop()
+  const [server, setServer] = useState(() => getServerUrl())
   const [login, setLogin] = useState("")
   const [password, setPassword] = useState("")
   const { mutate, isPending, isError, reset } = useLogin()
 
   function submit(e: React.FormEvent) {
     e.preventDefault()
+    // Desktop has no same-origin server — persist the URL before logging in so
+    // the auth/sync calls know where to go.
+    if (desktop) setServerUrl(server)
     mutate(
       { login, password },
       {
@@ -53,6 +59,17 @@ export function LoginModal({ open, onOpenChange }: IProps) {
           </div>
 
           <div className="flex flex-col gap-2">
+            {desktop && (
+              <Input
+                name="server"
+                type="url"
+                inputMode="url"
+                autoComplete="off"
+                placeholder="Server URL (https://…)"
+                value={server}
+                onChange={(e) => setServer(e.target.value)}
+              />
+            )}
             <Input
               autoFocus
               name="login"
@@ -82,7 +99,12 @@ export function LoginModal({ open, onOpenChange }: IProps) {
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isPending || !login || !password}>
+            <Button
+              type="submit"
+              disabled={
+                isPending || !login || !password || (desktop && !server.trim())
+              }
+            >
               {isPending ? "Signing in..." : "Sign in"}
             </Button>
           </div>

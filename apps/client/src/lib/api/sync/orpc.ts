@@ -2,12 +2,15 @@ import { contract } from "@doska/contract"
 import { createORPCClient } from "@orpc/client"
 import { RPCLink } from "@orpc/client/fetch"
 import type { ContractRouterClient } from "@orpc/contract"
+import { apiUrl, appFetch } from "../runtime"
 
-// Same-origin path; the Vite dev server proxies `/rpc` to the API (see vite.config).
+// Web: same-origin path proxied to the API (see vite.config). Desktop: the
+// user's configured server URL, fetched via Tauri's HTTP plugin (see runtime).
 const link = new RPCLink({
-  url: `${window.location.origin}/rpc`,
+  // Resolved per request: the desktop server URL can be set after load.
+  url: () => apiUrl("/rpc"),
   fetch: async (request, init) => {
-    const res = await globalThis.fetch(request, {
+    const res = await appFetch(request, {
       ...init,
       credentials: "include",
     })

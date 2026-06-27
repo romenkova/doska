@@ -10,6 +10,7 @@ import {
   sessionCookie,
 } from "./auth"
 import { router } from "./router"
+import { registerUpdateRoutes } from "./updates"
 import { runMigrations } from "./db/utils/run-migrations"
 
 const handler = new RPCHandler(router)
@@ -45,6 +46,9 @@ app.get("/auth/me", async (req, reply) => {
   const authed = isAuthed(req.raw)
   return reply.send({ authed, login: authed ? getLogin() : null })
 })
+
+// Public desktop update endpoint — the app polls this for new builds.
+registerUpdateRoutes(app)
 
 app.all("/rpc/*", async (req, reply) => {
   // The sync API is the protected surface: no valid session, no access.

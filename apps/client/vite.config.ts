@@ -1,10 +1,28 @@
+import { execSync } from "child_process"
 import path from "path"
 import tailwindcss from "@tailwindcss/vite"
 import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
 
+// The released version is the git tag (CI tags releases `v*`). `git describe`
+// yields the exact tag on a release build, or `<tag>-<n>-g<sha>` / a short sha
+// between tags so dev builds are still identifiable. Falls back to "dev" when
+// git isn't available (e.g. a source tarball).
+function appVersion(): string {
+  try {
+    return execSync("git describe --tags --always", {
+      encoding: "utf-8",
+    }).trim()
+  } catch {
+    return "dev"
+  }
+}
+
 // https://vite.dev/config/
 export default defineConfig({
+  define: {
+    __APP_VERSION__: JSON.stringify(appVersion()),
+  },
   preview: {
     port: 3001,
     // The e2e suite runs against `vite preview`, so it needs the same /rpc

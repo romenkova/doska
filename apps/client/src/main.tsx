@@ -8,6 +8,7 @@ import { keys } from "@/lib/data/keys"
 import { queryClient } from "@/lib/query-client"
 import { Router } from "./router.tsx"
 import { startBackgroundSync } from "./lib/api/sync"
+import { checkForUpdates } from "./lib/updates"
 import "./index.css"
 
 // Dispatched by the oRPC fetch wrapper.
@@ -16,6 +17,9 @@ window.addEventListener("auth:expired", () => {
 })
 
 startBackgroundSync()
+
+// Check for desktop updates in the background (skipped on web).
+void checkForUpdates()
 
 // Seed the local DB from fixtures on first run
 await seed()
