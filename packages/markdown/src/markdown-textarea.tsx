@@ -40,12 +40,7 @@ export function MarkdownTextarea({
 
   if (isPreview)
     return (
-      <div
-        className={cn(
-          "min-h-0 space-y-4 overflow-y-auto pt-3 select-text",
-          containerClassName
-        )}
-      >
+      <div className={cn("space-y-4 pt-3 select-text", containerClassName)}>
         {body && (
           <Markdown
             onToggleTask={
@@ -73,8 +68,9 @@ export function MarkdownTextarea({
         className={cn(
           "w-full resize-none bg-transparent outline-none",
           "placeholder:text-muted-foreground/50",
-          "field-sizing-content py-2 font-mono",
+          "py-2 font-mono",
           "text-base leading-relaxed [font-variant-ligatures:none]",
+          "field-sizing-content",
           props.className
         )}
       />
