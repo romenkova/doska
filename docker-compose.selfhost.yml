@@ -17,7 +17,6 @@ services:
       AUTH_SECRET: ${AUTH_SECRET:?set AUTH_SECRET in .env}
       PORT: 3000
       NODE_ENV: production
-      APP_VERSION: ${APP_VERSION:-}
       UPDATE_REPO: ${UPDATE_REPO:-}
       GITHUB_TOKEN: ${GITHUB_TOKEN:-}
       UPDATE_PUBLIC_BASE: ${UPDATE_PUBLIC_BASE:-}
