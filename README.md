@@ -51,7 +51,7 @@ PGlite for dev) · Tauri 2.
 The client writes locally first and queues changes in a dirty set. When sync is
 enabled and authenticated, the background engine reconciles with the server over
 oRPC. Auth is a single configured login/password exchanged for a session cookie;
-the sync API (`/rpc/*`) is the only protected surface. On desktop, requests go
+the sync API (`/api/rpc/*`) is the only protected surface. On desktop, requests go
 through `@tauri-apps/plugin-http` (native fetch, no CORS, own cookie jar), so the
 server needs no special handling.
 
@@ -107,6 +107,19 @@ docker compose -f docker-compose.sync-selfhost.yml --profile bundled-db up -d --
 docker compose -f docker-compose.sync-selfhost.yml up -d --build
 ```
 
+> **Versioning:** you never bump a version file. The git tag is the single
+> source of truth — the desktop build and client stamp derive from it, and the
+> server reports it via `APP_VERSION`. Prefix any deploy with it so the server's
+> `/api/version` (which gates desktop updates) matches the code you checked out:
+>
+> ```sh
+> APP_VERSION=$(git describe --tags --always | sed 's/^v//') \
+>   docker compose -f docker-compose.sync-selfhost.yml --profile bundled-db up -d --build
+> ```
+>
+> (On Dokploy, set `APP_VERSION` in the env UI.) Omit it and the server falls
+> back to `apps/server/package.json`.
+
 This brings up the sync server on `SERVER_PORT` (default `3000`). Then in the
 desktop app's sync settings, set the server URL to `http://<your-host>:3000`,
 enable sync, and sign in with the `AUTH_LOGIN` / `AUTH_PASSWORD` from your
@@ -130,7 +143,7 @@ To host the web app alongside the server, use the bundled compose files instead:
 The desktop build is a Tauri 2 shell around the same client. Releases are built
 and signed in CI (`.github/workflows/release.yml`) and published to GitHub
 Releases; the installed app auto-updates by polling a signed `latest.json`. The
-update endpoint is proxied through the server (`/desktop/*`) so the URL baked
+update endpoint is proxied through the server (`/api/desktop/*`) so the URL baked
 into installed apps never changes, even when release hosting does.
 
 > macOS builds aren't notarized yet, so on first launch clear the quarantine

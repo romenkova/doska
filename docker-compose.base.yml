@@ -7,6 +7,11 @@ services:
     build:
       context: .
       dockerfile: apps/server/Dockerfile
+      # Bake the version in when building from source, same as a published image
+      # would (see Dockerfile). The runtime `environment: APP_VERSION` below
+      # still wins if both are set.
+      args:
+        APP_VERSION: ${APP_VERSION:-}
     environment:
       DATABASE_URL: ${DATABASE_URL:?set DATABASE_URL in .env}
       AUTH_LOGIN: ${AUTH_LOGIN:?set AUTH_LOGIN in .env}
@@ -14,8 +19,16 @@ services:
       AUTH_SECRET: ${AUTH_SECRET:?set AUTH_SECRET in .env}
       PORT: 3000
       NODE_ENV: production
+      # Version reported at /api/version, which gates desktop auto-updates. Pass
+      # the release git tag in at deploy time so the server tracks the same
+      # source of truth as the desktop build — no file ever bumped by hand:
+      #   APP_VERSION=$(git describe --tags --always | sed 's/^v//') \
+      #     docker compose -f docker-compose.yml up -d --build
+      # (On Dokploy, set APP_VERSION in the env UI.) If unset, the server falls
+      # back to apps/server/package.json.
+      APP_VERSION: ${APP_VERSION:-}
       # Desktop auto-update proxy (src/updates.ts). Optional — when UPDATE_REPO
-      # is empty the /desktop routes stay disabled. Defaults keep deploys from
+      # is empty the /api/desktop routes stay disabled. Defaults keep deploys from
       # failing when they're unset.
       UPDATE_REPO: ${UPDATE_REPO:-}
       GITHUB_TOKEN: ${GITHUB_TOKEN:-}

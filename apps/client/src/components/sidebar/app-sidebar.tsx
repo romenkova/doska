@@ -10,6 +10,7 @@ import { AppSidebarHeader } from "./app-sidebar-header"
 import { DashboardsList } from "./dashboards-list"
 import { ThemeToggle } from "./theme-toggle"
 import { SidebarAccount } from "./sidebar-account"
+import { SettingsButton } from "@/components/settings/settings-button"
 
 type AppSidebarProps = {
   dashboards: Dashboard[]
@@ -41,6 +42,7 @@ export function AppSidebar({
       </SidebarContent>
       <SidebarFooter>
         <ThemeToggle />
+        <SettingsButton />
         <SidebarAccount />
       </SidebarFooter>
     </Sidebar>

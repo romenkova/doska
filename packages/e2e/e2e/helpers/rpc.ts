@@ -3,7 +3,7 @@ import type { Change, DashboardChange } from "@doska/contract"
 
 /* -------------------------------------------------------------------------- */
 /*  Second-client RPC layer. These talk to the real backend straight over     */
-/*  `/rpc`, standing in for another device/teammate so the open page has to    */
+/*  `/api/rpc`, standing in for another device/teammate so the open page has to*/
 /*  reconcile a change it never made. Entity helpers build on these; specs     */
 /*  speak in titles and column names, and the wire envelope stays in here.     */
 /* -------------------------------------------------------------------------- */
@@ -11,13 +11,13 @@ import type { Change, DashboardChange } from "@doska/contract"
 /**
  * Calls the per-board sync RPC. oRPC wraps payloads in a `{ json }` envelope on
  * the wire; this hides that. The relative URL resolves against the config
- * baseURL, which proxies `/rpc` to the e2e sync server.
+ * baseURL, which proxies `/api/rpc` to the e2e sync server.
  */
 export async function sync(
   request: APIRequestContext,
   body: { boardId: string; since: number; changes: Change[] }
 ): Promise<{ cursor: number; changes: Change[] }> {
-  const res = await request.post("/rpc/board/sync", { data: { json: body } })
+  const res = await request.post("/api/rpc/board/sync", { data: { json: body } })
   if (!res.ok())
     throw new Error(`sync failed (${res.status()}): ${await res.text()}`)
   const payload = (await res.json()) as {
@@ -34,7 +34,7 @@ export async function dashboardSync(
   request: APIRequestContext,
   body: { since: number; changes: DashboardChange[] }
 ): Promise<{ cursor: number; changes: DashboardChange[] }> {
-  const res = await request.post("/rpc/dashboards/sync", {
+  const res = await request.post("/api/rpc/dashboards/sync", {
     data: { json: body },
   })
   if (!res.ok())

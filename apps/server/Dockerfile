@@ -13,6 +13,14 @@ RUN pnpm install --frozen-lockfile --filter server...
 
 FROM base AS runtime
 ENV NODE_ENV=production
+# Bake the release version into the image so a prebuilt/published image (e.g.
+# ghcr.io/.../doska-server:0.3.2) self-describes its /api/version without the
+# puller setting anything or having git. The publishing CI passes the tag:
+#   docker build --build-arg APP_VERSION=0.3.2 ...
+# A runtime APP_VERSION (compose `environment:`) still overrides this, and if
+# neither is set the server falls back to package.json.
+ARG APP_VERSION=""
+ENV APP_VERSION=${APP_VERSION}
 COPY --from=build /app /app
 WORKDIR /app/apps/server
 EXPOSE 3000
