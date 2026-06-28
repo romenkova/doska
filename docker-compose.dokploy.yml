@@ -1,13 +1,14 @@
 # Dokploy deploy. Point Dokploy's Compose path at this file.
-# No host ports: Dokploy's Traefik routes to web (container :80). Point a
-# Domain at the web service in the Dokploy UI. Every service sits on
-# dokploy-network so it can resolve the managed Postgres and be reached by
-# Traefik (Dokploy's canonical single-network pattern).
+# Reuses the prebuilt `latest` images + env from docker-compose.selfhost.yml via
+# `extends:` (one source of truth). Set DATABASE_URL in the Dokploy env UI to your
+# managed Postgres. The selfhost server depends_on its bundled db (commented out
+# in that file), so we reset depends_on here to drop that wiring.
 services:
   server:
     extends:
-      file: docker-compose.base.yml
+      file: docker-compose.selfhost.yml
       service: server
+    depends_on: !reset {}
     expose:
       - "3000"
     networks:
@@ -15,12 +16,14 @@ services:
 
   web:
     extends:
-      file: docker-compose.base.yml
+      file: docker-compose.selfhost.yml
       service: web
-    depends_on:
-      - server
+    # Drop selfhost's published host port — Traefik handles ingress.
+    ports: !reset []
     expose:
       - "80"
+    depends_on:
+      - server
     networks:
       - dokploy-network
 
