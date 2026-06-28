@@ -1,31 +1,34 @@
 # Dokploy deploy. Point Dokploy's Compose path at this file.
-# Reuses the prebuilt `latest` images + env from docker-compose.selfhost.yml via
-# `extends:` (one source of truth). Set DATABASE_URL in the Dokploy env UI to your
-# managed Postgres. The selfhost server depends_on its bundled db (commented out
-# in that file), so we reset depends_on here to drop that wiring.
+
+# Set these in the Dokploy env UI: DATABASE_URL (your managed Postgres),
+# AUTH_PASSWORD, AUTH_SECRET. Optionally DOCKER_IMAGE_TAG to pin a version.
 services:
   server:
-    extends:
-      file: docker-compose.selfhost.yml
-      service: server
-    depends_on: !reset {}
+    image: ghcr.io/romenkova/doska-server:${DOCKER_IMAGE_TAG:-latest}
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?set DATABASE_URL in the Dokploy env UI}
+      AUTH_LOGIN: ${AUTH_LOGIN:-admin}
+      AUTH_PASSWORD: ${AUTH_PASSWORD:?set AUTH_PASSWORD in the Dokploy env UI}
+      AUTH_SECRET: ${AUTH_SECRET:?set AUTH_SECRET in the Dokploy env UI}
+      PORT: 3000
+      NODE_ENV: production
+      # Baked into the image at build time; override only on purpose.
+      APP_VERSION: ${APP_VERSION:-}
     expose:
       - "3000"
     networks:
       - dokploy-network
+    restart: unless-stopped
 
   web:
-    extends:
-      file: docker-compose.selfhost.yml
-      service: web
-    # Drop selfhost's published host port — Traefik handles ingress.
-    ports: !reset []
+    image: ghcr.io/romenkova/doska-web:${DOCKER_IMAGE_TAG:-latest}
     expose:
       - "80"
     depends_on:
       - server
     networks:
       - dokploy-network
+    restart: unless-stopped
 
 networks:
   # Shared Dokploy network: where the managed DB lives and Traefik routes from.
