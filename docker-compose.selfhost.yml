@@ -17,9 +17,8 @@ services:
       PORT: 3000
       NODE_ENV: production
       APP_VERSION: ${APP_VERSION:-}
-    depends_on:
-      db:
-        condition: service_healthy
+    # Re-add `depends_on: { db: { condition: service_healthy } }` if you
+    # uncomment the bundled db service below.
     restart: unless-stopped
 
   web:
