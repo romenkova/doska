@@ -1,0 +1,51 @@
+# Self-host the full app (web UI + sync server) from prebuilt images
+#
+# Postgres is bundled by default (data lives in the deck-pgdata volume), so this
+# is genuinely one command. To use your own managed Postgres instead, set
+# DATABASE_URL in .env — the server will use it and the bundled db sits idle
+# (comment the `db` service out if you want it gone).
+services:
+  server:
+    image: ghcr.io/romenkova/doska-server:${DOCKER_IMAGE_TAG:-latest}
+    environment:
+      # Defaults to the bundled Postgres below; override with your own managed
+      # DATABASE_URL to skip it entirely.
+      DATABASE_URL: ${DATABASE_URL:-postgres://deck:${POSTGRES_PASSWORD:-deck}@db:5432/deck}
+      AUTH_LOGIN: ${AUTH_LOGIN:-admin}
+      AUTH_PASSWORD: ${AUTH_PASSWORD:?set AUTH_PASSWORD in .env}
+      AUTH_SECRET: ${AUTH_SECRET:?set AUTH_SECRET in .env}
+      PORT: 3000
+      NODE_ENV: production
+      APP_VERSION: ${APP_VERSION:-}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  web:
+    image: ghcr.io/romenkova/doska-web:${DOCKER_IMAGE_TAG:-latest}
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    depends_on:
+      - server
+    restart: unless-stopped
+
+# Bundled Postgres — zero setup. Remove this service (and the server's
+# depends_on above) if you point DATABASE_URL at your own managed database.
+#   db:
+#     image: postgres:17-alpine
+#     environment:
+#       POSTGRES_USER: deck
+#       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-deck}
+#       POSTGRES_DB: deck
+#     volumes:
+#       - deck-pgdata:/var/lib/postgresql/data
+#     healthcheck:
+#       test: ["CMD-SHELL", "pg_isready -U deck -d deck"]
+#       interval: 5s
+#       timeout: 5s
+#       retries: 10
+#     restart: unless-stopped
+
+# volumes:
+#   deck-pgdata:

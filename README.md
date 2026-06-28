@@ -130,7 +130,25 @@ enable sync, and sign in with the `AUTH_LOGIN` / `AUTH_PASSWORD` from your
 
 ### Full deploy (web UI + server)
 
-To host the web app alongside the server, use the bundled compose files instead:
+The simplest way to self-host the whole app — web UI **and** sync server — is from
+prebuilt images, no clone and no build. Every release publishes
+`ghcr.io/romenkova/doska-server` and `ghcr.io/romenkova/doska-web` to GHCR (see
+`.github/workflows/images.yml`). Grab two files and run:
+
+```sh
+curl -O https://raw.githubusercontent.com/romenkova/doska/main/docker-compose.selfhost.yml
+curl -o .env https://raw.githubusercontent.com/romenkova/doska/main/.env.selfhost.example
+# edit .env — set AUTH_PASSWORD and AUTH_SECRET (e.g. `openssl rand -hex 32`)
+docker compose -f docker-compose.selfhost.yml up -d
+```
+
+Postgres is bundled by default, so that's the whole setup. Open the web UI on
+`http://<your-host>:8080` (`WEB_PORT`) and sign in with your `AUTH_LOGIN` /
+`AUTH_PASSWORD`. Pin a version with `DOCKER_IMAGE_TAG` in `.env` (defaults to
+`latest`); point `DATABASE_URL` at your own Postgres to skip the bundled db.
+
+To build from source instead, or deploy to a managed platform, use the
+`build:`-based compose files:
 
 - `docker-compose.yml` — generic Docker host; publishes the web UI on `WEB_PORT`
   (default `8080`), server stays internal. Requires an external `DATABASE_URL`
