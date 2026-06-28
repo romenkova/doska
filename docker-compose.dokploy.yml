@@ -14,6 +14,9 @@ services:
       NODE_ENV: production
       # Baked into the image at build time; override only on purpose.
       APP_VERSION: ${APP_VERSION:-}
+      UPDATE_REPO: ${UPDATE_REPO:-romenkova/doska}
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+      UPDATE_PUBLIC_BASE: ${UPDATE_PUBLIC_BASE:-}
     expose:
       - "3000"
     networks:

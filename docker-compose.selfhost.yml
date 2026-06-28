@@ -17,6 +17,9 @@ services:
       PORT: 3000
       NODE_ENV: production
       APP_VERSION: ${APP_VERSION:-}
+      UPDATE_REPO: ${UPDATE_REPO:-}
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+      UPDATE_PUBLIC_BASE: ${UPDATE_PUBLIC_BASE:-}
     # Re-add `depends_on: { db: { condition: service_healthy } }` if you
     # uncomment the bundled db service below.
     restart: unless-stopped
