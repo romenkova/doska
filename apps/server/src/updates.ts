@@ -18,14 +18,14 @@ import type { FastifyInstance, FastifyRequest } from "fastify"
 // major.minor line rather than the overall latest. No header → overall latest.
 //
 // Env:
-//   UPDATE_REPO         "owner/repo" of the release source (required to enable)
-//   GITHUB_TOKEN        token with read access (needed only while private)
-//   UPDATE_PUBLIC_BASE  this server's public origin, e.g. https://updates.deck.app
-//                       (used to rewrite asset URLs in the manifest back to us)
+//   GITHUB_TOKEN  token with read access to the releases repo (needed only while
+//                 it's private)
+//   BASE_URL      this server's public origin, e.g. https://deck.example.com
+//                 (used to rewrite asset URLs in the manifest back to us)
 
-const repo = process.env.UPDATE_REPO
+const repo = "romenkova/doska"
 const token = process.env.GITHUB_TOKEN
-const publicBase = (process.env.UPDATE_PUBLIC_BASE ?? "").replace(/\/+$/, "")
+const publicBase = (process.env.BASE_URL ?? "").replace(/\/+$/, "")
 
 type GhAsset = { name: string; url: string; browser_download_url: string }
 type GhRelease = {
@@ -94,15 +94,12 @@ async function selectRelease(line: SemVer | null): Promise<GhRelease | null> {
     .sort((a, b) => compareDesc(a.v, b.v))
   if (versioned.length === 0) return null
   if (!line) return versioned[0].r
-  return versioned.find(({ v }) => v[0] === line[0] && v[1] === line[1])?.r ?? null
+  return (
+    versioned.find(({ v }) => v[0] === line[0] && v[1] === line[1])?.r ?? null
+  )
 }
 
 export function registerUpdateRoutes(app: FastifyInstance): void {
-  if (!repo) {
-    app.log.warn("UPDATE_REPO not set — desktop update endpoint disabled")
-    return
-  }
-
   // The updater fetches this first. We take the selected release's generated
   // latest.json and rewrite each platform's `url` so the binary download also
   // routes back through this proxy (otherwise it would point at an auth-gated
@@ -112,7 +109,8 @@ export function registerUpdateRoutes(app: FastifyInstance): void {
   app.get("/api/desktop/latest.json", async (req, reply) => {
     try {
       const release = await selectRelease(serverLine(req))
-      if (!release) return reply.code(404).send({ error: "No matching release" })
+      if (!release)
+        return reply.code(404).send({ error: "No matching release" })
 
       const manifestAsset = release.assets.find((a) => a.name === "latest.json")
       if (!manifestAsset) return reply.code(404).send({ error: "No manifest" })
@@ -120,7 +118,8 @@ export function registerUpdateRoutes(app: FastifyInstance): void {
       const res = await fetch(manifestAsset.url, {
         headers: ghHeaders("application/octet-stream"),
       })
-      if (!res.ok) return reply.code(502).send({ error: "Manifest fetch failed" })
+      if (!res.ok)
+        return reply.code(502).send({ error: "Manifest fetch failed" })
 
       const manifest = (await res.json()) as {
         version?: string
