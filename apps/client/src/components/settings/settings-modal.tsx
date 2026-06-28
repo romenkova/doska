@@ -70,7 +70,7 @@ export function SettingsModal({ open, onOpenChange }: IProps) {
               <label className="flex items-start gap-2">
                 <input
                   type="checkbox"
-                  className="mt-0.5 size-4"
+                  className="mt-0.5 size-4 accent-primary"
                   checked={auto}
                   onChange={(e) => setAutoUpdate(e.target.checked)}
                 />
