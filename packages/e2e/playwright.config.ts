@@ -8,7 +8,7 @@ const SERVER_DIR = path.resolve(here, "../../apps/server")
 
 /**
  * The sync e2e tests need a real backend, so the harness boots two servers:
- * the API and the `vite preview` bundle (which proxies `/rpc` to the API via
+ * the API and the `vite preview` bundle (which proxies `/api` to the API via
  * `RPC_TARGET`, see vite.config). The API runs on its own port backed by an
  * in-memory PGlite (no DB_FILE), so each boot starts from an empty server and a
  * run never inherits another run's board state.

@@ -36,10 +36,10 @@ export async function signOut(page: Page): Promise<void> {
 
 /**
  * Authorizes a raw request context (the simulated second client) by logging in
- * over the API, so its direct `/rpc` calls are accepted.
+ * over the API, so its direct `/api/rpc` calls are accepted.
  */
 export async function authenticate(request: APIRequestContext): Promise<void> {
-  const res = await request.post("/auth/login", { data: TEST_CREDENTIALS })
+  const res = await request.post("/api/auth/login", { data: TEST_CREDENTIALS })
   if (!res.ok())
     throw new Error(`e2e login failed (${res.status()}): ${await res.text()}`)
 }

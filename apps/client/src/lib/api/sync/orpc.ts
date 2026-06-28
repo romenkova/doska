@@ -8,7 +8,7 @@ import { apiUrl, appFetch } from "../runtime"
 // user's configured server URL, fetched via Tauri's HTTP plugin (see runtime).
 const link = new RPCLink({
   // Resolved per request: the desktop server URL can be set after load.
-  url: () => apiUrl("/rpc"),
+  url: () => apiUrl("/api/rpc"),
   fetch: async (request, init) => {
     const res = await appFetch(request, {
       ...init,

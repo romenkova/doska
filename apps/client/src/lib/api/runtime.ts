@@ -3,13 +3,14 @@
  *
  * The app is local-first: it runs entirely on IndexedDB with no server. Remote
  * sync is opt-in. On the **web** build the app is served by the API, so the
- * server is same-origin (Vite proxies `/rpc` and `/auth`) and sync is gated by
+ * server is same-origin (Vite proxies `/api`) and sync is gated by
  * auth alone — behavior is unchanged. On the **desktop** (Tauri) build the
  * webview origin is `tauri://localhost`, so the user must supply an absolute
  * server URL before anything talks to the network.
  */
 
 const SERVER_URL_KEY = "deck:server-url"
+const AUTO_UPDATE_KEY = "deck:auto-update"
 
 /** True inside the packaged Tauri webview. */
 export function isDesktop(): boolean {
@@ -47,6 +48,44 @@ export function setServerUrl(url: string): void {
  */
 export function isSyncConfigured(): boolean {
   return !isDesktop() || getServerUrl() !== ""
+}
+
+const autoUpdateListeners = new Set<() => void>()
+
+/** Subscribe to auto-update preference changes (for `useSyncExternalStore`). */
+export function subscribeAutoUpdate(listener: () => void): () => void {
+  autoUpdateListeners.add(listener)
+  return () => autoUpdateListeners.delete(listener)
+}
+
+/**
+ * Whether the desktop app installs matching updates automatically. Opt-in:
+ * defaults to off so a self-hosted setup is never updated ahead of its server
+ * without the user choosing to.
+ */
+export function getAutoUpdate(): boolean {
+  return localStorage.getItem(AUTO_UPDATE_KEY) === "true"
+}
+
+/** Persists the auto-update preference and notifies subscribers. */
+export function setAutoUpdate(on: boolean): void {
+  localStorage.setItem(AUTO_UPDATE_KEY, on ? "true" : "false")
+  for (const listener of autoUpdateListeners) listener()
+}
+
+/**
+ * The configured sync server's version, or null if unreachable/unconfigured.
+ * Used to pin desktop updates to the server's release line.
+ */
+export async function getServerVersion(): Promise<string | null> {
+  try {
+    const res = await appFetch(apiUrl("/api/version"))
+    if (!res.ok) return null
+    const body = (await res.json()) as { version?: unknown }
+    return typeof body.version === "string" ? body.version : null
+  } catch {
+    return null
+  }
 }
 
 /** Absolute API base: same origin on web, the configured URL on desktop. */

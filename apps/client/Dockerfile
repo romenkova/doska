@@ -1,5 +1,5 @@
 # Client SPA. Built with Vite, then served as static files by nginx, which also
-# reverse-proxies /rpc and /auth to the API so the browser stays same-origin.
+# reverse-proxies /api to the API so the browser stays same-origin.
 # The build context is the monorepo root (see compose).
 FROM node:22-slim AS build
 RUN corepack enable

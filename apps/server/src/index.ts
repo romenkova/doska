@@ -12,6 +12,7 @@ import {
 import { router } from "./router"
 import { registerUpdateRoutes } from "./updates"
 import { runMigrations } from "./db/utils/run-migrations"
+import pkg from "../package.json" with { type: "json" }
 
 const handler = new RPCHandler(router)
 const app = Fastify({ logger: true })
@@ -23,7 +24,7 @@ app.addContentTypeParser("application/json", (_req, _payload, done) => {
 
 // Exchanges the single configured login/password for a session cookie. Reads
 // the body off the raw stream since the content-type parser above is a no-op.
-app.post("/auth/login", async (req, reply) => {
+app.post("/api/auth/login", async (req, reply) => {
   const body = (await readJson(req.raw)) as
     | { login?: unknown; password?: unknown }
     | undefined
@@ -35,28 +36,42 @@ app.post("/auth/login", async (req, reply) => {
 })
 
 // Clears the session cookie.
-app.post("/auth/logout", async (_req, reply) => {
+app.post("/api/auth/logout", async (_req, reply) => {
   reply.header("set-cookie", clearCookie())
   return reply.send({ authed: false })
 })
 
 // Lets the client check whether the current cookie is still a valid session,
 // and names the session (the configured login) when it is.
-app.get("/auth/me", async (req, reply) => {
+app.get("/api/auth/me", async (req, reply) => {
   const authed = isAuthed(req.raw)
   return reply.send({ authed, login: authed ? getLogin() : null })
+})
+
+// Public version endpoint. The desktop app pins its updates to this: it only
+// installs a release whose version matches the server's, so a client never runs
+// ahead of a (possibly self-hosted) server it can't talk to.
+//
+// The git tag is the single source of truth across the product (the desktop
+// build and the client stamp both derive from it). Deploys pass the same tag in
+// as APP_VERSION (see docker-compose.base.yml), so this endpoint reports the
+// release line the server is actually on without anyone bumping a file. The
+// package.json version is only a last-resort fallback for a gitless tarball
+// deploy. Use `||` not `??` so an empty APP_VERSION="" still falls back.
+app.get("/api/version", async (_req, reply) => {
+  return reply.send({ version: process.env.APP_VERSION || pkg.version })
 })
 
 // Public desktop update endpoint — the app polls this for new builds.
 registerUpdateRoutes(app)
 
-app.all("/rpc/*", async (req, reply) => {
+app.all("/api/rpc/*", async (req, reply) => {
   // The sync API is the protected surface: no valid session, no access.
   if (!isAuthed(req.raw)) {
     return reply.code(401).send({ error: "Unauthorized" })
   }
   const { matched } = await handler.handle(req.raw, reply.raw, {
-    prefix: "/rpc",
+    prefix: "/api/rpc",
     context: {},
   })
   if (matched) return reply.hijack()
