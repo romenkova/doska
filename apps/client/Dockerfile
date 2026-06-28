@@ -4,6 +4,8 @@
 FROM node:22-slim AS build
 RUN corepack enable
 WORKDIR /app
+ARG APP_VERSION=""
+ENV APP_VERSION=${APP_VERSION}
 COPY . .
 RUN pnpm install --frozen-lockfile --filter client...
 RUN pnpm --filter client build

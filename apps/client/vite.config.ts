@@ -4,11 +4,8 @@ import tailwindcss from "@tailwindcss/vite"
 import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
 
-// The released version is the git tag (CI tags releases `v*`). `git describe`
-// yields the exact tag on a release build, or `<tag>-<n>-g<sha>` / a short sha
-// between tags so dev builds are still identifiable. Falls back to "dev" when
-// git isn't available (e.g. a source tarball).
 function appVersion(): string {
+  if (process.env.APP_VERSION) return process.env.APP_VERSION
   try {
     return execSync("git describe --tags --always", {
       encoding: "utf-8",

@@ -66,8 +66,6 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          # The git-describe version from above, baked into /api/version. Only
-          # the server image reads this; the web build ignores the arg.
           build-args: |
             APP_VERSION=${{ steps.version.outputs.value }}
           cache-from: type=gha
