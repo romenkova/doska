@@ -7,6 +7,7 @@
 services:
   server:
     image: ghcr.io/romenkova/doska-server:${DOCKER_IMAGE_TAG:-latest}
+    pull_policy: always
     environment:
       # Defaults to the bundled Postgres below; override with your own managed
       # DATABASE_URL to skip it entirely.
@@ -26,6 +27,7 @@ services:
 
   web:
     image: ghcr.io/romenkova/doska-web:${DOCKER_IMAGE_TAG:-latest}
+    pull_policy: always
     ports:
       - "${WEB_PORT:-8080}:80"
     depends_on:

@@ -5,6 +5,7 @@
 services:
   server:
     image: ghcr.io/romenkova/doska-server:${DOCKER_IMAGE_TAG:-latest}
+    pull_policy: always
     environment:
       DATABASE_URL: ${DATABASE_URL:?set DATABASE_URL in the Dokploy env UI}
       AUTH_LOGIN: ${AUTH_LOGIN:-admin}
@@ -25,6 +26,7 @@ services:
 
   web:
     image: ghcr.io/romenkova/doska-web:${DOCKER_IMAGE_TAG:-latest}
+    pull_policy: always
     expose:
       - "80"
     depends_on:
