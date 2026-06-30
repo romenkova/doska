@@ -70,9 +70,13 @@ export async function openCard(page: Page, title: string): Promise<void> {
 
 /**
  * Opens the card titled `title`, replaces its body (the "Notes" field) with
- * `body`, then saves — closing the modal back to the board. Waits on the editor
- * closing rather than on any particular rendered text, so it stays agnostic to
- * how the body renders on the card.
+ * `body`, then saves — closing the modal back to the board. Waits on the dialog
+ * fully unmounting rather than on any particular rendered text, so it stays
+ * agnostic to how the body renders on the card. Note we can't wait on the
+ * "Notes" field disappearing: saving a non-empty body flips the editor into its
+ * read-only preview (which has no "Notes" field) the instant the close starts,
+ * so that's satisfied while the dialog is still mid-close and rendering the body
+ * — which would collide with the same text on the board card.
  */
 export async function editCardBody(
   page: Page,
@@ -82,7 +86,7 @@ export async function editCardBody(
   await openCard(page, title)
   await page.getByPlaceholder("Notes").fill(body)
   await page.getByRole("button", { name: "Save" }).click()
-  await expect(page.getByPlaceholder("Notes")).toBeHidden()
+  await expect(page.getByRole("dialog")).toHaveCount(0)
 }
 
 /**
