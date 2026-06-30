@@ -9,6 +9,7 @@ import { queryClient } from "@/lib/query-client"
 import { Router } from "./router.tsx"
 import { startBackgroundSync } from "./lib/api/sync"
 import { UpdateBanner } from "@/components/updates/update-banner"
+import { WindowDragRegion } from "@/components/window-drag-region"
 import "./index.css"
 
 // Dispatched by the oRPC fetch wrapper.
@@ -28,6 +29,7 @@ createRoot(document.getElementById("root")!).render(
         <LoginPromptProvider>
           <Router />
           <UpdateBanner />
+          <WindowDragRegion />
         </LoginPromptProvider>
       </ThemeProvider>
     </QueryClientProvider>
