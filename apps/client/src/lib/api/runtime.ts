@@ -2,11 +2,7 @@
  * Runtime environment + remote-sync configuration.
  *
  * The app is local-first: it runs entirely on IndexedDB with no server. Remote
- * sync is opt-in. On the **web** build the app is served by the API, so the
- * server is same-origin (Vite proxies `/api`) and sync is gated by
- * auth alone — behavior is unchanged. On the **desktop** (Tauri) build the
- * webview origin is `tauri://localhost`, so the user must supply an absolute
- * server URL before anything talks to the network.
+ * sync is opt-in.
  */
 
 const SERVER_URL_KEY = "deck:server-url"
