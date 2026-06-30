@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { DragDropContext, type DropResult } from "@hello-pangea/dnd"
 import type { Board, Dashboard } from "@/lib/types"
 import { byPosition } from "@/lib/utils"
@@ -42,6 +43,8 @@ export function Deck({
   onDeleteDashboard,
   onDragEnd,
 }: IProps) {
+  const [isDragging, setIsDragging] = useState(false)
+
   // Cards grouped by column, ordered by position.
   const cardsByColumn = new Map<string, typeof board.cards>(
     board.columns.map((c) => [c.id, []])
@@ -61,10 +64,17 @@ export function Deck({
         columns={columns}
         onReorderColumns={onReorderColumns}
       />
-      <DragDropContext onDragEnd={onDragEnd}>
+      <DragDropContext
+        onDragStart={() => setIsDragging(true)}
+        onDragEnd={(result) => {
+          setIsDragging(false)
+          onDragEnd(result)
+        }}
+      >
         <div
           className={cn(
             "flex min-h-0 w-full flex-1 items-start gap-6 overflow-auto px-6",
+            !isDragging && "snap-x snap-mandatory scroll-px-6 md:snap-none",
             "transition-opacity duration-1000",
             isLoading ? "opacity-0" : "opacity-100"
           )}

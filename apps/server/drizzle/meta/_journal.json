@@ -29,6 +29,13 @@
       "when": 1782598631192,
       "tag": "0003_short_silverclaw",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1782845812771,
+      "tag": "0004_fancy_stellaris",
+      "breakpoints": true
     }
   ]
 }

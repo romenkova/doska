@@ -160,7 +160,7 @@ export function useUpdateCard(id: string) {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (
-      patch: Partial<Pick<Card, "title" | "body" | "locked" | "deadline">>
+      patch: Partial<Pick<Card, "title" | "body" | "deadline">>
     ) => api.updateCard(id, patch),
     onSettled: () => qc.invalidateQueries({ queryKey: keys.card(id) }),
   })

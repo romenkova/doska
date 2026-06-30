@@ -1,6 +1,8 @@
+import { useIsMobile } from "@doska/ui-kit"
+import { DEFAULT_SLASH_COMMANDS, type SlashCommand } from "./commands"
 import { SlashMenuDropdown } from "./slash-menu-dropdown"
+import { SlashMenuFab } from "./slash-menu-fab"
 import { useSlashMenu } from "./use-slash-menu"
-import type { SlashCommand } from "./commands"
 
 interface IProps {
   /**
@@ -26,12 +28,24 @@ export function SlashMenu({
   value,
   onChangeValue,
   commands,
-  enabled,
+  enabled = true,
 }: IProps) {
-  const { menu, activeIndex, select, setActiveIndex } = useSlashMenu(
-    textareaRef,
-    { value, onChangeValue, commands, enabled }
-  )
+  const isMobile = useIsMobile()
+  const { menu, activeIndex, select, setActiveIndex, insertCommand } =
+    useSlashMenu(textareaRef, {
+      value,
+      onChangeValue,
+      commands,
+      enabled: enabled && !isMobile,
+    })
+
+  if (isMobile)
+    return (
+      <SlashMenuFab
+        commands={commands ?? DEFAULT_SLASH_COMMANDS}
+        onSelect={insertCommand}
+      />
+    )
 
   if (!menu) return null
   return (

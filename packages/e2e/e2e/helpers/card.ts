@@ -43,29 +43,40 @@ export async function retitleCard(
   fromTitle: string,
   toTitle: string
 ): Promise<void> {
-  await card(page, fromTitle).click()
+  await openCard(page, fromTitle)
   const title = page.getByPlaceholder("Title")
-  await expect(title).toBeFocused()
   await title.fill(toTitle)
   await page.getByRole("button", { name: "Save" }).click()
   await expect(card(page, toTitle)).toBeVisible()
 }
 
 /**
- * Opens the card titled `title` in the modal editor and waits for it to be
- * editable (the title input takes focus). Pair with `editCardBody` /
- * `retitleCard`, or drive the modal directly for lock/preview tests.
+ * Opens the card titled `title` and ensures it's in the editor (title input
+ * focused). A card with a body opens read-only, so we double-click its content
+ * to enter the editor; an empty card opens straight in the editor already. Pair
+ * with `editCardBody` / `retitleCard`, or drive the modal directly for preview
+ * tests.
  */
 export async function openCard(page: Page, title: string): Promise<void> {
   await card(page, title).click()
+  const dialog = page.getByRole("dialog")
+  await expect(dialog).toBeVisible()
+  // The "Edit" toggle is only shown in read-only preview; double-click to edit.
+  if (await page.getByRole("button", { name: "Edit" }).isVisible()) {
+    await dialog.dblclick()
+  }
   await expect(page.getByPlaceholder("Title")).toBeFocused()
 }
 
 /**
  * Opens the card titled `title`, replaces its body (the "Notes" field) with
- * `body`, then saves — closing the modal back to the board. Waits on the editor
- * closing rather than on any particular rendered text, so it stays agnostic to
- * how the body renders on the card.
+ * `body`, then saves — closing the modal back to the board. Waits on the dialog
+ * fully unmounting rather than on any particular rendered text, so it stays
+ * agnostic to how the body renders on the card. Note we can't wait on the
+ * "Notes" field disappearing: saving a non-empty body flips the editor into its
+ * read-only preview (which has no "Notes" field) the instant the close starts,
+ * so that's satisfied while the dialog is still mid-close and rendering the body
+ * — which would collide with the same text on the board card.
  */
 export async function editCardBody(
   page: Page,
@@ -75,7 +86,7 @@ export async function editCardBody(
   await openCard(page, title)
   await page.getByPlaceholder("Notes").fill(body)
   await page.getByRole("button", { name: "Save" }).click()
-  await expect(page.getByPlaceholder("Notes")).toBeHidden()
+  await expect(page.getByRole("dialog")).toHaveCount(0)
 }
 
 /**
@@ -122,7 +133,6 @@ export async function remoteAddCard(
           id: `card-${crypto.randomUUID().slice(0, 8)}`,
           title,
           body: "",
-          locked: false,
           position: "a5",
           columnId: col.record.id,
           deadline: null,

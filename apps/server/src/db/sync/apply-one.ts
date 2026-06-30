@@ -48,7 +48,6 @@ export async function applyOne(
       title: record.title,
       body: record.body,
       position: record.position,
-      locked: record.locked,
       deadline: record.deadline,
       updatedAt: record.updatedAt,
       deletedAt,

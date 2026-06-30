@@ -143,6 +143,13 @@
     @apply font-sans;
     font-size: 16px;
   }
+  /* Disable the macOS WKWebView rubber-band/overscroll */
+  html,
+  body {
+    overscroll-behavior: none;
+    height: 100%;
+    overflow: hidden;
+  }
 }
 
 button {

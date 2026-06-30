@@ -2,15 +2,22 @@ import { cn, SidebarHeader, SidebarMenu, SidebarMenuItem } from "@doska/ui-kit"
 import { Anchor } from "lucide-react"
 import { Link } from "wouter"
 import { useAppVersion } from "@/lib/version"
-import { useUpdateState } from "@/lib/update-store"
+import { isDesktop } from "@/lib/api/runtime"
 
 export function AppSidebarHeader() {
   const version = useAppVersion()
-  const update = useUpdateState()
-  const newVersion = update.status === "available" ? update.version : null
+
+  const versionBadge = (
+    <span className="line-clamp-1 text-sm font-normal text-muted-foreground/50">
+      {version}
+    </span>
+  )
 
   return (
-    <SidebarHeader>
+    <SidebarHeader className={cn("relative", isDesktop() && "pt-10")}>
+      {isDesktop() && (
+        <div className="absolute top-0 right-4 text-xs">{versionBadge}</div>
+      )}
       <SidebarMenu>
         <SidebarMenuItem>
           <Link to="~/">
@@ -19,19 +26,7 @@ export function AppSidebarHeader() {
               <span className="cn-font-heading text-base font-semibold">
                 Doska
               </span>
-              <span
-                title={
-                  newVersion ? `Update to v${newVersion} available` : undefined
-                }
-                className={cn(
-                  "line-clamp-1 text-sm font-normal",
-                  newVersion
-                    ? "font-medium text-primary"
-                    : "text-muted-foreground"
-                )}
-              >
-                v{version.replace("v", "")}
-              </span>
+              {!isDesktop() && versionBadge}
             </div>
           </Link>
         </SidebarMenuItem>

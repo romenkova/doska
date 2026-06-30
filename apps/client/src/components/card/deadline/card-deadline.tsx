@@ -1,15 +1,11 @@
-import { cn } from "@doska/ui-kit"
+import { DateInput, cn } from "@doska/ui-kit"
 import { Calendar, X } from "lucide-react"
-import { deadlineLabel } from "@/lib/utils"
+import { deadlineLabel, formatDeadline } from "@/lib/utils"
 import { DeadlineChip } from "./deadline-chip"
 
 interface IProps {
   value: string | null
   onChange?: (value: string | null) => void
-  /**
-   * - `chip`: rounded badge, colored by how close the deadline is.
-   * - `field`: a dashed input row, for the editor under the title.
-   */
   variant?: "chip" | "field"
   className?: string
 }
@@ -23,24 +19,21 @@ export function CardDeadline({
 }: IProps) {
   if (variant === "field") {
     return (
-      <label
+      <div
         className={cn(
           "flex w-fit items-center gap-2 py-3 font-mono text-sm",
-          "text-muted-foreground focus-within:text-foreground",
+          "text-muted-foreground",
           className
         )}
       >
-        <Calendar className="size-4 shrink-0" />
-        <input
-          type="date"
-          value={value ?? ""}
-          onChange={(e) => onChange?.(e.target.value || null)}
-          onClick={(e) => e.currentTarget.showPicker?.()}
-          className={cn(
-            "bg-transparent outline-none",
-            "[&::-webkit-calendar-picker-indicator]:hidden"
-          )}
-        />
+        <DateInput
+          value={value}
+          onChange={onChange}
+          className="items-center gap-2 hover:text-foreground"
+        >
+          <Calendar className="size-4 shrink-0" />
+          <span>{value ? formatDeadline(value) : "Set deadline"}</span>
+        </DateInput>
         {value && (
           <button
             type="button"
@@ -51,31 +44,24 @@ export function CardDeadline({
             <X className="size-3.5" />
           </button>
         )}
-      </label>
+      </div>
     )
   }
 
   if (!value) return null
 
   return (
-    <label
-      className={cn(
-        "relative inline-flex cursor-pointer items-center gap-1.5",
-        className
-      )}
-      onClick={(e) => e.stopPropagation()}
-    >
-      <DeadlineChip value={value} />
-      <span className="text-xs text-muted-foreground">
-        {deadlineLabel(value)}
-      </span>
-      <input
-        type="date"
+    <span onClick={(e) => e.stopPropagation()} className="inline-flex">
+      <DateInput
         value={value}
-        onChange={(e) => onChange?.(e.target.value || null)}
-        onClick={(e) => e.currentTarget.showPicker?.()}
-        className="absolute inset-0 cursor-pointer opacity-0"
-      />
-    </label>
+        onChange={onChange}
+        className={cn("cursor-pointer items-center gap-1.5", className)}
+      >
+        <DeadlineChip value={value} />
+        <span className="text-xs text-muted-foreground">
+          {deadlineLabel(value)}
+        </span>
+      </DateInput>
+    </span>
   )
 }

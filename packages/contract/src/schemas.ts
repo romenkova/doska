@@ -14,8 +14,6 @@ export const CardSchema = z.object({
   body: z.string(),
   position: z.string(),
   columnId: z.string(),
-  /** When true the card opens read-only (preview) instead of the editor. */
-  locked: z.boolean().default(false),
   /** Optional deadline as an ISO date string (`YYYY-MM-DD`); `null` when unset. */
   deadline: z.string().nullable().default(null),
   updatedAt: z.number(),

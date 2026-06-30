@@ -12,14 +12,8 @@ interface IProps {
   closeHref: string
 }
 
-type Draft = Partial<Pick<Card, "title" | "body" | "locked" | "deadline">>
+type Draft = Partial<Pick<Card, "title" | "body" | "deadline">>
 
-/**
- * Loads the card and renders the presentational editor. Edits are kept as an
- * overlay on the loaded card (so nothing needs to be seeded from async data),
- * and every close — Close button, backdrop, or Esc — runs the one `close` here,
- * which persists the draft (skipping a no-op write) before navigating away.
- */
 export function CardModal({ closeHref }: IProps) {
   const [, navigate] = useLocation()
   const [, routeParams] = useRoute(routes.card.pattern)
@@ -38,21 +32,19 @@ export function CardModal({ closeHref }: IProps) {
   const { data: content } = useCard(card)
   const { mutate: save } = useUpdateCard(card ?? "")
 
+  const isPreview = preview ?? Boolean(content?.body.trim())
+
   const close = () => {
     if (content) {
       const next = { ...content, ...draft }
       save({
         title: next.title,
         body: next.body,
-        locked: next.locked,
         deadline: next.deadline,
       })
     }
     navigate(closeHref)
   }
-
-  const isLocked = draft.locked ?? content?.locked ?? false
-  const isPreview = preview ?? content?.locked ?? false
 
   return (
     <Modal
@@ -70,15 +62,11 @@ export function CardModal({ closeHref }: IProps) {
           body={draft.body ?? content.body}
           deadline={"deadline" in draft ? draft.deadline! : content.deadline}
           isPreview={isPreview}
-          isLocked={isLocked}
           onChangeTitle={(title) => setDraft((d) => ({ ...d, title }))}
           onChangeBody={(body) => setDraft((d) => ({ ...d, body }))}
           onChangeDeadline={(deadline) => setDraft((d) => ({ ...d, deadline }))}
-          onToggleLock={() => {
-            setDraft((d) => ({ ...d, locked: !isLocked }))
-            setPreview(true)
-          }}
           onTogglePreview={() => setPreview(!isPreview)}
+          onEdit={() => setPreview(false)}
           onClose={close}
         />
       )}
