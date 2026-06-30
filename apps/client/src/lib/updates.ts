@@ -18,14 +18,6 @@ function sameMinor(a: string, b: string): boolean {
   return minor(a) === minor(b)
 }
 
-// Checks the configured update endpoint (see src-tauri/tauri.conf.json) for a
-// newer signed build. Updates are pinned to the sync server's release line: if a
-// server is configured, we only offer a release whose major.minor matches the
-// server's version, so the client never runs ahead of a (possibly self-hosted)
-// server it can't talk to. When auto-update is on, a matching update installs
-// and relaunches immediately; otherwise it's returned so the UI can prompt.
-// No-op on web. The Tauri update plugins are dynamically imported so they stay
-// out of the web bundle entirely.
 export async function checkForUpdates(): Promise<UpdateState> {
   if (!isDesktop()) return NONE
   try {
@@ -33,10 +25,7 @@ export async function checkForUpdates(): Promise<UpdateState> {
 
     // Pin to the server's release line when a server is configured. We send the
     // server version to the update proxy so it serves the newest build on that
-    // major.minor line (not just the overall latest), letting a client whose
-    // server lags catch up to the highest compatible release instead of getting
-    // nothing. With no server (official channel / not yet signed in) we skip the
-    // pin and take the latest.
+    // major.minor line .
     let serverVersion: string | null = null
     const headers: Record<string, string> = {}
     if (getServerUrl()) {
@@ -56,8 +45,6 @@ export async function checkForUpdates(): Promise<UpdateState> {
 
     const install = async () => {
       await update.downloadAndInstall()
-      // Install is applied on the next launch — relaunch now to pick it up.
-      // Local data lives in IndexedDB and survives the restart.
       const { relaunch } = await import("@tauri-apps/plugin-process")
       await relaunch()
     }
