@@ -11,12 +11,12 @@ interface IProps {
   body: string
   deadline: string | null
   isPreview: boolean
-  isLocked: boolean
   onChangeTitle: (value: string) => void
   onChangeBody: (value: string) => void
   onChangeDeadline: (value: string | null) => void
   onTogglePreview: () => void
-  onToggleLock: () => void
+  /** Fired by double-clicking the read-only preview. */
+  onEdit: () => void
   onClose: () => void
 }
 
@@ -26,26 +26,22 @@ export function CardEditor({
   body,
   deadline,
   isPreview,
-  isLocked,
   onChangeTitle,
   onChangeBody,
   onChangeDeadline,
   onTogglePreview,
-  onToggleLock,
+  onEdit,
   onClose,
 }: IProps) {
   return (
     <ModalContent className="md:h-[85vh]">
       <CardModalHeader
         isPreview={isPreview}
-        isLocked={isLocked}
         onClose={onClose}
         onSave={onClose}
-        onToggleLock={onToggleLock}
         onTogglePreivew={onTogglePreview}
       />
-
-      <CardContentLayout>
+      <CardContentLayout onDoubleClick={isPreview ? onEdit : undefined}>
         <CardContent className="border-t-0 px-4">
           <CardDeadline
             variant={isPreview ? "chip" : "field"}

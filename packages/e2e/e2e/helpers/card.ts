@@ -43,21 +43,22 @@ export async function retitleCard(
   fromTitle: string,
   toTitle: string
 ): Promise<void> {
-  await card(page, fromTitle).click()
+  await openCard(page, fromTitle)
   const title = page.getByPlaceholder("Title")
-  await expect(title).toBeFocused()
   await title.fill(toTitle)
   await page.getByRole("button", { name: "Save" }).click()
   await expect(card(page, toTitle)).toBeVisible()
 }
 
 /**
- * Opens the card titled `title` in the modal editor and waits for it to be
- * editable (the title input takes focus). Pair with `editCardBody` /
- * `retitleCard`, or drive the modal directly for lock/preview tests.
+ * Opens the card titled `title` and switches it into the editor. Cards always
+ * open read-only (preview); a double-click on the content enters the editor,
+ * which auto-focuses the title input. Pair with `editCardBody` / `retitleCard`,
+ * or drive the modal directly for preview tests.
  */
 export async function openCard(page: Page, title: string): Promise<void> {
   await card(page, title).click()
+  await page.getByRole("dialog").dblclick()
   await expect(page.getByPlaceholder("Title")).toBeFocused()
 }
 
@@ -122,7 +123,6 @@ export async function remoteAddCard(
           id: `card-${crypto.randomUUID().slice(0, 8)}`,
           title,
           body: "",
-          locked: false,
           position: "a5",
           columnId: col.record.id,
           deadline: null,

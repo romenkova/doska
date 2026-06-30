@@ -1,21 +1,17 @@
 import { Button } from "@doska/ui-kit"
-import { Eye, Lock, LockOpen, PencilLine, X } from "lucide-react"
+import { Eye, PencilLine, X } from "lucide-react"
 
 interface IProps {
   onClose: () => void
   onTogglePreivew: () => void
-  onToggleLock: () => void
   isPreview: boolean
-  isLocked: boolean
   onSave: () => void
 }
 
 export function CardModalHeader({
   onClose,
   isPreview,
-  isLocked,
   onSave,
-  onToggleLock,
   onTogglePreivew,
 }: IProps) {
   return (
@@ -26,15 +22,6 @@ export function CardModalHeader({
         </Button>
       </div>
       <div className="flex justify-end space-x-2">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onToggleLock}
-          aria-pressed={isLocked}
-        >
-          {isLocked ? <Lock /> : <LockOpen />}
-          {isLocked ? "Locked" : "Lock"}
-        </Button>
         <Button variant="ghost" size="sm" onClick={onTogglePreivew}>
           {isPreview ? <PencilLine /> : <Eye />}
           {isPreview ? "Edit" : "Preview"}

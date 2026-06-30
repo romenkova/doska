@@ -76,7 +76,6 @@ export const cards = pgTable(
     title: text("title").notNull(),
     body: text("body").notNull(),
     position: text("position").notNull(),
-    locked: boolean("locked").notNull().default(false),
     deadline: text("deadline"),
     updatedAt: bigint("updated_at", { mode: "number" }).notNull(),
     deletedAt: bigint("deleted_at", { mode: "number" }),
