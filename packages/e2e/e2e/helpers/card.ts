@@ -51,14 +51,20 @@ export async function retitleCard(
 }
 
 /**
- * Opens the card titled `title` and switches it into the editor. Cards always
- * open read-only (preview); a double-click on the content enters the editor,
- * which auto-focuses the title input. Pair with `editCardBody` / `retitleCard`,
- * or drive the modal directly for preview tests.
+ * Opens the card titled `title` and ensures it's in the editor (title input
+ * focused). A card with a body opens read-only, so we double-click its content
+ * to enter the editor; an empty card opens straight in the editor already. Pair
+ * with `editCardBody` / `retitleCard`, or drive the modal directly for preview
+ * tests.
  */
 export async function openCard(page: Page, title: string): Promise<void> {
   await card(page, title).click()
-  await page.getByRole("dialog").dblclick()
+  const dialog = page.getByRole("dialog")
+  await expect(dialog).toBeVisible()
+  // The "Edit" toggle is only shown in read-only preview; double-click to edit.
+  if (await page.getByRole("button", { name: "Edit" }).isVisible()) {
+    await dialog.dblclick()
+  }
   await expect(page.getByPlaceholder("Title")).toBeFocused()
 }
 
