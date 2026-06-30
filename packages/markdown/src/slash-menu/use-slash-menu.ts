@@ -105,6 +105,29 @@ export function useSlashMenu(
     [ref, menu, onChangeValue]
   )
 
+  /**
+   * Inserts a command at the current caret, without a typed `/` trigger (used
+   * by the mobile floating menu). Block commands are pushed onto a fresh line
+   * when the caret sits mid-line, so the markdown stays valid.
+   */
+  const insertCommand = useCallback(
+    (command: SlashCommand) => {
+      const textarea = ref.current
+      if (!textarea) return
+      const start = textarea.selectionStart
+      const end = textarea.selectionEnd
+      const v = textarea.value
+      const scope = command.scope ?? "block"
+      const atLineStart = start === 0 || v[start - 1] === "\n"
+      const prefix = scope === "block" && !atLineStart ? "\n" : ""
+      const { text, caretOffset } = applyInsert(command.insert)
+      const next = v.slice(0, start) + prefix + text + v.slice(end)
+      pendingCaret.current = start + prefix.length + caretOffset
+      onChangeValue(next)
+    },
+    [ref, onChangeValue]
+  )
+
   const onKeyUp = useCallback(
     (e: KeyboardEvent) => {
       if (menu && NAV_KEYS.includes(e.key)) return
@@ -169,5 +192,5 @@ export function useSlashMenu(
     pendingCaret.current = null
   }, [ref, value])
 
-  return { menu, activeIndex, select, setActiveIndex }
+  return { menu, activeIndex, select, setActiveIndex, insertCommand }
 }
