@@ -42,14 +42,13 @@ export function CardEditor({
         onTogglePreivew={onTogglePreview}
       />
       <CardContentLayout onDoubleClick={isPreview ? onEdit : undefined}>
-        <CardContent className="border-t-0 px-4">
+        <CardContent className="px-4 pt-2">
           <CardDeadline
             variant={isPreview ? "chip" : "field"}
             value={deadline}
             onChange={onChangeDeadline}
+            className="mt-2"
           />
-        </CardContent>
-        <CardContent className="px-4 pt-2">
           <MarkdownTextarea
             autoFocus
             value={title}
