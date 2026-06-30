@@ -20,7 +20,7 @@ export function Column({ children, onAddCard, ...props }: IProps) {
     <div
       role="group"
       aria-label={props.title}
-      className="flex w-[90vw] max-w-96 shrink-0 flex-col"
+      className="flex w-[90vw] max-w-96 shrink-0 snap-start flex-col"
     >
       <ColumnHead {...props} />
       <Droppable droppableId={props.id}>
