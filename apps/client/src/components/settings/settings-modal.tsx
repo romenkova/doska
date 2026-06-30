@@ -55,8 +55,7 @@ export function SettingsModal({ open, onOpenChange }: IProps) {
       <ModalContent className="md:max-w-sm">
         <div className="flex flex-col gap-4 p-6">
           <ModalTitle>Settings</ModalTitle>
-
-          {!desktop && (
+          {desktop && (
             <div className="flex flex-col gap-3">
               <label className="flex items-start gap-2">
                 <Checkbox
