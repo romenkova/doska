@@ -135,35 +135,10 @@
   margin: 0;
 }
 
-.markdown input[type="checkbox"] {
-  appearance: none;
-  -webkit-appearance: none;
-  margin-right: 0.4rem;
-  margin-top: -4px;
-  width: 1rem;
-  height: 1rem;
-  border: 1.5px solid var(--primary);
-  border-radius: 4px;
-  background-color: transparent;
-  vertical-align: middle;
-  opacity: 1;
-}
+/* Checkboxes render via the shared ui-kit <Checkbox> component, so the box
+   itself is styled there. Only the surrounding task-list layout lives here. */
 
-.markdown input[type="checkbox"]:checked {
-  background-color: var(--primary);
-  /* white check mark */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23fff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 8.5l3 3 6-6'/%3E%3C/svg%3E");
-  background-size: 100% 100%;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-.markdown input[type="checkbox"]:not(:disabled) {
-  cursor: pointer;
-}
-
-.markdown li.task-list-item:has(> input[type="checkbox"]:checked),
-.markdown li.task-list-item:has(> p > input[type="checkbox"]:checked) {
+.markdown li.task-list-item:has([data-slot="checkbox"][data-checked]) {
   color: var(--muted-foreground);
   text-decoration: line-through;
   text-decoration-color: color-mix(
