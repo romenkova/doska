@@ -69,9 +69,12 @@ export function Card({
         onMoveToColumn={onMoveToColumn}
       >
         <CardBase
-          className={cn("gap-2", isDragging && "shadow-shade/5 shadow-xl")}
+          className={cn(
+            showBody ? "gap-2" : "gap-0",
+            isDragging && "shadow-shade/5 shadow-xl"
+          )}
         >
-          <CardHeader>
+          <CardHeader className={cn(!!deadline && !showBody && "mb-2")}>
             <CardTitle>{title || "Untitled card"}</CardTitle>
             <CardAction className="flex items-center gap-1">
               {total > 0 && <TaskIndicator done={done} total={total} />}
