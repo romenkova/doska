@@ -9,8 +9,7 @@ import {
 } from "react"
 
 /* eslint-disable react-refresh/only-export-components */
-type Theme = "dark" | "light" | "system"
-type ResolvedTheme = "dark" | "light"
+type Theme = "dark" | "light"
 
 type ThemeProviderProps = {
   children: ReactNode
@@ -24,8 +23,7 @@ type ThemeProviderState = {
   setTheme: (theme: Theme) => void
 }
 
-const COLOR_SCHEME_QUERY = "(prefers-color-scheme: dark)"
-const THEME_VALUES: Theme[] = ["dark", "light", "system"]
+const THEME_VALUES: Theme[] = ["dark", "light"]
 
 const ThemeProviderContext = createContext<ThemeProviderState | undefined>(
   undefined
@@ -35,13 +33,9 @@ function isTheme(value: string | null): value is Theme {
   return !!value && THEME_VALUES.includes(value as Theme)
 }
 
-function getSystemTheme(): ResolvedTheme {
-  return window.matchMedia(COLOR_SCHEME_QUERY).matches ? "dark" : "light"
-}
-
 export function ThemeProvider({
   children,
-  defaultTheme = "system",
+  defaultTheme = "dark",
   storageKey = "theme",
   ...props
 }: ThemeProviderProps) {
@@ -60,29 +54,13 @@ export function ThemeProvider({
 
   const applyTheme = useCallback((nextTheme: Theme) => {
     const root = document.documentElement
-    const resolvedTheme = nextTheme === "system" ? getSystemTheme() : nextTheme
 
     root.classList.remove("light", "dark")
-    root.classList.add(resolvedTheme)
+    root.classList.add(nextTheme)
   }, [])
 
   useEffect(() => {
     applyTheme(theme)
-
-    if (theme !== "system") {
-      return undefined
-    }
-
-    const mediaQuery = window.matchMedia(COLOR_SCHEME_QUERY)
-    const handleChange = () => {
-      applyTheme("system")
-    }
-
-    mediaQuery.addEventListener("change", handleChange)
-
-    return () => {
-      mediaQuery.removeEventListener("change", handleChange)
-    }
   }, [theme, applyTheme])
 
   useEffect(() => {

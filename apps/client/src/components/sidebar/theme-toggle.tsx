@@ -1,10 +1,9 @@
 import { useTheme } from "@/components/theme-provider"
 import { Button } from "@doska/ui-kit"
-import { MonitorCog, Moon, Sun } from "lucide-react"
+import { Moon, Sun } from "lucide-react"
 
-const THEME_ORDER = ["light", "dark", "system"] as const
-const THEME_ICON = { light: Sun, dark: Moon, system: MonitorCog }
-const THEME_LABEL = { light: "Light", dark: "Dark", system: "System" }
+const THEME_ICON = { light: Sun, dark: Moon }
+const THEME_LABEL = { light: "Light", dark: "Dark" }
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme()
@@ -16,9 +15,7 @@ export function ThemeToggle() {
       size="sm"
       className="justify-start gap-2"
       onClick={() => {
-        const next =
-          THEME_ORDER[(THEME_ORDER.indexOf(theme) + 1) % THEME_ORDER.length]
-        setTheme(next)
+        setTheme(theme === "dark" ? "light" : "dark")
       }}
     >
       <Icon className="size-4" />

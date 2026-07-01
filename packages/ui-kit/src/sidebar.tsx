@@ -1,5 +1,6 @@
 import { PanelLeftIcon } from "lucide-react"
 import { useIsMobile } from "./lib/use-mobile"
+import { useEdgeSwipe } from "./lib/use-edge-swipe"
 import { cn } from "./lib/cn"
 import { Button } from "./button"
 import {
@@ -80,6 +81,10 @@ function SidebarProvider({
     window.addEventListener("keydown", handleKeyDown)
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [toggleSidebar])
+
+  // Open the sidebar with a rightward swipe from the left screen edge (mobile).
+  const openMobileSidebar = useCallback(() => setOpenMobile(true), [])
+  useEdgeSwipe(isMobile, openMobileSidebar)
 
   const state = open ? "expanded" : "collapsed"
 
