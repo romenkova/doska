@@ -1,8 +1,5 @@
 /**
- * Starts a periodic background sync. Calls `reconcile` every `intervalMs` while
- * the tab is visible, and once immediately whenever the app regains focus —
- * covering the stale-tab case. Returns a stop function that clears the timer and
- * listeners.
+ * Starts a periodic background sync.
  *
  * Two focus signals, because they catch different gestures:
  *  - `visibilitychange` fires on tab switches (the tab is hidden, then shown);
@@ -50,7 +47,10 @@ export function startBackgroundSync(
 
   document.addEventListener("visibilitychange", onVisibility)
   window.addEventListener("focus", onFocus)
-  if (document.visibilityState === "visible") start()
+  if (document.visibilityState === "visible") {
+    reconcile()
+    start()
+  }
 
   return () => {
     document.removeEventListener("visibilitychange", onVisibility)

@@ -1,7 +1,7 @@
 import { startBackgroundSync as start } from "@doska/sync"
 import { sync } from "./sync-engine"
 
-const DEFAULT_SYNC_INTERVAL = 15_000
+const DEFAULT_SYNC_INTERVAL = 10_000
 
 /**
  * The poll interval, overridable at build time via `VITE_SYNC_INTERVAL_MS` so
