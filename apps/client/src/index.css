@@ -155,3 +155,13 @@
 button {
   cursor: pointer;
 }
+
+.deadline-chip--soon {
+  --tag-h: 55;
+  background: oklch(0.95 0.05 var(--tag-h));
+  color: oklch(0.46 0.14 var(--tag-h));
+}
+.dark .deadline-chip--soon {
+  background: oklch(0.62 0.14 var(--tag-h) / 0.24);
+  color: oklch(0.82 0.11 var(--tag-h));
+}
