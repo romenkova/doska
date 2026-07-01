@@ -1,139 +1,26 @@
 # Doska
 
-[![Build](https://github.com/romenkova/doska/actions/workflows/build.yml/badge.svg)](https://github.com/romenkova/doska/actions/workflows/build.yml)
-
-A local-first Kanban board with Markdown cards. Runs in the browser or as a
+A local-first Kanban board with Markdown cards. Runs in your browser or as a
 native desktop app, works fully offline with no account, and **optionally** syncs
 to a server you control.
 
 ## Features
 
 - **Boards & columns** — multiple boards, each a set of draggable columns.
-- **Drag & drop** — reorder cards and move them between columns
-  ([`@hello-pangea/dnd`](https://github.com/hello-pangea/dnd)), with positions
-  held by fractional indexing so reorders never renumber siblings.
-- **Markdown cards** — card bodies render GitHub-flavored Markdown with live
-  editing, a slash menu, and task-list progress.
-- **Local-first** — everything persists to IndexedDB; reads and writes are
-  instant and work with no network and no login.
-- **Opt-in sync** — enable sync, point at a server, sign in, and changes flush in
-  the background and pull in updates from your other devices.
-- **Desktop app** — a Tauri 2 shell (macOS today) that reuses the web client
-  verbatim and auto-updates from signed GitHub Releases.
+- **Drag & drop** — reorder cards and move them between columns.
+- **Markdown cards** — GitHub-flavored Markdown with live editing, a slash menu,
+  and task-list progress.
+- **Local-first** — everything persists in your browser (IndexedDB); reads and
+  writes are instant and work with no network and no login.
+- **Opt-in sync** — point at a server you control and your boards replicate
+  across your devices in the background.
+- **Desktop app** — a native macOS app that reuses the web client and
+  auto-updates.
 
-## Architecture
+## Self-hosting
 
-Doska is a [pnpm](https://pnpm.io) + [Turborepo](https://turbo.build) monorepo.
-The client is the source of truth on each device; the server is an optional sync
-backend.
-
-```
-apps/
-  client    React 19 + Vite SPA. Local-first; IndexedDB store, opt-in sync.
-  server    Fastify + oRPC sync API. Drizzle/Postgres. Single-user auth.
-  desktop   Tauri 2 shell wrapping the client, with auto-updater.
-packages/
-  contract    oRPC contract + zod schemas shared by client and server.
-  sync        Sync engine: dirty queue, driver, background loop.
-  client-db   IndexedDB adapter and client data layer.
-  markdown    Markdown rendering + editor (slash menu, task progress).
-  ui-kit      Shared UI primitives (Base UI + Tailwind).
-  configs     Shared ESLint / Prettier / TS config.
-  e2e         Playwright end-to-end tests.
-```
-
-**Stack:** React 19, Vite, TanStack Query, Wouter, Tailwind, Base UI ·
-Fastify, oRPC, Drizzle ORM, Postgres (or in-process
-PGlite for dev) · Tauri 2.
-
-### How sync works
-
-The client writes locally first and queues changes in a dirty set. When sync is
-enabled and authenticated, the background engine reconciles with the server over
-oRPC. Auth is a single configured login/password exchanged for a session cookie;
-the sync API (`/api/rpc/*`) is the only protected surface. On desktop, requests go
-through `@tauri-apps/plugin-http` (native fetch, no CORS, own cookie jar), so the
-server needs no special handling.
-
-## Getting started
-
-Requires **Node 22+** and **pnpm 11+** (see `.nvmrc` / `package.json` engines).
-
-```sh
-pnpm install
-pnpm dev        # web client + server (Turbo), excludes desktop
-```
-
-The client dev server proxies the sync API to the local server, so sync works
-end to end without extra setup. For the desktop shell:
-
-```sh
-pnpm desktop    # tauri dev — native window around the client
-```
-
-### Common scripts
-
-| Command            | What it does                                          |
-| ------------------ | ----------------------------------------------------- |
-| `pnpm dev`         | Run client + server in watch mode (excludes desktop). |
-| `pnpm build`       | Build all web/server packages.                        |
-| `pnpm desktop`     | Run the Tauri desktop app in dev.                     |
-| `pnpm lint`        | Lint all packages.                                    |
-| `pnpm type-check`  | Type-check all packages.                              |
-| `pnpm format`      | Prettier-format the repo.                             |
-| `pnpm e2e`         | Run Playwright end-to-end tests.                      |
-
-Server-only database scripts (run from `apps/server`): `db:generate`,
-`db:migrate`, `db:studio`. In production, migrations run automatically on boot.
-
-## Self-hosting the sync server
-
-The app is local-first and works fully offline with no account. Sync is opt-in:
-point the desktop app at a sync server you control and your boards replicate to
-your own machine. You only need the **server** — there's no web UI to host.
-
-```sh
-cp .env.sync-selfhost.example .env
-# edit .env — set AUTH_PASSWORD and AUTH_SECRET (e.g. `openssl rand -hex 32`)
-```
-
-Then pick a database:
-
-```sh
-# A) Bundled Postgres — zero setup, data lives in a Docker volume:
-docker compose -f docker-compose.sync-selfhost.yml --profile bundled-db up -d --build
-
-# B) Your own managed Postgres — set DATABASE_URL in .env, omit the profile:
-docker compose -f docker-compose.sync-selfhost.yml up -d --build
-```
-
-> **Versioning:** you never bump a version file. The git tag is the single
-> source of truth — the desktop build and client stamp derive from it, and the
-> server reports it via `APP_VERSION`. Prefix any deploy with it so the server's
-> `/api/version` (which gates desktop updates) matches the code you checked out:
->
-> ```sh
-> APP_VERSION=$(git describe --tags --always | sed 's/^v//') \
->   docker compose -f docker-compose.sync-selfhost.yml --profile bundled-db up -d --build
-> ```
->
-> (On Dokploy, set `APP_VERSION` in the env UI.) Omit it and the server falls
-> back to `apps/server/package.json`.
-
-This brings up the sync server on `SERVER_PORT` (default `3000`). Then in the
-desktop app's sync settings, set the server URL to `http://<your-host>:3000`,
-enable sync, and sign in with the `AUTH_LOGIN` / `AUTH_PASSWORD` from your
-`.env`.
-
-> Single user per server: the credentials in `.env` are the only account. Put it
-> behind HTTPS (a reverse proxy) if you expose it beyond your local network.
-
-### Full deploy (web UI + server)
-
-The simplest way to self-host the whole app — web UI **and** sync server — is from
-prebuilt images, no clone and no build. Every release publishes
-`ghcr.io/romenkova/doska-server` and `ghcr.io/romenkova/doska-web` to GHCR (see
-`.github/workflows/images.yml`). Grab two files and run:
+Doska works fully offline with no account. Host your own server if you want your
+boards to sync across devices. 
 
 ```sh
 curl -O https://raw.githubusercontent.com/romenkova/doska/main/docker-compose.selfhost.yml
@@ -142,30 +29,49 @@ curl -o .env https://raw.githubusercontent.com/romenkova/doska/main/.env.selfhos
 docker compose -f docker-compose.selfhost.yml up -d
 ```
 
-Postgres is bundled by default, so that's the whole setup. Open the web UI on
-`http://<your-host>:8080` (`WEB_PORT`) and sign in with your `AUTH_LOGIN` /
-`AUTH_PASSWORD`. Pin a version with `DOCKER_IMAGE_TAG` in `.env` (defaults to
-`latest`); point `DATABASE_URL` at your own Postgres to skip the bundled db.
+Open the web UI at `http://<your-host>:8080` and sign in with the `AUTH_LOGIN` /
+`AUTH_PASSWORD` from your `.env`. To sync the **desktop app**, open its sync
+settings and set the server URL to the same address.
 
-To build from source instead, or deploy to a managed platform, use the
-`build:`-based compose files:
+Postgres is bundled and stored in a Docker volume, but recommended is to use managed one.
 
-- `docker-compose.yml` — generic Docker host; publishes the web UI on `WEB_PORT`
-  (default `8080`), server stays internal. Requires an external `DATABASE_URL`
-  (see `.env.example`).
-- `docker-compose.dokploy.yml` — [Dokploy](https://dokploy.com) deploy; Traefik
-  routes to the web service, all containers on `dokploy-network`.
+- `WEB_PORT` — host port for the web UI (default `8080`).
+- `DOCKER_IMAGE_TAG` — pin a release (e.g. `0.4.0`) instead of `latest`.
+- `DATABASE_URL` — point at your own managed Postgres (optional).
+
+> **Single user per server:** the credentials in `.env` are the only account currently.
+
+See `docker-compose.dokploy.yml` for [Dokploy](https://dokploy.com)).
 
 ## Desktop app
 
-The desktop build is a Tauri 2 shell around the same client. Releases are built
-and signed in CI (`.github/workflows/release.yml`) and published to GitHub
-Releases; the installed app auto-updates by polling a signed `latest.json`. The
-update endpoint is proxied through the server (`/api/desktop/*`) so the URL baked
-into installed apps never changes, even when release hosting does.
+Download the latest macOS build from
+[Releases](https://github.com/romenkova/doska/releases). It wraps the same client (with Tauri)
+and auto-updates.
 
 > macOS builds aren't notarized yet, so on first launch clear the quarantine
 > flag: `xattr -dr com.apple.quarantine /Applications/Doska.app`.
+
+## Development
+
+Requires **Node 22+** and **pnpm 11+** (see `.nvmrc` / `package.json` engines).
+
+```sh
+pnpm install
+pnpm dev        # web client + server, in watch mode
+pnpm desktop    # native desktop shell (Tauri)
+```
+
+The client dev server proxies the sync API to the local server, so sync works end
+to end with no extra setup.
+
+| Command           | What it does                     |
+| ----------------- | -------------------------------- |
+| `pnpm build`      | Build all web/server packages.   |
+| `pnpm lint`       | Lint all packages.               |
+| `pnpm type-check` | Type-check all packages.         |
+| `pnpm format`     | Prettier-format the repo.        |
+| `pnpm e2e`        | Run Playwright end-to-end tests. |
 
 ## License
 
