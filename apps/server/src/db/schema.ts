@@ -1,8 +1,10 @@
+import type { Attachment } from "@doska/contract"
 import {
   bigint,
   boolean,
   index,
   integer,
+  jsonb,
   pgTable,
   text,
 } from "drizzle-orm/pg-core"
@@ -77,6 +79,7 @@ export const cards = pgTable(
     body: text("body").notNull(),
     position: text("position").notNull(),
     deadline: text("deadline"),
+    attachments: jsonb("attachments").$type<Attachment[]>().notNull().default([]),
     updatedAt: bigint("updated_at", { mode: "number" }).notNull(),
     deletedAt: bigint("deleted_at", { mode: "number" }),
     seq: integer("seq").notNull(),

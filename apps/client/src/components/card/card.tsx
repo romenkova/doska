@@ -12,6 +12,7 @@ import { routes } from "@/lib/routes"
 import { CardContextMenu, CardMenu } from "./menu/card-menu"
 import { CardDeadline } from "./deadline/card-deadline"
 import { TaskIndicator } from "./task-indicator"
+import { AttachmentThumbs } from "./attachments/attachment-thumbs"
 import { useCard } from "@/lib/data/queries"
 import { useUpdateCard } from "@/lib/data/mutations"
 import { todayIso } from "@/lib/utils"
@@ -47,6 +48,7 @@ export function Card({
   const { data: card = fallbackCard } = useCard(id)
   const { mutate: updateCard } = useUpdateCard(id)
   const { title, body, deadline } = card
+  const attachments = card.attachments ?? []
   const { done, total } = taskProgress(body)
   const onAddDeadline = deadline
     ? undefined
@@ -115,6 +117,12 @@ export function Card({
                 </CardContent>
               </div>
             </div>
+          )}
+
+          {attachments.length > 0 && showBody && (
+            <CardContent className="pt-2">
+              <AttachmentThumbs cardId={id} attachments={attachments} />
+            </CardContent>
           )}
         </CardBase>
       </CardContextMenu>

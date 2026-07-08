@@ -58,6 +58,7 @@ export function CardModal({ closeHref }: IProps) {
     >
       {card && content && (
         <CardEditor
+          cardId={card}
           title={draft.title ?? content.title}
           body={draft.body ?? content.body}
           deadline={"deadline" in draft ? draft.deadline! : content.deadline}

@@ -8,6 +8,21 @@ import { z } from "zod"
  *    the deletion propagates to other clients instead of vanishing silently.
  */
 
+/**
+ * A file attached to a card.
+ *
+ *  - `name`: editable display label, shown on the tile. Independent of storage.
+ *  - `key`: opaque, backend-specific handle (an S3 object key, or a filename in
+ *    the card's on-disk sidecar). Rewritten when files migrate between backends.
+ */
+export const AttachmentSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  key: z.string(),
+  mime: z.string(),
+  size: z.number(),
+})
+
 export const CardSchema = z.object({
   id: z.string(),
   title: z.string(),
@@ -16,6 +31,8 @@ export const CardSchema = z.object({
   columnId: z.string(),
   /** Optional deadline as an ISO date string (`YYYY-MM-DD`); `null` when unset. */
   deadline: z.string().nullable().default(null),
+  /** Attached files; travels with the card's last-writer-wins record. */
+  attachments: z.array(AttachmentSchema).default([]),
   updatedAt: z.number(),
   deletedAt: z.number().nullable(),
 })

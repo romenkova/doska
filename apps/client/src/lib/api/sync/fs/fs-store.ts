@@ -4,7 +4,11 @@ import type { Card, Column, Dashboard } from "@/lib/types"
 import { CARDS, COLUMNS, DASHBOARDS } from "../../constants"
 import { idb } from "../../db/idb"
 import * as fs from "./fs-adapter"
-import { parseFrontmatter, stringifyFrontmatter } from "./frontmatter"
+import {
+  parseFrontmatter,
+  stringifyFrontmatter,
+  type FrontmatterDoc,
+} from "./frontmatter"
 import {
   INDEX_FILE,
   MD_EXT,
@@ -17,16 +21,24 @@ import {
   sanitizeSegment,
   uniqueSegment,
 } from "./mapping"
-import { loadPathIndex, savePathIndex, type PathMap } from "./path-index"
+import {
+  dropSubtree,
+  loadPathIndex,
+  reprefix,
+  savePathIndex,
+  splitRel,
+  storeOf,
+  type PathMap,
+} from "./path-index"
 
 const newId = (prefix: string) => `${prefix}-${crypto.randomUUID().slice(0, 8)}`
 
-function splitRel(rel: string): { parent: string; base: string } {
-  const slash = rel.lastIndexOf("/")
-  return slash === -1
-    ? { parent: "", base: rel }
-    : { parent: rel.slice(0, slash), base: rel.slice(slash + 1) }
+/** The per-card attachment sidecar folder for a card's `.md` rel path. */
+export function assetsRel(cardRel: string): string {
+  return cardRel.replace(/\.md$/, ".assets")
 }
+
+const EMPTY_DOC: FrontmatterDoc = { data: {}, body: "" }
 
 /**
  * Filesystem mirror of the board tree, rooted at an absolute folder path. Owns
@@ -74,15 +86,6 @@ export class FsStore {
     return taken
   }
 
-  private reprefix(oldPrefix: string, newPrefix: string): void {
-    if (oldPrefix === newPrefix) return
-    for (const [id, rel] of Object.entries(this.index)) {
-      if (rel === oldPrefix) this.index[id] = newPrefix
-      else if (rel.startsWith(oldPrefix + "/"))
-        this.index[id] = newPrefix + rel.slice(oldPrefix.length)
-    }
-  }
-
   // Writes
 
   async write(change: Change | DashboardChange): Promise<void> {
@@ -114,27 +117,13 @@ export class FsStore {
 
   private async writeBoard(board: Dashboard): Promise<string | null> {
     const old = this.index[board.id]
-
     if (board.deletedAt != null) {
-      if (old) {
-        await fs.remove(await this.abs(old))
-        this.dropSubtree(old)
-      }
+      await this.unlink(old)
       return null
     }
 
-    const base = sanitizeSegment(board.title)
-    const oldBase = old ? splitRel(old).base : undefined
-    const name = uniqueSegment(base, await this.takenIn("", oldBase))
-    const rel = name
-
-    if (old && old !== rel) {
-      await fs.rename(await this.abs(old), await this.abs(rel))
-      this.reprefix(old, rel)
-    } else {
-      await fs.mkdir(await this.abs(rel))
-    }
-
+    const rel = await this.resolveRel("", old, board.title, "")
+    await this.placeFolder(old, rel)
     await fs.writeTextFile(
       await this.abs(`${rel}/${INDEX_FILE}`),
       stringifyFrontmatter(boardToDoc(board).data, "")
@@ -145,30 +134,16 @@ export class FsStore {
 
   private async writeColumn(column: Column): Promise<void> {
     const old = this.index[column.id]
-
     if (column.deletedAt != null) {
-      if (old) {
-        await fs.remove(await this.abs(old))
-        this.dropSubtree(old)
-      }
+      await this.unlink(old)
       return
     }
 
     const boardRel = this.index[column.dashboardId]
     if (!boardRel) return // Board folder not materialized yet; retry next tick.
 
-    const base = sanitizeSegment(column.title)
-    const oldBase = old ? splitRel(old).base : undefined
-    const name = uniqueSegment(base, await this.takenIn(boardRel, oldBase))
-    const rel = `${boardRel}/${name}`
-
-    if (old && old !== rel) {
-      await fs.rename(await this.abs(old), await this.abs(rel))
-      this.reprefix(old, rel)
-    } else {
-      await fs.mkdir(await this.abs(rel))
-    }
-
+    const rel = await this.resolveRel(boardRel, old, column.title, "")
+    await this.placeFolder(old, rel)
     await fs.writeTextFile(
       await this.abs(`${rel}/${INDEX_FILE}`),
       stringifyFrontmatter(columnToDoc(column).data, "")
@@ -178,44 +153,96 @@ export class FsStore {
 
   private async writeCard(card: Card): Promise<void> {
     const old = this.index[card.id]
-
     if (card.deletedAt != null) {
-      if (old) {
-        await fs.remove(await this.abs(old))
-        delete this.index[card.id]
-      }
+      if (old) await fs.remove(await this.abs(assetsRel(old)))
+      await this.unlink(old)
       return
     }
 
     const columnRel = this.index[card.columnId]
     if (!columnRel) return // Column folder not materialized yet; retry next tick.
 
-    const base = sanitizeSegment(card.title)
-    const oldBase = old ? splitRel(old).base.replace(/\.md$/, "") : undefined
-    const name = uniqueSegment(base, await this.takenIn(columnRel, oldBase))
-    const rel = `${columnRel}/${name}${MD_EXT}`
-
+    const rel = await this.resolveRel(columnRel, old, card.title, MD_EXT)
+    if (old && old !== rel) {
+      await fs.remove(await this.abs(old))
+      // Keep attachments beside the card: move its `.assets` sidecar too.
+      if (await fs.exists(await this.abs(assetsRel(old))))
+        await fs.rename(await this.abs(assetsRel(old)), await this.abs(assetsRel(rel)))
+    }
     const doc = cardToDoc(card)
-    if (old && old !== rel) await fs.remove(await this.abs(old))
-    await fs.writeTextFile(await this.abs(rel), stringifyFrontmatter(doc.data, doc.body))
+    await fs.writeTextFile(
+      await this.abs(rel),
+      stringifyFrontmatter(doc.data, doc.body)
+    )
     this.index[card.id] = rel
   }
 
-  private dropSubtree(prefix: string): void {
-    for (const [id, rel] of Object.entries(this.index)) {
-      if (rel === prefix || rel.startsWith(prefix + "/")) delete this.index[id]
+  // Removes the file/folder at `old` and prunes its index entries. Safe when
+  // `old` is undefined (record was never written) or a `.md` file (no subtree).
+  private async unlink(old: string | undefined): Promise<void> {
+    if (!old) return
+    await fs.remove(await this.abs(old))
+    dropSubtree(this.index, old)
+  }
+
+  // The unique rel path for a record: a title-derived, collision-free segment
+  // under `parentRel`. `ext` is "" for folders, `.md` for cards.
+  private async resolveRel(
+    parentRel: string,
+    old: string | undefined,
+    title: string,
+    ext: string
+  ): Promise<string> {
+    const base = sanitizeSegment(title)
+    const oldBase = old ? splitRel(old).base.replace(/\.md$/, "") : undefined
+    const name = uniqueSegment(base, await this.takenIn(parentRel, oldBase))
+    return parentRel ? `${parentRel}/${name}${ext}` : `${name}${ext}`
+  }
+
+  // Moves a folder to `rel` (renaming its index subtree) or creates it fresh.
+  private async placeFolder(
+    old: string | undefined,
+    rel: string
+  ): Promise<void> {
+    if (old && old !== rel) {
+      await fs.rename(await this.abs(old), await this.abs(rel))
+      reprefix(this.index, old, rel)
+    } else {
+      await fs.mkdir(await this.abs(rel))
     }
   }
 
   // Scans
 
-  private async readDoc(rel: string) {
+  private async readDoc(rel: string): Promise<FrontmatterDoc | null> {
     try {
       const text = await fs.readTextFile(await this.abs(rel))
       return parseFrontmatter(text)
     } catch {
       return null
     }
+  }
+
+  // Resolves a scanned file's stable id (adopting one when absent), records it in
+  // the index + `seen`, and reports whether it changed since the last cursor.
+  private async identify(
+    doc: FrontmatterDoc,
+    entityRel: string,
+    statRel: string,
+    prefix: string,
+    seen: Set<string>,
+    since: number
+  ): Promise<{ id: string; mtime: number; adopted: boolean; changed: boolean }> {
+    const rawId = typeof doc.data.id === "string" ? doc.data.id : ""
+    const id = rawId || newId(prefix)
+    const mtime = await this.safeMtime(statRel)
+    const adopted = !rawId
+    const known = this.index[id] === entityRel
+
+    this.index[id] = entityRel
+    seen.add(id)
+
+    return { id, mtime, adopted, changed: mtime > since || adopted || !known }
   }
 
   // Top-level folders as boards: surfaces external edits (mtime), adopts folders
@@ -236,18 +263,17 @@ export class FsStore {
       if (!entry.isDirectory) continue
       const rel = entry.name
       const indexRel = `${rel}/${INDEX_FILE}`
-      const doc = (await this.readDoc(indexRel)) ?? { data: {}, body: "" }
+      const doc = (await this.readDoc(indexRel)) ?? EMPTY_DOC
+      const { id, mtime, adopted, changed } = await this.identify(
+        doc,
+        rel,
+        indexRel,
+        "board",
+        seen,
+        since
+      )
 
-      const rawId = typeof doc.data.id === "string" ? doc.data.id : ""
-      const id = rawId || newId("board")
-      const mtime = await this.safeMtime(indexRel)
-      const adopted = !rawId
-      const known = this.index[id] === rel
-
-      this.index[id] = rel
-      seen.add(id)
-
-      if (mtime > since || adopted || !known) {
+      if (changed) {
         const board = docToBoard(doc, { id, mtimeMs: mtime })
         if (adopted)
           await fs.writeTextFile(
@@ -304,17 +330,17 @@ export class FsStore {
     out: Change[]
   ): Promise<string | null> {
     const indexRel = `${columnRel}/${INDEX_FILE}`
-    const doc = (await this.readDoc(indexRel)) ?? { data: {}, body: "" }
-    const rawId = typeof doc.data.id === "string" ? doc.data.id : ""
-    const id = rawId || newId("col")
-    const mtime = await this.safeMtime(indexRel)
-    const adopted = !rawId
-    const known = this.index[id] === columnRel
+    const doc = (await this.readDoc(indexRel)) ?? EMPTY_DOC
+    const { id, mtime, adopted, changed } = await this.identify(
+      doc,
+      columnRel,
+      indexRel,
+      "col",
+      seen,
+      since
+    )
 
-    this.index[id] = columnRel
-    seen.add(id)
-
-    if (mtime > since || adopted || !known) {
+    if (changed) {
       const column = docToColumn(doc, boardId, { id, mtimeMs: mtime })
       if (adopted)
         await fs.writeTextFile(
@@ -351,19 +377,19 @@ export class FsStore {
       const doc = await this.readDoc(rel)
       if (!doc) continue
 
-      const rawId = typeof doc.data.id === "string" ? doc.data.id : ""
-      const id = rawId || newId("card")
-      const mtime = await this.safeMtime(rel)
-      const adopted = !rawId
-      const known = this.index[id] === rel
-
-      this.index[id] = rel
-      seen.add(id)
+      const { id, mtime, adopted, changed } = await this.identify(
+        doc,
+        rel,
+        rel,
+        "card",
+        seen,
+        since
+      )
 
       const hasPosition = typeof doc.data.position === "string" && doc.data.position
       if (hasPosition) lastPosition = doc.data.position as string
 
-      if (mtime > since || adopted || !known) {
+      if (changed) {
         const card = docToCard(doc, columnId, { id, mtimeMs: mtime })
         if (!hasPosition) {
           lastPosition = generateKeyBetween(lastPosition, null)
@@ -403,7 +429,7 @@ export class FsStore {
       // Skip the board's own entry when scanning that board's subtree.
       if (kind === "board" && rel.includes("/")) continue
 
-      const store = this.storeOf(rel)
+      const store = storeOf(rel)
       const existing = await idb.get<Card | Column | Dashboard>(store, id)
       delete this.index[id]
       if (!existing) continue
@@ -412,11 +438,5 @@ export class FsStore {
       out.push({ store, record } as Change | DashboardChange)
     }
     return out
-  }
-
-  /** Infers the store a rel path belongs to: `.md` file → card, else folder. */
-  private storeOf(rel: string): typeof CARDS | typeof COLUMNS | typeof DASHBOARDS {
-    if (rel.endsWith(MD_EXT)) return CARDS
-    return rel.includes("/") ? COLUMNS : DASHBOARDS
   }
 }

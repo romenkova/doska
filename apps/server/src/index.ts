@@ -10,6 +10,7 @@ import {
   sessionCookie,
 } from "./auth"
 import { router } from "./router"
+import { registerFileRoutes } from "./files"
 import { registerUpdateRoutes } from "./updates"
 import { runMigrations } from "./db/utils/run-migrations"
 import pkg from "../package.json" with { type: "json" }
@@ -64,6 +65,9 @@ app.get("/api/version", async (_req, reply) => {
 
 // Public desktop update endpoint — the app polls this for new builds.
 registerUpdateRoutes(app)
+
+// Attachment upload/download endpoints (S3), session-protected.
+registerFileRoutes(app)
 
 app.all("/api/rpc/*", async (req, reply) => {
   // The sync API is the protected surface: no valid session, no access.

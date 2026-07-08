@@ -1,4 +1,4 @@
-import type { Card, Column, Dashboard } from "@/lib/types"
+import type { Attachment, Card, Column, Dashboard } from "@/lib/types"
 import type { FrontmatterDoc } from "./frontmatter"
 
 /**
@@ -63,6 +63,9 @@ export function cardToDoc(card: Card): FrontmatterDoc {
       title: card.title,
       position: card.position,
       deadline: card.deadline ?? undefined,
+      // Files live in the card's `.assets` sidecar; the list rides frontmatter
+      // so the record round-trips and stays legible in the `.md`.
+      attachments: card.attachments.length ? card.attachments : undefined,
       updatedAt: card.updatedAt,
     },
     body: card.body,
@@ -115,6 +118,25 @@ function str(value: unknown, fallback = ""): string {
   return typeof value === "string" ? value : fallback
 }
 
+/** Reads the attachments list back from frontmatter, dropping malformed entries. */
+function toAttachments(value: unknown): Attachment[] {
+  if (!Array.isArray(value)) return []
+  const out: Attachment[] = []
+  for (const item of value) {
+    if (!item || typeof item !== "object") continue
+    const a = item as Record<string, unknown>
+    if (typeof a.id === "string" && typeof a.key === "string")
+      out.push({
+        id: a.id,
+        name: str(a.name, a.key),
+        key: a.key,
+        mime: str(a.mime, "application/octet-stream"),
+        size: typeof a.size === "number" ? a.size : 0,
+      })
+  }
+  return out
+}
+
 export function docToCard(
   doc: FrontmatterDoc,
   columnId: string,
@@ -128,6 +150,7 @@ export function docToCard(
     position: str(data.position),
     columnId,
     deadline: typeof data.deadline === "string" ? data.deadline : null,
+    attachments: toAttachments(data.attachments),
     updatedAt: effectiveUpdatedAt(data, ctx.mtimeMs),
     deletedAt: null,
   }

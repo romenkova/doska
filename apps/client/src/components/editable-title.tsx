@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import { cn } from "@doska/ui-kit"
+import { cn, InvisibleInput } from "@doska/ui-kit"
 
 interface IProps {
   value: string
@@ -58,7 +58,7 @@ export function EditableTitle({ value, onCommit, label, className }: IProps) {
 
   if (editing) {
     return (
-      <input
+      <InvisibleInput
         ref={inputRef}
         value={draft}
         autoFocus
@@ -69,11 +69,7 @@ export function EditableTitle({ value, onCommit, label, className }: IProps) {
           if (e.key === "Escape") cancel()
         }}
         aria-label={label}
-        className={cn(
-          "bg-transparent px-2 py-0.5",
-          "rounded-sm bg-secondary outline-none",
-          className
-        )}
+        className={className}
       />
     )
   }
