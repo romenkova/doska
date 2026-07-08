@@ -1,5 +1,5 @@
 import { DirtyStore } from "./dirty"
-import type { SyncDriver } from "./driver"
+import type { PushResult, SyncDriver } from "./driver"
 
 /** Where the engine is in its push/pull cycle. */
 export type SyncStatus = "idle" | "syncing" | "error"
@@ -93,9 +93,31 @@ export class SyncEngine<Scope, Change> {
     })()
   }
 
-  /** Runs one full reconcile for the active scope, skipping if one is already running. */
-  reconcile(): Promise<void> {
-    return this.run(this.activeScope)
+  /**
+   * Runs a full reconcile for the active scope **and every scope that has dirty
+   * changes** — so local edits sync no matter which scope is open (e.g. a board
+   * edited then navigated away from). Falls back to the active scope alone when
+   * the driver doesn't expose {@link SyncDriver.pendingScopes}. Scopes run
+   * sequentially; each `run` no-ops if one is already in flight.
+   *
+   * Cost: `pendingScopes` plus each scope's `collectChanges` re-scan the dirty
+   * queue, so a reconcile touches it O(scopes) times — fine while the queue is
+   * small (typical), worth revisiting if it grows large.
+   */
+  async reconcile(): Promise<void> {
+    const scopes: Scope[] = []
+    const seen = new Set<Scope>()
+    const add = (scope: Scope | null) => {
+      if (scope === null || seen.has(scope)) return
+      seen.add(scope)
+      scopes.push(scope)
+    }
+
+    add(this.activeScope)
+    if (this.driver.pendingScopes)
+      for (const scope of await this.driver.pendingScopes(this.dirty)) add(scope)
+
+    for (const scope of scopes) await this.run(scope)
   }
 
   /** Pushes/pulls a single scope, skipping if one is already running or there's no scope. */
@@ -113,7 +135,7 @@ export class SyncEngine<Scope, Change> {
       // Optimistically clear the refs we're pushing; restore them on failure.
       this.dirty.clear(refs)
 
-      let result: { cursor: number; changes: Change[] }
+      let result: PushResult<Change>
       try {
         result = await this.driver.push({ scope, since, changes })
       } catch (err) {

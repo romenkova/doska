@@ -9,6 +9,21 @@
     "window-state:default",
     "updater:default",
     "process:default",
+    "dialog:allow-open",
+    "fs:allow-read-text-file",
+    "fs:allow-write-text-file",
+    "fs:allow-mkdir",
+    "fs:allow-read-dir",
+    "fs:allow-remove",
+    "fs:allow-rename",
+    "fs:allow-stat",
+    "fs:allow-lstat",
+    "fs:allow-exists",
+    "fs:allow-watch",
+    {
+      "identifier": "fs:scope",
+      "allow": [{ "path": "**" }]
+    },
     {
       "identifier": "http:default",
       "allow": [

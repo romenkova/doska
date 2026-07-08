@@ -7,7 +7,13 @@ import {
   PencilLine,
   TriangleAlert,
 } from "lucide-react"
+import { useSyncExternalStore } from "react"
 import { useLoginPrompt } from "@/components/login/login-prompt-context"
+import {
+  getSyncTarget,
+  isSyncConfigured,
+  subscribeSyncConfig,
+} from "@/lib/api/runtime"
 import { sync } from "@/lib/api/sync"
 import { useAuth, useSyncStatus } from "@/lib/hooks"
 
@@ -51,20 +57,25 @@ export function SyncIndicator() {
   const state = useSyncStatus()
   const { authed } = useAuth()
   const openLogin = useLoginPrompt()
+  const target = useSyncExternalStore(subscribeSyncConfig, getSyncTarget)
+  const configured = useSyncExternalStore(subscribeSyncConfig, isSyncConfigured)
 
-  // Signed out, sync can't run — point the user at the login prompt instead of
-  // showing a misleading "sync failed". (`authed === null` is the pre-check
-  // state; treat it as signed-in to avoid a flash.)
-  if (authed === false) {
+  // Sync can't run yet: the server backend needs an account, the folder backend
+  // needs a folder. Point the user at the set-up dialog instead of showing a
+  // misleading status. (`authed === null` is the pre-check state; treat it as
+  // signed-in to avoid a flash.)
+  const needsSetup =
+    target === "server" ? authed === false : !configured
+  if (needsSetup) {
     return (
       <Button
         variant="secondary"
-        aria-label="Sign in to sync"
-        title="Sign in to sync"
+        aria-label="Sync is not set up"
+        title="Sync is not set up"
         onClick={openLogin}
         className="text-muted-foreground"
       >
-        <span>Sign in to sync</span>
+        <span>Sync is not set up</span>
         <LogIn />
       </Button>
     )

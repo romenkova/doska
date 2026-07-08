@@ -7,6 +7,11 @@
 
 const SERVER_URL_KEY = "deck:server-url"
 const AUTO_UPDATE_KEY = "deck:auto-update"
+const SYNC_TARGET_KEY = "deck:sync:target"
+const SYNC_FOLDER_KEY = "deck:sync:folder"
+
+/** Where local changes sync to: the remote server, or a local Markdown folder. */
+export type SyncTarget = "server" | "folder"
 
 /** True inside the packaged Tauri webview. */
 export function isDesktop(): boolean {
@@ -25,6 +30,13 @@ export function subscribeServerUrl(listener: () => void): () => void {
   return () => listeners.delete(listener)
 }
 
+/**
+ * Subscribe to any sync-configuration change — backend target, folder, or
+ * server URL. Same underlying signal as {@link subscribeServerUrl}; named for
+ * the sync facade, which rebuilds its engines when this fires.
+ */
+export const subscribeSyncConfig = subscribeServerUrl
+
 /** The configured remote server URL (desktop only). Empty when unset. */
 export function getServerUrl(): string {
   return localStorage.getItem(SERVER_URL_KEY) ?? ""
@@ -39,10 +51,39 @@ export function setServerUrl(url: string): void {
 }
 
 /**
- * Whether remote sync has somewhere to reach. The web build is same-origin so
- * it's always configured; desktop needs an explicit server URL.
+ * The active sync backend. Defaults to `server`; the `folder` backend is
+ * desktop-only and opt-in (see {@link setSyncTarget}).
+ */
+export function getSyncTarget(): SyncTarget {
+  return localStorage.getItem(SYNC_TARGET_KEY) === "folder" ? "folder" : "server"
+}
+
+/** Switches the sync backend and notifies subscribers so sync can rebuild. */
+export function setSyncTarget(target: SyncTarget): void {
+  localStorage.setItem(SYNC_TARGET_KEY, target)
+  emit()
+}
+
+/** The folder the `folder` backend mirrors to (absolute path). Empty when unset. */
+export function getSyncFolder(): string {
+  return localStorage.getItem(SYNC_FOLDER_KEY) ?? ""
+}
+
+/** Persists the sync folder and notifies subscribers. */
+export function setSyncFolder(path: string): void {
+  const trimmed = path.trim()
+  if (trimmed) localStorage.setItem(SYNC_FOLDER_KEY, trimmed)
+  else localStorage.removeItem(SYNC_FOLDER_KEY)
+  emit()
+}
+
+/**
+ * Whether the active backend has somewhere to reach. The `folder` backend needs
+ * a chosen folder (desktop only); the `server` backend is same-origin on web
+ * (always configured) and needs an explicit URL on desktop.
  */
 export function isSyncConfigured(): boolean {
+  if (getSyncTarget() === "folder") return isDesktop() && getSyncFolder() !== ""
   return !isDesktop() || getServerUrl() !== ""
 }
 
