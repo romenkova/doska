@@ -15,7 +15,6 @@ function assertDesktop(): void {
     throw new Error("[fs-sync] filesystem backend is desktop-only")
 }
 
-/** A directory entry from {@link readDir}. */
 export interface DirEntry {
   name: string
   isDirectory: boolean
@@ -30,21 +29,19 @@ export async function pickFolder(): Promise<string | null> {
   return typeof picked === "string" ? picked : null
 }
 
-/** Joins path parts with the platform separator (absolute in, absolute out). */
 export async function join(...parts: string[]): Promise<string> {
   assertDesktop()
   const { join: tauriJoin } = await import("@tauri-apps/api/path")
   return tauriJoin(...parts)
 }
 
-/** Reads a UTF-8 text file. */
 export async function readTextFile(path: string): Promise<string> {
   assertDesktop()
   const { readTextFile: read } = await import("@tauri-apps/plugin-fs")
   return read(path)
 }
 
-/** Writes a UTF-8 text file, creating parent directories as needed. */
+/** Creates parent directories as needed. */
 export async function writeTextFile(
   path: string,
   contents: string
@@ -56,14 +53,12 @@ export async function writeTextFile(
   await fs.writeTextFile(path, contents)
 }
 
-/** Creates a directory (and any missing parents). */
 export async function mkdir(path: string): Promise<void> {
   assertDesktop()
   const { mkdir: make } = await import("@tauri-apps/plugin-fs")
   await make(path, { recursive: true })
 }
 
-/** Lists a directory's immediate children (non-recursive). */
 export async function readDir(path: string): Promise<DirEntry[]> {
   assertDesktop()
   const { readDir: read } = await import("@tauri-apps/plugin-fs")
@@ -75,7 +70,7 @@ export async function readDir(path: string): Promise<DirEntry[]> {
   }))
 }
 
-/** Removes a file or (recursively) a directory. Missing paths are ignored. */
+/** Missing paths are ignored. */
 export async function remove(path: string): Promise<void> {
   assertDesktop()
   const { remove: rm, exists: has } = await import("@tauri-apps/plugin-fs")
@@ -83,7 +78,6 @@ export async function remove(path: string): Promise<void> {
   await rm(path, { recursive: true })
 }
 
-/** Renames/moves a path. */
 export async function rename(from: string, to: string): Promise<void> {
   assertDesktop()
   const fs = await import("@tauri-apps/plugin-fs")
@@ -92,7 +86,6 @@ export async function rename(from: string, to: string): Promise<void> {
   await fs.rename(from, to)
 }
 
-/** Whether a path exists. */
 export async function exists(path: string): Promise<boolean> {
   assertDesktop()
   const { exists: has } = await import("@tauri-apps/plugin-fs")
@@ -107,11 +100,7 @@ export async function mtimeMs(path: string): Promise<number> {
   return info.mtime ? info.mtime.getTime() : 0
 }
 
-/**
- * Watches `root` recursively, invoking `onChange` (debounced by the plugin) on
- * any filesystem event. Returns an unwatch function. Used to pick up external
- * edits near-realtime instead of only on the poll.
- */
+/** Watches `root` recursively; returns an unwatch function. */
 export async function watch(
   root: string,
   onChange: () => void

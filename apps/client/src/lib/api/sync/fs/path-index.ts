@@ -19,7 +19,6 @@ const INDEX_KEY = "fs:path-index"
 
 export type PathMap = Record<string, string>
 
-/** Loads the whole map (empty on first sync or if storage is unavailable). */
 export async function loadPathIndex(): Promise<PathMap> {
   try {
     const raw = await idb.get<PathMap>(META_STORE, INDEX_KEY)
@@ -29,7 +28,6 @@ export async function loadPathIndex(): Promise<PathMap> {
   }
 }
 
-/** Persists the whole map. */
 export async function savePathIndex(map: PathMap): Promise<void> {
   try {
     await idb.set(META_STORE, INDEX_KEY, map)

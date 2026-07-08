@@ -21,7 +21,6 @@ import { loadPathIndex, savePathIndex, type PathMap } from "./path-index"
 
 const newId = (prefix: string) => `${prefix}-${crypto.randomUUID().slice(0, 8)}`
 
-/** Split a POSIX rel path into `{ parent, base }` (parent is "" at the root). */
 function splitRel(rel: string): { parent: string; base: string } {
   const slash = rel.lastIndexOf("/")
   return slash === -1
@@ -30,11 +29,9 @@ function splitRel(rel: string): { parent: string; base: string } {
 }
 
 /**
- * The filesystem mirror of the board tree, rooted at an absolute folder path.
- * Owns the `id → path` index and does all record⇄file IO. Both filesystem
- * drivers (board + dashboard-list) construct one per push: writes flush dirty
- * records to disk, scans surface external edits/adoptions/deletions. Paths are
- * POSIX-relative to the root everywhere except the `fs-adapter` boundary.
+ * Filesystem mirror of the board tree, rooted at an absolute folder path. Owns
+ * the `id → path` index and does all record⇄file IO. Paths are POSIX-relative to
+ * the root everywhere except the `fs-adapter` boundary.
  */
 export class FsStore {
   private index: PathMap = {}
@@ -51,7 +48,6 @@ export class FsStore {
     this.loaded = true
   }
 
-  /** Persists the path index after a batch of writes/scans. */
   async flush(): Promise<void> {
     await savePathIndex(this.index)
   }
@@ -78,7 +74,6 @@ export class FsStore {
     return taken
   }
 
-  /** Rewrites every index entry under `oldPrefix` to sit under `newPrefix`. */
   private reprefix(oldPrefix: string, newPrefix: string): void {
     if (oldPrefix === newPrefix) return
     for (const [id, rel] of Object.entries(this.index)) {
@@ -88,11 +83,8 @@ export class FsStore {
     }
   }
 
-  // -------------------------------------------------------------------------
   // Writes
-  // -------------------------------------------------------------------------
 
-  /** Dispatches a dirty change to the matching writer. */
   async write(change: Change | DashboardChange): Promise<void> {
     await this.ensureLoaded()
     switch (change.store) {
@@ -108,12 +100,9 @@ export class FsStore {
     }
   }
 
-  /**
-   * Ensures a board's folder + `_index.md` exist so its columns/cards have a
-   * home, without rewriting when already present — an unconditional write would
-   * bump mtime every push and, with the folder watcher on, loop forever. Board
-   * renames are handled by the list channel's {@link write}, not here.
-   */
+  // Skips rewriting when already present: an unconditional write would bump mtime
+  // every push and, with the folder watcher on, loop forever. Renames go through
+  // the list channel's write(), not here.
   async ensureBoardFolder(board: Dashboard): Promise<string | null> {
     await this.ensureLoaded()
     if (board.deletedAt != null) return null
@@ -212,18 +201,14 @@ export class FsStore {
     this.index[card.id] = rel
   }
 
-  /** Removes every index entry at or under `prefix`. */
   private dropSubtree(prefix: string): void {
     for (const [id, rel] of Object.entries(this.index)) {
       if (rel === prefix || rel.startsWith(prefix + "/")) delete this.index[id]
     }
   }
 
-  // -------------------------------------------------------------------------
   // Scans
-  // -------------------------------------------------------------------------
 
-  /** Reads and parses a file; returns null when it's missing/unreadable. */
   private async readDoc(rel: string) {
     try {
       const text = await fs.readTextFile(await this.abs(rel))
@@ -233,11 +218,8 @@ export class FsStore {
     }
   }
 
-  /**
-   * Scans the top-level folders as boards: surfaces external edits (mtime),
-   * adopts folders lacking an id, and tombstones tracked boards whose folder is
-   * gone. Emits changes with LWW-ready `updatedAt`.
-   */
+  // Top-level folders as boards: surfaces external edits (mtime), adopts folders
+  // lacking an id, tombstones tracked boards whose folder is gone.
   async scanBoards(since: number): Promise<DashboardChange[]> {
     await this.ensureLoaded()
     const changes: DashboardChange[] = []
@@ -281,10 +263,8 @@ export class FsStore {
     return changes
   }
 
-  /**
-   * Scans one board's subtree: its columns (`_index.md`) and cards (`*.md`).
-   * Same external-edit/adoption/deletion handling as {@link scanBoards}.
-   */
+  // One board's subtree: columns (`_index.md`) and cards (`*.md`), same handling
+  // as scanBoards.
   async scanBoard(boardId: string, since: number): Promise<Change[]> {
     await this.ensureLoaded()
     const changes: Change[] = []
@@ -316,7 +296,6 @@ export class FsStore {
     return changes
   }
 
-  /** Resolves/adopts a column from its `_index.md`; emits a change when relevant. */
   private async scanColumn(
     columnRel: string,
     boardId: string,
@@ -347,7 +326,6 @@ export class FsStore {
     return id
   }
 
-  /** Scans a column's card files, adopting/positioning as needed. */
   private async scanCards(
     columnRel: string,
     columnId: string,
@@ -409,11 +387,9 @@ export class FsStore {
     }
   }
 
-  /**
-   * Builds tombstone changes for tracked ids not seen in a scan (deleted on
-   * disk). Rebuilds the record from IndexedDB and stamps a fresh delete clock;
-   * ids no longer in IndexedDB are just dropped from the index.
-   */
+  // Tombstones tracked ids not seen in a scan (deleted on disk): rebuilds the
+  // record from IndexedDB with a fresh delete clock. Ids gone from IndexedDB are
+  // just dropped from the index.
   private async tombstoneMissing(
     seen: Set<string>,
     kind: "board" | "any",

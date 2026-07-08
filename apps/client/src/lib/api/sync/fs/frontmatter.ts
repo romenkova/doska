@@ -15,7 +15,6 @@ import { parse as parseYaml, stringify as stringifyYaml } from "yaml"
  * `data` bags lives in `mapping.ts`.
  */
 
-/** A parsed frontmatter document: the YAML `data` bag plus the Markdown `body`. */
 export interface FrontmatterDoc {
   data: Record<string, unknown>
   body: string

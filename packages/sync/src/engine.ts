@@ -4,7 +4,6 @@ import type { PushResult, SyncDriver } from "./driver"
 /** Where the engine is in its push/pull cycle. */
 export type SyncStatus = "idle" | "syncing" | "error"
 
-/** A snapshot of sync progress, surfaced to the UI via {@link SyncEngine.subscribe}. */
 export interface SyncState {
   /** `syncing` while a reconcile is in flight; `error` if the last one failed. */
   readonly status: SyncStatus
@@ -32,13 +31,10 @@ export class SyncEngine<Scope, Change> {
 
   private readonly driver: SyncDriver<Scope, Change>
 
-  /** Gate consulted before every reconcile;  */
+  // Gate consulted before every reconcile.
   private readonly canSync: () => boolean
 
-  /** The latest snapshot handed to subscribers; replaced (never mutated) on change. */
   private state: SyncState
-
-  /** Subscribers notified after every state transition (e.g. React stores). */
   private readonly listeners = new Set<() => void>()
 
   constructor(
@@ -51,19 +47,15 @@ export class SyncEngine<Scope, Change> {
     this.canSync = options.canSync ?? (() => true)
   }
 
-  /**
-   * Subscribes to state changes; returns an unsubscribe. Shaped for
-   * `useSyncExternalStore`, so it's an arrow to stay reference-stable.
-   */
+  // Arrow to stay reference-stable for `useSyncExternalStore`.
   subscribe = (listener: () => void): (() => void) => {
     this.listeners.add(listener)
     return () => this.listeners.delete(listener)
   }
 
-  /** The current state snapshot, stable until the next transition. */
   getState = (): SyncState => this.state
 
-  /** Replaces the snapshot and notifies subscribers, skipping no-op updates. */
+  // Skips no-op updates.
   private setState(next: SyncState) {
     if (
       next.status === this.state.status &&
@@ -74,15 +66,12 @@ export class SyncEngine<Scope, Change> {
     for (const listener of this.listeners) listener()
   }
 
-  /** Flags a ref as changed locally and awaiting sync. */
   mark(ref: string) {
     this.dirty.mark(ref)
     this.setState({ status: this.state.status, pending: this.dirty.size })
   }
 
-  /**
-   * Points sync at the open scope
-   */
+  // Reconciles both the scope being left and the one being opened.
   setActiveScope(scope: Scope | null) {
     if (scope === this.activeScope) return
     const previous = this.activeScope
@@ -120,7 +109,6 @@ export class SyncEngine<Scope, Change> {
     for (const scope of scopes) await this.run(scope)
   }
 
-  /** Pushes/pulls a single scope, skipping if one is already running or there's no scope. */
   private async run(scope: Scope | null): Promise<void> {
     if (this.inFlight || scope === null || !this.canSync()) return
     this.inFlight = true

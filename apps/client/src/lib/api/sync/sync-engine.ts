@@ -27,7 +27,6 @@ import {
 const canSync = () =>
   isSyncConfigured() && (getSyncTarget() === "folder" || isAuthed())
 
-/** The board + dashboard-list driver pair for a backend. */
 function createDrivers(target: SyncTarget) {
   if (target === "folder")
     return { board: new FsBoardDriver(), list: new FsDashboardListDriver() }
@@ -45,20 +44,12 @@ function mergeStatus(a: SyncStatus, b: SyncStatus): SyncStatus {
 const WATCH_DEBOUNCE_MS = 300
 
 /**
- * The one sync facade the app drives. It runs two independent engines:
- *
- *  - the **board** engine, scoped to the open board (its columns and cards);
- *  - the **dashboard list** engine, account-level and always active.
- *
- * The engines' drivers depend on the configured backend (server or folder), so
- * the facade **rebuilds** both when the backend changes — reusing the same dirty
- * queues (keyed by `storageKey`), so pending local edits flush to whichever
- * backend is now active. On the folder backend it also watches the folder to
- * pick up external edits near-realtime.
- *
- * Callers don't pick a channel: {@link markDirty} routes by store, and the UI
- * sees a single merged {@link SyncState}. There's one open board and one of each
- * dirty queue, so it's a singleton.
+ * The one sync facade the app drives. Runs two independent engines: the board
+ * engine (scoped to the open board) and the always-active dashboard-list engine.
+ * Drivers depend on the backend, so both are rebuilt on a backend change,
+ * reusing the same dirty queues so pending edits flush to whichever is now
+ * active. Callers don't pick a channel — {@link markDirty} routes by store and
+ * the UI sees one merged {@link SyncState}. Singleton.
  */
 class DeckSync {
   private board!: SyncEngine<string, never>
@@ -79,10 +70,7 @@ class DeckSync {
     subscribeSyncConfig(() => this.rebuild())
   }
 
-  /**
-   * (Re)builds both engines from the current backend and re-points them at the
-   * open scopes. Safe to call repeatedly; the old engines are simply dropped.
-   */
+  // Safe to call repeatedly; the old engines are simply dropped.
   private rebuild() {
     const { board, list } = createDrivers(getSyncTarget())
     // The generic engine is Change-shaped per backend; the facade only routes
@@ -105,11 +93,8 @@ class DeckSync {
     this.recompute()
   }
 
-  /**
-   * Watches the sync folder (desktop + folder backend only) and reconciles,
-   * debounced, on any change — so external edits show up without waiting for the
-   * poll. A no-op (and tears down any prior watcher) on other backends.
-   */
+  // Watches the sync folder (desktop + folder backend only) and reconciles,
+  // debounced, so external edits show up without waiting for the poll.
   private async startWatch() {
     this.stopWatch?.()
     this.stopWatch = null
@@ -130,7 +115,7 @@ class DeckSync {
     }
   }
 
-  /** Recomputes the merged snapshot; notifies only on a real change. */
+  // Notifies only on a real transition.
   private recompute() {
     const a = this.board.getState()
     const b = this.list.getState()
@@ -147,25 +132,18 @@ class DeckSync {
     for (const listener of this.listeners) listener()
   }
 
-  /** Subscribes to merged state changes; shaped for `useSyncExternalStore`. */
   subscribe = (listener: () => void): (() => void) => {
     this.listeners.add(listener)
     return () => this.listeners.delete(listener)
   }
 
-  /** The current merged snapshot, stable until the next transition. */
   getState = (): SyncState => this.state
 
-  /** Flags a record as changed locally, routing it to the channel that owns it. */
   markDirty(store: StoreName, key: string) {
     const engine = store === DASHBOARDS ? this.list : this.board
     engine.mark(`${store}/${key}`)
   }
 
-  /**
-   * Points the board channel at the open board and reconciles immediately.
-   * Selecting a board also refreshes the dashboard list (its own channel).
-   */
   setActiveBoard(boardId: string | null) {
     this.currentBoard = boardId
     this.board.setActiveScope(boardId)
@@ -178,14 +156,10 @@ class DeckSync {
   }
 
   /**
-   * Enqueues every live local record so a fresh backend receives the current
-   * boards, not just future edits. Used when switching to the folder backend:
-   * without it the push write-phase (dirty-only) would leave an empty folder.
-   *
-   * Board folders + their `_index.md` export immediately via the always-on list
-   * channel; a board's columns and cards flush when that board is next active
-   * (the board channel is per-board), so the open board exports right away and
-   * the rest as they're visited.
+   * Enqueues every live local record so a freshly-selected backend receives the
+   * current boards, not just future edits (else the dirty-only push would leave
+   * an empty folder). Columns/cards flush when their board is next active, since
+   * the board channel is per-board.
    */
   async exportLocalData(): Promise<void> {
     const [dashboards, columns, cards] = await Promise.all([

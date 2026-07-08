@@ -27,8 +27,8 @@ function hash(text: string): number {
 
 // Assigns palette indices for one document: the same tag text always reuses its
 // index, and distinct tags avoid colliding by probing forward from their hashed
-// slot to the next free one. Once every slot is taken (>20 distinct tags),
-// collisions are unavoidable and we fall back to the raw hashed slot.
+// slot to the next free one. Past TAG_COLOR_COUNT distinct tags every slot is
+// taken, so we fall back to the raw hashed slot.
 function makeColorPicker() {
   const assigned = new Map<string, number>()
   const used = new Set<number>()
