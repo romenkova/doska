@@ -59,6 +59,28 @@ export async function mkdir(path: string): Promise<void> {
   await make(path, { recursive: true })
 }
 
+/** Writes raw bytes, creating parent directories as needed. */
+export async function writeFile(path: string, bytes: Uint8Array): Promise<void> {
+  assertDesktop()
+  const fs = await import("@tauri-apps/plugin-fs")
+  const dir = path.replace(/[/\\][^/\\]*$/, "")
+  if (dir && dir !== path) await fs.mkdir(dir, { recursive: true })
+  await fs.writeFile(path, bytes)
+}
+
+export async function readFile(path: string): Promise<Uint8Array> {
+  assertDesktop()
+  const { readFile: read } = await import("@tauri-apps/plugin-fs")
+  return read(path)
+}
+
+/** Wraps an absolute path in an asset URL the webview can load. */
+export async function toAssetUrl(path: string): Promise<string> {
+  assertDesktop()
+  const { convertFileSrc } = await import("@tauri-apps/api/core")
+  return convertFileSrc(path)
+}
+
 export async function readDir(path: string): Promise<DirEntry[]> {
   assertDesktop()
   const { readDir: read } = await import("@tauri-apps/plugin-fs")

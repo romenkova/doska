@@ -136,6 +136,7 @@ export async function remoteAddCard(
           position: "a5",
           columnId: col.record.id,
           deadline: null,
+          attachments: [],
           updatedAt: Date.now(),
           deletedAt: null,
         },

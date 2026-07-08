@@ -14,6 +14,7 @@
   "dependencies": {
     "@doska/client-db": "workspace:*",
     "@doska/contract": "workspace:*",
+    "@doska/file-storage": "workspace:*",
     "@doska/markdown": "workspace:*",
     "@doska/sync": "workspace:*",
     "@doska/ui-kit": "workspace:*",

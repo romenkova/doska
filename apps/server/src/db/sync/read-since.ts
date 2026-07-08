@@ -48,6 +48,7 @@ export async function readSince(
         position: r.position,
         columnId: r.columnId,
         deadline: r.deadline,
+        attachments: r.attachments,
         updatedAt: r.updatedAt,
         deletedAt: r.deletedAt,
       },

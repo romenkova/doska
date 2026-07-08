@@ -18,6 +18,7 @@ import { todayIso } from "@/lib/utils"
 import { MarkdownCardPreview, taskProgress } from "@doska/markdown"
 import type { DetailedHTMLProps, HTMLAttributes } from "react"
 import type { Column } from "@/lib/types"
+import { CardAttachments } from "./attachments/card-attachments"
 
 interface IProps extends DetailedHTMLProps<
   HTMLAttributes<HTMLDivElement>,
@@ -47,6 +48,7 @@ export function Card({
   const { data: card = fallbackCard } = useCard(id)
   const { mutate: updateCard } = useUpdateCard(id)
   const { title, body, deadline } = card
+  const attachments = card.attachments ?? []
   const { done, total } = taskProgress(body)
   const onAddDeadline = deadline
     ? undefined
@@ -115,6 +117,9 @@ export function Card({
                 </CardContent>
               </div>
             </div>
+          )}
+          {attachments.length > 0 && showBody && (
+            <CardAttachments className="pt-2" cardId={id} isReadonly />
           )}
         </CardBase>
       </CardContextMenu>

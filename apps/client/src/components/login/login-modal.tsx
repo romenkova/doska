@@ -1,5 +1,6 @@
 import {
   Button,
+  Checkbox,
   Input,
   Modal,
   ModalContent,
@@ -7,7 +8,7 @@ import {
   ModalTitle,
   cn,
 } from "@doska/ui-kit"
-import { useState, useSyncExternalStore } from "react"
+import { useEffect, useState, useSyncExternalStore } from "react"
 import { useLogin } from "@/lib/data/mutations"
 import {
   getServerUrl,
@@ -22,6 +23,12 @@ import {
 } from "@/lib/api/runtime"
 import { pickFolder } from "@/lib/api/sync/fs/fs-adapter"
 import { sync } from "@/lib/api/sync"
+import {
+  createStorage,
+  hasAttachments,
+  migrateAttachments,
+  type MigrateProgress,
+} from "@/lib/api/attachments"
 
 interface IProps {
   open: boolean
@@ -109,6 +116,57 @@ function TabButton({
   )
 }
 
+/**
+ * Migration-checkbox state for a backend switch. Captures the *current* target
+ * once (the source we'd migrate from) before the panel switches it, and offers
+ * the option only when that source actually holds attachments. Copy is
+ * non-destructive; the source keeps its files.
+ */
+function useFileMigration(from: SyncTarget) {
+  // Snapshot the source target at mount — the panel flips it on submit.
+  const [source] = useState(() => getSyncTarget())
+  const [available, setAvailable] = useState(false)
+  const [enabled, setEnabled] = useState(true)
+  const [progress, setProgress] = useState<MigrateProgress | null>(null)
+
+  useEffect(() => {
+    if (source !== from) return
+    void hasAttachments().then(setAvailable)
+  }, [source, from])
+
+  const run = async () => {
+    if (!available || !enabled || source === from) return
+    await migrateAttachments(createStorage(from), createStorage(getSyncTarget()), setProgress)
+  }
+
+  return { available: available && source === from, enabled, setEnabled, progress, run }
+}
+
+/** Checkbox + progress for copying attachment bytes during a backend switch. */
+function MigrateFilesField({
+  label,
+  enabled,
+  onEnabledChange,
+  progress,
+}: {
+  label: string
+  enabled: boolean
+  onEnabledChange: (on: boolean) => void
+  progress: MigrateProgress | null
+}) {
+  return (
+    <label className="flex items-center gap-2 text-xs text-muted-foreground">
+      <Checkbox checked={enabled} onCheckedChange={(v) => onEnabledChange(v)} />
+      <span>{label}</span>
+      {progress && (
+        <span className="ml-auto tabular-nums">
+          {progress.done}/{progress.total}
+        </span>
+      )}
+    </label>
+  )
+}
+
 /** Remote-server backend: URL (desktop) + credentials, then sign in. */
 function ServerPanel({
   desktop,
@@ -123,6 +181,8 @@ function ServerPanel({
   const [login, setLogin] = useState("")
   const [password, setPassword] = useState("")
   const { mutate, isPending, isError, reset } = useLogin()
+  // Switching in from the folder backend: offer to upload its files to S3.
+  const migration = useFileMigration("server")
 
   function submit(e: React.FormEvent) {
     e.preventDefault()
@@ -133,8 +193,10 @@ function ServerPanel({
     mutate(
       { login, password },
       {
-        onSuccess: () => {
+        onSuccess: async () => {
           setPassword("")
+          // Upload files while the folder source is still readable on disk.
+          await migration.run()
           onDone()
         },
       }
@@ -176,6 +238,15 @@ function ServerPanel({
         )}
       </div>
 
+      {migration.available && (
+        <MigrateFilesField
+          label="Also upload attached files to the server"
+          enabled={migration.enabled}
+          onEnabledChange={migration.setEnabled}
+          progress={migration.progress}
+        />
+      )}
+
       <div className="flex justify-end gap-2">
         <Button
           type="button"
@@ -203,6 +274,8 @@ function ServerPanel({
 /** Local-folder backend: pick a directory to two-way mirror boards into. */
 function FolderPanel({ onDone }: { onDone: () => void }) {
   const folder = useSyncExternalStore(subscribeSyncConfig, getSyncFolder)
+  // Switching in from the server backend: offer to copy its files onto disk.
+  const migration = useFileMigration("folder")
 
   async function choose() {
     const picked = await pickFolder()
@@ -211,6 +284,8 @@ function FolderPanel({ onDone }: { onDone: () => void }) {
     setSyncTarget("folder")
     // Seed the folder with the current boards, not just future edits.
     await sync.exportLocalData()
+    // Card files now exist on disk, so their `.assets` sidecars can be written.
+    await migration.run()
     onDone()
   }
 
@@ -223,6 +298,14 @@ function FolderPanel({ onDone }: { onDone: () => void }) {
         </p>
         <Input readOnly value={folder} placeholder="No folder chosen" />
       </div>
+      {migration.available && (
+        <MigrateFilesField
+          label="Also copy attached files into the folder"
+          enabled={migration.enabled}
+          onEnabledChange={migration.setEnabled}
+          progress={migration.progress}
+        />
+      )}
       <div className="flex justify-end">
         <Button type="button" onClick={() => void choose()}>
           {folder ? "Change folder…" : "Choose folder…"}

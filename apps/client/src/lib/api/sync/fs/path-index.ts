@@ -1,4 +1,6 @@
 import { idb, META_STORE } from "../../db/idb"
+import { CARDS, COLUMNS, DASHBOARDS } from "../../constants"
+import { MD_EXT } from "./mapping"
 
 /**
  * The `id → relative file path` map that ties stable record ids to their
@@ -34,4 +36,36 @@ export async function savePathIndex(map: PathMap): Promise<void> {
   } catch {
     // Storage unavailable; the next scan rebuilds paths from frontmatter ids.
   }
+}
+
+export function splitRel(rel: string): { parent: string; base: string } {
+  const slash = rel.lastIndexOf("/")
+  return slash === -1
+    ? { parent: "", base: rel }
+    : { parent: rel.slice(0, slash), base: rel.slice(slash + 1) }
+}
+
+/** Rewrites every entry at or under `oldPrefix` to sit under `newPrefix`. */
+export function reprefix(map: PathMap, oldPrefix: string, newPrefix: string): void {
+  if (oldPrefix === newPrefix) return
+  for (const [id, rel] of Object.entries(map)) {
+    if (rel === oldPrefix) map[id] = newPrefix
+    else if (rel.startsWith(oldPrefix + "/"))
+      map[id] = newPrefix + rel.slice(oldPrefix.length)
+  }
+}
+
+/** Drops every entry at or under `prefix` (a deleted folder, or a single file). */
+export function dropSubtree(map: PathMap, prefix: string): void {
+  for (const [id, rel] of Object.entries(map)) {
+    if (rel === prefix || rel.startsWith(prefix + "/")) delete map[id]
+  }
+}
+
+/** Infers the store a rel path belongs to: `.md` file → card, else folder. */
+export function storeOf(
+  rel: string
+): typeof CARDS | typeof COLUMNS | typeof DASHBOARDS {
+  if (rel.endsWith(MD_EXT)) return CARDS
+  return rel.includes("/") ? COLUMNS : DASHBOARDS
 }

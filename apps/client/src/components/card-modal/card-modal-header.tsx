@@ -1,5 +1,6 @@
 import { Button } from "@doska/ui-kit"
 import { Eye, PencilLine, X } from "lucide-react"
+import { AddAttachmentButton } from "../card/attachments/add-attachment-button"
 
 interface IProps {
   onClose: () => void
@@ -22,6 +23,7 @@ export function CardModalHeader({
         </Button>
       </div>
       <div className="flex justify-end space-x-2">
+        <AddAttachmentButton />
         <Button variant="ghost" size="sm" onClick={onTogglePreivew}>
           {isPreview ? <PencilLine /> : <Eye />}
           {isPreview ? "Edit" : "Preview"}
