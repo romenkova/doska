@@ -52,6 +52,36 @@ function safeMime(raw: string | string[] | undefined): string {
     : "application/octet-stream"
 }
 
+/**
+ * Content type inferred from a key's extension. Used to correct objects stored
+ * as `application/octet-stream` (when the browser didn't set a type at upload)
+ * so viewable types open inline rather than downloading. SVG is deliberately
+ * absent — it's served as a download, since inline same-origin SVG can script.
+ */
+const MIME_BY_EXT: Record<string, string> = {
+  ".pdf": "application/pdf",
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".gif": "image/gif",
+  ".webp": "image/webp",
+  ".txt": "text/plain",
+  ".mp4": "video/mp4",
+  ".webm": "video/webm",
+  ".mp3": "audio/mpeg",
+}
+
+/** Types safe to render inline on our own origin (no script execution). */
+const INLINE_TYPES = new Set(Object.values(MIME_BY_EXT))
+
+/** Resolves the type to serve: a real stored type wins; else infer from the key. */
+function resolveType(key: string, stored: string | undefined): string {
+  if (stored && stored !== "application/octet-stream") return stored
+  const dot = key.lastIndexOf(".")
+  const ext = dot >= 0 ? key.slice(dot).toLowerCase() : ""
+  return MIME_BY_EXT[ext] ?? stored ?? "application/octet-stream"
+}
+
 /** Pulls the object key out of `/api/files/<key>`, guarding traversal. */
 function keyFromPath(url: string): string | null {
   const raw = url.replace(/^\/api\/files\//, "").split("?")[0]
@@ -131,9 +161,18 @@ export function registerFileRoutes(app: FastifyInstance): void {
 
     try {
       const obj = await s3.send(new GetObjectCommand({ Bucket: bucket, Key: key }))
-      if (obj.ContentType) reply.header("content-type", obj.ContentType)
+      const type = resolveType(key, obj.ContentType)
+      reply.header("content-type", type)
       if (obj.ContentLength != null)
         reply.header("content-length", String(obj.ContentLength))
+      // Never let the browser sniff a different type than we declare, and only
+      // render known-safe types inline (PDFs, images, …) — everything else
+      // downloads. Together these stop a same-origin script-injection via upload.
+      reply.header("x-content-type-options", "nosniff")
+      reply.header(
+        "content-disposition",
+        INLINE_TYPES.has(type) ? "inline" : "attachment"
+      )
       // Same-origin, but the bytes are private — don't let shared caches hold them.
       reply.header("cache-control", "private, max-age=300")
       return reply.send(obj.Body as Readable)

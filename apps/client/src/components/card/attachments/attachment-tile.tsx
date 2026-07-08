@@ -1,21 +1,20 @@
 import { cn } from "@doska/ui-kit"
 import { FileText } from "lucide-react"
+import { useState } from "react"
 import type { Attachment } from "@/lib/types"
 import { useAttachmentUrl } from "@/lib/hooks/use-attachment-url"
 
-function isImage(mime: string): boolean {
-  return mime.startsWith("image/")
-}
+// Image mimes browsers can't decode in an <img>, so we show the file icon instead.
+const UNRENDERABLE_IMAGE_MIMES = new Set([
+  "image/heic",
+  "image/heif",
+  "image/heic-sequence",
+  "image/heif-sequence",
+  "image/tiff",
+])
 
-/** Lowercase extension label from a name/key, e.g. `PDF`; empty when unknown. */
-function extLabel(att: Attachment): string {
-  const dot = att.name.lastIndexOf(".")
-  return dot > 0
-    ? att.name
-        .slice(dot + 1)
-        .toUpperCase()
-        .slice(0, 4)
-    : ""
+function isRenderableImage(mime: string): boolean {
+  return mime.startsWith("image/") && !UNRENDERABLE_IMAGE_MIMES.has(mime)
 }
 
 interface IProps {
@@ -26,14 +25,15 @@ interface IProps {
 }
 
 /** A small square preview: image thumbnail, or a file icon with its extension. */
-export function AttachmentRow({
+export function AttachmentTile({
   cardId,
   attachment,
   className,
   onOpen,
 }: IProps) {
   const url = useAttachmentUrl(cardId, attachment)
-  const image = isImage(attachment.mime)
+  const [failed, setFailed] = useState(false)
+  const image = isRenderableImage(attachment.mime) && !failed
 
   return (
     <div
@@ -43,7 +43,7 @@ export function AttachmentRow({
       onKeyDown={onOpen ? (e) => e.key === "Enter" && onOpen() : undefined}
       title={attachment.name}
       className={cn(
-        "relative aspect-square overflow-hidden rounded-md border border-border bg-muted",
+        "relative aspect-square overflow-hidden rounded-sm",
         "flex items-center justify-center",
         onOpen && "cursor-pointer",
         className
@@ -53,13 +53,12 @@ export function AttachmentRow({
         <img
           src={url}
           alt={attachment.name}
-          className="size-full object-cover"
+          className="size-full border object-cover"
           draggable={false}
+          onError={() => setFailed(true)}
         />
       ) : (
-        <div className="flex flex-col items-center gap-1 text-muted-foreground">
-          <FileText className="size-5" />
-        </div>
+        <FileText className="rounded-sm border p-1 text-muted-foreground" />
       )}
     </div>
   )

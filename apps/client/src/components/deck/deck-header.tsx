@@ -1,7 +1,6 @@
 import { useState } from "react"
-import { Button, SidebarTrigger } from "@doska/ui-kit"
+import { Button, InvisibleInput, SidebarTrigger } from "@doska/ui-kit"
 import { ArrowRightLeft, Plus, Trash2 } from "lucide-react"
-import { EditableTitle } from "../editable-title"
 import { ConfirmDialog } from "../confirm-dialog"
 import { ReorderColumnsModal } from "./reorder-columns/reorder-columns-modal"
 import type { Column } from "@/lib/types"
@@ -29,7 +28,7 @@ export function DeckHeader({
   return (
     <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
       <SidebarTrigger />
-      <EditableTitle
+      <InvisibleInput
         value={title}
         onCommit={onRename}
         label="Board name"

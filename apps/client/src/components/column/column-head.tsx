@@ -1,7 +1,6 @@
 import { useState } from "react"
-import { Button, cn } from "@doska/ui-kit"
+import { Button, cn, InvisibleInput } from "@doska/ui-kit"
 import { Eye, EyeOff, Trash2 } from "lucide-react"
-import { EditableTitle } from "../editable-title"
 import { ConfirmDialog } from "../confirm-dialog"
 
 interface IProps {
@@ -29,11 +28,12 @@ export function ColumnHead({
         "text-muted-foreground uppercase"
       )}
     >
-      <EditableTitle
+      <InvisibleInput
         value={title}
         onCommit={onRename}
         label={`Rename ${title}`}
         className="uppercase"
+        title="Click to rename"
       />
       <div className="flex items-center gap-2">
         <Button

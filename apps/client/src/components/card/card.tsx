@@ -12,13 +12,13 @@ import { routes } from "@/lib/routes"
 import { CardContextMenu, CardMenu } from "./menu/card-menu"
 import { CardDeadline } from "./deadline/card-deadline"
 import { TaskIndicator } from "./task-indicator"
-import { AttachmentThumbs } from "./attachments/attachment-thumbs"
 import { useCard } from "@/lib/data/queries"
 import { useUpdateCard } from "@/lib/data/mutations"
 import { todayIso } from "@/lib/utils"
 import { MarkdownCardPreview, taskProgress } from "@doska/markdown"
 import type { DetailedHTMLProps, HTMLAttributes } from "react"
 import type { Column } from "@/lib/types"
+import { CardAttachments } from "./attachments/card-attachments"
 
 interface IProps extends DetailedHTMLProps<
   HTMLAttributes<HTMLDivElement>,
@@ -118,11 +118,8 @@ export function Card({
               </div>
             </div>
           )}
-
           {attachments.length > 0 && showBody && (
-            <CardContent className="pt-2">
-              <AttachmentThumbs cardId={id} attachments={attachments} />
-            </CardContent>
+            <CardAttachments className="pt-2" cardId={id} isReadonly />
           )}
         </CardBase>
       </CardContextMenu>
