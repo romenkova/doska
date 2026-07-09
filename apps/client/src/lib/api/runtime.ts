@@ -93,15 +93,20 @@ export const appFetch: typeof fetch = async (input, init) => {
 }
 
 /**
- * Opens a URL in the user's browser.
+ * Saves a same-origin URL to the user's device as `name`.
+ *
+ * Deliberately an anchor click rather than `window.open`: an installed PWA runs
+ * standalone, so a same-origin, in-scope URL opens in the app's own window —
+ * which has no tabs, no back button, and no way out of the file.
  */
-export async function openExternal(url: string): Promise<void> {
-  if (isDesktop()) {
-    const { openUrl } = await import("@tauri-apps/plugin-opener")
-    await openUrl(url)
-    return
-  }
-  window.open(url, "_blank", "noopener")
+export function downloadUrl(url: string, name: string): void {
+  const a = document.createElement("a")
+  a.href = url
+  a.download = name
+  a.rel = "noopener"
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
 }
 
 /**
