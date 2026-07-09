@@ -59,12 +59,6 @@ importers:
       '@tauri-apps/api':
         specifier: ^2
         version: 2.11.1
-      '@tauri-apps/plugin-dialog':
-        specifier: ^2.7.1
-        version: 2.7.1
-      '@tauri-apps/plugin-fs':
-        specifier: ^2.5.1
-        version: 2.5.1
       '@tauri-apps/plugin-http':
         specifier: ^2
         version: 2.5.9
@@ -104,9 +98,6 @@ importers:
       wouter:
         specifier: 3.10.0
         version: 3.10.0(react@19.2.7)
-      yaml:
-        specifier: ^2.9.0
-        version: 2.9.0
     devDependencies:
       '@doska/configs':
         specifier: workspace:*
@@ -1656,12 +1647,6 @@ packages:
     resolution: {integrity: sha512-EElQe8z8uD7Pi5++tJ/UfEwWuK08rd3oCDYdeIbJAb6pZRrxlqmoF5gh5H5YvzmUPhS4IRCaLSsQhvWkrfK+GQ==}
     engines: {node: '>= 10'}
     hasBin: true
-
-  '@tauri-apps/plugin-dialog@2.7.1':
-    resolution: {integrity: sha512-OK1UBXYt+ojcmxMktzzuyonYIFta8CmAASpX+CA+DTGK24KlHjhYI6x2iOJ/TjZF4N7/ACK1oFmEOjIY9IhzOQ==}
-
-  '@tauri-apps/plugin-fs@2.5.1':
-    resolution: {integrity: sha512-9Lz+Jopp6QyeEWhlpkMx4R/+P9HgR+AVAI4vOZhlT8Xaymtz8iVI/Ov984/XTqgJz/5gz5NretqPB/XEMS3NhQ==}
 
   '@tauri-apps/plugin-http@2.5.9':
     resolution: {integrity: sha512-lCiY0+vs4HvIUSvZrBs8TC3TiCB0MOPRmiUjTq4prW7SlcJE2jdLeT6KBsJrT9Tlplufl7W1pY6SFAO3gCWxDA==}
@@ -5406,14 +5391,6 @@ snapshots:
       '@tauri-apps/cli-win32-ia32-msvc': 2.11.3
       '@tauri-apps/cli-win32-x64-msvc': 2.11.3
 
-  '@tauri-apps/plugin-dialog@2.7.1':
-    dependencies:
-      '@tauri-apps/api': 2.11.1
-
-  '@tauri-apps/plugin-fs@2.5.1':
-    dependencies:
-      '@tauri-apps/api': 2.11.1
-
   '@tauri-apps/plugin-http@2.5.9':
     dependencies:
       '@tauri-apps/api': 2.11.1
@@ -8087,7 +8064,8 @@ snapshots:
 
   yallist@3.1.1: {}
 
-  yaml@2.9.0: {}
+  yaml@2.9.0:
+    optional: true
 
   yargs-parser@21.1.1: {}
 

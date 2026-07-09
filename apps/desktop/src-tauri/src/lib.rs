@@ -4,15 +4,12 @@ pub fn run() {
         .plugin(tauri_plugin_window_state::Builder::default().build())
         .plugin(tauri_plugin_http::init())
         .setup(|app| {
-            // Updater + process (relaunch) and file-sync (fs + dialog) are
-            // desktop-only.
+            // Updater + process (relaunch) are desktop-only.
             #[cfg(desktop)]
             {
                 app.handle()
                     .plugin(tauri_plugin_updater::Builder::new().build())?;
                 app.handle().plugin(tauri_plugin_process::init())?;
-                app.handle().plugin(tauri_plugin_fs::init())?;
-                app.handle().plugin(tauri_plugin_dialog::init())?;
             }
             let _ = app;
             Ok(())

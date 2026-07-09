@@ -3,10 +3,6 @@
 
 const SERVER_URL_KEY = "deck:server-url"
 const AUTO_UPDATE_KEY = "deck:auto-update"
-const SYNC_TARGET_KEY = "deck:sync:target"
-const SYNC_FOLDER_KEY = "deck:sync:folder"
-
-export type SyncTarget = "server" | "folder"
 
 /** True inside the packaged Tauri webview. */
 export function isDesktop(): boolean {
@@ -24,7 +20,7 @@ export function subscribeServerUrl(listener: () => void): () => void {
   return () => listeners.delete(listener)
 }
 
-// Alias: every sync-config setter emits on this same signal, and the sync facade
+// Alias: the sync-config setter emits on this same signal, and the sync facade
 // rebuilds its engines when it fires.
 export const subscribeSyncConfig = subscribeServerUrl
 
@@ -39,31 +35,9 @@ export function setServerUrl(url: string): void {
   emit()
 }
 
-// Defaults to `server`; `folder` is desktop-only and opt-in.
-export function getSyncTarget(): SyncTarget {
-  return localStorage.getItem(SYNC_TARGET_KEY) === "folder" ? "folder" : "server"
-}
-
-export function setSyncTarget(target: SyncTarget): void {
-  localStorage.setItem(SYNC_TARGET_KEY, target)
-  emit()
-}
-
-export function getSyncFolder(): string {
-  return localStorage.getItem(SYNC_FOLDER_KEY) ?? ""
-}
-
-export function setSyncFolder(path: string): void {
-  const trimmed = path.trim()
-  if (trimmed) localStorage.setItem(SYNC_FOLDER_KEY, trimmed)
-  else localStorage.removeItem(SYNC_FOLDER_KEY)
-  emit()
-}
-
-// `folder` needs a chosen folder (desktop only); `server` is same-origin on web
-// (always configured) but needs an explicit URL on desktop.
+// The server is same-origin on web (always configured) but needs an explicit
+// URL on desktop.
 export function isSyncConfigured(): boolean {
-  if (getSyncTarget() === "folder") return isDesktop() && getSyncFolder() !== ""
   return !isDesktop() || getServerUrl() !== ""
 }
 
