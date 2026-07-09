@@ -39,7 +39,7 @@ export function CardEditor({
   onClose,
 }: IProps) {
   return (
-    <ModalContent className="md:h-[85vh]">
+    <ModalContent>
       <AttachmentUploadProvider cardId={cardId}>
         <CardModalHeader
           isPreview={isPreview}
@@ -47,14 +47,17 @@ export function CardEditor({
           onSave={onClose}
           onTogglePreivew={onTogglePreview}
         />
-        <AttachmentDropZone className="flex min-h-0 flex-1 flex-col">
-          <CardAttachments
-            className="py-2"
-            cardId={cardId}
-            isReadonly={isPreview}
-          />
-          <CardContentLayout onDoubleClick={isPreview ? onEdit : undefined}>
-            <CardContent className="px-4 pt-2">
+        <AttachmentDropZone>
+          <CardContentLayout
+            className="flex min-h-0 flex-1 flex-col"
+            onDoubleClick={isPreview ? onEdit : undefined}
+          >
+            <CardAttachments
+              className="py-2"
+              cardId={cardId}
+              isReadonly={isPreview}
+            />
+            <CardContent className="flex min-h-0 flex-1 flex-col px-4 pt-2">
               <CardDeadline
                 variant={isPreview ? "chip" : "field"}
                 value={deadline}

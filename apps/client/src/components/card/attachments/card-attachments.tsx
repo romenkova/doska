@@ -71,11 +71,15 @@ export function CardAttachments({ cardId, isReadonly, className }: IProps) {
           return (
             <div
               key={att.id}
-              className="group flex items-center gap-1 rounded-md py-0.5"
+              className="group/item flex items-center gap-1 rounded-md py-0.5"
             >
               <div
                 className={cn("flex flex-1 cursor-pointer items-center")}
-                onClick={() => (isReadonly ? void open(att) : undefined)}
+                onClick={(e) => {
+                  if (!isReadonly) return
+                  void open(att)
+                  e.stopPropagation()
+                }}
               >
                 <AttachmentTile
                   cardId={cardId}
@@ -84,7 +88,9 @@ export function CardAttachments({ cardId, isReadonly, className }: IProps) {
                   onOpen={isReadonly ? undefined : () => void open(att)}
                 />
                 {isReadonly ? (
-                  <span className="px-2 text-sm">{att.name}</span>
+                  <span className="line-clamp-1 px-2 text-sm text-muted-foreground group-hover/item:text-foreground">
+                    {att.name}
+                  </span>
                 ) : (
                   <>
                     <InvisibleInput

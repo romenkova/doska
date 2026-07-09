@@ -28,7 +28,7 @@ function ModalContent({
           // desktop: centered modal (height is set per-state by the consumer so
           // it can transition smoothly between preview/editing)
           "md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2",
-          "md:max-h-[85vh] md:w-full md:max-w-xl md:rounded-xl md:border md:shadow-xl",
+          "md:max-h-[90svh] md:w-full md:max-w-2xl md:rounded-xl md:border md:shadow-xl",
           // fade + scale on open/close, and animate the height change on resize
           "transition-all duration-200 ease-out",
           "data-ending-style:opacity-0 data-starting-style:opacity-0",

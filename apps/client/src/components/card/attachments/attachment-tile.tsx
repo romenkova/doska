@@ -58,7 +58,7 @@ export function AttachmentTile({
           onError={() => setFailed(true)}
         />
       ) : (
-        <FileText className="rounded-sm border p-1 text-muted-foreground" />
+        <FileText className="rounded-sm border p-1 text-muted-foreground group-hover/item:text-foreground" />
       )}
     </div>
   )
