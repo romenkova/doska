@@ -9,6 +9,10 @@
     "window-state:default",
     "updater:default",
     "process:default",
+    "opener:default",
+    "fs:allow-exists",
+    "fs:allow-download-read-recursive",
+    "fs:allow-download-write-recursive",
     {
       "identifier": "http:default",
       "allow": [

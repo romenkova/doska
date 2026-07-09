@@ -4,6 +4,7 @@ import type { Attachment } from "@/lib/types"
 import { useCard } from "@/lib/data/queries"
 import { useUpdateCard } from "@/lib/data/mutations"
 import { activeStorage } from "@/lib/api/attachments"
+import { isDesktop, openExternal, revealInDownloads } from "@/lib/api/runtime"
 import { AttachmentTile } from "./attachment-tile"
 import { useState } from "react"
 import { usePendingUploads } from "./context/attachment-upload-context"
@@ -47,8 +48,16 @@ export function CardAttachments({ cardId, isReadonly, className }: IProps) {
 
   async function open(att: Attachment) {
     try {
-      const url = await activeStorage().url(cardId, att.key)
-      window.open(url, "_blank", "noopener")
+      const storage = activeStorage()
+      if (isDesktop()) {
+        const blob = await storage.get(cardId, att.key)
+        await revealInDownloads(
+          att.name,
+          new Uint8Array(await blob.arrayBuffer())
+        )
+        return
+      }
+      await openExternal(await storage.url(cardId, att.key))
     } catch {
       setError("Could not open file")
     }
@@ -72,7 +81,7 @@ export function CardAttachments({ cardId, isReadonly, className }: IProps) {
                   cardId={cardId}
                   attachment={att}
                   className="size-6 shrink-0"
-                  onOpen={() => void open(att)}
+                  onOpen={isReadonly ? undefined : () => void open(att)}
                 />
                 {isReadonly ? (
                   <span className="px-2 text-sm">{att.name}</span>

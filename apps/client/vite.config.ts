@@ -30,6 +30,8 @@ export default defineConfig({
     },
   },
   server: {
+    port: 5173,
+    strictPort: true,
     // Proxy backend calls to the API so the browser stays same-origin (no CORS).
     proxy: {
       "/api": "http://localhost:3000",
