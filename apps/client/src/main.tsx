@@ -5,6 +5,7 @@ import { LoginPromptProvider } from "@/components/login/login-prompt"
 import { ThemeProvider } from "@/components/theme-provider.tsx"
 import { seed } from "@/lib/api/db/db.ts"
 import { keys } from "@/lib/data/keys"
+import { requestPersistentStorage } from "@/lib/persist"
 import { queryClient } from "@/lib/query-client"
 import { Router } from "./router.tsx"
 import { startBackgroundSync } from "./lib/api/sync"
@@ -18,6 +19,9 @@ window.addEventListener("auth:expired", () => {
 })
 
 startBackgroundSync()
+
+// Not awaited: the answer only affects eviction policy, never this render.
+void requestPersistentStorage()
 
 // Seed the local DB from fixtures on first run
 await seed()
