@@ -47,11 +47,8 @@ export function CardEditor({
           onSave={onClose}
           onTogglePreivew={onTogglePreview}
         />
-        <AttachmentDropZone>
-          <CardContentLayout
-            className="flex min-h-0 flex-1 flex-col"
-            onDoubleClick={isPreview ? onEdit : undefined}
-          >
+        <AttachmentDropZone className="flex min-h-0 flex-1 flex-col">
+          <CardContentLayout onDoubleClick={isPreview ? onEdit : undefined}>
             <CardAttachments
               className="py-2"
               cardId={cardId}
