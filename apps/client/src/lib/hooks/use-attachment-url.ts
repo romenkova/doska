@@ -3,9 +3,8 @@ import type { Attachment } from "@/lib/types"
 import { activeStorage } from "@/lib/api/attachments"
 
 /**
- * Resolves a viewable URL for an attachment via the active storage backend
- * (an `/api/files` route for S3, a `convertFileSrc` asset URL for the folder
- * backend). Returns null until resolved or when resolution fails.
+ * Resolves a viewable URL for an attachment via the active storage backend (an
+ * `/api/files` route). Returns null until resolved or when resolution fails.
  */
 export function useAttachmentUrl(
   cardId: string,

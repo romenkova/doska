@@ -1,37 +1,24 @@
 import { SyncEngine, type SyncState, type SyncStatus } from "@doska/sync"
-import { CARDS, COLUMNS, DASHBOARDS } from "../constants"
 import type { StoreName } from "../constants"
-import { db } from "../db/db"
+import { DASHBOARDS } from "../constants"
 import { DeckSyncDriver } from "./drivers/board-driver"
 import {
   DashboardListDriver,
   DASHBOARDS_SCOPE,
 } from "./drivers/dashboard-list-driver"
-import { FsBoardDriver } from "./drivers/fs-board-driver"
-import { FsDashboardListDriver } from "./drivers/fs-dashboard-list-driver"
 import { isAuthed } from "@/lib/utils"
-import {
-  getSyncFolder,
-  getSyncTarget,
-  isDesktop,
-  isSyncConfigured,
-  subscribeSyncConfig,
-  type SyncTarget,
-} from "../runtime"
+import { isSyncConfigured, subscribeSyncConfig } from "../runtime"
 
 /**
- * Sync runs only when the active backend is reachable — a signed-in server, or a
- * chosen folder on desktop. The folder backend has no account, so it doesn't
- * require auth. Otherwise every engine no-ops and the app stays purely local.
+ * Sync runs only against a reachable, signed-in server. Otherwise every engine
+ * no-ops and the app stays purely local.
  */
-const canSync = () =>
-  isSyncConfigured() && (getSyncTarget() === "folder" || isAuthed())
+const canSync = () => isSyncConfigured() && isAuthed()
 
-function createDrivers(target: SyncTarget) {
-  if (target === "folder")
-    return { board: new FsBoardDriver(), list: new FsDashboardListDriver() }
-  return { board: new DeckSyncDriver(), list: new DashboardListDriver() }
-}
+const createDrivers = () => ({
+  board: new DeckSyncDriver(),
+  list: new DashboardListDriver(),
+})
 
 /** Worst-case across the two channels: any syncing wins, then any error. */
 function mergeStatus(a: SyncStatus, b: SyncStatus): SyncStatus {
@@ -40,40 +27,33 @@ function mergeStatus(a: SyncStatus, b: SyncStatus): SyncStatus {
   return "idle"
 }
 
-/** Debounce window for coalescing a burst of filesystem-watch events. */
-const WATCH_DEBOUNCE_MS = 300
-
 /**
  * The one sync facade the app drives. Runs two independent engines: the board
  * engine (scoped to the open board) and the always-active dashboard-list engine.
- * Drivers depend on the backend, so both are rebuilt on a backend change,
- * reusing the same dirty queues so pending edits flush to whichever is now
- * active. Callers don't pick a channel — {@link markDirty} routes by store and
- * the UI sees one merged {@link SyncState}. Singleton.
+ * Both are rebuilt when the server URL changes, reusing the same dirty queues so
+ * pending edits flush to whichever server is now active. Callers don't pick a
+ * channel — {@link markDirty} routes by store and the UI sees one merged
+ * {@link SyncState}. Singleton.
  */
 class DeckSync {
   private board!: SyncEngine<string, never>
   private list!: SyncEngine<string, never>
 
-  /** The open board, remembered so a backend swap can re-point the new engine. */
+  /** The open board, remembered so a rebuild can re-point the new engine. */
   private currentBoard: string | null = null
-
-  /** Tears down the active folder watcher, if any. */
-  private stopWatch: (() => void) | null = null
 
   private state: SyncState = { status: "idle", pending: 0 }
   private readonly listeners = new Set<() => void>()
 
   constructor() {
     this.rebuild()
-    // Rebuild whenever the backend target/folder/URL changes.
     subscribeSyncConfig(() => this.rebuild())
   }
 
   // Safe to call repeatedly; the old engines are simply dropped.
   private rebuild() {
-    const { board, list } = createDrivers(getSyncTarget())
-    // The generic engine is Change-shaped per backend; the facade only routes
+    const { board, list } = createDrivers()
+    // The generic engine is Change-shaped per channel; the facade only routes
     // dirty refs and reads status, so the change type is erased to `never`.
     this.board = new SyncEngine(board, {
       storageKey: "deck:sync:dirty",
@@ -89,30 +69,7 @@ class DeckSync {
     this.list.setActiveScope(DASHBOARDS_SCOPE)
     this.board.setActiveScope(this.currentBoard)
 
-    void this.startWatch()
     this.recompute()
-  }
-
-  // Watches the sync folder (desktop + folder backend only) and reconciles,
-  // debounced, so external edits show up without waiting for the poll.
-  private async startWatch() {
-    this.stopWatch?.()
-    this.stopWatch = null
-    if (getSyncTarget() !== "folder" || !isDesktop()) return
-    const folder = getSyncFolder()
-    if (!folder) return
-
-    const { watch } = await import("./fs/fs-adapter")
-    let timer: ReturnType<typeof setTimeout> | null = null
-    const onChange = () => {
-      if (timer) clearTimeout(timer)
-      timer = setTimeout(() => void this.reconcile(), WATCH_DEBOUNCE_MS)
-    }
-    try {
-      this.stopWatch = await watch(folder, onChange)
-    } catch (err) {
-      console.warn("[sync] folder watch failed; falling back to poll", err)
-    }
   }
 
   // Notifies only on a real transition.
@@ -153,26 +110,6 @@ class DeckSync {
   /** Reconciles both channels once. Each engine no-ops while not configured. */
   async reconcile(): Promise<void> {
     await Promise.all([this.board.reconcile(), this.list.reconcile()])
-  }
-
-  /**
-   * Enqueues every live local record so a freshly-selected backend receives the
-   * current boards, not just future edits (else the dirty-only push would leave
-   * an empty folder). Columns/cards flush when their board is next active, since
-   * the board channel is per-board.
-   */
-  async exportLocalData(): Promise<void> {
-    const [dashboards, columns, cards] = await Promise.all([
-      db.getDashboards(),
-      db.getColumns(),
-      db.getCards(),
-    ])
-    for (const d of dashboards)
-      if (d.deletedAt == null) this.markDirty(DASHBOARDS, d.id)
-    for (const c of columns)
-      if (c.deletedAt == null) this.markDirty(COLUMNS, c.id)
-    for (const c of cards) if (c.deletedAt == null) this.markDirty(CARDS, c.id)
-    await this.reconcile()
   }
 }
 

@@ -5,17 +5,15 @@
  * Auth gates sync alone; the board is fully usable offline either way.
  */
 
-import { apiUrl, appFetch, getSyncTarget, isSyncConfigured } from "./runtime"
+import { apiUrl, appFetch, isSyncConfigured } from "./runtime"
 
 /** `login` names the session (the configured login) while authed, else `null`. */
 export type Session = { authed: boolean; login: string | null }
 
 /** Resolves the current session against the server. Network errors read as signed-out. */
 export async function fetchSession(): Promise<Session> {
-  // A session is a *server* concept. The folder backend has no account, and
-  // desktop with no server configured has nowhere to ask — both are session-less.
-  if (getSyncTarget() !== "server" || !isSyncConfigured())
-    return { authed: false, login: null }
+  // Desktop with no server configured has nowhere to ask — it is session-less.
+  if (!isSyncConfigured()) return { authed: false, login: null }
   try {
     const res = await appFetch(apiUrl("/api/auth/me"), { credentials: "include" })
     const body = (await res.json()) as { authed?: boolean; login?: string }

@@ -20,10 +20,6 @@ tauri-plugin-window-state = "2"
 serde_json = "1"
 
 # Auto-update is desktop-only; the updater crate doesn't build for mobile.
-# File sync (fs + folder picker) is desktop-only too — the web build uses none
-# of this, and the `watch` feature powers near-realtime external-edit pickup.
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
 tauri-plugin-updater = "2"
 tauri-plugin-process = "2"
-tauri-plugin-fs = { version = "2", features = ["watch"] }
-tauri-plugin-dialog = "2"
