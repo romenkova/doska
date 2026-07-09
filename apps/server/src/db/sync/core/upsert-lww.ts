@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm"
+import { lt } from "drizzle-orm"
 import type { PgColumn, PgTable } from "drizzle-orm/pg-core"
 import type { Tx } from "../counter"
 
@@ -15,15 +15,14 @@ export async function upsertLWW<T extends PgTable>(
   updatedAtCol: PgColumn,
   row: T["$inferInsert"] & { id: string; updatedAt: number }
 ): Promise<boolean> {
-  const [current] = await tx
-    .select({ updatedAt: updatedAtCol })
-    .from(table as PgTable)
-    .where(eq(idCol, row.id))
-    .limit(1)
-  if (current && (current.updatedAt as number) >= row.updatedAt) return false
-  await tx
+  const written = await tx
     .insert(table)
     .values(row)
-    .onConflictDoUpdate({ target: idCol, set: row })
-  return true
+    .onConflictDoUpdate({
+      target: idCol,
+      set: row,
+      setWhere: lt(updatedAtCol, row.updatedAt),
+    })
+    .returning({ id: idCol })
+  return written.length > 0
 }

@@ -41,7 +41,12 @@ function counter(id: string): SeqCounter {
     },
     async ensure(tx) {
       await tx.insert(counters).values({ id, value: 0 }).onConflictDoNothing()
-      return this.read(tx)
+      const [row] = await tx
+        .select({ value: counters.value })
+        .from(counters)
+        .where(eq(counters.id, id))
+        .for("update")
+      return row?.value ?? 0
     },
     async write(tx, seq) {
       await tx.update(counters).set({ value: seq }).where(eq(counters.id, id))
@@ -50,7 +55,8 @@ function counter(id: string): SeqCounter {
 }
 
 /** Per-board column/card counter. */
-export const boardCounter = (boardId: string) => counter(boardCounterId(boardId))
+export const boardCounter = (boardId: string) =>
+  counter(boardCounterId(boardId))
 
 /** Account-level dashboard-list counter. */
 export const dashboardsCounter = () => counter(DASHBOARDS_COUNTER)

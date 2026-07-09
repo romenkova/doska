@@ -26,8 +26,11 @@ export class SyncEngine<Scope, Change> {
   /** The scope we sync; set by the caller when the open scope changes. */
   private activeScope: Scope | null = null
 
-  /** Guards against overlapping reconciles (a slow tick + a focus-triggered one). */
-  private inFlight = false
+  /** The reconcile currently in flight, so overlapping callers join it. */
+  private running: Promise<void> | null = null
+
+  /** Set when a reconcile arrives mid-flight; the running one loops once more. */
+  private rerun = false
 
   private readonly driver: SyncDriver<Scope, Change>
 
@@ -71,29 +74,48 @@ export class SyncEngine<Scope, Change> {
     this.setState({ status: this.state.status, pending: this.dirty.size })
   }
 
-  // Reconciles both the scope being left and the one being opened.
+  /**
+   * Points the engine at a newly opened scope and pulls it. The scope being left
+   * needs no explicit flush: its dirty refs surface through
+   * {@link SyncDriver.pendingScopes} on the very same reconcile.
+   */
   setActiveScope(scope: Scope | null) {
     if (scope === this.activeScope) return
-    const previous = this.activeScope
     this.activeScope = scope
-    void (async () => {
-      await this.run(previous)
-      await this.run(scope)
-    })()
+    void this.reconcile()
   }
 
   /**
    * Runs a full reconcile for the active scope **and every scope that has dirty
    * changes** — so local edits sync no matter which scope is open (e.g. a board
-   * edited then navigated away from). Falls back to the active scope alone when
-   * the driver doesn't expose {@link SyncDriver.pendingScopes}. Scopes run
-   * sequentially; each `run` no-ops if one is already in flight.
+   * edited then navigated away from).
+   */
+  reconcile(): Promise<void> {
+    if (this.running) {
+      this.rerun = true
+      return this.running
+    }
+    this.running = this.cycle().finally(() => {
+      this.running = null
+    })
+    return this.running
+  }
+
+  private async cycle(): Promise<void> {
+    do {
+      this.rerun = false
+      await this.pass()
+    } while (this.rerun)
+  }
+
+  /**
+   * One sweep over the scopes worth syncing.
    *
    * Cost: `pendingScopes` plus each scope's `collectChanges` re-scan the dirty
-   * queue, so a reconcile touches it O(scopes) times — fine while the queue is
+   * queue, so a pass touches it O(scopes) times — fine while the queue is
    * small (typical), worth revisiting if it grows large.
    */
-  async reconcile(): Promise<void> {
+  private async pass(): Promise<void> {
     const scopes: Scope[] = []
     const seen = new Set<Scope>()
     const add = (scope: Scope | null) => {
@@ -104,14 +126,15 @@ export class SyncEngine<Scope, Change> {
 
     add(this.activeScope)
     if (this.driver.pendingScopes)
-      for (const scope of await this.driver.pendingScopes(this.dirty)) add(scope)
+      for (const scope of await this.driver.pendingScopes(this.dirty))
+        add(scope)
 
     for (const scope of scopes) await this.run(scope)
   }
 
+  // Exclusivity is `cycle`'s job, so this only screens out unsyncable scopes.
   private async run(scope: Scope | null): Promise<void> {
-    if (this.inFlight || scope === null || !this.canSync()) return
-    this.inFlight = true
+    if (scope === null || !this.canSync()) return
     this.setState({ status: "syncing", pending: this.dirty.size })
     let failed = false
     try {
@@ -144,7 +167,6 @@ export class SyncEngine<Scope, Change> {
       failed = true
       throw err
     } finally {
-      this.inFlight = false
       this.setState({
         status: failed ? "error" : "idle",
         pending: this.dirty.size,
