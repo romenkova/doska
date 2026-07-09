@@ -6,7 +6,7 @@ import {
   setAutoUpdate,
   subscribeAutoUpdate,
 } from "@/lib/api/runtime"
-import { checkForUpdates, type UpdateState } from "@/lib/updates"
+import { checkForUpdates, type DesktopUpdateState } from "@/lib/updates"
 
 type CheckState =
   | { status: "idle" }
@@ -22,7 +22,7 @@ export function DesktopUpdatesSection() {
 
   async function runCheck() {
     setCheck({ status: "checking" })
-    const result: UpdateState = await checkForUpdates()
+    const result: DesktopUpdateState = await checkForUpdates()
     if (result.status === "available") {
       setCheck({
         status: "available",

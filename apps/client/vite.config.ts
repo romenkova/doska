@@ -3,6 +3,7 @@ import path from "path"
 import tailwindcss from "@tailwindcss/vite"
 import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
+import { VitePWA } from "vite-plugin-pwa"
 
 function appVersion(): string {
   if (process.env.APP_VERSION) return process.env.APP_VERSION
@@ -37,7 +38,51 @@ export default defineConfig({
       "/api": "http://localhost:3000",
     },
   },
-  plugins: [react(), tailwindcss()],
+  plugins: [
+    react(),
+    tailwindcss(),
+    VitePWA({
+      // The desktop build reuses this bundle inside a Tauri webview, where a
+      // service worker is unwanted — so registration is opt-in from `lib/pwa`
+      // rather than injected into index.html.
+      injectRegister: null,
+      registerType: "prompt",
+      manifest: {
+        name: "Doska",
+        short_name: "Doska",
+        description:
+          "A fast, keyboard-friendly Kanban board for organizing tasks across columns.",
+        start_url: "/",
+        scope: "/",
+        display: "standalone",
+        orientation: "any",
+        background_color: "#f7f7fa",
+        theme_color: "#f7f7fa",
+        icons: [
+          { src: "/pwa-192.png", sizes: "192x192", type: "image/png" },
+          { src: "/pwa-512.png", sizes: "512x512", type: "image/png" },
+          {
+            src: "/maskable-512.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "maskable",
+          },
+        ],
+      },
+      workbox: {
+        globPatterns: ["**/*.{js,css,html,svg,png,ico,woff2}"],
+        // `/api` is the backend (sync, auth, updater); it must never resolve to
+        // the precached app shell. Mirrors the nginx split.
+        navigateFallback: "/index.html",
+        navigateFallbackDenylist: [/^\/api\//],
+        cleanupOutdatedCaches: true,
+        // Control the very first page load, so a new visitor is offline-ready
+        // without a second visit. `skipWaiting` stays off: a *replacement*
+        // worker waits for the user to accept the update banner.
+        clientsClaim: true,
+      },
+    }),
+  ],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

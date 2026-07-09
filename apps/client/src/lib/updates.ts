@@ -5,12 +5,25 @@ import {
   isDesktop,
 } from "./api/runtime"
 
-/** Result of an update check, shaped for the UI to act on. */
+/**
+ * Result of an update check, shaped for the UI to act on. Desktop updates come
+ * from the Tauri updater and name a version; web updates come from a waiting
+ * service worker, which only signals that a newer build exists.
+ */
 export type UpdateState =
   | { status: "none" }
-  | { status: "available"; version: string; install: () => Promise<void> }
+  | {
+      status: "available"
+      kind: "desktop"
+      version: string
+      install: () => Promise<void>
+    }
+  | { status: "available"; kind: "web"; install: () => Promise<void> }
 
-const NONE: UpdateState = { status: "none" }
+/** What {@link checkForUpdates} can return — never the web variant. */
+export type DesktopUpdateState = Exclude<UpdateState, { kind: "web" }>
+
+const NONE: DesktopUpdateState = { status: "none" }
 
 /** True when two versions share the same `major.minor` (patch may differ). */
 function sameMinor(a: string, b: string): boolean {
@@ -18,7 +31,7 @@ function sameMinor(a: string, b: string): boolean {
   return minor(a) === minor(b)
 }
 
-export async function checkForUpdates(): Promise<UpdateState> {
+export async function checkForUpdates(): Promise<DesktopUpdateState> {
   if (!isDesktop()) return NONE
   try {
     const { check } = await import("@tauri-apps/plugin-updater")
@@ -54,7 +67,12 @@ export async function checkForUpdates(): Promise<UpdateState> {
       return NONE
     }
 
-    return { status: "available", version: update.version, install }
+    return {
+      status: "available",
+      kind: "desktop",
+      version: update.version,
+      install,
+    }
   } catch (err) {
     // Never let a failed update check break app startup.
     console.error("update check failed", err)

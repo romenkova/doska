@@ -12,6 +12,8 @@ to a server you control.
   and task-list progress.
 - **Local-first** — everything persists in your browser (IndexedDB); reads and
   writes are instant and work with no network and no login.
+- **Installable** — install the web app to your home screen or dock and it runs
+  standalone, fully offline.
 - **Opt-in sync** — point at a server you control and your boards replicate
   across your devices in the background.
 - **Desktop app** — a native macOS app that reuses the web client and

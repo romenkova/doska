@@ -3,9 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <!-- viewport-fit=cover is what makes env(safe-area-inset-*) resolve to a
+         real value; the full-screen card modal pads itself with them. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="description" content="Doska — a fast, keyboard-friendly Kanban board for organizing tasks across columns." />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f7fa" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#232939" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Doska" />
     <meta property="og:description" content="A fast, keyboard-friendly Kanban board for organizing tasks across columns." />
