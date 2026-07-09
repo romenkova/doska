@@ -4,8 +4,10 @@ import type { Attachment } from "@/lib/types"
 import { useCard } from "@/lib/data/queries"
 import { useUpdateCard } from "@/lib/data/mutations"
 import { activeStorage } from "@/lib/api/attachments"
-import { isDesktop, openExternal, revealInDownloads } from "@/lib/api/runtime"
+import { downloadUrl, isDesktop, revealInDownloads } from "@/lib/api/runtime"
 import { AttachmentTile } from "./attachment-tile"
+import { AttachmentViewer } from "./attachment-viewer"
+import { isRenderableImage } from "./renderable-image"
 import { useState } from "react"
 import { usePendingUploads } from "./context/attachment-upload-context"
 
@@ -27,6 +29,7 @@ export function CardAttachments({ cardId, isReadonly, className }: IProps) {
   const { mutate: save } = useUpdateCard(cardId)
 
   const [error, setError] = useState("")
+  const [viewing, setViewing] = useState<Attachment | null>(null)
   const pending = usePendingUploads()
 
   const attachments = card?.attachments ?? []
@@ -57,7 +60,11 @@ export function CardAttachments({ cardId, isReadonly, className }: IProps) {
         )
         return
       }
-      await openExternal(await storage.url(cardId, att.key))
+      if (isRenderableImage(att.mime)) {
+        setViewing(att)
+        return
+      }
+      downloadUrl(await storage.url(cardId, att.key), att.name)
     } catch {
       setError("Could not open file")
     }
@@ -143,6 +150,11 @@ export function CardAttachments({ cardId, isReadonly, className }: IProps) {
           </div>
         ))}
       </div>
+      <AttachmentViewer
+        cardId={cardId}
+        attachment={viewing}
+        onClose={() => setViewing(null)}
+      />
     </CardContent>
   )
 }

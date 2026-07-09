@@ -23,7 +23,7 @@ export function ColumnHead({
   return (
     <div
       className={cn(
-        "sticky top-0 z-10 flex items-center justify-between gap-2 py-3",
+        "sticky top-0 z-10 flex shrink-0 items-center justify-between gap-2 py-3",
         "bg-background/80 backdrop-blur-xs",
         "text-muted-foreground uppercase"
       )}

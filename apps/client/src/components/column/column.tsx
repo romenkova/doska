@@ -20,14 +20,14 @@ export function Column({ children, onAddCard, ...props }: IProps) {
     <div
       role="group"
       aria-label={props.title}
-      className="flex w-[90vw] max-w-96 shrink-0 snap-start flex-col"
+      className="flex w-[90vw] max-w-96 shrink-0 snap-start flex-col overflow-y-auto overscroll-y-contain pb-6"
     >
       <ColumnHead {...props} />
       <Droppable droppableId={props.id}>
         {(provided, snapshot) => (
           <div
             className={cn(
-              "flex min-h-40 w-full flex-col rounded-3xl bg-background p-4 transition-colors",
+              "flex min-h-40 w-full shrink-0 flex-col rounded-3xl bg-background p-4 transition-colors",
               "border border-sidebar-primary-foreground",
               "shadow-[inset_0_1px_3px_rgba(0,0,0,0.1)] dark:shadow-[inset_0_1px_3px_rgba(0,0,0,0.4)]",
               snapshot.isDraggingOver && "bg-primary/5 dark:bg-sidebar/50"
