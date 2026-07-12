@@ -5,6 +5,7 @@ import { LoginPromptProvider } from "@/components/login/login-prompt"
 import { ThemeProvider } from "@/components/theme-provider.tsx"
 import { seed } from "@/lib/api/db/db.ts"
 import { keys } from "@/lib/data/keys"
+import { blockEdgeSwipeNavigation } from "@/lib/edge-swipe"
 import { requestPersistentStorage } from "@/lib/persist"
 import { queryClient } from "@/lib/query-client"
 import { Router } from "./router.tsx"
@@ -19,6 +20,8 @@ window.addEventListener("auth:expired", () => {
 })
 
 startBackgroundSync()
+
+blockEdgeSwipeNavigation()
 
 // Not awaited: the answer only affects eviction policy, never this render.
 void requestPersistentStorage()
