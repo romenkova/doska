@@ -6,7 +6,7 @@ import {
   DashboardListDriver,
   DASHBOARDS_SCOPE,
 } from "./drivers/dashboard-list-driver"
-import { isAuthed } from "@/lib/utils"
+import { isAuthed, subscribeAuthed } from "@/lib/utils"
 import { isSyncConfigured, subscribeSyncConfig } from "../runtime"
 
 /**
@@ -48,6 +48,7 @@ class DeckSync {
   constructor() {
     this.rebuild()
     subscribeSyncConfig(() => this.rebuild())
+    subscribeAuthed(() => void this.reconcile())
   }
 
   // Safe to call repeatedly; the old engines are simply dropped.

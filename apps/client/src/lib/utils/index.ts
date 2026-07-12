@@ -1,6 +1,6 @@
 export { initials } from "./initials"
 export { byPosition } from "./position"
-export { isAuthed } from "./is-authed"
+export { isAuthed, subscribeAuthed } from "./is-authed"
 export {
   deadlineStatus,
   formatDeadline,
