@@ -16,12 +16,10 @@ export function AttachmentViewer({ cardId, attachment, onClose }: IProps) {
     <Modal open={!!attachment} onOpenChange={(open) => !open && onClose()}>
       {attachment && (
         <ModalContent
-          className="md:max-w-4xl"
-          // Portalled content still bubbles through the React tree, where the
-          // card's drag handle and long-press menu would claim these.
           onClick={(e) => e.stopPropagation()}
           onPointerDown={(e) => e.stopPropagation()}
           onTouchStart={(e) => e.stopPropagation()}
+          className="overflow-hidden"
         >
           <Viewer cardId={cardId} attachment={attachment} onClose={onClose} />
         </ModalContent>
@@ -61,12 +59,12 @@ function Viewer({
           <X className="size-4" />
         </button>
       </div>
-      <div className="flex flex-1 items-center justify-center overflow-auto p-3">
+      <div className="flex flex-1 items-center justify-center overflow-auto">
         {url && (
           <img
             src={url}
             alt={attachment.name}
-            className="max-h-full max-w-full object-contain"
+            className="max-h-full overflow-hidden"
           />
         )}
       </div>
