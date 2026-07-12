@@ -126,8 +126,8 @@ export function CardAttachments({ cardId, isReadonly, className }: IProps) {
                   aria-label="Remove attachment"
                   onClick={() => void remove(att)}
                   className={cn(
-                    "ml-2 shrink-0 rounded p-1 text-muted-foreground opacity-0",
-                    "group-hover:opacity-100 hover:text-destructive"
+                    "mt-0.5 ml-2 shrink-0 rounded p-1 text-muted-foreground",
+                    "hover:text-destructive"
                   )}
                 >
                   <X className="size-4" />

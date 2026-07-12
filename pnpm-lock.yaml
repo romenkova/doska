@@ -154,12 +154,12 @@ importers:
 
   apps/server:
     dependencies:
-      '@aws-sdk/client-s3':
-        specifier: ^3.700.0
-        version: 3.1081.0
       '@doska/contract':
         specifier: workspace:*
         version: link:../../packages/contract
+      '@doska/file-storage':
+        specifier: workspace:*
+        version: link:../../packages/file-storage
       '@electric-sql/pglite':
         specifier: ^0.5.3
         version: 0.5.3
@@ -263,10 +263,17 @@ importers:
         version: 6.0.3
 
   packages/file-storage:
+    dependencies:
+      '@aws-sdk/client-s3':
+        specifier: ^3.700.0
+        version: 3.1081.0
     devDependencies:
       '@doska/configs':
         specifier: workspace:*
         version: link:../configs
+      '@types/node':
+        specifier: ^22
+        version: 22.19.21
 
   packages/markdown:
     dependencies:

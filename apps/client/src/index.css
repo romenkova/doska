@@ -4,9 +4,6 @@
 @import "@fontsource-variable/geist-mono";
 @import "@fontsource-variable/mulish";
 
-/* Tailwind v4 auto-detects content in this project, but workspace packages live
-   under node_modules (symlinked) and aren't scanned by default — point it at the
-   ui-kit sources so their utility classes are generated. */
 @source "../../../packages/ui-kit/src";
 @source "../../../packages/markdown/src";
 
