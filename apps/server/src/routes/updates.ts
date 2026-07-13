@@ -1,4 +1,5 @@
 import type { FastifyInstance, FastifyRequest } from "fastify"
+import pkg from "../../package.json" with { type: "json" }
 
 // Update distribution endpoint for the Tauri desktop app.
 //
@@ -100,6 +101,13 @@ async function selectRelease(line: SemVer | null): Promise<GhRelease | null> {
 }
 
 export function registerUpdateRoutes(app: FastifyInstance): void {
+  // The other half of the version-line pinning above: the desktop app reads this
+  // to learn its server's version, then only installs a release that matches it,
+  // so a client never runs ahead of a server it can't talk to.
+  app.get("/api/version", async (_req, reply) => {
+    return reply.send({ version: process.env.APP_VERSION || pkg.version })
+  })
+
   // The updater fetches this first. We take the selected release's generated
   // latest.json and rewrite each platform's `url` so the binary download also
   // routes back through this proxy (otherwise it would point at an auth-gated

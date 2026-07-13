@@ -26,7 +26,12 @@ services:
       NODE_ENV: production
       # remove once it's public.
       GITHUB_TOKEN: ${GITHUB_TOKEN:-}
-      BASE_URL: ${BASE_URL:-}
+      # This server's public origin, e.g. https://doska.example.com — no trailing
+      # slash. OAuth discovery advertises absolute URLs (issuer, token endpoint,
+      # the resource_metadata an MCP client is pointed at), so without this they
+      # get inferred from proxy headers and an MCP client gets sent to the wrong
+      # scheme or host. Cookie auth survives that; MCP does not.
+      BASE_URL: ${BASE_URL:?set BASE_URL in .env, e.g. https://doska.example.com}
     depends_on: { db: { condition: service_healthy } }
     restart: unless-stopped
 

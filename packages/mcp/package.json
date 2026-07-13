@@ -1,0 +1,23 @@
+{
+  "name": "@doska/mcp",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@doska/contract": "workspace:*",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "fractional-indexing": "^3.2.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@doska/configs": "workspace:*",
+    "@types/node": "^22",
+    "typescript": "~6"
+  }
+}

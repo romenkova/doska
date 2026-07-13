@@ -54,6 +54,20 @@ and auto-updates.
 > macOS builds aren't notarized yet, so on first launch clear the quarantine
 > flag: `xattr -dr com.apple.quarantine /Applications/Doska.app`.
 
+## MCP
+
+The server exposes your boards to an MCP client (Claude Code, Claude Desktop,
+claude.ai) at `/mcp`, so an agent can read and edit them — create cards, tick off
+task lists, move things between columns:
+
+```sh
+claude mcp add --transport http doska https://your-server/mcp
+```
+
+Sign-in happens in the browser on the first call (OAuth). Edits go through the
+same sync tables the apps use, so they reach your other devices on their next
+sync. Tools are listed in [packages/mcp/README.md](packages/mcp/README.md).
+
 ## Development
 
 Requires **Node 22+** and **pnpm 11+** (see `.nvmrc` / `package.json` engines).

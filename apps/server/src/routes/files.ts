@@ -1,13 +1,9 @@
 import type { IncomingMessage } from "node:http"
 import { s3StorageFromEnv } from "@doska/file-storage/server"
 import type { FastifyInstance } from "fastify"
-import { isAuthed } from "./auth"
 
 /**
  * Attachment upload/download routes.
- *
- * The storage mechanics and content-type policy live in
- * `@doska/file-storage/server`; this module is only the HTTP wiring.
  */
 
 const storage = s3StorageFromEnv()
@@ -44,7 +40,7 @@ function collectBody(
 
 export function registerFileRoutes(app: FastifyInstance): void {
   // Raw binary uploads: no parsing, the handler reads the stream itself (same
-  // no-op pattern as the JSON parser in index.ts).
+  // no-op pattern as the parsers in index.ts).
   app.addContentTypeParser("application/octet-stream", (_req, _payload, done) =>
     done(null, undefined)
   )
@@ -53,8 +49,6 @@ export function registerFileRoutes(app: FastifyInstance): void {
   // MIME ride in headers (the body is the raw file), so nothing about the object
   // is trusted from the client beyond its bytes.
   app.post("/api/files", async (req, reply) => {
-    if (!isAuthed(req.raw))
-      return reply.code(401).send({ error: "Unauthorized" })
     if (!storage)
       return reply.code(503).send({ error: "File storage not configured" })
 
@@ -78,8 +72,6 @@ export function registerFileRoutes(app: FastifyInstance): void {
   // redirecting to a presigned URL) keeps every browser request on this origin —
   // the bucket URL is never exposed and reads need no S3 CORS.
   app.get("/api/files/*", async (req, reply) => {
-    if (!isAuthed(req.raw))
-      return reply.code(401).send({ error: "Unauthorized" })
     if (!storage)
       return reply.code(503).send({ error: "File storage not configured" })
 
@@ -105,8 +97,6 @@ export function registerFileRoutes(app: FastifyInstance): void {
   })
 
   app.delete("/api/files/*", async (req, reply) => {
-    if (!isAuthed(req.raw))
-      return reply.code(401).send({ error: "Unauthorized" })
     if (!storage)
       return reply.code(503).send({ error: "File storage not configured" })
 

@@ -9,6 +9,10 @@ import {
   text,
 } from "drizzle-orm/pg-core"
 
+// Auth is better-auth's, schema and all; it lives beside ours so that one
+// `import * as schema` covers both the adapter and drizzle-kit.
+export * from "./auth-schema"
+
 /**
  * Timestamps and sequence numbers are stored as plain integers, but a board's
  * `updatedAt`/`deletedAt` are epoch milliseconds (~1.7e12) and overflow a
@@ -79,7 +83,10 @@ export const cards = pgTable(
     body: text("body").notNull(),
     position: text("position").notNull(),
     deadline: text("deadline"),
-    attachments: jsonb("attachments").$type<Attachment[]>().notNull().default([]),
+    attachments: jsonb("attachments")
+      .$type<Attachment[]>()
+      .notNull()
+      .default([]),
     updatedAt: bigint("updated_at", { mode: "number" }).notNull(),
     deletedAt: bigint("deleted_at", { mode: "number" }),
     seq: integer("seq").notNull(),

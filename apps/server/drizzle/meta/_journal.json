@@ -43,6 +43,13 @@
       "when": 1783546626140,
       "tag": "0005_many_vampiro",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1783895388700,
+      "tag": "0006_better_auth",
+      "breakpoints": true
     }
   ]
 }

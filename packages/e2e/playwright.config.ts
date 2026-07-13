@@ -47,6 +47,11 @@ export default defineConfig({
         AUTH_LOGIN: "e2e",
         AUTH_PASSWORD: "e2e-secret",
         AUTH_SECRET: "e2e-test-secret",
+        // The whole suite is one loopback IP: every spec signs in, and every
+        // page load checks the session. That is far past any honest per-IP cap,
+        // so the limiter comes off here rather than the production numbers being
+        // widened to accommodate a test harness.
+        AUTH_RATE_LIMIT: "off",
       },
       port: SYNC_PORT,
       reuseExistingServer: !process.env.CI,

@@ -1,43 +1,31 @@
-/**
- * Raw auth endpoints for the sync session. These are the transport only — React
- * Query owns the session state (see `lib/data/queries` and `lib/data/mutations`).
- *
- * Auth gates sync alone; the board is fully usable offline either way.
- */
+import { authClient, clearSessionToken } from "./auth-client"
+import { isSyncConfigured } from "./runtime"
 
-import { apiUrl, appFetch, isSyncConfigured } from "./runtime"
-
-/** `login` names the session (the configured login) while authed, else `null`. */
 export type Session = { authed: boolean; login: string | null }
 
-/** Resolves the current session against the server. Network errors read as signed-out. */
+/** Resolves the current session against the server. */
 export async function fetchSession(): Promise<Session> {
-  // Desktop with no server configured has nowhere to ask — it is session-less.
   if (!isSyncConfigured()) return { authed: false, login: null }
   try {
-    const res = await appFetch(apiUrl("/api/auth/me"), { credentials: "include" })
-    const body = (await res.json()) as { authed?: boolean; login?: string }
-    return { authed: Boolean(body.authed), login: body.login ?? null }
+    const { data } = await authClient().getSession()
+    if (!data) return { authed: false, login: null }
+    return { authed: true, login: data.user.username ?? null }
   } catch {
     return { authed: false, login: null }
   }
 }
 
-/** Trades credentials for a session cookie; throws on rejection so the mutation surfaces it. */
+/** The one account is seeded with a login, not an email — hence `username`. */
 export async function login(login: string, password: string): Promise<void> {
-  const res = await appFetch(apiUrl("/api/auth/login"), {
-    method: "POST",
-    credentials: "include",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify({ login, password }),
+  const { error } = await authClient().signIn.username({
+    username: login,
+    password,
   })
-  if (!res.ok) throw new Error("Invalid credentials")
+  if (error) throw new Error(error.message ?? "Invalid credentials")
 }
 
-/** Clears the session cookie. Local data and editing are unaffected. */
+/** Drops this client's session: the cookie on web, the stored token on desktop. */
 export async function logout(): Promise<void> {
-  await appFetch(apiUrl("/api/auth/logout"), {
-    method: "POST",
-    credentials: "include",
-  })
+  await authClient().signOut()
+  clearSessionToken()
 }

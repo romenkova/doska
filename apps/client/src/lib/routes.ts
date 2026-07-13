@@ -1,6 +1,8 @@
 /** Path builders and route patterns for the app's wouter routes. */
 export const routes = {
   about: () => "/about",
+  /** Also the server's OAuth login page — see `SignInPage`. */
+  signIn: () => "/sign-in",
   /** Top-level deck route — one per dashboard. */
   deck: {
     pattern: "/d/:id",
