@@ -78,10 +78,11 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ["**/*.{js,css,html,svg,png,ico,woff2}"],
-        // `/api` is the backend (sync, auth, updater); it must never resolve to
-        // the precached app shell. Mirrors the nginx split.
+        // `/api` (sync, auth, updater), `/mcp` and `/.well-known` (OAuth
+        // discovery) are the backend; they must never resolve to the precached
+        // app shell. Mirrors the nginx split.
         navigateFallback: "/index.html",
-        navigateFallbackDenylist: [/^\/api\//],
+        navigateFallbackDenylist: [/^\/api\//, /^\/mcp/, /^\/\.well-known\//],
         cleanupOutdatedCaches: true,
         // Control the very first page load, so a new visitor is offline-ready
         // without a second visit. `skipWaiting` stays off: a *replacement*
