@@ -1,18 +1,10 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
 import type { Change, Column } from "@doska/contract"
 import { z } from "zod"
-import {
-  newId,
-  positionAt,
-  pushBoard,
-  readBoard,
-  readColumn,
-  tombstone,
-  touch,
-} from "../board"
+import { type Board, newId, positionAt, tombstone, touch } from "../board"
 import { reply } from "./reply"
 
-export function registerColumnTools(server: McpServer): void {
+export function registerColumnTools(server: McpServer, board: Board): void {
   server.registerTool(
     "create_column",
     {
@@ -21,7 +13,7 @@ export function registerColumnTools(server: McpServer): void {
       inputSchema: { boardId: z.string(), title: z.string() },
     },
     async ({ boardId, title }) => {
-      const { columns } = await readBoard(boardId)
+      const { columns } = await board.board(boardId)
       const column: Column = {
         id: newId("col"),
         title,
@@ -31,7 +23,7 @@ export function registerColumnTools(server: McpServer): void {
         updatedAt: Date.now(),
         deletedAt: null,
       }
-      await pushBoard(boardId, [{ store: "columns", record: column }])
+      await board.pushBoard(boardId, [{ store: "columns", record: column }])
       return reply(column)
     }
   )
@@ -48,8 +40,11 @@ export function registerColumnTools(server: McpServer): void {
       },
     },
     async ({ boardId, columnId, title }) => {
-      const column = touch({ ...(await readColumn(boardId, columnId)), title })
-      await pushBoard(boardId, [{ store: "columns", record: column }])
+      const column = touch({
+        ...(await board.column(boardId, columnId)),
+        title,
+      })
+      await board.pushBoard(boardId, [{ store: "columns", record: column }])
       return reply(column)
     }
   )
@@ -63,8 +58,8 @@ export function registerColumnTools(server: McpServer): void {
       inputSchema: { boardId: z.string(), columnId: z.string() },
     },
     async ({ boardId, columnId }) => {
-      const column = await readColumn(boardId, columnId)
-      const { cards } = await readBoard(boardId)
+      const column = await board.column(boardId, columnId)
+      const { cards } = await board.board(boardId)
       const inColumn = cards.filter((card) => card.columnId === columnId)
 
       const changes: Change[] = [
@@ -73,7 +68,7 @@ export function registerColumnTools(server: McpServer): void {
           (record): Change => ({ store: "cards", record: tombstone(record) })
         ),
       ]
-      await pushBoard(boardId, changes)
+      await board.pushBoard(boardId, changes)
 
       return reply({ deleted: column.id, cards: inColumn.length })
     }

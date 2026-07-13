@@ -1,23 +1,13 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
 import type { Change, Column, Dashboard } from "@doska/contract"
 import { z } from "zod"
-import {
-  newId,
-  positionAt,
-  pushBoard,
-  pushDashboards,
-  readBoard,
-  readDashboard,
-  readDashboards,
-  tombstone,
-  touch,
-} from "../board"
+import { type Board, newId, positionAt, tombstone, touch } from "../board"
 import { reply } from "./reply"
 
 /** What a new board starts with, matching the app's own default columns. */
 const DEFAULT_COLUMNS = ["To Do", "In Progress", "Done"]
 
-export function registerBoardTools(server: McpServer): void {
+export function registerBoardTools(server: McpServer, board: Board): void {
   server.registerTool(
     "list_boards",
     {
@@ -25,7 +15,7 @@ export function registerBoardTools(server: McpServer): void {
       description: "List every board, with its id and title.",
       inputSchema: {},
     },
-    async () => reply(await readDashboards())
+    async () => reply(await board.dashboards())
   )
 
   server.registerTool(
@@ -37,7 +27,7 @@ export function registerBoardTools(server: McpServer): void {
       inputSchema: { boardId: z.string() },
     },
     async ({ boardId }) => {
-      const { columns, cards } = await readBoard(boardId)
+      const { columns, cards } = await board.board(boardId)
       return reply({
         boardId,
         columns: columns.map((column) => ({
@@ -71,15 +61,14 @@ export function registerBoardTools(server: McpServer): void {
       inputSchema: { title: z.string() },
     },
     async ({ title }) => {
-      const boards = await readDashboards()
-      const board: Dashboard = {
+      const dashboard: Dashboard = {
         id: newId("board"),
         title,
-        position: positionAt(boards, "bottom"),
+        position: positionAt(await board.dashboards(), "bottom"),
         updatedAt: Date.now(),
         deletedAt: null,
       }
-      await pushDashboards([{ store: "dashboards", record: board }])
+      await board.pushDashboards([{ store: "dashboards", record: dashboard }])
 
       // Columns live on the board's own sync channel, so they go in a second push.
       const columns: Column[] = []
@@ -88,18 +77,18 @@ export function registerBoardTools(server: McpServer): void {
           id: newId("col"),
           title: columnTitle,
           position: positionAt(columns, "bottom"),
-          dashboardId: board.id,
+          dashboardId: dashboard.id,
           collapsed: false,
           updatedAt: Date.now(),
           deletedAt: null,
         })
       }
-      await pushBoard(
-        board.id,
+      await board.pushBoard(
+        dashboard.id,
         columns.map((record) => ({ store: "columns", record }))
       )
 
-      return reply({ board, columns })
+      return reply({ board: dashboard, columns })
     }
   )
 
@@ -111,9 +100,9 @@ export function registerBoardTools(server: McpServer): void {
       inputSchema: { boardId: z.string(), title: z.string() },
     },
     async ({ boardId, title }) => {
-      const board = touch({ ...(await readDashboard(boardId)), title })
-      await pushDashboards([{ store: "dashboards", record: board }])
-      return reply(board)
+      const dashboard = touch({ ...(await board.dashboard(boardId)), title })
+      await board.pushDashboards([{ store: "dashboards", record: dashboard }])
+      return reply(dashboard)
     }
   )
 
@@ -126,8 +115,8 @@ export function registerBoardTools(server: McpServer): void {
       inputSchema: { boardId: z.string() },
     },
     async ({ boardId }) => {
-      const board = await readDashboard(boardId)
-      const { columns, cards } = await readBoard(boardId)
+      const dashboard = await board.dashboard(boardId)
+      const { columns, cards } = await board.board(boardId)
 
       const changes: Change[] = [
         ...columns.map(
@@ -137,11 +126,13 @@ export function registerBoardTools(server: McpServer): void {
           (record): Change => ({ store: "cards", record: tombstone(record) })
         ),
       ]
-      await pushBoard(boardId, changes)
-      await pushDashboards([{ store: "dashboards", record: tombstone(board) }])
+      await board.pushBoard(boardId, changes)
+      await board.pushDashboards([
+        { store: "dashboards", record: tombstone(dashboard) },
+      ])
 
       return reply({
-        deleted: board.id,
+        deleted: dashboard.id,
         columns: columns.length,
         cards: cards.length,
       })

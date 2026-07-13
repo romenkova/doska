@@ -3,6 +3,8 @@ packages:
   - "packages/*"
 
 allowBuilds:
+  # Reaches us only through @better-auth/cli, and we never touch Prisma.
+  '@prisma/client': false
   # Pulled in only as drizzle-orm's optional peer; we use pg/PGlite, so it never
   # needs its native build.
   better-sqlite3: false

@@ -4,7 +4,7 @@
   "version": "0.4.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently -k -n db,api -c magenta,cyan \"pnpm db:serve\" \"DATABASE_URL=postgres://127.0.0.1:5432/postgres tsx watch --env-file-if-exists=.env src/index.ts\"",
+    "dev": "concurrently -k -n db,api -c magenta,cyan \"pnpm db:serve\" \"DATABASE_URL=postgres://127.0.0.1:5432/postgres AUTH_TRUSTED_ORIGINS=http://localhost:5173 tsx watch --env-file-if-exists=.env src/index.ts\"",
     "start": "tsx src/index.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
@@ -15,13 +15,17 @@
   "dependencies": {
     "@doska/contract": "workspace:*",
     "@doska/file-storage": "workspace:*",
+    "@doska/mcp": "workspace:*",
     "@electric-sql/pglite": "^0.5.3",
+    "@modelcontextprotocol/sdk": "^1.29.0",
     "@orpc/server": "^1.14.6",
+    "better-auth": "^1.6.23",
     "drizzle-orm": "^0.45.2",
     "fastify": "^5.8.5",
     "pg": "^8.22.0"
   },
   "devDependencies": {
+    "@better-auth/cli": "^1.4.21",
     "@doska/configs": "workspace:*",
     "@electric-sql/pglite-socket": "^0.2.4",
     "@types/node": "^22",

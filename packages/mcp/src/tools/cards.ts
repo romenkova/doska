@@ -1,16 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
 import type { Card } from "@doska/contract"
 import { z } from "zod"
-import {
-  newId,
-  positionAt,
-  pushBoard,
-  readBoard,
-  readCard,
-  readColumn,
-  tombstone,
-  touch,
-} from "../board"
+import { type Board, newId, positionAt, tombstone, touch } from "../board"
 import { reply } from "./reply"
 
 const deadline = z
@@ -22,7 +13,7 @@ const place = z
   .enum(["top", "bottom"])
   .describe("Which end of the column the card lands on")
 
-export function registerCardTools(server: McpServer): void {
+export function registerCardTools(server: McpServer, board: Board): void {
   server.registerTool(
     "create_card",
     {
@@ -39,8 +30,8 @@ export function registerCardTools(server: McpServer): void {
       },
     },
     async ({ boardId, columnId, title, body, deadline, place }) => {
-      const { cards } = await readBoard(boardId)
-      await readColumn(boardId, columnId) // Reject an unknown column before writing.
+      const { cards } = await board.board(boardId)
+      await board.column(boardId, columnId) // Reject an unknown column before writing.
 
       const card: Card = {
         id: newId("card"),
@@ -56,7 +47,7 @@ export function registerCardTools(server: McpServer): void {
         updatedAt: Date.now(),
         deletedAt: null,
       }
-      await pushBoard(boardId, [{ store: "cards", record: card }])
+      await board.pushBoard(boardId, [{ store: "cards", record: card }])
       return reply(card)
     }
   )
@@ -76,14 +67,14 @@ export function registerCardTools(server: McpServer): void {
       },
     },
     async ({ boardId, cardId, title, body, deadline }) => {
-      const existing = await readCard(boardId, cardId)
+      const existing = await board.card(boardId, cardId)
       const card = touch({
         ...existing,
         title: title ?? existing.title,
         body: body ?? existing.body,
         deadline: deadline === undefined ? existing.deadline : deadline,
       })
-      await pushBoard(boardId, [{ store: "cards", record: card }])
+      await board.pushBoard(boardId, [{ store: "cards", record: card }])
       return reply(card)
     }
   )
@@ -102,12 +93,12 @@ export function registerCardTools(server: McpServer): void {
       },
     },
     async ({ boardId, cardId, columnId, place }) => {
-      const { cards } = await readBoard(boardId)
+      const { cards } = await board.board(boardId)
       const existing = cards.find((c) => c.id === cardId)
       if (!existing) throw new Error(`No card ${cardId} on board ${boardId}`)
 
       const target = columnId ?? existing.columnId
-      if (columnId) await readColumn(boardId, columnId)
+      if (columnId) await board.column(boardId, columnId)
 
       const card = touch({
         ...existing,
@@ -117,7 +108,7 @@ export function registerCardTools(server: McpServer): void {
           place
         ),
       })
-      await pushBoard(boardId, [{ store: "cards", record: card }])
+      await board.pushBoard(boardId, [{ store: "cards", record: card }])
       return reply(card)
     }
   )
@@ -130,8 +121,8 @@ export function registerCardTools(server: McpServer): void {
       inputSchema: { boardId: z.string(), cardId: z.string() },
     },
     async ({ boardId, cardId }) => {
-      const card = tombstone(await readCard(boardId, cardId))
-      await pushBoard(boardId, [{ store: "cards", record: card }])
+      const card = tombstone(await board.card(boardId, cardId))
+      await board.pushBoard(boardId, [{ store: "cards", record: card }])
       return reply({ deleted: card.id })
     }
   )

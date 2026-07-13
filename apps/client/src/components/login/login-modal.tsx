@@ -31,39 +31,17 @@ export function LoginModal({ open, onOpenChange }: IProps) {
 }
 
 function SyncSetup({ onDone }: { onDone: () => void }) {
-  return (
-    <div className="flex flex-col gap-4 p-6">
-      <div className="flex flex-col gap-1">
-        <ModalTitle>Set up sync</ModalTitle>
-        <ModalDescription>
-          Your boards stay on this device until you set up sync.
-        </ModalDescription>
-      </div>
-
-      <ServerPanel desktop={isDesktop()} onCancel={onDone} onDone={onDone} />
-    </div>
-  )
-}
-
-/** Remote-server backend: URL (desktop) + credentials, then sign in. */
-function ServerPanel({
-  desktop,
-  onCancel,
-  onDone,
-}: {
-  desktop: boolean
-  onCancel: () => void
-  onDone: () => void
-}) {
   const [server, setServer] = useState(() => getServerUrl())
   const [login, setLogin] = useState("")
   const [password, setPassword] = useState("")
   const { mutate, isPending, isError, reset } = useLogin()
 
+  const desktop = isDesktop()
+
   function submit(e: React.FormEvent) {
     e.preventDefault()
-    // Desktop has no same-origin server — persist the URL before logging in so
-    // the auth/sync calls know where to go.
+    // No same-origin server on desktop — persist the URL before signing in so
+    // the auth and sync calls know where to go.
     if (desktop) setServerUrl(server)
     mutate(
       { login, password },
@@ -77,7 +55,14 @@ function ServerPanel({
   }
 
   return (
-    <form onSubmit={submit} className="flex flex-col gap-4">
+    <form onSubmit={submit} className="flex flex-col gap-4 p-6">
+      <div className="flex flex-col gap-1">
+        <ModalTitle>Set up sync</ModalTitle>
+        <ModalDescription>
+          Your boards stay on this device until you set up sync.
+        </ModalDescription>
+      </div>
+
       <div className="flex flex-col gap-2">
         {desktop && (
           <Input
@@ -117,7 +102,7 @@ function ServerPanel({
           variant="ghost"
           onClick={() => {
             reset()
-            onCancel()
+            onDone()
           }}
         >
           Cancel

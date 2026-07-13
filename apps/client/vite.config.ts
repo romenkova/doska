@@ -17,26 +17,33 @@ function appVersion(): string {
 }
 
 // https://vite.dev/config/
+/**
+ * What the server owns: the API (sync, and better-auth under /api/auth), the
+ * OAuth discovery documents, and the MCP endpoint. Everything else is the SPA —
+ * including /sign-in, which is where the MCP OAuth flow parks the browser.
+ * Mirrors the proxy block in nginx.conf.
+ */
+const backendProxy = (target: string) =>
+  Object.fromEntries(
+    ["/api", "/mcp", "/.well-known"].map((path) => [path, target])
+  )
+
 export default defineConfig({
   define: {
     __APP_VERSION__: JSON.stringify(appVersion()),
   },
   preview: {
     port: 3001,
-    // The e2e suite runs against `vite preview`, so it needs the same /api
-    // forward the dev server has — otherwise sync calls 404 in tests. Honors
+    // The e2e suite runs against `vite preview`, so it needs the same forwards
+    // the dev server has — otherwise sync calls and sign-in 404 in tests. Honors
     // RPC_TARGET so the harness can point preview at the e2e sync server's port.
-    proxy: {
-      "/api": process.env.RPC_TARGET ?? "http://localhost:3000",
-    },
+    proxy: backendProxy(process.env.RPC_TARGET ?? "http://localhost:3000"),
   },
   server: {
     port: 5173,
     strictPort: true,
     // Proxy backend calls to the API so the browser stays same-origin (no CORS).
-    proxy: {
-      "/api": "http://localhost:3000",
-    },
+    proxy: backendProxy("http://localhost:3000"),
   },
   plugins: [
     react(),
