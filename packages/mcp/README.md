@@ -1,34 +1,23 @@
-# MCP server
+# @doska/mcp
 
-Exposes a Doska board to any MCP client (Claude Code, Claude Desktop, …) so an
-agent can read and edit it: create cards from a discussion, tick off task lists,
-move things between columns, tidy up a board.
+The board as MCP tools, so an agent can read and edit it: create cards from a
+discussion, tick off task lists, move things between columns, tidy up a board.
 
-It is a sync client like the web and desktop apps — it reads and writes through
-the server's sync API, so its edits land in Postgres and reach your other
-devices on their next sync.
+The tools are transport-agnostic — they talk to a `BoardStore`, and the server
+(`apps/server`) implements it straight onto the sync tables. Edits land in
+Postgres and reach your other devices on their next sync, exactly as if you had
+made them in the app.
 
-> **Needs a server.** Doska is local-first: with no sync configured, your boards
-> live in the browser's IndexedDB, which a separate process cannot reach. This
-> only sees boards that sync to a server you run.
+## Connecting
 
-## Setup
-
-Point it at your server and give it that server's single account:
+The server serves these at `/mcp`, behind OAuth. From Claude Code:
 
 ```sh
-cp .env.example .env   # DOSKA_URL, DOSKA_LOGIN, DOSKA_PASSWORD
+claude mcp add --transport http doska https://your-server/mcp
 ```
 
-Register it with Claude Code from the repo root:
-
-```sh
-claude mcp add doska \
-  --env DOSKA_URL=http://localhost:3000 \
-  --env DOSKA_LOGIN=admin \
-  --env DOSKA_PASSWORD=change-me \
-  -- pnpm --filter mcp start
-```
+The first call opens a browser to sign in; the client registers itself and holds
+an access token from there on. Same URL works for Claude Desktop and claude.ai.
 
 ## Tools
 

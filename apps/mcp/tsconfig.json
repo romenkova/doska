@@ -1,4 +1,0 @@
-{
-  "extends": "@doska/configs/tsconfig/node.json",
-  "include": ["src"]
-}

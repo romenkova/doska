@@ -54,12 +54,19 @@ and auto-updates.
 > macOS builds aren't notarized yet, so on first launch clear the quarantine
 > flag: `xattr -dr com.apple.quarantine /Applications/Doska.app`.
 
-## MCP server
+## MCP
 
-`apps/mcp` lets an MCP client (Claude Code, Claude Desktop, …) read and edit your
-boards — create cards, tick off task lists, move things between columns. It syncs
-through the same API the apps use, so it needs a server to talk to; see
-[apps/mcp/README.md](apps/mcp/README.md).
+The server exposes your boards to an MCP client (Claude Code, Claude Desktop,
+claude.ai) at `/mcp`, so an agent can read and edit them — create cards, tick off
+task lists, move things between columns:
+
+```sh
+claude mcp add --transport http doska https://your-server/mcp
+```
+
+Sign-in happens in the browser on the first call (OAuth). Edits go through the
+same sync tables the apps use, so they reach your other devices on their next
+sync. Tools are listed in [packages/mcp/README.md](packages/mcp/README.md).
 
 ## Development
 

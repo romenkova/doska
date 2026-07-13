@@ -155,37 +155,6 @@ importers:
         specifier: ^2
         version: 2.11.3
 
-  apps/mcp:
-    dependencies:
-      '@doska/contract':
-        specifier: workspace:*
-        version: link:../../packages/contract
-      '@doska/mcp':
-        specifier: workspace:*
-        version: link:../../packages/mcp
-      '@modelcontextprotocol/sdk':
-        specifier: ^1.29.0
-        version: 1.29.0(zod@4.4.3)
-      '@orpc/client':
-        specifier: ^1.14.6
-        version: 1.14.6
-      '@orpc/contract':
-        specifier: ^1.14.6
-        version: 1.14.6
-    devDependencies:
-      '@doska/configs':
-        specifier: workspace:*
-        version: link:../../packages/configs
-      '@types/node':
-        specifier: ^22
-        version: 22.19.21
-      tsx:
-        specifier: ^4.22.4
-        version: 4.22.4
-      typescript:
-        specifier: ~6
-        version: 6.0.3
-
   apps/server:
     dependencies:
       '@doska/contract':
