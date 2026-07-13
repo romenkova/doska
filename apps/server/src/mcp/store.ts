@@ -1,4 +1,5 @@
 import type { BoardStore } from "@doska/mcp"
+import type { Change, Dashboard, DashboardChange } from "@doska/contract"
 import {
   applyDashboardPush,
   applyPush,
@@ -7,19 +8,27 @@ import {
 } from "../db/sync"
 
 /**
- * The MCP tools' store, wired straight onto the sync tables — the same calls
- * the RPC router makes, one function call away instead of one HTTP hop.
+ * The MCP tools' store, wired straight onto the sync tables — the same calls the
+ * RPC router makes, one function call away instead of one HTTP hop.
  *
- * Reads ask for everything (`since: 0`): a tool wants the board as it stands,
- * not a delta, and there is no client here holding a cursor between calls.
+ * Reads ask for everything (`since: 0`)
  */
-export const dbStore: BoardStore = {
-  readDashboards: async () =>
-    (await readDashboardsSince(0)).changes.map((change) => change.record),
+export class DbStore implements BoardStore {
+  async readDashboards(): Promise<Dashboard[]> {
+    const { changes } = await readDashboardsSince(0)
+    return changes.map((change) => change.record)
+  }
 
-  readBoard: async (boardId) => (await readSince(boardId, 0)).changes,
+  async readBoard(boardId: string): Promise<Change[]> {
+    const { changes } = await readSince(boardId, 0)
+    return changes
+  }
 
-  pushDashboards: applyDashboardPush,
+  async pushDashboards(changes: DashboardChange[]): Promise<void> {
+    await applyDashboardPush(changes)
+  }
 
-  pushBoard: applyPush,
+  async pushBoard(boardId: string, changes: Change[]): Promise<void> {
+    await applyPush(boardId, changes)
+  }
 }

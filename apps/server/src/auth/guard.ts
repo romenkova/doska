@@ -9,9 +9,7 @@ import { auth } from "."
  */
 
 /**
- * The server's public origin. Behind a reverse proxy the request's own Host is
- * the internal one, so a configured BASE_URL wins; the forwarded headers are the
- * fallback for a plain compose run with no BASE_URL set.
+ * The server's public origin.
  */
 export function originOf(req: FastifyRequest): string {
   const configured = process.env.BASE_URL

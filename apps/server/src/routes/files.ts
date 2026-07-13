@@ -4,11 +4,6 @@ import type { FastifyInstance } from "fastify"
 
 /**
  * Attachment upload/download routes.
- *
- * The storage mechanics and content-type policy live in
- * `@doska/file-storage/server`; this module is only the HTTP wiring. They are
- * registered inside the protected scope, so a session is already established by
- * the time any handler here runs.
  */
 
 const storage = s3StorageFromEnv()
