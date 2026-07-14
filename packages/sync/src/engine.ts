@@ -1,15 +1,45 @@
 import { DirtyStore } from "./dirty"
 import type { PushResult, SyncDriver } from "./driver"
 
-/** Where the engine is in its push/pull cycle. */
-export type SyncStatus = "idle" | "syncing" | "error"
+/**
+ * Where the engine is in its push/pull cycle. `paused` means the gate is shut
+ * (signed out, no server configured) — nothing is syncing and nothing is
+ * failing, which is a different thing from `idle`.
+ */
+export type SyncStatus = "idle" | "syncing" | "error" | "paused"
+
+/** Why a reconcile failed, insofar as the transport can tell. */
+export type SyncFailure = "offline" | "auth" | "server"
 
 export interface SyncState {
   /** `syncing` while a reconcile is in flight; `error` if the last one failed. */
   readonly status: SyncStatus
   /** Refs changed locally but not yet acknowledged by the server. */
   readonly pending: number
+  /**
+   * Consecutive failed reconciles, reset by any success. A single flaky request
+   * is 1; a real outage climbs, which is what tells the two apart.
+   */
+  readonly failures: number
+  /** When a reconcile last succeeded (epoch ms); null if none has yet. */
+  readonly lastSyncedAt: number | null
+  /** Why the last reconcile failed; null while healthy. */
+  readonly failure: SyncFailure | null
 }
+
+/** What one cycle learned, accumulated across its scopes. */
+interface Attempt {
+  /** Whether any scope actually got as far as talking to the server. */
+  ran: boolean
+  failed: boolean
+  failure: SyncFailure | null
+}
+
+/** Transport-agnostic fallback: the browser knows when it's offline. */
+const defaultClassify = (): SyncFailure =>
+  typeof navigator !== "undefined" && navigator.onLine === false
+    ? "offline"
+    : "server"
 
 /**
  * Drives reconciliation between a local store and a server: push the dirty refs
@@ -37,17 +67,34 @@ export class SyncEngine<Scope, Change> {
   // Gate consulted before every reconcile.
   private readonly canSync: () => boolean
 
+  // Turns a transport error into a reason the UI can act on.
+  private readonly classify: (err: unknown) => SyncFailure
+
+  /** What the in-flight cycle has learned so far; settled at the end of it. */
+  private attempt: Attempt = { ran: false, failed: false, failure: null }
+
   private state: SyncState
   private readonly listeners = new Set<() => void>()
 
   constructor(
     driver: SyncDriver<Scope, Change>,
-    options: { storageKey: string; canSync?: () => boolean }
+    options: {
+      storageKey: string
+      canSync?: () => boolean
+      classify?: (err: unknown) => SyncFailure
+    }
   ) {
     this.driver = driver
     this.dirty = new DirtyStore(options.storageKey)
-    this.state = { status: "idle", pending: this.dirty.size }
+    this.state = {
+      status: "idle",
+      pending: this.dirty.size,
+      failures: 0,
+      lastSyncedAt: null,
+      failure: null,
+    }
     this.canSync = options.canSync ?? (() => true)
+    this.classify = options.classify ?? defaultClassify
   }
 
   // Arrow to stay reference-stable for `useSyncExternalStore`.
@@ -58,11 +105,14 @@ export class SyncEngine<Scope, Change> {
 
   getState = (): SyncState => this.state
 
-  // Skips no-op updates.
   private setState(next: SyncState) {
+    const prev = this.state
     if (
-      next.status === this.state.status &&
-      next.pending === this.state.pending
+      next.status === prev.status &&
+      next.pending === prev.pending &&
+      next.failures === prev.failures &&
+      next.lastSyncedAt === prev.lastSyncedAt &&
+      next.failure === prev.failure
     )
       return
     this.state = next
@@ -71,7 +121,7 @@ export class SyncEngine<Scope, Change> {
 
   mark(ref: string) {
     this.dirty.mark(ref)
-    this.setState({ status: this.state.status, pending: this.dirty.size })
+    this.setState({ ...this.state, pending: this.dirty.size })
   }
 
   /**
@@ -104,8 +154,57 @@ export class SyncEngine<Scope, Change> {
   private async cycle(): Promise<void> {
     do {
       this.rerun = false
+      this.attempt = { ran: false, failed: false, failure: null }
       await this.pass()
+      this.settle()
     } while (this.rerun)
+  }
+
+  /**
+   * Turns the cycle's outcome into the published state.
+   */
+  private settle() {
+    const pending = this.dirty.size
+
+    // The gate is shut: not syncing, but not broken either. Say so rather than
+    // sitting on `idle`, which the UI reads as "everything is saved".
+    if (!this.canSync()) {
+      this.setState({ ...this.state, status: "paused", pending })
+      return
+    }
+
+    // Nothing to sync (no active scope, nothing dirty) — no news either way, so
+    // claim no fresh success, but drop any stale failure: this engine isn't the
+    // one that's broken.
+    if (!this.attempt.ran) {
+      this.setState({
+        ...this.state,
+        status: "idle",
+        pending,
+        failures: 0,
+        failure: null,
+      })
+      return
+    }
+
+    if (this.attempt.failed) {
+      this.setState({
+        status: "error",
+        pending,
+        failures: this.state.failures + 1,
+        lastSyncedAt: this.state.lastSyncedAt,
+        failure: this.attempt.failure,
+      })
+      return
+    }
+
+    this.setState({
+      status: "idle",
+      pending,
+      failures: 0,
+      lastSyncedAt: Date.now(),
+      failure: null,
+    })
   }
 
   /**
@@ -133,10 +232,15 @@ export class SyncEngine<Scope, Change> {
   }
 
   // Exclusivity is `cycle`'s job, so this only screens out unsyncable scopes.
+  // The verdict is recorded on `attempt`; `settle` publishes it.
   private async run(scope: Scope | null): Promise<void> {
     if (scope === null || !this.canSync()) return
-    this.setState({ status: "syncing", pending: this.dirty.size })
-    let failed = false
+    this.attempt.ran = true
+    this.setState({
+      ...this.state,
+      status: "syncing",
+      pending: this.dirty.size,
+    })
     try {
       const since = await this.driver.loadCursor(scope)
       const { changes, refs } = await this.driver.collectChanges(
@@ -151,8 +255,7 @@ export class SyncEngine<Scope, Change> {
         result = await this.driver.push({ scope, since, changes })
       } catch (err) {
         this.dirty.restore(refs)
-        console.warn("[sync] reconcile failed; will retry next tick", err)
-        failed = true
+        this.fail(err)
         return
       }
 
@@ -164,13 +267,13 @@ export class SyncEngine<Scope, Change> {
         ...result.changes.map((c) => this.driver.refOf(c)),
       ])
     } catch (err) {
-      failed = true
-      throw err
-    } finally {
-      this.setState({
-        status: failed ? "error" : "idle",
-        pending: this.dirty.size,
-      })
+      this.fail(err)
     }
+  }
+
+  private fail(err: unknown) {
+    this.attempt.failed = true
+    this.attempt.failure = this.classify(err)
+    console.warn("[sync] reconcile failed; will retry next tick", err)
   }
 }

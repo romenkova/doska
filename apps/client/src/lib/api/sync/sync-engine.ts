@@ -1,4 +1,10 @@
-import { SyncEngine, type SyncState, type SyncStatus } from "@doska/sync"
+import {
+  SyncEngine,
+  type SyncFailure,
+  type SyncState,
+  type SyncStatus,
+} from "@doska/sync"
+import { ORPCError } from "@orpc/client"
 import type { StoreName } from "../constants"
 import { DASHBOARDS } from "../constants"
 import { DeckSyncDriver } from "./drivers/board-driver"
@@ -15,16 +21,37 @@ import { isSyncConfigured, subscribeSyncConfig } from "../runtime"
  */
 const canSync = () => isSyncConfigured() && isAuthed()
 
+/**
+ * Reads the reason for a failed reconcile out of the transport.
+ */
+const classify = (err: unknown): SyncFailure => {
+  if (!navigator.onLine) return "offline"
+  if (err instanceof ORPCError)
+    return err.status === 401 || err.status === 403 ? "auth" : "server"
+  if (err instanceof TypeError) return "offline"
+  return "server"
+}
+
 const createDrivers = () => ({
   board: new DeckSyncDriver(),
   list: new DashboardListDriver(),
 })
 
-/** Worst-case across the two channels: any syncing wins, then any error. */
+/**
+ * Worst-case across the two channels
+ */
 function mergeStatus(a: SyncStatus, b: SyncStatus): SyncStatus {
   if (a === "syncing" || b === "syncing") return "syncing"
   if (a === "error" || b === "error") return "error"
+  if (a === "paused" || b === "paused") return "paused"
   return "idle"
+}
+
+/** The newer of two successes; null only when neither channel has ever synced. */
+function mergeLastSynced(a: number | null, b: number | null): number | null {
+  if (a === null) return b
+  if (b === null) return a
+  return Math.max(a, b)
 }
 
 /**
@@ -42,7 +69,13 @@ class DeckSync {
   /** The open board, remembered so a rebuild can re-point the new engine. */
   private currentBoard: string | null = null
 
-  private state: SyncState = { status: "idle", pending: 0 }
+  private state: SyncState = {
+    status: "idle",
+    pending: 0,
+    failures: 0,
+    lastSyncedAt: null,
+    failure: null,
+  }
   private readonly listeners = new Set<() => void>()
 
   constructor() {
@@ -59,10 +92,12 @@ class DeckSync {
     this.board = new SyncEngine(board, {
       storageKey: "deck:sync:dirty",
       canSync,
+      classify,
     }) as unknown as SyncEngine<string, never>
     this.list = new SyncEngine(list, {
       storageKey: "deck:sync:dirty:dashboards",
       canSync,
+      classify,
     }) as unknown as SyncEngine<string, never>
 
     this.board.subscribe(() => this.recompute())
@@ -77,13 +112,22 @@ class DeckSync {
   private recompute() {
     const a = this.board.getState()
     const b = this.list.getState()
+    const prev = this.state
     const next: SyncState = {
       status: mergeStatus(a.status, b.status),
       pending: a.pending + b.pending,
+      // The longest-running failure, so a channel that has been down for a
+      // while isn't masked by one that only just started failing.
+      failures: Math.max(a.failures, b.failures),
+      lastSyncedAt: mergeLastSynced(a.lastSyncedAt, b.lastSyncedAt),
+      failure: a.failure ?? b.failure,
     }
     if (
-      next.status === this.state.status &&
-      next.pending === this.state.pending
+      next.status === prev.status &&
+      next.pending === prev.pending &&
+      next.failures === prev.failures &&
+      next.lastSyncedAt === prev.lastSyncedAt &&
+      next.failure === prev.failure
     )
       return
     this.state = next

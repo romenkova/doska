@@ -1,5 +1,5 @@
 export { DirtyStore } from "./dirty"
 export { SyncEngine } from "./engine"
-export type { SyncState, SyncStatus } from "./engine"
+export type { SyncState, SyncStatus, SyncFailure } from "./engine"
 export type { SyncDriver, PushInput, PushResult } from "./driver"
 export { startBackgroundSync } from "./background-sync"
