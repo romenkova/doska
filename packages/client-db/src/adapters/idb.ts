@@ -22,8 +22,19 @@ export class IDB implements ClientDB {
         // `req.transaction` is the versionchange tx — the only handle to stores
         // that already exist, e.g. for adding an index on an upgrade.
         req.onupgradeneeded = () => this.upgrade(req.result, req.transaction!)
-        req.onsuccess = () => resolve(req.result)
+        req.onsuccess = () => {
+          const db = req.result
+          db.onversionchange = () => {
+            db.close()
+            this.connection = undefined
+          }
+          resolve(db)
+        }
         req.onerror = () => reject(req.error)
+        req.onblocked = () =>
+          console.warn(
+            `IndexedDB "${this.name}" upgrade to v${this.version} is blocked by another open connection`
+          )
       })
     }
     return this.connection
