@@ -2,17 +2,33 @@ import type { SyncState } from "@doska/sync"
 import { Button, cn } from "@doska/ui-kit"
 import {
   Check,
+  CloudOff,
   LoaderCircle,
   LogIn,
   PencilLine,
   TriangleAlert,
 } from "lucide-react"
 import { useLoginPrompt } from "@/components/login/login-prompt-context"
-import { sync } from "@/lib/api/sync"
+import { sync, useConnection, type Connection } from "@/lib/api/sync"
 import { useAuth, useSyncStatus } from "@/lib/hooks"
 
 /** Resolves the live sync state into the icon, label, and tint to render. */
-function view({ status, pending }: SyncState) {
+function view({ status, pending }: SyncState, connection: Connection) {
+  if (connection.status === "dropped")
+    return connection.reason === "offline"
+      ? {
+          Icon: CloudOff,
+          label: "Offline",
+          spin: false,
+          className: "text-destructive",
+        }
+      : {
+          Icon: TriangleAlert,
+          label: "Sync failed",
+          spin: false,
+          className: "text-destructive",
+        }
+
   if (status === "syncing")
     return {
       Icon: LoaderCircle,
@@ -44,11 +60,15 @@ function view({ status, pending }: SyncState) {
 
 /**
  * The board's sync status: a spinner while reconciling, an unsaved-changes
- * badge, a saved check, or a retry-on-click error. Clicking flushes a sync now,
- * mirroring ⌘S.
+ * badge, a saved check, an offline notice, or a retry-on-click error. Clicking
+ * flushes a sync now, mirroring ⌘S.
+ *
+ * Board-only, so it can't be the whole story — {@link ConnectionBanner} covers
+ * the rest of the app.
  */
 export function SyncIndicator() {
   const state = useSyncStatus()
+  const connection = useConnection()
   const { authed } = useAuth()
   const openLogin = useLoginPrompt()
 
@@ -70,7 +90,7 @@ export function SyncIndicator() {
     )
   }
 
-  const { Icon, label, spin, className } = view(state)
+  const { Icon, label, spin, className } = view(state, connection)
 
   return (
     <Button

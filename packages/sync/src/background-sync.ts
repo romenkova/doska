@@ -45,8 +45,13 @@ export function startBackgroundSync(
     }
   }
 
+  // Coming back online: flush the queue now rather than making the user watch a
+  // stale "offline" notice until the next tick.
+  const onOnline = () => reconcile()
+
   document.addEventListener("visibilitychange", onVisibility)
   window.addEventListener("focus", onFocus)
+  window.addEventListener("online", onOnline)
   if (document.visibilityState === "visible") {
     reconcile()
     start()
@@ -55,6 +60,7 @@ export function startBackgroundSync(
   return () => {
     document.removeEventListener("visibilitychange", onVisibility)
     window.removeEventListener("focus", onFocus)
+    window.removeEventListener("online", onOnline)
     stop()
   }
 }

@@ -11,6 +11,7 @@ import { queryClient } from "@/lib/query-client"
 import { Router } from "./router.tsx"
 import { startBackgroundSync } from "./lib/api/sync"
 import { UpdateBanner } from "@/components/updates/update-banner"
+import { ConnectionBanner } from "@/components/sync/connection-banner"
 import { WindowDragRegion } from "@/components/window-drag-region"
 import "./index.css"
 
@@ -36,6 +37,7 @@ createRoot(document.getElementById("root")!).render(
         <LoginPromptProvider>
           <Router />
           <UpdateBanner />
+          <ConnectionBanner />
           <WindowDragRegion />
         </LoginPromptProvider>
       </ThemeProvider>
