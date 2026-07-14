@@ -32,7 +32,7 @@ function view({ status, pending }: SyncState, connection: Connection) {
   if (status === "syncing")
     return {
       Icon: LoaderCircle,
-      label: "",
+      label: "Syncing",
       spin: true,
       className: "text-muted-foreground",
     }
@@ -52,7 +52,7 @@ function view({ status, pending }: SyncState, connection: Connection) {
     }
   return {
     Icon: Check,
-    label: "Saved",
+    label: "Synced",
     spin: false,
     className: "text-muted-foreground",
   }
@@ -98,7 +98,7 @@ export function SyncIndicator() {
       aria-label={label}
       title={label}
       onClick={() => void sync.reconcile()}
-      className={cn("text-muted-foreground", className)}
+      className={cn("w-25 text-muted-foreground", className)}
     >
       <Icon className={cn(spin && "animate-spin")} />
       <span>{label}</span>
