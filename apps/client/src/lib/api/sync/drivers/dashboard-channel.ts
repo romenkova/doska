@@ -5,6 +5,7 @@ import { keys } from "@/lib/data/keys"
 import { queryClient } from "@/lib/query-client"
 import { CARDS, COLUMNS, DASHBOARDS } from "../../constants"
 import { CARDS_BY_COLUMN, idb } from "../../db/idb"
+import { clock, persistClock } from "../hlc"
 
 /** Account-level dashboard-list steps, shared server ⇄ filesystem. */
 
@@ -55,12 +56,14 @@ export async function applyDashboardRemote(
   let touched = false
 
   for (const { record } of changes) {
+    clock.receive(record.updatedAt)
     const existing = await idb.get<{ updatedAt: number }>(DASHBOARDS, record.id)
     if (existing && existing.updatedAt >= record.updatedAt) continue
     await idb.set(DASHBOARDS, record.id, record)
     touched = true
     if (record.deletedAt != null) await purgeBoard(record.id)
   }
+  void persistClock()
 
   if (touched) queryClient.invalidateQueries({ queryKey: keys.dashboards })
 }

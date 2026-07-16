@@ -16,7 +16,7 @@ interface IProps {
   className?: string
 }
 
-/** A card's id, task progress and deadline — on the board card and in its modal. */
+/** A card's id, task progress and deadline — on the board card and in its panel. */
 export function CardMeta({ cardId, body, className }: IProps) {
   const prefix = useDeckPrefix()
   const { data: card = fallbackCard } = useCard(cardId)

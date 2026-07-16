@@ -1,6 +1,7 @@
 import type { Column } from "@/lib/types"
 import { db } from "../db/db"
 import { sync } from "../sync"
+import { stamp } from "../sync/hlc"
 
 /**
  * Persists columns whose position changed during a reorder. Only the position
@@ -8,7 +9,7 @@ import { sync } from "../sync"
  * rename isn't clobbered by a stale copy from the board cache.
  */
 export async function moveColumn(changed: Column[]): Promise<void> {
-  const now = Date.now()
+  const now = stamp()
   const byId = new Map((await db.getColumns()).map((c) => [c.id, c]))
   await Promise.all(
     changed.map(async (column) => {

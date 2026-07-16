@@ -80,17 +80,3 @@ export async function allocateCardNumber(
   await c.write(tx, next)
   return next
 }
-
-/**
- * Raises a board's card-number counter to at least `n`, so a number the server
- * adopted from a client (a legacy backfill) can never be handed out again by a
- * later {@link allocateCardNumber}.
- */
-export async function ensureCardNumberAtLeast(
-  tx: Tx,
-  boardId: string,
-  n: number
-): Promise<void> {
-  const c = counter(cardNumberCounterId(boardId))
-  if (n > (await c.ensure(tx))) await c.write(tx, n)
-}

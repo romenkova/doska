@@ -1,5 +1,6 @@
 import { db } from "../db/db"
 import { sync } from "../sync"
+import { stamp } from "../sync/hlc"
 
 /** A user-entered prefix reduced to card-id form: uppercase alnum, 1–6 chars. */
 export function normalizePrefix(input: string): string {
@@ -41,6 +42,6 @@ export async function setDashboardPrefix(
 
   const dashboard = (await db.getDashboards()).find((d) => d.id === id)
   if (!dashboard || dashboard.prefix === prefix) return
-  await db.setDashboard({ ...dashboard, prefix, updatedAt: Date.now() })
+  await db.setDashboard({ ...dashboard, prefix, updatedAt: stamp() })
   sync.markDirty("dashboards", id)
 }

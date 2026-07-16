@@ -3,6 +3,7 @@ import { fallbackCard } from "@/lib/seed"
 import { db } from "../db/db"
 import { live } from "./live"
 import { sync } from "../sync"
+import { stamp } from "../sync/hlc"
 
 /** Creates an empty card at the top of a column and returns its new id. */
 export async function createCard(columnId: string): Promise<string> {
@@ -20,7 +21,7 @@ export async function createCard(columnId: string): Promise<string> {
     columnId,
     position,
     title: "",
-    updatedAt: Date.now(),
+    updatedAt: stamp(),
     deletedAt: null,
   })
   sync.markDirty("cards", id)

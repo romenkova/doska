@@ -1,6 +1,7 @@
 import type { Card } from "@/lib/types"
 import { db } from "../db/db"
 import { sync } from "../sync"
+import { stamp } from "../sync/hlc"
 
 /**
  * Persists cards whose column/position changed during a drag. Only the move is
@@ -12,7 +13,7 @@ export async function moveCard(
   _deckId: string,
   changed: Card[]
 ): Promise<void> {
-  const now = Date.now()
+  const now = stamp()
   await Promise.all(
     changed.map(async (card) => {
       const existing = await db.getCard(card.id)

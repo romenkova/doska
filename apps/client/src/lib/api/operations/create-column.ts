@@ -2,6 +2,7 @@ import { generateKeyBetween } from "fractional-indexing"
 import { db } from "../db/db"
 import { live } from "./live"
 import { sync } from "../sync"
+import { stamp } from "../sync/hlc"
 
 /** Appends an empty column to a board and returns its new id. */
 export async function createColumn(
@@ -22,7 +23,7 @@ export async function createColumn(
     position,
     dashboardId,
     collapsed: false,
-    updatedAt: Date.now(),
+    updatedAt: stamp(),
     deletedAt: null,
   })
   sync.markDirty("columns", id)

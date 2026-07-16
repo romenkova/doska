@@ -1,7 +1,7 @@
-import { CardContent, ModalContent, cn } from "@doska/ui-kit"
+import { CardContent, cn } from "@doska/ui-kit"
 import { MarkdownTextarea, cut } from "@doska/markdown"
 import { CardContentLayout } from "./card-content-layout"
-import { CardModalHeader } from "./card-modal-header"
+import { CardPanelHeader } from "./card-panel-header"
 import { CardMeta } from "../card/card-meta"
 import { CardAttachments } from "../card/attachments/card-attachments"
 import { AttachmentDropZone } from "../card/attachments/attachment-drop-zone"
@@ -35,9 +35,9 @@ export function CardEditor({
   onClose,
 }: IProps) {
   return (
-    <ModalContent>
+    <div className="flex min-h-0 flex-1 flex-col">
       <AttachmentUploadProvider cardId={cardId}>
-        <CardModalHeader
+        <CardPanelHeader
           isPreview={isPreview}
           onClose={onClose}
           onSave={onClose}
@@ -74,13 +74,13 @@ export function CardEditor({
                 placeholder="Notes"
                 isPreview={isPreview}
                 markers={PREVIEW_MARKERS}
-                className="min-h-full shrink-0 resize-none"
+                className="min-h-[50vh] shrink-0 resize-none"
                 containerClassName="flex-1"
               />
             </CardContent>
           </CardContentLayout>
         </AttachmentDropZone>
       </AttachmentUploadProvider>
-    </ModalContent>
+    </div>
   )
 }

@@ -9,7 +9,7 @@ export const routes = {
     to: (id: string) => `/d/${id}`,
   },
   /**
-   * Card modal. It is rendered inside the active deck's nested router, so its
+   * Card panel. It is rendered inside the active deck's nested router, so its
    * pattern and paths are relative to that deck (full URL: /d/:deckId/c/:id).
    */
   card: {
