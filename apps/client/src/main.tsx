@@ -9,7 +9,7 @@ import { blockEdgeSwipeNavigation } from "@/lib/edge-swipe"
 import { requestPersistentStorage } from "@/lib/persist"
 import { queryClient } from "@/lib/query-client"
 import { Router } from "./router.tsx"
-import { startBackgroundSync } from "./lib/api/sync"
+import { seedClock, startBackgroundSync } from "./lib/api/sync"
 import { UpdateBanner } from "@/components/updates/update-banner"
 import { ConnectionBanner } from "@/components/sync/connection-banner"
 import { WindowDragRegion } from "@/components/window-drag-region"
@@ -26,6 +26,9 @@ blockEdgeSwipeNavigation()
 
 // Not awaited: the answer only affects eviction policy, never this render.
 void requestPersistentStorage()
+
+// Restore the HLC high-water mark before any mutation can stamp updatedAt
+await seedClock()
 
 // Seed the local DB from fixtures on first run
 await seed()

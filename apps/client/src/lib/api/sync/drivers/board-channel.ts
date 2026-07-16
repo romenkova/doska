@@ -5,6 +5,7 @@ import { keys } from "@/lib/data/keys"
 import { queryClient } from "@/lib/query-client"
 import { CARDS, COLUMNS, DASHBOARDS } from "../../constants"
 import { idb } from "../../db/idb"
+import { clock, persistClock } from "../hlc"
 
 /** Board-channel steps (a board's columns + cards), shared server ⇄ filesystem. */
 
@@ -88,6 +89,7 @@ export async function applyBoardRemote(
   let touchedBoard = false
 
   for (const { store, record } of changes) {
+    clock.receive(record.updatedAt)
     const existing = await idb.get<{ updatedAt: number }>(store, record.id)
     if (existing && existing.updatedAt >= record.updatedAt) continue
     await idb.set(store, record.id, record)
@@ -99,6 +101,7 @@ export async function applyBoardRemote(
       touchedBoard = true
     }
   }
+  void persistClock()
 
   if (touchedBoard)
     queryClient.invalidateQueries({ queryKey: keys.board(boardId) })

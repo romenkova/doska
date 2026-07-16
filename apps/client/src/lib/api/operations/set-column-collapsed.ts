@@ -1,5 +1,6 @@
 import { db } from "../db/db"
 import { sync } from "../sync"
+import { stamp } from "../sync/hlc"
 
 /** Persists a column's collapse state (card bodies hidden down to titles). */
 export async function setColumnCollapsed(
@@ -8,6 +9,6 @@ export async function setColumnCollapsed(
 ): Promise<void> {
   const column = (await db.getColumns()).find((c) => c.id === id)
   if (!column) return
-  await db.setColumn({ ...column, collapsed, updatedAt: Date.now() })
+  await db.setColumn({ ...column, collapsed, updatedAt: stamp() })
   sync.markDirty("columns", id)
 }

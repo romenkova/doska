@@ -4,6 +4,7 @@ import { BOARD_COLUMNS } from "@/lib/seed"
 import type { Dashboard } from "@/lib/types"
 import { db } from "../db/db"
 import { sync } from "../sync"
+import { stamp } from "../sync/hlc"
 
 /** Creates a board with the default columns, appends it to the list, returns it. */
 export async function createDashboard(name: string): Promise<Dashboard> {
@@ -22,7 +23,7 @@ export async function createDashboard(name: string): Promise<Dashboard> {
       name,
       list.map((d) => d.prefix)
     ),
-    updatedAt: Date.now(),
+    updatedAt: stamp(),
     deletedAt: null,
   }
   await db.setDashboard(dashboard)
@@ -34,7 +35,7 @@ export async function createDashboard(name: string): Promise<Dashboard> {
         ...template,
         id: `col-${crypto.randomUUID().slice(0, 8)}`,
         dashboardId: id,
-        updatedAt: Date.now(),
+        updatedAt: stamp(),
         deletedAt: null,
       }
       await db.setColumn(column)

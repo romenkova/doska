@@ -2,6 +2,7 @@ import { CARDS_BY_COLUMN, idb } from "./idb"
 import { BOARD_COLUMNS, cards as seedCards, seedDashboards } from "../../seed"
 import type { Card, Column, Dashboard } from "../../types"
 import { CARDS, COLUMNS, DASHBOARDS } from "../constants"
+import { stamp } from "../sync/hlc"
 
 /**
  * Populates the stores from the fixtures on an empty DB. Called once at page
@@ -25,7 +26,7 @@ export async function seed(): Promise<void> {
 function tombstone<T extends { deletedAt: number | null; updatedAt: number }>(
   record: T
 ): T {
-  const now = Date.now()
+  const now = stamp()
   return { ...record, deletedAt: now, updatedAt: now }
 }
 
