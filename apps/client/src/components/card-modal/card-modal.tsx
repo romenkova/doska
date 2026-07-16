@@ -12,7 +12,8 @@ interface IProps {
   closeHref: string
 }
 
-type Draft = Partial<Pick<Card, "title" | "body" | "deadline">>
+/** Deadline edits commit straight from {@link CardMeta}, so they never land here. */
+type Draft = Partial<Pick<Card, "title" | "body">>
 
 export function CardModal({ closeHref }: IProps) {
   const [, navigate] = useLocation()
@@ -37,11 +38,7 @@ export function CardModal({ closeHref }: IProps) {
   const close = () => {
     if (content) {
       const next = { ...content, ...draft }
-      save({
-        title: next.title,
-        body: next.body,
-        deadline: next.deadline,
-      })
+      save({ title: next.title, body: next.body })
     }
     navigate(closeHref)
   }
@@ -61,11 +58,9 @@ export function CardModal({ closeHref }: IProps) {
           cardId={card}
           title={draft.title ?? content.title}
           body={draft.body ?? content.body}
-          deadline={"deadline" in draft ? draft.deadline! : content.deadline}
           isPreview={isPreview}
           onChangeTitle={(title) => setDraft((d) => ({ ...d, title }))}
           onChangeBody={(body) => setDraft((d) => ({ ...d, body }))}
-          onChangeDeadline={(deadline) => setDraft((d) => ({ ...d, deadline }))}
           onTogglePreview={() => setPreview(!isPreview)}
           onEdit={() => setPreview(false)}
           onClose={close}

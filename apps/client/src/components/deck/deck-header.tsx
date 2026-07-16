@@ -3,12 +3,16 @@ import { Button, InvisibleInput, SidebarTrigger } from "@doska/ui-kit"
 import { ArrowRightLeft, Plus, Trash2 } from "lucide-react"
 import { ConfirmDialog } from "../confirm-dialog"
 import { ReorderColumnsModal } from "./reorder-columns/reorder-columns-modal"
+import { PrefixEditor } from "./prefix-editor"
 import type { Column } from "@/lib/types"
 
 interface IProps {
   title: string
+  prefix: string
+  takenPrefixes: string[]
   columns: Column[]
   onRename: (name: string) => void
+  onRenamePrefix: (prefix: string) => void
   onDelete: () => void
   onAddColumn: () => void
   onReorderColumns: (changed: Column[]) => void
@@ -16,8 +20,11 @@ interface IProps {
 
 export function DeckHeader({
   title,
+  prefix,
+  takenPrefixes,
   columns,
   onRename,
+  onRenamePrefix,
   onDelete,
   onAddColumn,
   onReorderColumns,
@@ -34,7 +41,13 @@ export function DeckHeader({
         label="Board name"
         className="min-w-40 text-base font-semibold sm:min-w-68"
       />
+
       <div className="ml-auto flex items-center gap-1">
+        <PrefixEditor
+          prefix={prefix}
+          taken={takenPrefixes}
+          onCommit={onRenamePrefix}
+        />
         <Button
           variant="ghost"
           aria-label="Reorder columns"

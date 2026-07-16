@@ -9,13 +9,11 @@ import { cn } from "@doska/ui-kit"
 import { fallbackCard } from "@/lib/seed"
 import { useLocation } from "wouter"
 import { routes } from "@/lib/routes"
+import { CardMeta } from "./card-meta"
 import { CardContextMenu, CardMenu } from "./menu/card-menu"
-import { CardDeadline } from "./deadline/card-deadline"
-import { TaskIndicator } from "./task-indicator"
 import { useCard } from "@/lib/data/queries"
 import { useUpdateCard } from "@/lib/data/mutations"
-import { todayIso } from "@/lib/utils"
-import { MarkdownCardPreview, taskProgress } from "@doska/markdown"
+import { MarkdownCardPreview } from "@doska/markdown"
 import type { DetailedHTMLProps, HTMLAttributes } from "react"
 import type { Column } from "@/lib/types"
 import { CardAttachments } from "./attachments/card-attachments"
@@ -49,10 +47,6 @@ export function Card({
   const { mutate: updateCard } = useUpdateCard(id)
   const { title, body, deadline } = card
   const attachments = card.attachments ?? []
-  const { done, total } = taskProgress(body)
-  const onAddDeadline = deadline
-    ? undefined
-    : () => updateCard({ deadline: todayIso() })
 
   return (
     <div
@@ -65,7 +59,6 @@ export function Card({
       <CardContextMenu
         onEdit={() => navigate(routes.card.to(id))}
         onDelete={onDelete}
-        onAddDeadline={onAddDeadline}
         columns={columns}
         currentColumnId={currentColumnId}
         onMoveToColumn={onMoveToColumn}
@@ -79,27 +72,18 @@ export function Card({
           <CardHeader className={cn(!!deadline && !showBody && "mb-2")}>
             <CardTitle>{title || "Untitled card"}</CardTitle>
             <CardAction className="flex items-center gap-1">
-              {total > 0 && <TaskIndicator done={done} total={total} />}
               <CardMenu
                 onEdit={() => navigate(routes.card.to(id))}
                 onDelete={onDelete}
-                onAddDeadline={onAddDeadline}
                 columns={columns}
                 currentColumnId={currentColumnId}
                 onMoveToColumn={onMoveToColumn}
               />
             </CardAction>
           </CardHeader>
-          {!!deadline && (
-            <CardContent>
-              <div className="mt-2 flex items-center gap-2 text-sm">
-                <CardDeadline
-                  value={deadline}
-                  onChange={(deadline) => updateCard({ deadline })}
-                />
-              </div>
-            </CardContent>
-          )}
+          <CardContent>
+            <CardMeta cardId={id} className="mt-2" />
+          </CardContent>
 
           {body.trim() && (
             <div

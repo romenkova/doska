@@ -29,6 +29,12 @@ export const CardSchema = z.object({
   body: z.string(),
   position: z.string(),
   columnId: z.string(),
+  /**
+   * Human-readable per-board card number (the `12` in `ROAD-12`). Allocated
+   * server-side from a per-board counter on the card's first sync, so it's
+   * `null` until then. Combined with the board's `prefix` at render time.
+   */
+  number: z.number().nullable().default(null),
   /** Optional deadline as an ISO date string (`YYYY-MM-DD`); `null` when unset. */
   deadline: z.string().nullable().default(null),
   /** Attached files; travels with the card's last-writer-wins record. */
@@ -52,6 +58,12 @@ export const DashboardSchema = z.object({
   id: z.string(),
   title: z.string(),
   position: z.string(),
+  /**
+   * Short uppercase key prefixed onto every card id on this board (the `ROAD`
+   * in `ROAD-12`). Auto-derived from the title on creation, unique per account,
+   * editable in board settings. Empty only for boards created before card ids.
+   */
+  prefix: z.string().default(""),
   updatedAt: z.number(),
   deletedAt: z.number().nullable(),
 })

@@ -50,6 +50,13 @@
       "when": 1783895388700,
       "tag": "0006_better_auth",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1784071660078,
+      "tag": "0007_simple_newton_destine",
+      "breakpoints": true
     }
   ]
 }

@@ -5,14 +5,12 @@ import {
   MenuSub,
   MenuSubTrigger,
 } from "@doska/ui-kit"
-import { ArrowRightLeft, CalendarPlus, Pencil, Trash2 } from "lucide-react"
+import { ArrowRightLeft, Pencil, Trash2 } from "lucide-react"
 import type { Column } from "@/lib/types"
 
 interface IProps {
   onEdit: () => void
   onDelete: () => void
-  /** When set, the card has no deadline yet — offer to add one. */
-  onAddDeadline?: () => void
   align?: "start" | "center" | "end"
   move?: IMove
 }
@@ -26,7 +24,6 @@ interface IMove {
 export function CardMenuItems({
   onEdit,
   onDelete,
-  onAddDeadline,
   align = "end",
   move,
 }: IProps) {
@@ -36,12 +33,6 @@ export function CardMenuItems({
         <Pencil />
         Edit
       </MenuItem>
-      {onAddDeadline && (
-        <MenuItem onClick={onAddDeadline}>
-          <CalendarPlus />
-          Add deadline
-        </MenuItem>
-      )}
       {move && <MoveToColumnSub {...move} />}
       <MenuSeparator />
       <MenuItem

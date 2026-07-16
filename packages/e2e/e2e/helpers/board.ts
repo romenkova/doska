@@ -1,4 +1,5 @@
 import { expect, type APIRequestContext, type Page } from "@playwright/test"
+import { derivePrefix } from "@doska/contract"
 import { dashboardSync } from "./rpc"
 
 /* -------------------------------------------------------------------------- */
@@ -102,6 +103,7 @@ export async function remoteCreateDashboard(
           id,
           title,
           position: "a5",
+          prefix: derivePrefix(title),
           updatedAt: Date.now(),
           deletedAt: null,
         },
@@ -126,6 +128,7 @@ export async function remoteRenameDashboard(
           id,
           title: toTitle,
           position: "a5",
+          prefix: derivePrefix(toTitle),
           // A strictly newer clock so the rename wins last-writer-wins.
           updatedAt: Date.now() + 10_000,
           deletedAt: null,
@@ -149,6 +152,7 @@ export async function remoteDeleteDashboard(
           id,
           title: "",
           position: "a5",
+          prefix: "",
           deletedAt: Date.now(),
           // A strictly newer clock so the delete wins last-writer-wins.
           updatedAt: Date.now() + 10_000,
