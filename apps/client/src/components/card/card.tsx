@@ -15,7 +15,6 @@ import { useCard } from "@/lib/data/queries"
 import { useUpdateCard } from "@/lib/data/mutations"
 import { MarkdownCardPreview } from "@doska/markdown"
 import type { DetailedHTMLProps, HTMLAttributes } from "react"
-import type { Column } from "@/lib/types"
 import { CardAttachments } from "./attachments/card-attachments"
 
 interface IProps extends DetailedHTMLProps<
@@ -25,23 +24,10 @@ interface IProps extends DetailedHTMLProps<
   id: string
   index: number
   showBody: boolean
-  onDelete: () => void
   isDragging: boolean
-  columns: Column[]
-  currentColumnId: string
-  onMoveToColumn: (columnId: string) => void
 }
 
-export function Card({
-  id,
-  showBody,
-  onDelete,
-  isDragging,
-  columns,
-  currentColumnId,
-  onMoveToColumn,
-  ...props
-}: IProps) {
+export function Card({ id, showBody, isDragging, ...props }: IProps) {
   const [, navigate] = useLocation()
   const { data: card = fallbackCard } = useCard(id)
   const { mutate: updateCard } = useUpdateCard(id)
@@ -56,13 +42,7 @@ export function Card({
         "touch-manipulation select-none [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none]"
       )}
     >
-      <CardContextMenu
-        onEdit={() => navigate(routes.card.to(id))}
-        onDelete={onDelete}
-        columns={columns}
-        currentColumnId={currentColumnId}
-        onMoveToColumn={onMoveToColumn}
-      >
+      <CardContextMenu cardId={id} onEdit={() => navigate(routes.card.to(id))}>
         <CardBase
           className={cn(
             showBody ? "gap-2" : "gap-0",
@@ -73,11 +53,8 @@ export function Card({
             <CardTitle>{title || "Untitled card"}</CardTitle>
             <CardAction className="flex items-center gap-1">
               <CardMenu
+                cardId={id}
                 onEdit={() => navigate(routes.card.to(id))}
-                onDelete={onDelete}
-                columns={columns}
-                currentColumnId={currentColumnId}
-                onMoveToColumn={onMoveToColumn}
               />
             </CardAction>
           </CardHeader>

@@ -8,21 +8,14 @@ import {
 } from "@doska/ui-kit"
 import { MoreHorizontal } from "lucide-react"
 import type { ReactNode } from "react"
-import type { Column } from "@/lib/types"
 import { CardMenuItems } from "./menu-items"
 
 interface IProps {
+  cardId: string
   onEdit: () => void
-  onDelete: () => void
 }
 
-interface IMove {
-  columns: Column[]
-  currentColumnId: string
-  onMoveToColumn: (columnId: string) => void
-}
-
-export function CardMenu({ onEdit, onDelete, ...move }: IProps & IMove) {
+export function CardMenu({ cardId, onEdit }: IProps) {
   return (
     <Menu>
       <MenuTrigger
@@ -37,7 +30,7 @@ export function CardMenu({ onEdit, onDelete, ...move }: IProps & IMove) {
       >
         <MoreHorizontal />
       </MenuTrigger>
-      <CardMenuItems onEdit={onEdit} onDelete={onDelete} move={move} />
+      <CardMenuItems cardId={cardId} onEdit={onEdit} />
     </Menu>
   )
 }
@@ -45,10 +38,9 @@ export function CardMenu({ onEdit, onDelete, ...move }: IProps & IMove) {
 export function CardContextMenu({
   children,
   isEnabled = true,
+  cardId,
   onEdit,
-  onDelete,
-  ...move
-}: IProps & IMove & { children: ReactNode; isEnabled?: boolean }) {
+}: IProps & { children: ReactNode; isEnabled?: boolean }) {
   const isMobile = useIsMobile()
 
   if (!isEnabled || isMobile) return children
@@ -56,12 +48,7 @@ export function CardContextMenu({
   return (
     <ContextMenu>
       <ContextMenuTrigger>{children}</ContextMenuTrigger>
-      <CardMenuItems
-        align="start"
-        onEdit={onEdit}
-        onDelete={onDelete}
-        move={move}
-      />
+      <CardMenuItems align="start" cardId={cardId} onEdit={onEdit} />
     </ContextMenu>
   )
 }

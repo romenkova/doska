@@ -1,28 +1,15 @@
 import { Draggable } from "@hello-pangea/dnd"
 import { useLocation } from "wouter"
 import { routes } from "@/lib/routes"
-import type { Column } from "@/lib/types"
 import { Card } from "./card"
 
 interface IProps {
   id: string
   index: number
   showBody: boolean
-  onDelete: () => void
-  columns: Column[]
-  currentColumnId: string
-  onMoveToColumn: (columnId: string) => void
 }
 
-export function DraggableCard({
-  id,
-  index,
-  showBody,
-  onDelete,
-  columns,
-  currentColumnId,
-  onMoveToColumn,
-}: IProps) {
+export function DraggableCard({ id, index, showBody }: IProps) {
   const [, navigate] = useLocation()
 
   return (
@@ -43,12 +30,8 @@ export function DraggableCard({
           }}
           index={index}
           isDragging={snapshot.isDragging}
-          onDelete={onDelete}
           showBody={showBody}
           id={id}
-          columns={columns}
-          currentColumnId={currentColumnId}
-          onMoveToColumn={onMoveToColumn}
         />
       )}
     </Draggable>

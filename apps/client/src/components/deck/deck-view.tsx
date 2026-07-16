@@ -6,7 +6,6 @@ import { keys } from "@/lib/data/keys"
 import {
   useCreateCard,
   useCreateColumn,
-  useDeleteCard,
   useDeleteColumn,
   useDeleteDashboard,
   useMoveCard,
@@ -17,11 +16,7 @@ import {
   useUpdateDashboardPrefix,
 } from "@/lib/data/mutations"
 import { useBoard, useDashboards } from "@/lib/data/queries"
-import {
-  useDragEnd,
-  useMoveCardToColumn,
-  useSyncShortcut,
-} from "@/lib/hooks"
+import { useDragEnd, useSyncShortcut } from "@/lib/hooks"
 import type { Dashboard } from "@/lib/types"
 import { Deck } from "./deck"
 
@@ -78,14 +73,12 @@ export function DeckView({ dashboard }: { dashboard: Dashboard }) {
   }, [id, needsCardBackfill])
 
   const { mutate: createCard } = useCreateCard(id)
-  const { mutate: deleteCard } = useDeleteCard(id)
   const { mutate: moveCard } = useMoveCard(id)
   const { mutate: createColumn } = useCreateColumn(id)
   const { mutate: moveColumn } = useMoveColumn(id)
   const { mutate: renameColumn } = useRenameColumn(id)
   const { mutate: deleteColumn } = useDeleteColumn(id)
   const handleDragEnd = useDragEnd(board, moveCard)
-  const moveCardToColumn = useMoveCardToColumn(board, moveCard)
 
   return (
     <Deck
@@ -96,8 +89,6 @@ export function DeckView({ dashboard }: { dashboard: Dashboard }) {
         setColumnCollapsed({ id: columnId, collapsed })
       }
       onAddCard={createCard}
-      onDeleteCard={deleteCard}
-      onMoveCard={moveCardToColumn}
       onAddColumn={() => createColumn("New column")}
       onReorderColumns={moveColumn}
       onRenameColumn={(columnId, title) => renameColumn({ id: columnId, title })}
