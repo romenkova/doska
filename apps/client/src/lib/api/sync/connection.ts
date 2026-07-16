@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from "react"
 import type { SyncFailure } from "@doska/sync"
-import { isSyncConfigured, subscribeSyncConfig } from "../runtime"
+import { isSyncConfigured, subscribeSyncConfig } from "../server"
 import { sync } from "./sync-engine"
 
 export type Connection =

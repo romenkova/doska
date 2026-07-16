@@ -2,7 +2,7 @@ import { cn, SidebarHeader, SidebarMenu, SidebarMenuItem } from "@doska/ui-kit"
 import { Anchor } from "lucide-react"
 import { Link } from "wouter"
 import { useAppVersion } from "@/lib/version"
-import { isDesktop } from "@/lib/api/runtime"
+import { isDesktop } from "@/lib/platform"
 
 export function AppSidebarHeader() {
   const version = useAppVersion()

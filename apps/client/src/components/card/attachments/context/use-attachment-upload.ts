@@ -3,7 +3,7 @@ import type { Attachment } from "@/lib/types"
 import { useCard } from "@/lib/data/queries"
 import { useUpdateCard } from "@/lib/data/mutations"
 import { activeStorage } from "@/lib/api/attachments"
-import { isSyncConfigured } from "@/lib/api/runtime"
+import { isSyncConfigured } from "@/lib/api/server"
 
 /**
  * Uploading files to a card: shared by the header's Attach button and the

@@ -8,7 +8,8 @@ import {
 } from "@doska/ui-kit"
 import { useState } from "react"
 import { useLogin } from "@/lib/data/mutations"
-import { getServerUrl, isDesktop, setServerUrl } from "@/lib/api/runtime"
+import { getServerUrl, setServerUrl } from "@/lib/api/server"
+import { isDesktop } from "@/lib/platform"
 
 interface IProps {
   open: boolean

@@ -1,4 +1,4 @@
-import { isDesktop } from "./api/runtime"
+import { isDesktop } from "./platform"
 
 // Set once we've asked, so a declined prompt isn't re-raised on every load.
 const ASKED_KEY = "deck:storage-persist-asked"

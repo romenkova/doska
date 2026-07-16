@@ -11,18 +11,10 @@
 
 import { createAuthClient } from "better-auth/react"
 import { usernameClient } from "better-auth/client/plugins"
-import { apiUrl, isDesktop, rawFetch } from "./runtime"
-
-const TOKEN_KEY = "deck:session-token"
-
-export function getSessionToken(): string | null {
-  if (!isDesktop()) return null
-  return localStorage.getItem(TOKEN_KEY)
-}
-
-export function clearSessionToken(): void {
-  localStorage.removeItem(TOKEN_KEY)
-}
+import { isDesktop } from "../platform"
+import { rawFetch } from "./fetch"
+import { apiUrl } from "./server"
+import { getSessionToken, setSessionToken } from "./session-token"
 
 function create(baseURL: string) {
   return createAuthClient({
@@ -37,7 +29,7 @@ function create(baseURL: string) {
       onSuccess: ({ response }) => {
         if (!isDesktop()) return
         const token = response.headers.get("set-auth-token")
-        if (token) localStorage.setItem(TOKEN_KEY, token)
+        if (token) setSessionToken(token)
       },
     },
   })

@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import type { WebviewWindow } from "@tauri-apps/api/webviewWindow"
-import { isDesktop } from "@/lib/api/runtime"
+import { isDesktop } from "@/lib/platform"
 
 /** Height of the draggable strip in px. */
 const DRAG_STRIP_HEIGHT = 100

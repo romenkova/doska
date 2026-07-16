@@ -1,5 +1,6 @@
-import { authClient, clearSessionToken } from "./auth-client"
-import { isSyncConfigured } from "./runtime"
+import { authClient } from "./auth-client"
+import { isSyncConfigured } from "./server"
+import { clearSessionToken } from "./session-token"
 
 export type Session = { authed: boolean; login: string | null }
 

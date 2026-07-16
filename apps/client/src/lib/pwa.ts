@@ -1,4 +1,4 @@
-import { isDesktop } from "./api/runtime"
+import { isDesktop } from "./platform"
 
 /**
  * Registers the service worker that precaches the app shell, so the web client

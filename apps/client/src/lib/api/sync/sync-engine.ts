@@ -13,7 +13,7 @@ import {
   DASHBOARDS_SCOPE,
 } from "./drivers/dashboard-list-driver"
 import { isAuthed, subscribeAuthed } from "@/lib/utils"
-import { isSyncConfigured, subscribeSyncConfig } from "../runtime"
+import { isSyncConfigured, subscribeSyncConfig } from "../server"
 
 /**
  * Sync runs only against a reachable, signed-in server. Otherwise every engine
