@@ -19,8 +19,8 @@ export function TaskIndicator({ done, total }: IProps) {
         //   : "text-muted-foreground"
       )}
     >
-      <Icon className="size-3.75" />
-      <span>
+      <Icon className="size-3.5" />
+      <span className="mt-px">
         {done}/{total}
       </span>
     </span>
