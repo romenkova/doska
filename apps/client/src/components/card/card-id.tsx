@@ -28,23 +28,17 @@ export function CardId({ id, className }: { id: string; className?: string }) {
       aria-label={`Copy card id ${id}`}
       title="Copy id"
       className={cn(
-        "group/id inline-flex items-center gap-1 rounded-sm px-1.5 py-0.5",
+        "group/id inline-flex items-center gap-1 rounded-sm py-0.5 pr-1",
         "font-mono text-xs font-normal text-muted-foreground",
-        "hover:text-foreground",
+        "relative hover:text-foreground",
         className
       )}
     >
-      {copied ? (
-        <>
-          <Check className="size-3.5" />
-          <span>copied</span>
-        </>
-      ) : (
-        <>
-          <Hash className="size-3.5" />
-          <span>{id}</span>
-        </>
-      )}
+      {copied ? <Check className="size-3.5" /> : <Hash className="size-3.5" />}
+      <span className={cn("w-0", copied ? "opacity-100" : "opacity-0")}>
+        copied
+      </span>
+      <span className={cn(copied ? "opacity-0" : "opacity-100")}>{id}</span>
     </button>
   )
 }

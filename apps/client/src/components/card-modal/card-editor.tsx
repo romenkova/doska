@@ -45,13 +45,15 @@ export function CardEditor({
         />
         <AttachmentDropZone className="flex min-h-0 flex-1 flex-col">
           <CardContentLayout onDoubleClick={isPreview ? onEdit : undefined}>
+            <CardContent className="py-2">
+              <CardMeta cardId={cardId} body={body} />
+            </CardContent>
             <CardAttachments
               className="py-2"
               cardId={cardId}
               isReadonly={isPreview}
             />
             <CardContent className="flex min-h-0 flex-1 flex-col px-4 pt-2">
-              <CardMeta cardId={cardId} body={body} className="mt-2" />
               <MarkdownTextarea
                 autoFocus
                 value={title}
