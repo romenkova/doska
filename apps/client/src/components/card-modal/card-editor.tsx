@@ -74,7 +74,7 @@ export function CardEditor({
                 placeholder="Notes"
                 isPreview={isPreview}
                 markers={PREVIEW_MARKERS}
-                className="min-h-full shrink-0 resize-none"
+                className="min-h-[50vh] shrink-0 resize-none"
                 containerClassName="flex-1"
               />
             </CardContent>
