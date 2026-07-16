@@ -165,13 +165,30 @@ export function useMoveColumn(deckId: string) {
   })
 }
 
+export type CardPatch = Partial<
+  Pick<Card, "title" | "body" | "deadline" | "attachments">
+>
+
 export function useUpdateCard(id: string) {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (
-      patch: Partial<Pick<Card, "title" | "body" | "deadline" | "attachments">>
-    ) => api.updateCard(id, patch),
+    mutationFn: (patch: CardPatch) => api.updateCard(id, patch),
     onSettled: () => qc.invalidateQueries({ queryKey: keys.card(id) }),
+  })
+}
+
+/**
+ * {@link useUpdateCard} with the card id in the variables rather than bound at
+ * hook time, for callers whose target can change while a write is queued — the
+ * card panel debounces its writes, so the id has to travel with the patch.
+ */
+export function useSaveCard() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, patch }: { id: string; patch: CardPatch }) =>
+      api.updateCard(id, patch),
+    onSettled: (_data, _err, { id }) =>
+      qc.invalidateQueries({ queryKey: keys.card(id) }),
   })
 }
 
