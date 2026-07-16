@@ -1,4 +1,5 @@
 import { generateKeyBetween } from "fractional-indexing"
+import { derivePrefix } from "@doska/contract"
 import { BOARD_COLUMNS } from "@/lib/seed"
 import type { Dashboard } from "@/lib/types"
 import { db } from "../db/db"
@@ -17,6 +18,10 @@ export async function createDashboard(name: string): Promise<Dashboard> {
     id,
     title: name,
     position,
+    prefix: derivePrefix(
+      name,
+      list.map((d) => d.prefix)
+    ),
     updatedAt: Date.now(),
     deletedAt: null,
   }

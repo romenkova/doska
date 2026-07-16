@@ -1,4 +1,4 @@
-import { isStandalone } from "./api/runtime"
+import { isStandalone } from "./platform"
 
 // Width of the band along each side where the OS takes over the gesture.
 const EDGE_PX = 24

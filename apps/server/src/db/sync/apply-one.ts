@@ -1,5 +1,10 @@
 import type { Change } from "@doska/contract"
-import type { Tx } from "./counter"
+import { eq } from "drizzle-orm"
+import {
+  allocateCardNumber,
+  ensureCardNumberAtLeast,
+  type Tx,
+} from "./counter"
 import { cards, columns } from "../schema"
 import { upsertLWW } from "./core/upsert-lww"
 
@@ -41,6 +46,24 @@ export async function applyOne(
   }
 
   if (store === "cards") {
+    const [existing] = await tx
+      .select({ number: cards.number })
+      .from(cards)
+      .where(eq(cards.id, record.id))
+      .limit(1)
+    // A card's number is stamped once, then fixed. Keep what the server already
+    // holds; else adopt a client-supplied number (a legacy backfill) or allocate
+    // a fresh one. Allocation nudges `updatedAt` so the stamp rides back to the
+    // creator (LWW skips equal timestamps); an adopted number is already on the
+    // client, carried by its own clock, but must not be reissued later.
+    let number = existing?.number ?? record.number ?? null
+    let updatedAt = record.updatedAt
+    if (number === null) {
+      number = await allocateCardNumber(tx, boardId)
+      updatedAt = record.updatedAt + 1
+    } else if (existing?.number == null) {
+      await ensureCardNumberAtLeast(tx, boardId, number)
+    }
     return upsertLWW(tx, cards, cards.id, cards.updatedAt, {
       id: record.id,
       boardId,
@@ -48,9 +71,10 @@ export async function applyOne(
       title: record.title,
       body: record.body,
       position: record.position,
+      number,
       deadline: record.deadline,
       attachments: record.attachments,
-      updatedAt: record.updatedAt,
+      updatedAt,
       deletedAt,
       seq: nextSeq,
     })

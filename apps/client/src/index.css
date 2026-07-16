@@ -91,6 +91,8 @@
   --sidebar-accent-foreground: #725cff;
   --sidebar-border: #eeeff2;
   --sidebar-ring: #725cff;
+  --scrollbar-thumb: #d8dae1;
+  --scrollbar-thumb-hover: #bcbfca;
 }
 
 .dark {
@@ -127,6 +129,8 @@
   --sidebar-accent-foreground: #f7f7f8;
   --sidebar-border: #ffffff1f;
   --sidebar-ring: #9585ff;
+  --scrollbar-thumb: #ffffff1f;
+  --scrollbar-thumb-hover: #ffffff3d;
 }
 
 @layer base {
@@ -146,6 +150,34 @@
     overscroll-behavior: none;
     height: 100%;
     overflow: hidden;
+  }
+
+  /* Thin, theme-aware scrollbars. macOS overlays auto-hide, but Windows/Linux
+     render the chunky OS default — so style both the standard (Firefox) and
+     WebKit/Chromium sides. The transparent border draws the thumb inset with a
+     padding gap and keeps its rounded shape. */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) transparent;
+  }
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  *::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb);
+    border: 2px solid transparent;
+    border-radius: 9999px;
+    background-clip: padding-box;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background-color: var(--scrollbar-thumb-hover);
+  }
+  *::-webkit-scrollbar-corner {
+    background: transparent;
   }
 }
 

@@ -1,9 +1,6 @@
-import {
-  getAutoUpdate,
-  getServerUrl,
-  getServerVersion,
-  isDesktop,
-} from "./api/runtime"
+import { getServerUrl, getServerVersion } from "./api/server"
+import { getAutoUpdate } from "./auto-update"
+import { isDesktop } from "./platform"
 
 /**
  * Result of an update check, shaped for the UI to act on. Desktop updates come

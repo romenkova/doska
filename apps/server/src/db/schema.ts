@@ -53,6 +53,7 @@ export const dashboards = pgTable("dashboards", {
   id: text("id").primaryKey(),
   title: text("title").notNull(),
   position: text("position").notNull(),
+  prefix: text("prefix").notNull().default(""),
   updatedAt: bigint("updated_at", { mode: "number" }).notNull(),
   deletedAt: bigint("deleted_at", { mode: "number" }),
   seq: integer("seq").notNull(),
@@ -82,6 +83,7 @@ export const cards = pgTable(
     title: text("title").notNull(),
     body: text("body").notNull(),
     position: text("position").notNull(),
+    number: integer("number"),
     deadline: text("deadline"),
     attachments: jsonb("attachments")
       .$type<Attachment[]>()

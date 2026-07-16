@@ -1,5 +1,6 @@
 import { S3FileStorage, type FileStorage } from "@doska/file-storage"
-import { apiUrl, appFetch } from "../runtime"
+import { appFetch } from "../fetch"
+import { apiUrl } from "../server"
 
 /**
  * The backend attachments are read from and written to. Kept as a factory so a

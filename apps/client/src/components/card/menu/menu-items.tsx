@@ -5,47 +5,34 @@ import {
   MenuSub,
   MenuSubTrigger,
 } from "@doska/ui-kit"
-import { ArrowRightLeft, CalendarPlus, Pencil, Trash2 } from "lucide-react"
-import type { Column } from "@/lib/types"
+import { generateKeyBetween } from "fractional-indexing"
+import { ArrowRightLeft, Pencil, Trash2 } from "lucide-react"
+import { useParams } from "wouter"
+import { useDeleteCard, useMoveCard } from "@/lib/data/mutations"
+import { useBoard } from "@/lib/data/queries"
+import { routes } from "@/lib/routes"
+import { byPosition } from "@/lib/utils"
 
 interface IProps {
+  cardId: string
   onEdit: () => void
-  onDelete: () => void
-  /** When set, the card has no deadline yet — offer to add one. */
-  onAddDeadline?: () => void
   align?: "start" | "center" | "end"
-  move?: IMove
 }
 
-interface IMove {
-  columns: Column[]
-  currentColumnId: string
-  onMoveToColumn: (columnId: string) => void
-}
+export function CardMenuItems({ cardId, onEdit, align = "end" }: IProps) {
+  const { id: deckId } = useParams<typeof routes.deck.pattern>()
+  const { mutate: deleteCard } = useDeleteCard(deckId)
 
-export function CardMenuItems({
-  onEdit,
-  onDelete,
-  onAddDeadline,
-  align = "end",
-  move,
-}: IProps) {
   return (
     <MenuContent align={align} onClick={(e) => e.stopPropagation()}>
       <MenuItem onClick={onEdit}>
         <Pencil />
         Edit
       </MenuItem>
-      {onAddDeadline && (
-        <MenuItem onClick={onAddDeadline}>
-          <CalendarPlus />
-          Add deadline
-        </MenuItem>
-      )}
-      {move && <MoveToColumnSub {...move} />}
+      <MoveToColumnSub cardId={cardId} />
       <MenuSeparator />
       <MenuItem
-        onClick={onDelete}
+        onClick={() => deleteCard(cardId)}
         className="ml-auto data-highlighted:text-destructive"
       >
         <Trash2 />
@@ -55,7 +42,26 @@ export function CardMenuItems({
   )
 }
 
-function MoveToColumnSub({ columns, currentColumnId, onMoveToColumn }: IMove) {
+function MoveToColumnSub({ cardId }: { cardId: string }) {
+  const { id: deckId } = useParams<typeof routes.deck.pattern>()
+  const { data: board } = useBoard(deckId)
+  const { mutate: moveCard } = useMoveCard(deckId)
+
+  const columns = [...(board?.columns ?? [])].sort(byPosition)
+  const moved = board?.cards.find((c) => c.id === cardId)
+
+  function moveTo(columnId: string) {
+    if (!board || !moved || moved.columnId === columnId) return
+
+    const destCards = board.cards
+      .filter((c) => c.columnId === columnId && c.id !== cardId)
+      .sort(byPosition)
+    const last = destCards[destCards.length - 1]
+    const position = generateKeyBetween(last?.position ?? null, null)
+
+    moveCard([{ ...moved, columnId, position }])
+  }
+
   return (
     <MenuSub>
       <MenuSubTrigger>
@@ -66,8 +72,8 @@ function MoveToColumnSub({ columns, currentColumnId, onMoveToColumn }: IMove) {
         {columns.map((column) => (
           <MenuItem
             key={column.id}
-            disabled={column.id === currentColumnId}
-            onClick={() => onMoveToColumn(column.id)}
+            disabled={column.id === moved?.columnId}
+            onClick={() => moveTo(column.id)}
             className="data-disabled:pointer-events-none data-disabled:opacity-50"
           >
             {column.title}

@@ -1,5 +1,6 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
 import type { Card } from "@doska/contract"
+import { cardDisplayId } from "@doska/contract"
 import { z } from "zod"
 import { type Board, newId, positionAt, tombstone, touch } from "../board"
 import { reply } from "./reply"
@@ -42,13 +43,18 @@ export function registerCardTools(server: McpServer, board: Board): void {
           place
         ),
         columnId,
+        number: null,
         deadline: deadline ?? null,
         attachments: [],
         updatedAt: Date.now(),
         deletedAt: null,
       }
       await board.pushBoard(boardId, [{ store: "cards", record: card }])
-      return reply(card)
+
+      // The server stamps the number on write; re-read to surface the id.
+      const { prefix } = await board.dashboard(boardId)
+      const stored = await board.card(boardId, card.id)
+      return reply({ ...stored, cardId: cardDisplayId(prefix, stored.number) })
     }
   )
 

@@ -2,10 +2,10 @@ import { Button, Checkbox } from "@doska/ui-kit"
 import { useState, useSyncExternalStore } from "react"
 import {
   getAutoUpdate,
-  isDesktop,
   setAutoUpdate,
   subscribeAutoUpdate,
-} from "@/lib/api/runtime"
+} from "@/lib/auto-update"
+import { isDesktop } from "@/lib/platform"
 import { checkForUpdates, type DesktopUpdateState } from "@/lib/updates"
 
 type CheckState =

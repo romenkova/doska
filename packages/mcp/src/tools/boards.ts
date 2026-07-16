@@ -1,5 +1,6 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
 import type { Change, Column, Dashboard } from "@doska/contract"
+import { cardDisplayId, derivePrefix } from "@doska/contract"
 import { z } from "zod"
 import { type Board, newId, positionAt, tombstone, touch } from "../board"
 import { reply } from "./reply"
@@ -27,6 +28,7 @@ export function registerBoardTools(server: McpServer, board: Board): void {
       inputSchema: { boardId: z.string() },
     },
     async ({ boardId }) => {
+      const { prefix } = await board.dashboard(boardId)
       const { columns, cards } = await board.board(boardId)
       return reply({
         boardId,
@@ -35,8 +37,10 @@ export function registerBoardTools(server: McpServer, board: Board): void {
           title: column.title,
           cards: cards
             .filter((card) => card.columnId === column.id)
-            .map(({ id, title, body, deadline, attachments }) => ({
+            .map(({ id, title, body, number, deadline, attachments }) => ({
               id,
+              // The human-readable id automations reference, e.g. ROAD-12.
+              cardId: cardDisplayId(prefix, number),
               title,
               body,
               deadline,
@@ -61,10 +65,15 @@ export function registerBoardTools(server: McpServer, board: Board): void {
       inputSchema: { title: z.string() },
     },
     async ({ title }) => {
+      const existing = await board.dashboards()
       const dashboard: Dashboard = {
         id: newId("board"),
         title,
-        position: positionAt(await board.dashboards(), "bottom"),
+        position: positionAt(existing, "bottom"),
+        prefix: derivePrefix(
+          title,
+          existing.map((d) => d.prefix)
+        ),
         updatedAt: Date.now(),
         deletedAt: null,
       }

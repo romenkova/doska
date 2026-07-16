@@ -9,15 +9,12 @@ import { cn } from "@doska/ui-kit"
 import { fallbackCard } from "@/lib/seed"
 import { useLocation } from "wouter"
 import { routes } from "@/lib/routes"
+import { CardMeta } from "./card-meta"
 import { CardContextMenu, CardMenu } from "./menu/card-menu"
-import { CardDeadline } from "./deadline/card-deadline"
-import { TaskIndicator } from "./task-indicator"
 import { useCard } from "@/lib/data/queries"
 import { useUpdateCard } from "@/lib/data/mutations"
-import { todayIso } from "@/lib/utils"
-import { MarkdownCardPreview, taskProgress } from "@doska/markdown"
+import { MarkdownCardPreview } from "@doska/markdown"
 import type { DetailedHTMLProps, HTMLAttributes } from "react"
-import type { Column } from "@/lib/types"
 import { CardAttachments } from "./attachments/card-attachments"
 
 interface IProps extends DetailedHTMLProps<
@@ -27,32 +24,15 @@ interface IProps extends DetailedHTMLProps<
   id: string
   index: number
   showBody: boolean
-  onDelete: () => void
   isDragging: boolean
-  columns: Column[]
-  currentColumnId: string
-  onMoveToColumn: (columnId: string) => void
 }
 
-export function Card({
-  id,
-  showBody,
-  onDelete,
-  isDragging,
-  columns,
-  currentColumnId,
-  onMoveToColumn,
-  ...props
-}: IProps) {
+export function Card({ id, showBody, isDragging, ...props }: IProps) {
   const [, navigate] = useLocation()
   const { data: card = fallbackCard } = useCard(id)
   const { mutate: updateCard } = useUpdateCard(id)
   const { title, body, deadline } = card
   const attachments = card.attachments ?? []
-  const { done, total } = taskProgress(body)
-  const onAddDeadline = deadline
-    ? undefined
-    : () => updateCard({ deadline: todayIso() })
 
   return (
     <div
@@ -62,14 +42,7 @@ export function Card({
         "touch-manipulation select-none [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none]"
       )}
     >
-      <CardContextMenu
-        onEdit={() => navigate(routes.card.to(id))}
-        onDelete={onDelete}
-        onAddDeadline={onAddDeadline}
-        columns={columns}
-        currentColumnId={currentColumnId}
-        onMoveToColumn={onMoveToColumn}
-      >
+      <CardContextMenu cardId={id} onEdit={() => navigate(routes.card.to(id))}>
         <CardBase
           className={cn(
             showBody ? "gap-2" : "gap-0",
@@ -79,27 +52,15 @@ export function Card({
           <CardHeader className={cn(!!deadline && !showBody && "mb-2")}>
             <CardTitle>{title || "Untitled card"}</CardTitle>
             <CardAction className="flex items-center gap-1">
-              {total > 0 && <TaskIndicator done={done} total={total} />}
               <CardMenu
+                cardId={id}
                 onEdit={() => navigate(routes.card.to(id))}
-                onDelete={onDelete}
-                onAddDeadline={onAddDeadline}
-                columns={columns}
-                currentColumnId={currentColumnId}
-                onMoveToColumn={onMoveToColumn}
               />
             </CardAction>
           </CardHeader>
-          {!!deadline && (
-            <CardContent>
-              <div className="mt-2 flex items-center gap-2 text-sm">
-                <CardDeadline
-                  value={deadline}
-                  onChange={(deadline) => updateCard({ deadline })}
-                />
-              </div>
-            </CardContent>
-          )}
+          <CardContent>
+            <CardMeta cardId={id} className="mt-2" />
+          </CardContent>
 
           {body.trim() && (
             <div

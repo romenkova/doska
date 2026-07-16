@@ -1,7 +1,7 @@
 import { Modal, ModalContent, ModalTitle } from "@doska/ui-kit"
 import { Download, X } from "lucide-react"
 import type { Attachment } from "@/lib/types"
-import { downloadUrl } from "@/lib/api/runtime"
+import { downloadUrl } from "@/lib/download"
 import { useAttachmentUrl } from "@/lib/hooks/use-attachment-url"
 
 interface IProps {

@@ -60,3 +60,37 @@ export const boardCounter = (boardId: string) =>
 
 /** Account-level dashboard-list counter. */
 export const dashboardsCounter = () => counter(DASHBOARDS_COUNTER)
+
+/** The `counters` row holding a board's next human-readable card number. */
+const cardNumberCounterId = (boardId: string) => `cardno:${boardId}`
+
+/**
+ * Allocates the next human-readable card number for a board (the `12` in
+ * `ROAD-12`), starting at 1. Distinct from the board's sync counter: this ticks
+ * only when a brand-new card is first inserted, never on updates, so the numbers
+ * stay dense and stable. Runs inside the apply transaction, taking the counter
+ * row's `FOR UPDATE` lock so concurrent inserts can't hand out the same number.
+ */
+export async function allocateCardNumber(
+  tx: Tx,
+  boardId: string
+): Promise<number> {
+  const c = counter(cardNumberCounterId(boardId))
+  const next = (await c.ensure(tx)) + 1
+  await c.write(tx, next)
+  return next
+}
+
+/**
+ * Raises a board's card-number counter to at least `n`, so a number the server
+ * adopted from a client (a legacy backfill) can never be handed out again by a
+ * later {@link allocateCardNumber}.
+ */
+export async function ensureCardNumberAtLeast(
+  tx: Tx,
+  boardId: string,
+  n: number
+): Promise<void> {
+  const c = counter(cardNumberCounterId(boardId))
+  if (n > (await c.ensure(tx))) await c.write(tx, n)
+}

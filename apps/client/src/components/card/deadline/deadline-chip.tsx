@@ -6,7 +6,7 @@ import type { DeadlineStatus } from "@/lib/utils"
 const CHIP_BY_STATUS: Record<DeadlineStatus, string> = {
   overdue: "bg-destructive/10 text-destructive/70",
   soon: "deadline-chip--soon",
-  upcoming: "bg-muted text-foreground/80",
+  upcoming: "text-muted-foreground hover:text-foreground",
 }
 
 /** The deadline badge: a rounded chip, shaded by how close the deadline is. */
@@ -14,7 +14,7 @@ export function DeadlineChip({
   value,
   className,
 }: {
-  value: string
+  value: string | null
   className?: string
 }) {
   return (
@@ -22,12 +22,12 @@ export function DeadlineChip({
       className={cn(
         "inline-flex items-center gap-1 rounded-full px-2 py-0.5",
         "text-xs font-semibold tabular-nums",
-        CHIP_BY_STATUS[deadlineStatus(value)],
+        CHIP_BY_STATUS[value ? deadlineStatus(value) : "upcoming"],
         className
       )}
     >
       <Calendar className="size-3.5" />
-      {formatDeadline(value)}
+      {!!value && formatDeadline(value)}
     </span>
   )
 }

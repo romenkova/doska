@@ -2,10 +2,11 @@ import { contract } from "@doska/contract"
 import { createORPCClient } from "@orpc/client"
 import { RPCLink } from "@orpc/client/fetch"
 import type { ContractRouterClient } from "@orpc/contract"
-import { apiUrl, appFetch } from "../runtime"
+import { appFetch } from "../fetch"
+import { apiUrl } from "../server"
 
 // Web: same-origin path proxied to the API (see vite.config). Desktop: the
-// user's configured server URL, fetched via Tauri's HTTP plugin (see runtime).
+// user's configured server URL, fetched via Tauri's HTTP plugin (see fetch).
 const link = new RPCLink({
   // Resolved per request: the desktop server URL can be set after load.
   url: () => apiUrl("/api/rpc"),

@@ -7,6 +7,7 @@ import { Column } from "../column/column"
 import { DraggableCard } from "../card/draggable-card"
 import { CardModal } from "../card-modal/card-modal"
 import { DeckHeader } from "./deck-header"
+import { DeckPrefixProvider } from "./deck-context"
 import { SyncIndicator } from "./sync-indicator"
 import { cn } from "@doska/ui-kit"
 
@@ -16,13 +17,13 @@ interface IProps {
   isLoading: boolean
   onToggleBody: (columnId: string, collapsed: boolean) => void
   onAddCard: (columnId: string) => void
-  onDeleteCard: (id: string) => void
-  onMoveCard: (cardId: string, columnId: string) => void
   onAddColumn: () => void
   onReorderColumns: (changed: Board["columns"]) => void
   onRenameColumn: (columnId: string, title: string) => void
   onDeleteColumn: (columnId: string) => void
   onRenameDashboard: (name: string) => void
+  onRenameDashboardPrefix: (prefix: string) => void
+  takenPrefixes: string[]
   onDeleteDashboard: () => void
   onDragEnd: (result: DropResult) => void
 }
@@ -33,13 +34,13 @@ export function Deck({
   isLoading,
   onToggleBody,
   onAddCard,
-  onDeleteCard,
-  onMoveCard,
   onAddColumn,
   onReorderColumns,
   onRenameColumn,
   onDeleteColumn,
   onRenameDashboard,
+  onRenameDashboardPrefix,
+  takenPrefixes,
   onDeleteDashboard,
   onDragEnd,
 }: IProps) {
@@ -55,65 +56,66 @@ export function Deck({
   const columns = [...board.columns].sort(byPosition)
 
   return (
-    <div className="relative flex min-h-0 flex-1 flex-col">
-      <DeckHeader
-        title={dashboard.title}
-        onRename={onRenameDashboard}
-        onDelete={onDeleteDashboard}
-        onAddColumn={onAddColumn}
-        columns={columns}
-        onReorderColumns={onReorderColumns}
-      />
-      <DragDropContext
-        onDragStart={() => setIsDragging(true)}
-        onDragEnd={(result) => {
-          setIsDragging(false)
-          onDragEnd(result)
-        }}
-      >
-        <div
-          className={cn(
-            "flex min-h-0 w-full flex-1 items-stretch gap-6 overflow-x-auto overflow-y-hidden overscroll-x-contain px-6",
-            !isDragging && "snap-x snap-mandatory scroll-px-6 md:snap-none",
-            "transition-opacity duration-1000",
-            isLoading ? "opacity-0" : "opacity-100"
-          )}
+    <DeckPrefixProvider value={dashboard.prefix ?? ""}>
+      <div className="relative flex min-h-0 flex-1 flex-col">
+        <DeckHeader
+          title={dashboard.title}
+          prefix={dashboard.prefix ?? ""}
+          takenPrefixes={takenPrefixes}
+          onRename={onRenameDashboard}
+          onRenamePrefix={onRenameDashboardPrefix}
+          onDelete={onDeleteDashboard}
+          onAddColumn={onAddColumn}
+          columns={columns}
+          onReorderColumns={onReorderColumns}
+        />
+        <DragDropContext
+          onDragStart={() => setIsDragging(true)}
+          onDragEnd={(result) => {
+            setIsDragging(false)
+            onDragEnd(result)
+          }}
         >
-          {columns.map((column) => {
-            const cards = cardsByColumn.get(column.id) ?? []
-            const showBody = !column.collapsed
-            return (
-              <Column
-                key={column.id}
-                id={column.id}
-                title={column.title}
-                showBody={showBody}
-                onToggleBody={() => onToggleBody(column.id, showBody)}
-                onAddCard={() => onAddCard(column.id)}
-                onRename={(title) => onRenameColumn(column.id, title)}
-                onDelete={() => onDeleteColumn(column.id)}
-              >
-                {cards.map((card, index) => (
-                  <DraggableCard
-                    key={card.id}
-                    id={card.id}
-                    index={index}
-                    showBody={showBody}
-                    onDelete={() => onDeleteCard(card.id)}
-                    columns={columns}
-                    currentColumnId={column.id}
-                    onMoveToColumn={(columnId) => onMoveCard(card.id, columnId)}
-                  />
-                ))}
-              </Column>
-            )
-          })}
+          <div
+            className={cn(
+              "flex min-h-0 w-full flex-1 items-stretch gap-6 overflow-x-auto overflow-y-hidden overscroll-x-contain px-6",
+              !isDragging && "snap-x snap-mandatory scroll-px-6 md:snap-none",
+              "transition-opacity duration-1000",
+              isLoading ? "opacity-0" : "opacity-100"
+            )}
+          >
+            {columns.map((column) => {
+              const cards = cardsByColumn.get(column.id) ?? []
+              const showBody = !column.collapsed
+              return (
+                <Column
+                  key={column.id}
+                  id={column.id}
+                  title={column.title}
+                  showBody={showBody}
+                  onToggleBody={() => onToggleBody(column.id, showBody)}
+                  onAddCard={() => onAddCard(column.id)}
+                  onRename={(title) => onRenameColumn(column.id, title)}
+                  onDelete={() => onDeleteColumn(column.id)}
+                >
+                  {cards.map((card, index) => (
+                    <DraggableCard
+                      key={card.id}
+                      id={card.id}
+                      index={index}
+                      showBody={showBody}
+                    />
+                  ))}
+                </Column>
+              )
+            })}
+          </div>
+        </DragDropContext>
+        <div className="fixed right-4 bottom-4 z-50">
+          <SyncIndicator />
         </div>
-      </DragDropContext>
-      <div className="fixed right-4 bottom-4 z-50">
-        <SyncIndicator />
+        <CardModal closeHref={`~${routes.deck.to(dashboard.id)}`} />
       </div>
-      <CardModal closeHref={`~${routes.deck.to(dashboard.id)}`} />
-    </div>
+    </DeckPrefixProvider>
   )
 }

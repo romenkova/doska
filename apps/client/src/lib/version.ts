@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { isDesktop } from "./api/runtime"
+import { isDesktop } from "./platform"
 
 // The displayed app version.
 //

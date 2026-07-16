@@ -26,6 +26,7 @@ export async function readDashboardsSince(since: number): Promise<{
         id: r.id,
         title: r.title,
         position: r.position,
+        prefix: r.prefix,
         updatedAt: r.updatedAt,
         deletedAt: r.deletedAt,
       },

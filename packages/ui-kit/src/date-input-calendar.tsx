@@ -1,5 +1,7 @@
 import { Popover as PopoverPrimitive } from "@base-ui/react/popover"
 import { format, isValid, parse } from "date-fns"
+import { X } from "lucide-react"
+import { Button } from "./button"
 import { Calendar } from "./calendar"
 import { cn } from "./lib/cn"
 
@@ -58,6 +60,24 @@ export default function DateInputCalendar({
             autoFocus
             {...calendarProps}
           />
+          <div className="grid grid-cols-2 gap-1 border-t p-1 bg-background">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onSelect(null)}
+              className="text-muted-foreground"
+            >
+              <X className="size-3.5" />
+              Clear
+            </Button>
+            <PopoverPrimitive.Close
+              render={
+                <Button variant="ghost" size="sm">
+                  Save
+                </Button>
+              }
+            />
+          </div>
         </PopoverPrimitive.Popup>
       </PopoverPrimitive.Positioner>
     </PopoverPrimitive.Portal>

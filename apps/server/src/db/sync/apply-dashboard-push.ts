@@ -18,6 +18,7 @@ export function applyDashboardPush(changes: DashboardChange[]): Promise<void> {
       id: record.id,
       title: record.title,
       position: record.position,
+      prefix: record.prefix,
       updatedAt: record.updatedAt,
       deletedAt: record.deletedAt,
       seq: nextSeq,

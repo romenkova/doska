@@ -1,5 +1,5 @@
 import { cn } from "@doska/ui-kit"
-import { CircleCheck, ListChecks } from "lucide-react"
+import { Circle, CircleCheck } from "lucide-react"
 
 interface IProps {
   done: number
@@ -8,19 +8,21 @@ interface IProps {
 
 export function TaskIndicator({ done, total }: IProps) {
   const complete = done === total
-  const Icon = complete ? CircleCheck : ListChecks
+  const Icon = complete ? CircleCheck : Circle
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-full px-2 py-0.5",
-        "text-xs font-semibold tabular-nums",
-        complete
-          ? "bg-success text-success-foreground"
-          : "bg-muted text-foreground/80"
+        "inline-flex items-center gap-1 rounded-full px-2 font-mono",
+        "text-xs text-muted-foreground tabular-nums"
+        // complete
+        //   ? "bg-success text-success-foreground"
+        //   : "text-muted-foreground"
       )}
     >
-      <Icon className="size-3.5" />
-      {done}/{total}
+      <Icon className="size-3.75" />
+      <span>
+        {done}/{total}
+      </span>
     </span>
   )
 }
