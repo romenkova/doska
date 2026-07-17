@@ -7,6 +7,7 @@ import {
 import * as authApi from "@/lib/api/auth"
 import * as api from "@/lib/api/operations"
 import { sync } from "@/lib/api/sync"
+import type { BoardSort } from "@doska/contract"
 import type { Board, Card, Column } from "@/lib/types"
 import { keys } from "./keys"
 
@@ -54,6 +55,15 @@ export function useUpdateDashboardPrefix() {
   return useMutation({
     mutationFn: ({ id, prefix }: { id: string; prefix: string }) =>
       api.setDashboardPrefix(id, prefix),
+    onSettled: () => qc.invalidateQueries({ queryKey: keys.dashboards }),
+  })
+}
+
+export function useSetDashboardSort() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, sort }: { id: string; sort: BoardSort }) =>
+      api.setDashboardSort(id, sort),
     onSettled: () => qc.invalidateQueries({ queryKey: keys.dashboards }),
   })
 }

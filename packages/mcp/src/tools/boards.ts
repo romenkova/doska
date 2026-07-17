@@ -74,6 +74,7 @@ export function registerBoardTools(server: McpServer, board: Board): void {
           title,
           existing.map((d) => d.prefix)
         ),
+        sort: "manual",
         updatedAt: Date.now(),
         deletedAt: null,
       }

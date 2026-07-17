@@ -70,6 +70,7 @@ export const seedDashboards: Dashboard[] = [
     title: "Product Roadmap",
     position: "a0",
     prefix: "PROD",
+    sort: "manual",
     updatedAt: 0,
     deletedAt: null,
   },

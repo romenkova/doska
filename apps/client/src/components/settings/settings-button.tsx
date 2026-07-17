@@ -1,24 +1,20 @@
 import { Button } from "@doska/ui-kit"
 import { Settings } from "lucide-react"
-import { useState } from "react"
-import { SettingsModal } from "./settings-modal"
+import { modals, useModal } from "@/lib/hooks"
 
-/** Sidebar entry that opens the settings modal. */
+/** Sidebar entry that opens the settings modal (see `AppModals`). */
 export function SettingsButton() {
-  const [open, setOpen] = useState(false)
+  const { open } = useModal()
 
   return (
-    <>
-      <Button
-        variant="ghost"
-        size="sm"
-        className="justify-start gap-2"
-        onClick={() => setOpen(true)}
-      >
-        <Settings className="size-4" />
-        <span>Settings</span>
-      </Button>
-      <SettingsModal open={open} onOpenChange={setOpen} />
-    </>
+    <Button
+      variant="ghost"
+      size="sm"
+      className="justify-start gap-2"
+      onClick={() => open(modals.settings)}
+    >
+      <Settings className="size-4" />
+      <span>Settings</span>
+    </Button>
   )
 }

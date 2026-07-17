@@ -6,10 +6,16 @@ import { byPosition } from "@/lib/utils"
 /**
  * Builds the drop handler for the board: translates a drag result into the
  * single moved card with a freshly minted fractional position, then persists it.
+ *
+ * When `byDeadlineSort` is on, cards render by deadline rather than position, so
+ * the drop index carries no positional meaning: a same-column drop is ignored
+ * (reorder is disabled in this mode) and a cross-column drop appends to the end
+ * of the destination column instead of inserting at the drop site.
  */
 export function useDragEnd(
   board: Board | undefined,
-  moveCard: (changed: Card[]) => void
+  moveCard: (changed: Card[]) => void,
+  byDeadlineSort: boolean
 ) {
   return function handleDragEnd({
     source,
@@ -17,11 +23,11 @@ export function useDragEnd(
     draggableId,
   }: DropResult) {
     if (!destination || !board) return
-    if (
-      source.droppableId === destination.droppableId &&
-      source.index === destination.index
-    )
-      return
+
+    const sameColumn = source.droppableId === destination.droppableId
+    if (sameColumn && source.index === destination.index) return
+    // Deadline sort fixes the within-column order; only cross-column moves apply.
+    if (byDeadlineSort && sameColumn) return
 
     const moved = board.cards.find((c) => c.id === draggableId)
     if (!moved) return
@@ -34,10 +40,13 @@ export function useDragEnd(
       )
       .sort(byPosition)
 
-    // Mint a key strictly between the neighbors — only the moved card changes,
-    // so concurrent reorders of other cards never collide with this write.
-    const before = destCards[destination.index - 1]
-    const after = destCards[destination.index]
+    // In deadline mode the drop index is meaningless, so append; otherwise mint
+    // a key strictly between the neighbors at the drop site. Either way only the
+    // moved card changes, so concurrent reorders never collide with this write.
+    const before = byDeadlineSort
+      ? destCards[destCards.length - 1]
+      : destCards[destination.index - 1]
+    const after = byDeadlineSort ? undefined : destCards[destination.index]
     const position = generateKeyBetween(
       before?.position ?? null,
       after?.position ?? null

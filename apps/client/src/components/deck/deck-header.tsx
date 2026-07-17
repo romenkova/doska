@@ -1,36 +1,31 @@
 import { useState } from "react"
-import { Button, InvisibleInput, SidebarTrigger } from "@doska/ui-kit"
-import { ArrowRightLeft, Plus, Trash2 } from "lucide-react"
-import { ConfirmDialog } from "../confirm-dialog"
+import { Button, cn, InvisibleInput, SidebarTrigger } from "@doska/ui-kit"
+import { ArrowRightLeft, CalendarArrowDown, Plus, Settings } from "lucide-react"
+import { modals, useModal } from "@/lib/hooks"
 import { ReorderColumnsModal } from "./reorder-columns/reorder-columns-modal"
-import { PrefixEditor } from "./prefix-editor"
 import type { Column } from "@/lib/types"
 
 interface IProps {
   title: string
-  prefix: string
-  takenPrefixes: string[]
   columns: Column[]
+  sortByDeadline: boolean
   onRename: (name: string) => void
-  onRenamePrefix: (prefix: string) => void
-  onDelete: () => void
+  onToggleSort: () => void
   onAddColumn: () => void
   onReorderColumns: (changed: Column[]) => void
 }
 
 export function DeckHeader({
   title,
-  prefix,
-  takenPrefixes,
   columns,
+  sortByDeadline,
   onRename,
-  onRenamePrefix,
-  onDelete,
+  onToggleSort,
   onAddColumn,
   onReorderColumns,
 }: IProps) {
-  const [confirmOpen, setConfirmOpen] = useState(false)
   const [reorderOpen, setReorderOpen] = useState(false)
+  const { open } = useModal()
 
   return (
     <header className="flex h-11.5 shrink-0 items-center gap-2 border-b px-4">
@@ -43,11 +38,19 @@ export function DeckHeader({
       />
 
       <div className="ml-auto flex items-center gap-1">
-        <PrefixEditor
-          prefix={prefix}
-          taken={takenPrefixes}
-          onCommit={onRenamePrefix}
-        />
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          aria-label="Sort cards by deadline"
+          aria-pressed={sortByDeadline}
+          onClick={onToggleSort}
+          className={cn(
+            "text-muted-foreground",
+            sortByDeadline && "bg-muted text-primary hover:text-primary"
+          )}
+        >
+          <CalendarArrowDown />
+        </Button>
         <Button
           variant="ghost"
           aria-label="Reorder columns"
@@ -68,23 +71,15 @@ export function DeckHeader({
           <Plus />
         </Button>
         <Button
-          variant="ghost"
           size="icon-sm"
-          aria-label="Delete board"
-          onClick={() => setConfirmOpen(true)}
-          className="text-muted-foreground hover:text-destructive"
+          variant="ghost"
+          aria-label="Board settings"
+          className="text-muted-foreground"
+          onClick={() => open(modals.boardSettings)}
         >
-          <Trash2 />
+          <Settings />
         </Button>
       </div>
-      <ConfirmDialog
-        open={confirmOpen}
-        onOpenChange={setConfirmOpen}
-        title="Delete board?"
-        description={`"${title}" and all of its columns and cards will be permanently deleted.`}
-        confirmLabel="Delete board"
-        onConfirm={onDelete}
-      />
       <ReorderColumnsModal
         open={reorderOpen}
         onOpenChange={setReorderOpen}

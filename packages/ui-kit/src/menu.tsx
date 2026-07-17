@@ -33,11 +33,18 @@ function MenuContent({
 }) {
   return (
     <MenuPrimitive.Portal>
-      <MenuPrimitive.Positioner sideOffset={sideOffset} align={align}>
+      {/* z-index goes on the positioned element (the Positioner); the Popup is
+          statically positioned, so a z-index there is ignored and it would lose
+          to sticky headers (z-10). */}
+      <MenuPrimitive.Positioner
+        className="z-50"
+        sideOffset={sideOffset}
+        align={align}
+      >
         <MenuPrimitive.Popup
           data-slot="menu-content"
           className={cn(
-            "z-50 min-w-36 overflow-hidden rounded-lg border bg-popover",
+            "min-w-36 overflow-hidden rounded-lg border bg-popover",
             "text-sm text-popover-foreground shadow-md outline-none",
             "transition-[opacity,transform] duration-50",
             "data-ending-style:opacity-0 data-starting-style:opacity-0",

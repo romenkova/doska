@@ -54,6 +54,9 @@ export const ColumnSchema = z.object({
   deletedAt: z.number().nullable(),
 })
 
+/** Card ordering mode for a board. Manual is drag-reorder; deadline is derived. */
+export const BoardSortSchema = z.enum(["manual", "deadline"]).default("manual")
+
 export const DashboardSchema = z.object({
   id: z.string(),
   title: z.string(),
@@ -64,6 +67,13 @@ export const DashboardSchema = z.object({
    * editable in board settings. Empty only for boards created before card ids.
    */
   prefix: z.string().default(""),
+  /**
+   * How cards are ordered on this board. `"manual"` honours each card's stored
+   * `position` (drag to reorder). `"deadline"` sorts by deadline, earliest
+   * first, and disables drag-reorder within a column — a card can still be
+   * dragged to another column. More modes may be added later.
+   */
+  sort: BoardSortSchema,
   updatedAt: z.number(),
   deletedAt: z.number().nullable(),
 })

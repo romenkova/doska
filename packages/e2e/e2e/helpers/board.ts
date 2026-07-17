@@ -104,6 +104,7 @@ export async function remoteCreateDashboard(
           title,
           position: "a5",
           prefix: derivePrefix(title),
+          sort: "manual",
           updatedAt: Date.now(),
           deletedAt: null,
         },
@@ -129,6 +130,7 @@ export async function remoteRenameDashboard(
           title: toTitle,
           position: "a5",
           prefix: derivePrefix(toTitle),
+          sort: "manual",
           // A strictly newer clock so the rename wins last-writer-wins.
           updatedAt: Date.now() + 10_000,
           deletedAt: null,
@@ -153,6 +155,7 @@ export async function remoteDeleteDashboard(
           title: "",
           position: "a5",
           prefix: "",
+          sort: "manual",
           deletedAt: Date.now(),
           // A strictly newer clock so the delete wins last-writer-wins.
           updatedAt: Date.now() + 10_000,

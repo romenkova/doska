@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { DragDropContext, type DropResult } from "@hello-pangea/dnd"
 import type { Board, Dashboard } from "@/lib/types"
-import { byPosition } from "@/lib/utils"
+import { byDeadline, byPosition } from "@/lib/utils"
 import { Column } from "../column/column"
 import { DraggableCard } from "../card/draggable-card"
 import { DeckHeader } from "./deck-header"
@@ -19,9 +19,7 @@ interface IProps {
   onRenameColumn: (columnId: string, title: string) => void
   onDeleteColumn: (columnId: string) => void
   onRenameDashboard: (name: string) => void
-  onRenameDashboardPrefix: (prefix: string) => void
-  takenPrefixes: string[]
-  onDeleteDashboard: () => void
+  onToggleSort: () => void
   onDragEnd: (result: DropResult) => void
 }
 
@@ -36,18 +34,19 @@ export function Deck({
   onRenameColumn,
   onDeleteColumn,
   onRenameDashboard,
-  onRenameDashboardPrefix,
-  takenPrefixes,
-  onDeleteDashboard,
+  onToggleSort,
   onDragEnd,
 }: IProps) {
   const [isDragging, setIsDragging] = useState(false)
 
-  // Cards grouped by column, ordered by position.
+  // Cards grouped by column, ordered by the board's sort mode.
+  const byDeadlineSort = dashboard.sort === "deadline"
   const cardsByColumn = new Map<string, typeof board.cards>(
     board.columns.map((c) => [c.id, []])
   )
-  for (const card of [...board.cards].sort(byPosition)) {
+  for (const card of [...board.cards].sort(
+    byDeadlineSort ? byDeadline : byPosition
+  )) {
     cardsByColumn.get(card.columnId)?.push(card)
   }
   const columns = [...board.columns].sort(byPosition)
@@ -56,11 +55,9 @@ export function Deck({
     <div className="relative flex min-h-0 flex-1 flex-col">
       <DeckHeader
         title={dashboard.title}
-        prefix={dashboard.prefix ?? ""}
-        takenPrefixes={takenPrefixes}
         onRename={onRenameDashboard}
-        onRenamePrefix={onRenameDashboardPrefix}
-        onDelete={onDeleteDashboard}
+        sortByDeadline={byDeadlineSort}
+        onToggleSort={onToggleSort}
         onAddColumn={onAddColumn}
         columns={columns}
         onReorderColumns={onReorderColumns}

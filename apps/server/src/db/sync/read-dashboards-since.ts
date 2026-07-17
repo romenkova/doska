@@ -1,4 +1,4 @@
-import type { DashboardChange } from "@doska/contract"
+import type { BoardSort, DashboardChange } from "@doska/contract"
 import { gt } from "drizzle-orm"
 import { db } from "../client"
 import { dashboardsCounter } from "./counter"
@@ -27,6 +27,7 @@ export async function readDashboardsSince(since: number): Promise<{
         title: r.title,
         position: r.position,
         prefix: r.prefix,
+        sort: r.sort as BoardSort,
         updatedAt: r.updatedAt,
         deletedAt: r.deletedAt,
       },

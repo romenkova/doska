@@ -54,6 +54,7 @@ export const dashboards = pgTable("dashboards", {
   title: text("title").notNull(),
   position: text("position").notNull(),
   prefix: text("prefix").notNull().default(""),
+  sort: text("sort").notNull().default("manual"),
   updatedAt: bigint("updated_at", { mode: "number" }).notNull(),
   deletedAt: bigint("deleted_at", { mode: "number" }),
   seq: integer("seq").notNull(),

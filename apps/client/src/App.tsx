@@ -2,8 +2,9 @@ import { SidebarInset, SidebarProvider, cn } from "@doska/ui-kit"
 import { useRoute } from "wouter"
 import { AppSidebar, DeckView, Home } from "@/components"
 import { CardPanel } from "@/components/card-panel/card-panel"
+import { SettingsModal } from "@/components/settings/settings-modal"
 import { DeckPrefixProvider } from "@/components/deck/deck-context"
-import { useActiveDashboard } from "@/lib/hooks"
+import { modals, useActiveDashboard, useModal } from "@/lib/hooks"
 import { routes } from "@/lib/routes"
 
 export default function App({ deckId }: { deckId?: string }) {
@@ -16,6 +17,7 @@ export default function App({ deckId }: { deckId?: string }) {
   } = useActiveDashboard(deckId)
 
   const [isCardOpen] = useRoute(routes.card.pattern)
+  const { active, close } = useModal()
 
   return (
     <DeckPrefixProvider value={dashboard.prefix ?? ""}>
@@ -47,6 +49,12 @@ export default function App({ deckId }: { deckId?: string }) {
         </SidebarInset>
         {deckId && <CardPanel closeHref={`~${routes.deck.to(dashboard.id)}`} />}
       </SidebarProvider>
+      <SettingsModal
+        open={active === modals.settings}
+        onOpenChange={(isOpen) => {
+          if (!isOpen) close()
+        }}
+      />
     </DeckPrefixProvider>
   )
 }

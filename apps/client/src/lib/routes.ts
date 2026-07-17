@@ -16,4 +16,12 @@ export const routes = {
     pattern: "/c/:id",
     to: (id: string) => `/c/${id}`,
   },
+  /**
+   * Board settings modal. Like {@link routes.card}, it lives in the deck's
+   * nested router, so its path is relative (full URL: /d/:deckId/settings).
+   */
+  settings: {
+    pattern: "/settings",
+    to: () => "/settings",
+  },
 } as const

@@ -1,0 +1,1 @@
+ALTER TABLE "dashboards" ADD COLUMN "sort" text DEFAULT 'manual' NOT NULL;

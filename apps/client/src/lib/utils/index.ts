@@ -1,5 +1,5 @@
 export { initials } from "./initials"
-export { byPosition } from "./position"
+export { byPosition, byDeadline } from "./position"
 export { isAuthed, subscribeAuthed } from "./is-authed"
 export {
   deadlineStatus,

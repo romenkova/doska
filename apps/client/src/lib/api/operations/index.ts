@@ -7,6 +7,7 @@ export {
   normalizePrefix,
   prefixTaken,
 } from "./set-dashboard-prefix"
+export { setDashboardSort } from "./set-dashboard-sort"
 export { deleteDashboard } from "./delete-dashboard"
 export { createColumn } from "./create-column"
 export { renameColumn } from "./rename-column"

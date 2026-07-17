@@ -1,6 +1,7 @@
 import type { z } from "zod"
 import type {
   AttachmentSchema,
+  BoardSortSchema,
   CardSchema,
   ChangeSchema,
   ColumnSchema,
@@ -16,5 +17,6 @@ export type Attachment = z.infer<typeof AttachmentSchema>
 export type Card = z.infer<typeof CardSchema>
 export type Column = z.infer<typeof ColumnSchema>
 export type Dashboard = z.infer<typeof DashboardSchema>
+export type BoardSort = z.infer<typeof BoardSortSchema>
 export type Change = z.infer<typeof ChangeSchema>
 export type DashboardChange = z.infer<typeof DashboardChangeSchema>

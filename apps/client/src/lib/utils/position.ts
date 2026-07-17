@@ -11,3 +11,19 @@
 export function byPosition<T extends { position: string }>(a: T, b: T): number {
   return a.position < b.position ? -1 : a.position > b.position ? 1 : 0
 }
+
+/**
+ * Comparator that orders cards by deadline, earliest first; cards without a
+ * deadline sort to the bottom. Deadlines are ISO `YYYY-MM-DD`, so lexicographic
+ * order is chronological. Ties fall back to `position` for a stable order.
+ */
+export function byDeadline<
+  T extends { deadline: string | null; position: string },
+>(a: T, b: T): number {
+  if (a.deadline !== b.deadline) {
+    if (a.deadline === null) return 1
+    if (b.deadline === null) return -1
+    return a.deadline < b.deadline ? -1 : 1
+  }
+  return byPosition(a, b)
+}
