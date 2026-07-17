@@ -30,7 +30,8 @@ export function CardPanel({ closeHref }: IProps) {
   const [preview, setPreview] = useState<boolean | null>(null)
   const { width, isResizing, startResizing, resetWidth } = usePanelResize()
 
-  if (routeId && routeId !== card) {
+  const isNewCard = routeId != null && routeId !== card
+  if (isNewCard) {
     setCard(routeId)
     setDraft({})
     setPreview(null)
@@ -39,7 +40,11 @@ export function CardPanel({ closeHref }: IProps) {
   const { data: content } = useCard(card)
   const { queue, flush } = useCardSave()
 
-  const isPreview = preview ?? Boolean(content?.body.trim())
+  if (!isNewCard && preview === null && content) {
+    setPreview(Boolean(content.body.trim()))
+  }
+
+  const isPreview = preview ?? false
   const isOpen = routeId != null
 
   const edit = (patch: Draft) => {
@@ -68,13 +73,9 @@ export function CardPanel({ closeHref }: IProps) {
       style={{ "--card-panel-width": `${width}px` } as CSSProperties}
       className={cn(
         "relative shrink-0 overflow-hidden",
-        // Mobile keeps the old full-screen page; only desktop gets the sidebar.
         "max-md:fixed max-md:inset-0 max-md:z-50 max-md:w-full",
         "md:box-border",
-        // Tracking the pointer must be instant; only the open/close sweep animates.
         !isResizing && "md:transition-[width] md:duration-200 md:ease-linear",
-        // Padding is gutter, not pane: the left strip is where the resize handle lives,
-        // so it never overlaps the card. Width covers both so the pane stays --card-panel-width.
         isOpen
           ? "md:w-[calc(var(--card-panel-width)+1rem)] md:p-2"
           : "max-md:hidden md:w-0"
@@ -95,10 +96,8 @@ export function CardPanel({ closeHref }: IProps) {
           }}
           onDoubleClick={resetWidth}
           className={cn(
-            // Spans the gutter exactly, so the pill centres in the gap between board and pane.
             "absolute inset-y-0 left-0 z-20 hidden w-2 md:block",
             "cursor-col-resize touch-none",
-            // A pill in the gutter, short of the pane's rounded corners.
             "after:absolute after:inset-y-10 after:left-1/2 after:w-1",
             "after:-translate-x-1/2 after:rounded-full after:bg-primary/50",
             "after:opacity-0 after:transition-opacity",
@@ -106,7 +105,6 @@ export function CardPanel({ closeHref }: IProps) {
           )}
         />
       )}
-      {/* `ring-inset` because the wrapper's overflow would clip an outset ring's left edge. */}
       <div className="flex size-full flex-col overflow-hidden bg-card text-sm text-card-foreground md:w-(--card-panel-width) md:rounded-xl md:ring-1 md:ring-foreground/10 md:ring-inset">
         {card && content && (
           <CardEditor
