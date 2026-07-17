@@ -223,7 +223,7 @@
   height: 0;
   margin: 0;
   border-top: 2px dashed var(--border);
-  width: 30px;
+  width: 60px;
   right: 0;
   position: absolute;
 }
@@ -234,6 +234,9 @@
     font-size: 0.8rem;
     color: var(--border);
     font-family: var(--font-mono);
+    background: var(--card);
     text-align: end;
-    width: 100%;
+    top: -0.4rem;
+    right: 18px;
+    line-height: 0.8;
 }
