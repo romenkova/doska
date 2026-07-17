@@ -15,7 +15,6 @@ type ThemeProviderProps = {
   children: ReactNode
   defaultTheme?: Theme
   storageKey?: string
-  disableTransitionOnChange?: boolean
 }
 
 type ThemeProviderState = {
