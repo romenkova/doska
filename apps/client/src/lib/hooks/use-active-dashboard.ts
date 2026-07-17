@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { generateKeyBetween } from "fractional-indexing"
 import { useLocation } from "wouter"
 import { sync } from "@/lib/api/sync"
@@ -32,8 +32,14 @@ export function useActiveDashboard(deckId?: string) {
   }
 
   // The board open most recently, surfaced on Home as a "continue editing"
-  // shortcut. Resolved against the live list so a deleted board never lingers.
-  const lastBoardId = localStorage.getItem(LAST_BOARD_KEY)
+  // shortcut. Seeded from storage, then tracked in state — storage is the
+  // cross-session copy, not something to re-read every render.
+  const [lastBoardId, setLastBoardId] = useState(
+    () => deckId ?? localStorage.getItem(LAST_BOARD_KEY)
+  )
+  if (deckId && deckId !== lastBoardId) setLastBoardId(deckId)
+
+  // Resolved against the live list so a deleted board never lingers.
   const lastBoard = lastBoardId
     ? (dashboards.find((d) => d.id === lastBoardId) ?? null)
     : null

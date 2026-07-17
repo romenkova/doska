@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef } from "react"
 import { useSaveCard, type CardPatch } from "@/lib/data/mutations"
 
 /** Long enough to coalesce a burst of typing, short enough to read as live. */
-const SAVE_DELAY = 200
+const SAVE_DELAY = 500
 
 /**
  * Debounced write-through for card edits, so the board card updates as you type.

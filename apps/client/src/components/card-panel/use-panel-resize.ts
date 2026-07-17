@@ -66,7 +66,7 @@ export function usePanelResize() {
   }, [isResizing, width])
 
   useEffect(() => {
-    const onResize = () => setWidth(clampWidth)
+    const onResize = () => setWidth((w) => clampWidth(w))
     window.addEventListener("resize", onResize)
     return () => window.removeEventListener("resize", onResize)
   }, [])
