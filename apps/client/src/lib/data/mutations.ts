@@ -78,7 +78,10 @@ export function useDeleteCard(deckId: string) {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (id: string) => api.deleteCard(deckId, id),
-    onSettled: () => qc.invalidateQueries({ queryKey: keys.board(deckId) }),
+    onSettled: (_data, _error, id) => {
+      qc.invalidateQueries({ queryKey: keys.board(deckId) })
+      qc.invalidateQueries({ queryKey: keys.card(id) })
+    },
   })
 }
 

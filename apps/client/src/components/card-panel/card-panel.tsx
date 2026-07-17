@@ -43,6 +43,10 @@ export function CardPanel({ closeHref }: IProps) {
     return () => window.removeEventListener("keydown", onKeyDown)
   }, [isOpen, close])
 
+  useEffect(() => {
+    if (isOpen && content?.deletedAt) close()
+  }, [isOpen, content?.deletedAt, close])
+
   return (
     <div
       style={{ "--card-panel-width": `${width}px` } as CSSProperties}
