@@ -38,6 +38,9 @@ export function Deck({
   onDragEnd,
 }: IProps) {
   const [isDragging, setIsDragging] = useState(false)
+  // Source column of the in-flight drag, so deadline sort can block same-column
+  // drops (reorder is meaningless there) while still allowing cross-column ones.
+  const [dragFromColumn, setDragFromColumn] = useState<string | null>(null)
 
   // Cards grouped by column, ordered by the board's sort mode.
   const byDeadlineSort = dashboard.sort === "deadline"
@@ -63,9 +66,13 @@ export function Deck({
         onReorderColumns={onReorderColumns}
       />
       <DragDropContext
-        onDragStart={() => setIsDragging(true)}
+        onDragStart={(start) => {
+          setIsDragging(true)
+          setDragFromColumn(start.source.droppableId)
+        }}
         onDragEnd={(result) => {
           setIsDragging(false)
+          setDragFromColumn(null)
           onDragEnd(result)
         }}
       >
@@ -90,6 +97,7 @@ export function Deck({
                 onAddCard={() => onAddCard(column.id)}
                 onRename={(title) => onRenameColumn(column.id, title)}
                 onDelete={() => onDeleteColumn(column.id)}
+                dropDisabled={byDeadlineSort && dragFromColumn === column.id}
               >
                 {cards.map((card, index) => (
                   <DraggableCard
@@ -97,6 +105,7 @@ export function Deck({
                     id={card.id}
                     index={index}
                     showBody={showBody}
+                    animate={!isDragging}
                   />
                 ))}
               </Column>

@@ -25,9 +25,10 @@ interface IProps extends DetailedHTMLProps<
   index: number
   showBody: boolean
   isDragging: boolean
+  innerRef?: (el: HTMLDivElement | null) => void
 }
 
-export function Card({ id, showBody, isDragging, ...props }: IProps) {
+export function Card({ id, showBody, isDragging, innerRef, ...props }: IProps) {
   const [, navigate] = useLocation()
   const { data: card = fallbackCard } = useCard(id)
   const { mutate: updateCard } = useUpdateCard(id)
@@ -42,43 +43,48 @@ export function Card({ id, showBody, isDragging, ...props }: IProps) {
         "touch-manipulation select-none [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none]"
       )}
     >
-      <CardContextMenu cardId={id} onEdit={() => navigate(routes.card.to(id))}>
-        <CardBase className={cn(isDragging && "shadow-shade/5 shadow-xl")}>
-          <CardHeader>
-            <CardTitle>{title || "Untitled card"}</CardTitle>
-            <CardAction className="flex items-center gap-1">
-              <CardMenu
-                cardId={id}
-                onEdit={() => navigate(routes.card.to(id))}
-              />
-            </CardAction>
-          </CardHeader>
-          <CardContent className={cn(!showBody && "-mb-2")}>
-            <CardMeta cardId={id} className="mt-2" />
-          </CardContent>
+      <div ref={innerRef}>
+        <CardContextMenu
+          cardId={id}
+          onEdit={() => navigate(routes.card.to(id))}
+        >
+          <CardBase className={cn(isDragging && "shadow-shade/5 shadow-xl")}>
+            <CardHeader>
+              <CardTitle>{title || "Untitled card"}</CardTitle>
+              <CardAction className="flex items-center gap-1">
+                <CardMenu
+                  cardId={id}
+                  onEdit={() => navigate(routes.card.to(id))}
+                />
+              </CardAction>
+            </CardHeader>
+            <CardContent className={cn(!showBody && "-mb-2")}>
+              <CardMeta cardId={id} className="mt-2" />
+            </CardContent>
 
-          {body.trim() && (
-            <div
-              className={cn(
-                "grid transition-[grid-template-rows] duration-200 ease-out",
-                showBody ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
-              )}
-            >
-              <div className="overflow-hidden">
-                <CardContent className="space-y-3 pt-2">
-                  <MarkdownCardPreview
-                    body={body}
-                    onChangeBody={(body) => updateCard({ body })}
-                  />
-                </CardContent>
+            {body.trim() && (
+              <div
+                className={cn(
+                  "grid transition-[grid-template-rows] duration-200 ease-out",
+                  showBody ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+                )}
+              >
+                <div className="overflow-hidden">
+                  <CardContent className="space-y-3 pt-2">
+                    <MarkdownCardPreview
+                      body={body}
+                      onChangeBody={(body) => updateCard({ body })}
+                    />
+                  </CardContent>
+                </div>
               </div>
-            </div>
-          )}
-          {attachments.length > 0 && showBody && (
-            <CardAttachments className="pt-2" cardId={id} isReadonly />
-          )}
-        </CardBase>
-      </CardContextMenu>
+            )}
+            {attachments.length > 0 && showBody && (
+              <CardAttachments className="pt-2" cardId={id} isReadonly />
+            )}
+          </CardBase>
+        </CardContextMenu>
+      </div>
     </div>
   )
 }

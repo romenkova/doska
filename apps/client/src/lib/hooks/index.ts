@@ -1,6 +1,7 @@
 export { useActiveDashboard } from "./use-active-dashboard"
 export { useAuth } from "./use-auth"
 export { useDragEnd } from "./use-drag-end"
+export { useFlip } from "./use-flip"
 export { useModal, modals } from "./use-modal"
 export type { ModalName } from "./use-modal"
 export { useSyncShortcut } from "./use-sync-shortcut"
