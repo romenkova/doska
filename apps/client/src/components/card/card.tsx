@@ -31,7 +31,7 @@ export function Card({ id, showBody, isDragging, ...props }: IProps) {
   const [, navigate] = useLocation()
   const { data: card = fallbackCard } = useCard(id)
   const { mutate: updateCard } = useUpdateCard(id)
-  const { title, body, deadline } = card
+  const { title, body } = card
   const attachments = card.attachments ?? []
 
   return (
@@ -43,13 +43,8 @@ export function Card({ id, showBody, isDragging, ...props }: IProps) {
       )}
     >
       <CardContextMenu cardId={id} onEdit={() => navigate(routes.card.to(id))}>
-        <CardBase
-          className={cn(
-            showBody ? "gap-2" : "gap-0",
-            isDragging && "shadow-shade/5 shadow-xl"
-          )}
-        >
-          <CardHeader className={cn(!!deadline && !showBody && "mb-2")}>
+        <CardBase className={cn(isDragging && "shadow-shade/5 shadow-xl")}>
+          <CardHeader>
             <CardTitle>{title || "Untitled card"}</CardTitle>
             <CardAction className="flex items-center gap-1">
               <CardMenu
@@ -58,7 +53,7 @@ export function Card({ id, showBody, isDragging, ...props }: IProps) {
               />
             </CardAction>
           </CardHeader>
-          <CardContent>
+          <CardContent className={cn(!showBody && "-mb-2")}>
             <CardMeta cardId={id} className="mt-2" />
           </CardContent>
 

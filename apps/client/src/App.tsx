@@ -28,7 +28,7 @@ export default function App({ deckId }: { deckId?: string }) {
         />
         <SidebarInset
           className={cn(
-            "min-w-0 overflow-hidden",
+            "min-w-0 overflow-hidden border border-border",
             // Hand the gutter to the panel, which needs to own it to centre its handle.
             "md:transition-[margin] md:duration-200 md:ease-linear",
             isCardOpen && "md:mr-0"

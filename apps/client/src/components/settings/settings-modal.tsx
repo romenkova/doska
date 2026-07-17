@@ -1,4 +1,4 @@
-import { Button, Modal, ModalContent, ModalTitle } from "@doska/ui-kit"
+import { CardContent, Modal, ModalContent, ModalHeader } from "@doska/ui-kit"
 import { DesktopUpdatesSection } from "./sections/desktop-updates"
 
 interface IProps {
@@ -10,19 +10,10 @@ export function SettingsModal({ open, onOpenChange }: IProps) {
   return (
     <Modal open={open} onOpenChange={onOpenChange}>
       <ModalContent className="md:max-w-sm">
-        <div className="flex flex-col gap-4 p-6">
-          <ModalTitle>Settings</ModalTitle>
+        <ModalHeader onClose={() => onOpenChange(false)}>Settings</ModalHeader>
+        <CardContent className="py-4">
           <DesktopUpdatesSection />
-          <div className="flex justify-end">
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() => onOpenChange(false)}
-            >
-              Close
-            </Button>
-          </div>
-        </div>
+        </CardContent>
       </ModalContent>
     </Modal>
   )

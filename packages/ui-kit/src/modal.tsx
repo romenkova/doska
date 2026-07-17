@@ -1,4 +1,6 @@
 import { Dialog as DialogPrimitive } from "@base-ui/react/dialog"
+import { X } from "lucide-react"
+import { Button } from "./button"
 import { cn } from "./lib/cn"
 
 function Modal({ ...props }: DialogPrimitive.Root.Props) {
@@ -72,6 +74,26 @@ function ModalTitle({ className, ...props }: DialogPrimitive.Title.Props) {
   )
 }
 
+function ModalHeader({
+  children,
+  onClose,
+  className,
+}: React.PropsWithChildren<{ onClose?: () => void; className?: string }>) {
+  return (
+    <div
+      data-slot="modal-header"
+      className={cn("flex items-center justify-between gap-2 py-2 px-3", className)}
+    >
+      <ModalTitle>{children}</ModalTitle>
+      {onClose && (
+        <Button type="button" variant="ghost" size="icon-sm" onClick={onClose}>
+          <X />
+        </Button>
+      )}
+    </div>
+  )
+}
+
 function ModalDescription({
   className,
   ...props
@@ -85,4 +107,4 @@ function ModalDescription({
   )
 }
 
-export { Modal, ModalContent, ModalTitle, ModalDescription }
+export { Modal, ModalContent, ModalHeader, ModalTitle, ModalDescription }
