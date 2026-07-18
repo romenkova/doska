@@ -6,7 +6,7 @@
 # (see backup.sh), and it refuses to write a fresh .env on top of one — new
 # secrets wouldn't match the old data.
 #
-#   curl -fsSL https://raw.githubusercontent.com/romenkova/doska/main/install.sh | sh
+#   curl -fsSL https://raw.githubusercontent.com/romenkova/doska/main/install.sh -o install.sh && sh install.sh
 set -eu
 
 REPO="romenkova/doska"

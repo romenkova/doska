@@ -1,23 +1,28 @@
 # Doska
 
-A local-first Kanban board with Markdown cards. Runs in your browser or as a
-native desktop app, works fully offline with no account, and **optionally** syncs
-to a server you control.
+A Kanban board where the cards are Markdown. It's local-first: your boards live
+in the browser and work offline with no account. If you want them on more than
+one device, point it at a server you run — sync is opt-in, not the default.
+
+Runs in the browser, installs as a PWA, or ships as a native macOS app.
 
 ## Features
 
-- **Boards & columns** — multiple boards, each a set of draggable columns.
-- **Drag & drop** — reorder cards and move them between columns.
-- **Markdown cards** — GitHub-flavored Markdown with live editing, a slash menu,
-  and task-list progress.
-- **Local-first** — everything persists in your browser (IndexedDB); reads and
-  writes are instant and work with no network and no login.
-- **Installable** — install the web app to your home screen or dock and it runs
-  standalone, fully offline.
-- **Opt-in sync** — point at a server you control and your boards replicate
-  across your devices in the background.
-- **Desktop app** — a native macOS app that reuses the web client and
-  auto-updates.
+- Multiple boards, each with draggable columns. Drag cards to reorder or move
+  them between columns.
+- Cards are GitHub-flavored Markdown, edited in place, with a slash menu for
+  formatting and task lists that track their own progress.
+- Drop images or files onto a card to attach them; images preview inline.
+- Give a card a deadline and it wears a color-coded chip that warms up as the
+  date gets closer.
+- Every card gets a short `ROAD-12`-style id from its column prefix — click to
+  copy.
+- Local-first storage (IndexedDB): reads and writes hit the browser, not the
+  network.
+- Opt-in sync: give it a server you control and boards replicate across your
+  devices in the background.
+- Tauri macOS app that reuses the same client and auto-updates.
+- Dark and light themes.
 
 ## Self-hosting
 
@@ -25,7 +30,7 @@ Doska works fully offline with no account. Host your own server if you want your
 boards to sync across devices.
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/romenkova/doska/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/romenkova/doska/main/install.sh -o install.sh && sh install.sh
 ```
 
 The installer asks for a login, password, and (optionally) a domain, generates
@@ -49,7 +54,8 @@ Open the web UI at `http://<your-host>:8080` and sign in with the `AUTH_LOGIN` /
 `AUTH_PASSWORD` from your `.env`. To sync the **desktop app**, open its sync
 settings and set the server URL to the same address.
 
-Postgres is bundled and stored in a Docker volume, but recommended is to use managed one.
+Postgres comes bundled and lives in a Docker volume. For anything you care about,
+point `DATABASE_URL` at a managed instance instead.
 
 - `WEB_PORT` — host port for the web UI (default `8080`).
 - `DOCKER_IMAGE_TAG` — pin a release (e.g. `0.4.0`) instead of `latest`.
@@ -59,7 +65,7 @@ Postgres is bundled and stored in a Docker volume, but recommended is to use man
 
 > **Single user per server:** the credentials in `.env` are the only account currently.
 
-See `docker-compose.dokploy.yml` for [Dokploy](https://dokploy.com)).
+Deploying with [Dokploy](https://dokploy.com)? Use `docker-compose.dokploy.yml`.
 
 ### HTTPS
 
@@ -73,7 +79,7 @@ docker compose -f docker-compose.selfhost.yml --profile https up -d
 
 ### Backups
 
-Your boards live in the bundled Postgres. Dump it to `./backups/` any time:
+If your boards live in the bundled Postgres, dump it to `./backups/` any time:
 
 ```sh
 ./backup.sh
