@@ -4,11 +4,13 @@ import { useCard } from "@/lib/data/queries"
 import { useUpdateCard } from "@/lib/data/mutations"
 import { activeStorage } from "@/lib/api/attachments"
 import { isSyncConfigured } from "@/lib/api/server"
+import { useAuth } from "@/lib/hooks"
 
 /**
  * Uploading files to a card: shared by the header's Attach button and the
  * drop zone. Puts each file on the active storage backend and appends it to the
- * card. `enabled` is false when no sync backend is configured (nowhere to store).
+ * card. Uploads hit an authed-only server route, so `enabled` requires both a
+ * configured backend and a signed-in session.
  */
 /** A file being uploaded, shown as a placeholder tile until it's saved. */
 export interface PendingUpload {
@@ -23,15 +25,23 @@ export function useAttachmentUpload(cardId: string) {
   const [pending, setPending] = useState<PendingUpload[]>([])
   const [error, setError] = useState<string | null>(null)
 
-  const enabled = isSyncConfigured()
+  const { authed } = useAuth()
+  const enabled = isSyncConfigured() && authed === true
   const existing = card?.attachments
+
+  let disabledReason: string | null = null
+  if (!enabled) {
+    disabledReason = isSyncConfigured()
+      ? "Sign in to attach files"
+      : "Connect a sync backend to attach files"
+  }
 
   const addFiles = useCallback(
     async (files: FileList | File[] | null) => {
       const list = files ? Array.from(files) : []
       if (!list.length) return
       if (!enabled) {
-        setError("Connect a sync backend to attach files")
+        setError(disabledReason)
         return
       }
       const queued = list.map((file) => ({
@@ -66,7 +76,7 @@ export function useAttachmentUpload(cardId: string) {
         setPending((prev) => prev.filter((p) => !queued.some((q) => q.id === p.id)))
       }
     },
-    [cardId, enabled, existing, save]
+    [cardId, enabled, disabledReason, existing, save]
   )
 
   const clearError = useCallback(() => setError(null), [])
@@ -78,5 +88,6 @@ export function useAttachmentUpload(cardId: string) {
     busy: pending.length > 0,
     error,
     enabled,
+    disabledReason,
   }
 }

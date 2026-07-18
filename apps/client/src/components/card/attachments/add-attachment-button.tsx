@@ -8,7 +8,7 @@ import { useUploads } from "./context/attachment-upload-context"
  * Disabled with a hint when no sync backend is configured.
  */
 export function AddAttachmentButton() {
-  const { addFiles, busy, error, enabled } = useUploads()
+  const { addFiles, busy, error, enabled, disabledReason } = useUploads()
   const inputRef = useRef<HTMLInputElement>(null)
 
   async function onFiles(files: FileList | null) {
@@ -28,9 +28,7 @@ export function AddAttachmentButton() {
     </Button>
   )
 
-  const hint = !enabled
-    ? "Connect a sync backend to attach files"
-    : (error ?? null)
+  const hint = !enabled ? disabledReason : (error ?? null)
 
   return (
     <>
