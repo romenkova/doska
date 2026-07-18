@@ -55,8 +55,12 @@ services:
   web:
     image: ghcr.io/romenkova/doska-web:${DOCKER_IMAGE_TAG:-latest}
     pull_policy: always
+    # With the https profile, Caddy terminates TLS and reaches web over the
+    # internal network, so the install pins WEB_HOST_BIND=127.0.0.1 to keep the
+    # plain-http port off the public interface. Plain-http installs leave it
+    # unset, publishing on all interfaces as before.
     ports:
-      - "${WEB_PORT:-8080}:80"
+      - "${WEB_HOST_BIND:+${WEB_HOST_BIND}:}${WEB_PORT:-8080}:80"
     depends_on:
       - server
     healthcheck:

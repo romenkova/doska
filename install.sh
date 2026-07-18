@@ -68,7 +68,11 @@ bold() { printf '%b%s%b\n' "$C_BOLD" "$1" "$C_RESET"; }
 
 die() { printf '\n%b✗ error:%b %s\n' "$C_RED" "$C_RESET" "$1" >&2; exit 1; }
 
-# Prompts read from the terminal, not the piped-in script on stdin.
+# True when the controlling terminal is readable. The script is usually piped in
+# (curl | sh), so prompts must come from /dev/tty, not stdin — and /dev/tty can
+# exist yet not be openable when there's no controlling terminal.
+has_tty() { { true < /dev/tty; } 2>/dev/null; }
+
 ask() {
   # $1 prompt  $2 default  -> echoes the answer
   _def="$2"
@@ -105,6 +109,11 @@ gen_secret() {
   fi
 }
 
+# Compose reads .env values with $ as interpolation, so a literal $ must be
+# doubled or it silently mangles the value (a password like p@$$w0rd would lock
+# the user out). Escape every user-supplied value before writing it.
+env_escape() { printf '%s' "$1" | sed 's/\$/$$/g'; }
+
 # Compose's default project name: the lowercased directory basename with any
 # character outside [a-z0-9_-] dropped. Scopes volume/container lookups to THIS
 # install so another Doska on the same host isn't mistaken for ours.
@@ -123,7 +132,11 @@ bundled_volume_exists() {
 # managed DATABASE_URL or when no volume exists yet, so this is safe to call
 # unconditionally; a failed backup aborts rather than risk the data.
 backup_first() {
-  [ -f "$BACKUP_FILE" ] || return 0
+  if [ ! -f "$BACKUP_FILE" ]; then
+    # Missing helper is only a problem when there's actually data to lose.
+    bundled_volume_exists && warn "no $BACKUP_FILE present — skipping backup of the existing database before redeploy."
+    return 0
+  fi
   sh "$BACKUP_FILE" || die "backup failed — aborting before touching anything."
 }
 
@@ -152,7 +165,16 @@ else
   ok "$COMPOSE_FILE already present"
 fi
 if [ ! -f "$BACKUP_FILE" ]; then
-  curl -fsSL "$RAW/$BACKUP_FILE" -o "$BACKUP_FILE" 2>/dev/null && chmod +x "$BACKUP_FILE" || true
+  info "Downloading $BACKUP_FILE"
+  if curl -fsSL "$RAW/$BACKUP_FILE" -o "$BACKUP_FILE"; then
+    chmod +x "$BACKUP_FILE"
+    ok "$BACKUP_FILE downloaded"
+  else
+    # Drop any half-written file so a truncated script never gets run, and warn
+    # loudly — without it the pre-redeploy backup silently no-ops.
+    rm -f "$BACKUP_FILE"
+    warn "couldn't download $BACKUP_FILE — pre-redeploy backups will be skipped."
+  fi
 fi
 
 # --- 3. scaffold .env (first run only) --------------------------------------
@@ -171,23 +193,22 @@ else
     warn "Found an existing database volume, but there's no .env in this directory."
     info "Its secrets are gone, so a fresh .env can't unlock it. Best to start clean."
     backup_first
+    # The compose file marks a few vars required, so even `down -v` needs them
+    # set. These are throwaway — teardown ignores them.
+    DOWN_ENV="BASE_URL=x AUTH_LOGIN=x AUTH_PASSWORD=x AUTH_SECRET=x"
     # Only offer the wipe if we can prompt; a non-interactive run must not
     # silently destroy data.
-    if { true < /dev/tty; } 2>/dev/null && ask_yn "Discard that old database and start fresh (a backup was saved above)"; then
+    if has_tty && ask_yn "Discard that old database and start fresh (a backup was saved above)"; then
       info "Removing old volume"
-      # The compose file marks a few vars required, so even `down -v` needs them
-      # set. Pass throwaway values inline — teardown ignores them.
       # shellcheck disable=SC2086
-      BASE_URL=x AUTH_LOGIN=x AUTH_PASSWORD=x AUTH_SECRET=x \
-        $COMPOSE -f "$COMPOSE_FILE" $PROFILE down -v || die "couldn't remove the old volume."
+      env $DOWN_ENV $COMPOSE -f "$COMPOSE_FILE" $PROFILE down -v || die "couldn't remove the old volume."
       ok "Old database discarded — continuing with fresh setup"
     else
       die "Kept the old database. Restore your previous .env here and re-run, or discard it manually with:
-      BASE_URL=x AUTH_LOGIN=x AUTH_PASSWORD=x AUTH_SECRET=x $COMPOSE -f $COMPOSE_FILE down -v"
+      $DOWN_ENV $COMPOSE -f $COMPOSE_FILE down -v"
     fi
   fi
-  # /dev/tty may exist yet not be openable (e.g. no controlling terminal).
-  if ! { true < /dev/tty; } 2>/dev/null; then
+  if ! has_tty; then
     die "no terminal for setup. Download $COMPOSE_FILE and $ENV_FILE manually, edit, then run '$COMPOSE up -d'."
   fi
   info "First-time setup — a few questions:"
@@ -246,20 +267,21 @@ else
   printf '\n'
   info "Writing $ENV_FILE (secrets generated for you)"
   {
-    printf 'AUTH_LOGIN=%s\n'    "$LOGIN"
-    printf 'AUTH_PASSWORD=%s\n' "$PASSWORD"
+    printf 'AUTH_LOGIN=%s\n'    "$(env_escape "$LOGIN")"
+    printf 'AUTH_PASSWORD=%s\n' "$(env_escape "$PASSWORD")"
     printf 'AUTH_SECRET=%s\n'   "$SECRET"
-    printf 'BASE_URL=%s\n'      "$BASE_URL"
+    printf 'BASE_URL=%s\n'      "$(env_escape "$BASE_URL")"
     printf 'POSTGRES_PASSWORD=%s\n' "$PGPASS"
-    [ -n "$DBURL" ] && printf 'DATABASE_URL=%s\n' "$DBURL"
-    [ -n "$DOMAIN" ] && printf 'DOMAIN=%s\n' "$DOMAIN"
+    [ -n "$DBURL" ] && printf 'DATABASE_URL=%s\n' "$(env_escape "$DBURL")"
+    [ -n "$DOMAIN" ] && printf 'DOMAIN=%s\n' "$(env_escape "$DOMAIN")"
+    [ -n "$DOMAIN" ] && printf 'WEB_HOST_BIND=127.0.0.1\n'
     [ -n "${WEB_PORT:-}" ] && [ "${WEB_PORT:-}" != "8080" ] && printf 'WEB_PORT=%s\n' "$WEB_PORT"
     if [ -n "$S3_BUCKET" ]; then
-      printf 'S3_BUCKET=%s\n'            "$S3_BUCKET"
-      printf 'S3_REGION=%s\n'            "$S3_REGION"
-      [ -n "$S3_ENDPOINT" ] && printf 'S3_ENDPOINT=%s\n' "$S3_ENDPOINT"
-      printf 'AWS_ACCESS_KEY_ID=%s\n'    "$S3_KEY"
-      printf 'AWS_SECRET_ACCESS_KEY=%s\n' "$S3_SECRET"
+      printf 'S3_BUCKET=%s\n'            "$(env_escape "$S3_BUCKET")"
+      printf 'S3_REGION=%s\n'            "$(env_escape "$S3_REGION")"
+      [ -n "$S3_ENDPOINT" ] && printf 'S3_ENDPOINT=%s\n' "$(env_escape "$S3_ENDPOINT")"
+      printf 'AWS_ACCESS_KEY_ID=%s\n'    "$(env_escape "$S3_KEY")"
+      printf 'AWS_SECRET_ACCESS_KEY=%s\n' "$(env_escape "$S3_SECRET")"
     fi
     printf '\n# Optional — uncomment and set, then re-run this script to apply:\n'
     [ -z "$DBURL" ] && printf '# DATABASE_URL=postgres://user:pass@host:5432/doska  # use managed Postgres instead of bundled\n'
@@ -273,9 +295,7 @@ fi
 
 # --- 4. launch ---------------------------------------------------------------
 step "Launching" "Backs up any existing data, pulls the latest images, and starts the stack."
-# Back up existing local data before redeploying over it. No-op on first install
-# (no volume yet) and for managed Postgres.
-backup_first
+backup_first  # no-op on first install and for managed Postgres
 
 info "Pulling images"
 # shellcheck disable=SC2086
