@@ -22,14 +22,28 @@ to a server you control.
 ## Self-hosting
 
 Doska works fully offline with no account. Host your own server if you want your
-boards to sync across devices. 
+boards to sync across devices.
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/romenkova/doska/main/install.sh | sh
+```
+
+The installer asks for a login, password, and (optionally) a domain, generates
+the secrets for you, and brings the stack up. Re-run it any time to pull newer
+images — it keeps your existing `.env`.
+
+<details>
+<summary>Or set it up by hand</summary>
 
 ```sh
 curl -O https://raw.githubusercontent.com/romenkova/doska/main/docker-compose.selfhost.yml
 curl -o .env https://raw.githubusercontent.com/romenkova/doska/main/.env.selfhost.example
-# edit .env — set AUTH_PASSWORD and AUTH_SECRET (e.g. `openssl rand -hex 32`)
+# edit .env — set AUTH_PASSWORD, AUTH_SECRET (e.g. `openssl rand -hex 32`),
+# and BASE_URL (this server's public origin, e.g. http://<your-host>:8080)
 docker compose -f docker-compose.selfhost.yml up -d
 ```
+
+</details>
 
 Open the web UI at `http://<your-host>:8080` and sign in with the `AUTH_LOGIN` /
 `AUTH_PASSWORD` from your `.env`. To sync the **desktop app**, open its sync
@@ -40,10 +54,41 @@ Postgres is bundled and stored in a Docker volume, but recommended is to use man
 - `WEB_PORT` — host port for the web UI (default `8080`).
 - `DOCKER_IMAGE_TAG` — pin a release (e.g. `0.4.0`) instead of `latest`.
 - `DATABASE_URL` — point at your own managed Postgres (optional).
+- `BASE_URL` — this server's public origin. Cookie sync works without it; MCP
+  OAuth needs it.
 
 > **Single user per server:** the credentials in `.env` are the only account currently.
 
 See `docker-compose.dokploy.yml` for [Dokploy](https://dokploy.com)).
+
+### HTTPS
+
+For a public deployment, set `DOMAIN` in `.env` (point its DNS at the host
+first), set `BASE_URL=https://$DOMAIN`, and start with the `https` profile. A
+bundled Caddy proxy fetches and auto-renews a Let's Encrypt certificate:
+
+```sh
+docker compose -f docker-compose.selfhost.yml --profile https up -d
+```
+
+### Backups
+
+Your boards live in the bundled Postgres. Dump it to `./backups/` any time:
+
+```sh
+./backup.sh
+```
+
+`install.sh` also runs this automatically before it redeploys over an existing
+database. Restore a dump with:
+
+```sh
+gunzip -c backups/doska-XXXX.sql.gz | \
+  docker compose -f docker-compose.selfhost.yml exec -T db psql -U doska doska
+```
+
+(If you use a managed `DATABASE_URL`, back it up through your provider instead —
+`backup.sh` skips it.)
 
 ## Desktop app
 
