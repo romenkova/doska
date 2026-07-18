@@ -1,11 +1,10 @@
 name: Release Desktop
 
 # Builds + signs the Tauri desktop app for macOS, Windows and Linux and publishes
-# the bundles plus latest.json to a GitHub Release. While the repo is private these
-# assets are auth-gated, so the desktop app downloads them via the apps/server
-# proxy (see src/updates.ts); when the repo goes public they become directly
-# downloadable and the proxy turns into a pass-through. Either way the endpoint
-# baked into installed apps never changes.
+# the bundles plus latest.json to a GitHub Release. The repo is public, so these
+# assets are directly downloadable; the desktop app still fetches them through the
+# apps/server proxy (see src/updates.ts) because that endpoint is baked into every
+# installed binary and stays stable across releases.
 #
 # Required repo secrets:
 #   TAURI_SIGNING_PRIVATE_KEY           output of `tauri signer generate`

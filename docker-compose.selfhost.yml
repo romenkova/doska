@@ -30,8 +30,6 @@ services:
       FILE_MAX_BYTES: ${FILE_MAX_BYTES:-}
       PORT: 3000
       NODE_ENV: production
-      # remove once it's public.
-      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
       # This server's public origin, e.g. https://doska.example.com — no trailing
       # slash. OAuth discovery advertises absolute URLs (issuer, token endpoint,
       # the resource_metadata an MCP client is pointed at), so without this they

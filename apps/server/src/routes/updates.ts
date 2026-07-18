@@ -4,11 +4,11 @@ import pkg from "../../package.json" with { type: "json" }
 // Update distribution endpoint for the Tauri desktop app.
 //
 // The desktop app's updater is configured (src-tauri/tauri.conf.json) to poll
-// THIS server, never GitHub directly:
-// while the repo is private, GitHub release assets need auth to download, so we
-// proxy them here with a server-side token. When the repo goes public, the same
-// endpoint keeps working unchanged (the token just becomes unnecessary), and
-// every already-installed app keeps pointing here. No client re-release needed.
+// THIS server, never GitHub directly. The releases repo is public, so assets are
+// directly downloadable, but the updater endpoint is baked into every installed
+// binary — so we keep proxying here rather than pointing clients at GitHub. That
+// keeps the endpoint stable for already-installed apps and lets the version-line
+// pinning below run server-side.
 //
 // Every git tag publishes its own GitHub Release (bundles + latest.json), so all
 // versions are kept around. The updater endpoint is baked into the binary, so a
@@ -19,13 +19,10 @@ import pkg from "../../package.json" with { type: "json" }
 // major.minor line rather than the overall latest. No header → overall latest.
 //
 // Env:
-//   GITHUB_TOKEN  token with read access to the releases repo (needed only while
-//                 it's private)
-//   BASE_URL      this server's public origin, e.g. https://deck.example.com
-//                 (used to rewrite asset URLs in the manifest back to us)
+//   BASE_URL  this server's public origin, e.g. https://deck.example.com
+//             (used to rewrite asset URLs in the manifest back to us)
 
 const repo = "romenkova/doska"
-const token = process.env.GITHUB_TOKEN
 const publicBase = (process.env.BASE_URL ?? "").replace(/\/+$/, "")
 
 type GhAsset = { name: string; url: string; browser_download_url: string }
@@ -39,12 +36,10 @@ type GhRelease = {
 type SemVer = [major: number, minor: number, patch: number]
 
 function ghHeaders(accept: string): Record<string, string> {
-  const headers: Record<string, string> = {
+  return {
     Accept: accept,
     "User-Agent": "deck-update-proxy",
   }
-  if (token) headers.Authorization = `Bearer ${token}`
-  return headers
 }
 
 /** [major, minor, patch] from a version/tag like "v0.3.2" or "0.3.2". */
@@ -110,8 +105,8 @@ export function registerUpdateRoutes(app: FastifyInstance): void {
 
   // The updater fetches this first. We take the selected release's generated
   // latest.json and rewrite each platform's `url` so the binary download also
-  // routes back through this proxy (otherwise it would point at an auth-gated
-  // GitHub asset URL the app can't reach). The version is encoded in the
+  // routes back through this proxy (rather than straight at GitHub, keeping the
+  // baked-in endpoint the single source). The version is encoded in the
   // rewritten path so the download streams from the matching release, not just
   // the overall latest.
   app.get("/api/desktop/latest.json", async (req, reply) => {
@@ -146,8 +141,7 @@ export function registerUpdateRoutes(app: FastifyInstance): void {
     }
   })
 
-  // Streams a release asset (the signed bundle) by version + name, with auth
-  // applied server-side so the client never needs a token.
+  // Streams a release asset (the signed bundle) by version + name.
   app.get<{ Params: { version: string; name: string } }>(
     "/api/desktop/download/:version/:name",
     async (req, reply) => {
