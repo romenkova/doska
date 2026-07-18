@@ -2,6 +2,7 @@ import { test, expect } from "@playwright/test"
 import {
   addCard,
   card,
+  cardPanel,
   createBoard,
   editCardBody,
   retitleCard,
@@ -11,7 +12,7 @@ import {
  * A card with a body opens read-only: its notes render instead of showing the
  * raw markdown field. Double-clicking the content (or the Edit toggle) switches
  * to the editor. An empty card has nothing to preview, so it opens straight in
- * the editor. These drive the modal's preview controls the way a user does.
+ * the editor. These drive the panel's preview controls the way a user does.
  */
 test.describe("card preview & edit", () => {
   test("an empty card opens in the editor", async ({ page }) => {
@@ -35,9 +36,7 @@ test.describe("card preview & edit", () => {
     await card(page, "Final notes").click()
     await expect(page.getByRole("button", { name: "Edit" })).toBeVisible()
     await expect(page.getByPlaceholder("Notes")).toHaveCount(0)
-    await expect(
-      page.getByRole("dialog").getByText("Decision: ship it")
-    ).toBeVisible()
+    await expect(cardPanel(page).getByText("Decision: ship it")).toBeVisible()
   })
 
   test("double-clicking the preview enters the editor", async ({ page }) => {
@@ -49,7 +48,7 @@ test.describe("card preview & edit", () => {
     await card(page, "Edit me").click()
     await expect(page.getByPlaceholder("Notes")).toHaveCount(0)
 
-    await page.getByRole("dialog").dblclick()
+    await cardPanel(page).dblclick()
     await expect(page.getByPlaceholder("Title")).toBeFocused()
     await expect(page.getByPlaceholder("Notes")).toHaveValue("Some content")
   })

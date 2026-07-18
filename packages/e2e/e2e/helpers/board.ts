@@ -60,6 +60,13 @@ export async function deleteBoard(page: Page): Promise<void> {
     .click()
 }
 
+/** The board's card-id prefix chip in the header; its accessible name is the prefix text. */
+export function prefixChip(page: Page, prefix: string) {
+  return page
+    .locator("header", { has: page.getByRole("button", { name: "Add column" }) })
+    .getByRole("button", { name: prefix, exact: true })
+}
+
 /** Opens the board named `name` from the sidebar's dashboards list. */
 export async function openBoardInSidebar(
   page: Page,
@@ -71,13 +78,14 @@ export async function openBoardInSidebar(
 
 /**
  * The sync indicator (a floating button at the bottom-right of the board). Its
- * accessible name *is* the current status ("Saved", "1 change", "2 changes",
+ * accessible name *is* the current status ("Synced", "1 change", "2 changes",
  * "Sync failed"), so a test reads status straight off the locator's accessible
- * name. (While syncing the label is blank — but tests assert the settled states.)
+ * name. (While syncing the label is "Syncing" — but tests assert the settled
+ * states.)
  */
 export function syncIndicator(page: Page) {
   return page.getByRole("button", {
-    name: /Saved|change|Sync failed/,
+    name: /Synced|change|Sync failed/,
   })
 }
 

@@ -73,7 +73,11 @@ export function CardPanel({ closeHref }: IProps) {
         />
       )}
       {/* `ring-inset` because the wrapper's overflow clips an outset ring's left edge. */}
-      <div className="flex size-full flex-col overflow-hidden bg-card text-sm text-card-foreground md:w-(--card-panel-width) md:rounded-xl md:ring-1 md:ring-foreground/10 md:ring-inset">
+      <div
+        role="region"
+        aria-label="Card"
+        className="flex size-full flex-col overflow-hidden bg-card text-sm text-card-foreground md:w-(--card-panel-width) md:rounded-xl md:ring-1 md:ring-foreground/10 md:ring-inset"
+      >
         {card && content && (
           <CardPane
             key={card}

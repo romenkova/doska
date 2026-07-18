@@ -61,6 +61,8 @@ export function useSlashMenu(
   const [activeIndex, setActiveIndex] = useState(0)
   // Caret position to restore after a controlled value update lands.
   const pendingCaret = useRef<number | null>(null)
+  // Value at which Escape dismissed the menu; keeps it shut until the text changes.
+  const dismissedValue = useRef<string | null>(null)
 
   const close = useCallback(() => setMenu(null), [])
 
@@ -69,6 +71,9 @@ export function useSlashMenu(
     const textarea = ref.current
     if (!textarea || textarea.selectionStart !== textarea.selectionEnd)
       return setMenu(null)
+
+    if (dismissedValue.current === textarea.value) return setMenu(null)
+    dismissedValue.current = null
 
     const caret = textarea.selectionStart
     const before = textarea.value.slice(0, caret)
@@ -156,11 +161,14 @@ export function useSlashMenu(
           break
         case "Escape":
           e.preventDefault()
+          // Stop the panel's window-level Escape from also firing and closing the whole card.
+          e.stopPropagation()
+          dismissedValue.current = ref.current?.value ?? null
           setMenu(null)
           break
       }
     },
-    [menu, activeIndex, select]
+    [ref, menu, activeIndex, select]
   )
 
   // Bind to the textarea: typing/clicks re-evaluate the trigger, keys navigate.

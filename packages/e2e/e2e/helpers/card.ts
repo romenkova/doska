@@ -18,6 +18,16 @@ export function card(page: Page, title: string) {
   return page.locator("[data-rfd-draggable-id]", { hasText: title })
 }
 
+/** A card's copy-to-clipboard id chip. Only renders once the server stamps a number (needs a synced board). */
+export function cardIdButton(page: Page) {
+  return page.getByRole("button", { name: /^Copy card id / })
+}
+
+// Scope panel content through this — the board card behind the panel renders the same title/body.
+export function cardPanel(page: Page) {
+  return page.getByRole("region", { name: "Card" })
+}
+
 /**
  * Adds a card to the named column via the column's "add card" control, which now
  * lives as a full-width button at the top of the column body (it used to sit in
@@ -34,8 +44,14 @@ export async function addCard(page: Page, name: string): Promise<void> {
   await expect(seeded).toHaveCount(before + 1)
 }
 
+// Reopening before the panel unmounts reuses the stale instance, so wait it fully out, not just off the route.
+async function waitForPanelToClose(page: Page): Promise<void> {
+  await page.waitForURL((url) => !url.pathname.includes("/c/"))
+  await expect(page.getByPlaceholder("Title")).toHaveCount(0)
+}
+
 /**
- * Opens the card titled `fromTitle` in the modal editor, retitles it to
+ * Opens the card titled `fromTitle` in the panel editor, retitles it to
  * `toTitle`, saves, and waits for the board to show the new title.
  */
 export async function retitleCard(
@@ -47,36 +63,32 @@ export async function retitleCard(
   const title = page.getByPlaceholder("Title")
   await title.fill(toTitle)
   await page.getByRole("button", { name: "Save" }).click()
+  await waitForPanelToClose(page)
   await expect(card(page, toTitle)).toBeVisible()
 }
 
 /**
  * Opens the card titled `title` and ensures it's in the editor (title input
- * focused). A card with a body opens read-only, so we double-click its content
+ * focused). A card with a body opens read-only, so we click the "Edit" toggle
  * to enter the editor; an empty card opens straight in the editor already. Pair
- * with `editCardBody` / `retitleCard`, or drive the modal directly for preview
+ * with `editCardBody` / `retitleCard`, or drive the panel directly for preview
  * tests.
  */
 export async function openCard(page: Page, title: string): Promise<void> {
   await card(page, title).click()
-  const dialog = page.getByRole("dialog")
-  await expect(dialog).toBeVisible()
-  // The "Edit" toggle is only shown in read-only preview; double-click to edit.
+  await expect(cardPanel(page)).toBeVisible()
   if (await page.getByRole("button", { name: "Edit" }).isVisible()) {
-    await dialog.dblclick()
+    await page.getByRole("button", { name: "Edit" }).click()
   }
-  await expect(page.getByPlaceholder("Title")).toBeFocused()
+  // Click to focus: a panel reused mid-close-animation won't refire the field's autoFocus.
+  const titleField = page.getByPlaceholder("Title")
+  await titleField.click()
+  await expect(titleField).toBeFocused()
 }
 
 /**
  * Opens the card titled `title`, replaces its body (the "Notes" field) with
- * `body`, then saves — closing the modal back to the board. Waits on the dialog
- * fully unmounting rather than on any particular rendered text, so it stays
- * agnostic to how the body renders on the card. Note we can't wait on the
- * "Notes" field disappearing: saving a non-empty body flips the editor into its
- * read-only preview (which has no "Notes" field) the instant the close starts,
- * so that's satisfied while the dialog is still mid-close and rendering the body
- * — which would collide with the same text on the board card.
+ * `body`, then saves — closing the panel back to the board.
  */
 export async function editCardBody(
   page: Page,
@@ -86,7 +98,7 @@ export async function editCardBody(
   await openCard(page, title)
   await page.getByPlaceholder("Notes").fill(body)
   await page.getByRole("button", { name: "Save" }).click()
-  await expect(page.getByRole("dialog")).toHaveCount(0)
+  await waitForPanelToClose(page)
 }
 
 /**
