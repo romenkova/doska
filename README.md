@@ -1,33 +1,41 @@
 # Doska
 
 A Kanban board where the cards are Markdown. It's local-first: your boards live
-in the browser and work offline with no account. If you want them on more than
-one device, point it at a server you run — sync is opt-in, not the default.
+in the browser (IndexedDB), so it's fast and works without an account. Sync is
+opt-in. Point it at a server you run and that server keeps the canonical copy,
+replicated to every device.
 
 Runs in the browser, installs as a PWA, or ships as a native macOS app.
+
+> Browser storage isn't permanent. The app asks the browser not to evict it, but
+> that's best-effort: the browser can still clear it, and "clear site data"
+> always will. So treat local-only as a working copy. If the boards matter, run
+> a server and let it keep the durable one.
 
 ## Features
 
 - Multiple boards, each with draggable columns. Drag cards to reorder or move
   them between columns.
 - Cards are GitHub-flavored Markdown, edited in place, with a slash menu for
-  formatting and task lists that track their own progress.
+  formatting and task lists that show a progress count.
 - Drop images or files onto a card to attach them; images preview inline.
-- Give a card a deadline and it wears a color-coded chip that warms up as the
-  date gets closer.
-- Every card gets a short `ROAD-12`-style id from its column prefix — click to
+- Set a deadline on a card. It shows a chip that changes color as the date nears
+  and turns red once it's overdue.
+- Every card gets a short `ROAD-12`-style id from its column prefix. Click it to
   copy.
 - Local-first storage (IndexedDB): reads and writes hit the browser, not the
   network.
 - Opt-in sync: give it a server you control and boards replicate across your
   devices in the background.
 - Tauri macOS app that reuses the same client and auto-updates.
+- One-line self-host installer that generates the secrets and brings the stack up.
 - Dark and light themes.
 
 ## Self-hosting
 
-Doska works fully offline with no account. Host your own server if you want your
-boards to sync across devices.
+Run your own server to keep your boards for real and sync them across devices.
+Without one they live only in the browser: fine for trying it out, not for
+anything you want to keep.
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/romenkova/doska/main/install.sh -o install.sh && sh install.sh
@@ -54,8 +62,8 @@ Open the web UI at `http://<your-host>:8080` and sign in with the `AUTH_LOGIN` /
 `AUTH_PASSWORD` from your `.env`. To sync the **desktop app**, open its sync
 settings and set the server URL to the same address.
 
-Postgres comes bundled and lives in a Docker volume. For anything you care about,
-point `DATABASE_URL` at a managed instance instead.
+Postgres comes bundled and lives in a Docker volume. To run it elsewhere, point
+`DATABASE_URL` at a managed instance instead.
 
 - `WEB_PORT` — host port for the web UI (default `8080`).
 - `DOCKER_IMAGE_TAG` — pin a release (e.g. `0.4.0`) instead of `latest`.
