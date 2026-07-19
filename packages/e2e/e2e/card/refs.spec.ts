@@ -5,7 +5,9 @@ import {
   cardDisplayId,
   cardPanel,
   cardRef,
+  cardTitled,
   createBoard,
+  editCardBody,
   openCard,
   retitleCard,
   setColumnColor,
@@ -18,103 +20,108 @@ import {
  * `pressSequentially`, not `fill`: the `[[` menu is driven by the textarea's own
  * input/keyup events.
  */
-async function boardWithTwoCards(page: Page): Promise<void> {
+async function boardWithTwoCards(page: Page) {
   await signIn(page)
   await createBoard(page)
   await addCard(page, "To Do")
   await retitleCard(page, "Untitled card", "Target card")
   await addCard(page, "To Do")
   await retitleCard(page, "Untitled card", "Source card")
+  return {
+    targetId: await cardDisplayId(page, "Target card"),
+    sourceId: await cardDisplayId(page, "Source card"),
+  }
+}
+
+/**
+ * A row in the `[[` menu. Matched on title *and* display id — both of which the
+ * row shows — because the board card behind the menu is also a `button` carrying
+ * the same title.
+ */
+function refMenuItem(page: Page, title: string, displayId: string) {
+  return page.getByRole("button", { name: `${title} ${displayId}` })
 }
 
 test.describe("card references", () => {
   test("the [[ menu inserts the referenced card's display id", async ({
     page,
   }) => {
-    await boardWithTwoCards(page)
-    const targetId = await cardDisplayId(page, "Target card")
+    const { targetId } = await boardWithTwoCards(page)
 
     await openCard(page, "Source card")
     const notes = page.getByPlaceholder("Notes")
     await notes.click()
     await notes.pressSequentially("[[Target")
 
-    const item = page.getByRole("button", { name: /Target card/ })
+    const item = refMenuItem(page, "Target card", targetId)
     await expect(item).toBeVisible()
     await item.click()
 
-    await expect(notes).toHaveValue(`[[${targetId}]] `)
+    await expect(notes).toHaveValue(`[[${targetId}]]`)
   })
 
   test("the menu filters by title and leaves out the card being edited", async ({
     page,
   }) => {
-    await boardWithTwoCards(page)
+    const { targetId, sourceId } = await boardWithTwoCards(page)
 
     await openCard(page, "Source card")
     const notes = page.getByPlaceholder("Notes")
     await notes.click()
     await notes.pressSequentially("[[")
 
-    await expect(page.getByRole("button", { name: /Target card/ })).toBeVisible()
+    await expect(refMenuItem(page, "Target card", targetId)).toBeVisible()
     // A card referencing itself is never useful, so it isn't offered.
-    await expect(page.getByRole("button", { name: /Source card/ })).toHaveCount(0)
+    await expect(refMenuItem(page, "Source card", sourceId)).toHaveCount(0)
 
-    await notes.pressSequentially("Nothing matches this")
-    await expect(page.getByRole("button", { name: /Target card/ })).toHaveCount(0)
+    await notes.pressSequentially("nothing matches this")
+    await expect(refMenuItem(page, "Target card", targetId)).toHaveCount(0)
   })
 
-  test("renders the target's title and column, and follows a re-title", async ({
+  test("renders the target's id, title and column, and follows a re-title", async ({
     page,
   }) => {
-    await boardWithTwoCards(page)
-    const targetId = await cardDisplayId(page, "Target card")
-
-    await openCard(page, "Source card")
-    await page.getByPlaceholder("Notes").fill(`Blocked by [[${targetId}]]`)
-    await page.getByRole("button", { name: "Save" }).click()
-    await expect(cardPanel(page)).toHaveCount(0)
+    const { targetId } = await boardWithTwoCards(page)
+    await editCardBody(page, "Source card", `Blocked by [[${targetId}]]`)
 
     const ref = cardRef(page, "Target card")
     await expect(ref).toBeVisible()
-    // The id, the live title and the column the target sits in.
     await expect(ref).toContainText(targetId)
+    // The column the target currently sits in, rendered as the trailing pill.
     await expect(ref).toContainText(/To Do/i)
 
-    // Nothing but the id is stored in the text, so a rename propagates.
-    await retitleCard(page, "Target card", "Renamed target")
+    // Nothing but the id is stored in the text, so a rename propagates. Opened
+    // via `cardTitled`: the source card's body now renders the target's title
+    // too, so a plain `card()` would match both.
+    await cardTitled(page, "Target card").click()
+    await expect(cardPanel(page)).toBeVisible()
+    await page.getByPlaceholder("Title").fill("Renamed target")
+    await page.getByRole("button", { name: "Save" }).click()
+
     await expect(cardRef(page, "Renamed target")).toBeVisible()
   })
 
   test("the rendered reference picks up the target column's color", async ({
     page,
   }) => {
-    await boardWithTwoCards(page)
-    const targetId = await cardDisplayId(page, "Target card")
-
-    await openCard(page, "Source card")
-    await page.getByPlaceholder("Notes").fill(`See [[${targetId}]]`)
-    await page.getByRole("button", { name: "Save" }).click()
-    await expect(cardPanel(page)).toHaveCount(0)
+    const { targetId } = await boardWithTwoCards(page)
+    await editCardBody(page, "Source card", `See [[${targetId}]]`)
 
     const badge = cardRef(page, "Target card").locator(".wikilink-badge")
-    const before = await badge.evaluate((el) => el.ownerDocument.defaultView!.getComputedStyle(el).color)
+    const color = () =>
+      badge.evaluate(
+        (el) => el.ownerDocument.defaultView!.getComputedStyle(el).color
+      )
+    const before = await color()
 
     await setColumnColor(page, "To Do", "Violet")
 
-    await expect
-      .poll(() => badge.evaluate((el) => el.ownerDocument.defaultView!.getComputedStyle(el).color))
-      .not.toBe(before)
+    await expect.poll(color).not.toBe(before)
   })
 
   test("clicking a reference opens the card it points at", async ({ page }) => {
-    await boardWithTwoCards(page)
-    const targetId = await cardDisplayId(page, "Target card")
-
-    await openCard(page, "Source card")
-    await page.getByPlaceholder("Notes").fill(`Blocked by [[${targetId}]]`)
-    await page.getByRole("button", { name: "Save" }).click()
-    await expect(cardPanel(page)).toHaveCount(0)
+    const { targetId } = await boardWithTwoCards(page)
+    await editCardBody(page, "Source card", `Blocked by [[${targetId}]]`)
 
     await cardRef(page, "Target card").click()
 
@@ -127,11 +134,7 @@ test.describe("card references", () => {
     page,
   }) => {
     await boardWithTwoCards(page)
-
-    await openCard(page, "Source card")
-    await page.getByPlaceholder("Notes").fill("Blocked by [[NOPE-999]]")
-    await page.getByRole("button", { name: "Save" }).click()
-    await expect(cardPanel(page)).toHaveCount(0)
+    await editCardBody(page, "Source card", "Blocked by [[NOPE-999]]")
 
     // A broken reference should look broken, not silently render as plain text.
     await expect(card(page, "Source card").getByText("NOPE-999")).toBeVisible()
