@@ -1,5 +1,6 @@
 import type { FastifyInstance, FastifyRequest } from "fastify"
 import pkg from "../../package.json" with { type: "json" }
+import { env } from "../env"
 
 // Update distribution endpoint for the Tauri desktop app.
 //
@@ -23,7 +24,7 @@ import pkg from "../../package.json" with { type: "json" }
 //             (used to rewrite asset URLs in the manifest back to us)
 
 const repo = "romenkova/doska"
-const publicBase = (process.env.BASE_URL ?? "").replace(/\/+$/, "")
+const publicBase = env.baseUrl ?? ""
 
 type GhAsset = { name: string; url: string; browser_download_url: string }
 type GhRelease = {
@@ -100,7 +101,7 @@ export function registerUpdateRoutes(app: FastifyInstance): void {
   // to learn its server's version, then only installs a release that matches it,
   // so a client never runs ahead of a server it can't talk to.
   app.get("/api/version", async (_req, reply) => {
-    return reply.send({ version: process.env.APP_VERSION || pkg.version })
+    return reply.send({ version: env.appVersion || pkg.version })
   })
 
   // The updater fetches this first. We take the selected release's generated

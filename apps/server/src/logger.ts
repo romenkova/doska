@@ -1,7 +1,8 @@
 import type { FastifyInstance } from "fastify"
+import { env } from "./env"
 
-const isDev = process.env.NODE_ENV !== "production"
-const color = isDev && !process.env.NO_COLOR
+const isDev = !env.isProduction
+const color = isDev && !env.noColor
 
 const ANSI = {
   bold: 1,
@@ -48,7 +49,7 @@ function durationColor(ms: number, s: string): string {
 
 export const loggerOptions = isDev
   ? {
-      level: process.env.LOG_LEVEL ?? "debug",
+      level: env.logLevel ?? "debug",
       transport: {
         target: "pino-pretty",
         options: {
@@ -59,7 +60,7 @@ export const loggerOptions = isDev
         },
       },
     }
-  : { level: process.env.LOG_LEVEL ?? "info" }
+  : { level: env.logLevel ?? "info" }
 
 export function registerRequestLogging(app: FastifyInstance): void {
   app.addHook("onResponse", async (req, reply) => {

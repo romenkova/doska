@@ -3,6 +3,7 @@ import { drizzle as drizzleNodePg } from "drizzle-orm/node-postgres"
 import type { NodePgDatabase } from "drizzle-orm/node-postgres"
 import { drizzle as drizzlePglite } from "drizzle-orm/pglite"
 import { Pool } from "pg"
+import { env } from "../env"
 import * as schema from "./schema"
 
 /**
@@ -15,18 +16,18 @@ import * as schema from "./schema"
 
 export type DB = NodePgDatabase<typeof schema>
 
-const url = process.env.DATABASE_URL
+const { databaseUrl } = env
 
 let database: DB | undefined
 
 export function getDB() {
   if (database) return database
 
-  if (url) {
-    const pool = new Pool({ connectionString: url })
+  if (databaseUrl) {
+    const pool = new Pool({ connectionString: databaseUrl })
     database = drizzleNodePg(pool, { schema })
   } else {
-    const client = new PGlite(process.env.DB_FILE)
+    const client = new PGlite(env.dbFile)
     const pglite = drizzlePglite(client, { schema })
     // PGlite and node-postgres share the pg-core query API; the SQL generated is
     // the same, so the app code can stay dialect-agnostic behind this one type.

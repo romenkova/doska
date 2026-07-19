@@ -1,5 +1,6 @@
 import { fromNodeHeaders } from "better-auth/node"
 import type { FastifyReply, FastifyRequest } from "fastify"
+import { env } from "../env"
 import { auth } from "."
 
 /**
@@ -12,8 +13,7 @@ import { auth } from "."
  * The server's public origin.
  */
 export function originOf(req: FastifyRequest): string {
-  const configured = process.env.BASE_URL
-  if (configured) return configured.replace(/\/$/, "")
+  if (env.baseUrl) return env.baseUrl
   return `${req.protocol}://${req.headers.host ?? "localhost"}`
 }
 

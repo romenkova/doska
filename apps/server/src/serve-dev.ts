@@ -1,5 +1,6 @@
 import { PGlite } from "@electric-sql/pglite"
 import { PGLiteSocketServer } from "@electric-sql/pglite-socket"
+import { env } from "./env"
 
 /**
  * Runs the local PGlite database as a real Postgres socket server so the app,
@@ -7,9 +8,9 @@ import { PGLiteSocketServer } from "@electric-sql/pglite-socket"
  * single-connection locking. This process is the sole owner of `DB_FILE`; point
  * everything else at it via `DATABASE_URL=postgres://127.0.0.1:<port>/postgres`.
  */
-const dataDir = process.env.DB_FILE ?? "pgdata"
-const port = Number(process.env.PG_SOCKET_PORT ?? 5432)
-const host = process.env.PG_SOCKET_HOST ?? "127.0.0.1"
+const dataDir = env.dbFile ?? "pgdata"
+const port = env.pgSocketPort
+const host = env.pgSocketHost
 
 const client = new PGlite(dataDir)
 
