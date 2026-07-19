@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import type { Attachment } from "@/lib/types"
 import { activeStorage } from "@/lib/api/attachments"
+import { isDesktop } from "@/lib/platform"
 
 /**
  * Resolves a viewable URL for an attachment key via the active storage backend
@@ -19,12 +20,27 @@ export function useAttachmentUrlByKey(
 
   useEffect(() => {
     let alive = true
-    activeStorage()
-      .url(cardId, key)
-      .then((u) => alive && setState({ key, url: u }))
+    let objectUrl: string | null = null
+
+    const resolve = isDesktop()
+      ? activeStorage()
+          .get(cardId, key)
+          .then((blob) => {
+            objectUrl = URL.createObjectURL(blob)
+            return objectUrl
+          })
+      : activeStorage().url(cardId, key)
+
+    resolve
+      .then((u) => {
+        if (alive) setState({ key, url: u })
+        else if (objectUrl) URL.revokeObjectURL(objectUrl)
+      })
       .catch(() => alive && setState({ key, url: null }))
+
     return () => {
       alive = false
+      if (objectUrl) URL.revokeObjectURL(objectUrl)
     }
   }, [cardId, key])
 
