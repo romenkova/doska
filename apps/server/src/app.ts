@@ -1,6 +1,6 @@
 import Fastify from "fastify"
 import type { FastifyInstance } from "fastify"
-import { requireSession } from "./auth/guard"
+import { requireMCPSession, requireSession } from "./auth/guard"
 import { loggerOptions, registerRequestLogging } from "./logger"
 import { registerAuthRoutes } from "./routes/auth"
 import { registerFileRoutes, type ServerStorage } from "./routes/files"
@@ -33,7 +33,10 @@ export function buildApp(opts: BuildOptions = {}): FastifyInstance {
   // Fastify must not drain it into a parsed body first. Consequence: `req.body`
   // is undefined everywhere on this server — a new route wanting one must
   // register its own parser.
-  for (const type of ["application/json", "application/x-www-form-urlencoded"]) {
+  for (const type of [
+    "application/json",
+    "application/x-www-form-urlencoded",
+  ]) {
     app.addContentTypeParser(type, (_req, _payload, done) => {
       done(null, undefined)
     })
@@ -49,6 +52,11 @@ export function buildApp(opts: BuildOptions = {}): FastifyInstance {
 
     registerRpcRoutes(scope)
     registerFileRoutes(scope, opts.storage)
+  })
+
+  app.register(async (scope) => {
+    scope.addHook("onRequest", requireMCPSession)
+
     registerMcpRoutes(scope)
   })
 
