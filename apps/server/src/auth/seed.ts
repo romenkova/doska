@@ -1,5 +1,6 @@
 import { getDB } from "../db/get-db"
 import { user } from "../db/schema"
+import { env } from "../env"
 import { auth } from "."
 
 /**
@@ -13,9 +14,9 @@ import { auth } from "."
  * an existing install does not silently reset the account.
  */
 export async function seedAccount(): Promise<void> {
-  const login = process.env.AUTH_LOGIN ?? ""
-  const password = process.env.AUTH_PASSWORD ?? ""
-  if (!login || !password) {
+  const { authLogin, authPassword } = env
+
+  if (!authLogin || !authPassword) {
     throw new Error("Auth misconfigured: set AUTH_LOGIN and AUTH_PASSWORD.")
   }
 
@@ -24,13 +25,13 @@ export async function seedAccount(): Promise<void> {
 
   await auth.api.signUpEmail({
     body: {
-      name: login,
+      name: authLogin,
       // better-auth keys users by email, but a login isn't one (e2e signs in as
       // "e2e"). Nothing ever sends mail here, so a synthetic address off a
       // reserved TLD satisfies the schema without pretending to be deliverable.
-      email: `${encodeURIComponent(login)}@deck.invalid`,
-      password,
-      username: login,
+      email: `${encodeURIComponent(authLogin)}@deck.invalid`,
+      password: authPassword,
+      username: authLogin,
     },
   })
 }

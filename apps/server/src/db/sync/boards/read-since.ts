@@ -1,8 +1,8 @@
 import type { Change } from "@doska/contract"
 import { and, eq, gt } from "drizzle-orm"
-import { db } from "../client"
-import { boardCounter } from "./counter"
-import { cards, columns } from "../schema"
+import { db } from "../../client"
+import { cards, columns } from "../../schema"
+import { boardCounter } from "../constants"
 
 /**
  * Returns every column and card changed past `since` for the board, plus the

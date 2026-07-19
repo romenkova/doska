@@ -1,12 +1,25 @@
 import type { IncomingMessage } from "node:http"
-import { s3StorageFromEnv } from "@doska/file-storage/server"
+import {
+  s3StorageFromEnv,
+  type FetchedFile,
+  type PutResult,
+} from "@doska/file-storage/server"
 import type { FastifyInstance } from "fastify"
 
 /**
  * Attachment upload/download routes.
  */
 
-const storage = s3StorageFromEnv()
+/** The slice of storage the routes touch; lets tests pass an in-memory fake. */
+export interface ServerStorage {
+  readonly maxBytes: number
+  put(
+    bytes: Buffer,
+    meta: { name: string; mime: string | string[] | undefined }
+  ): Promise<PutResult>
+  fetch(key: string): Promise<FetchedFile>
+  remove(key: string): Promise<void>
+}
 
 /** Pulls the object key out of `/api/files/<key>`, guarding traversal. */
 function keyFromPath(url: string): string | null {
@@ -38,7 +51,10 @@ function collectBody(
   })
 }
 
-export function registerFileRoutes(app: FastifyInstance): void {
+export function registerFileRoutes(
+  app: FastifyInstance,
+  storage: ServerStorage | null = s3StorageFromEnv()
+): void {
   // Raw binary uploads: no parsing, the handler reads the stream itself (same
   // no-op pattern as the parsers in index.ts).
   app.addContentTypeParser("application/octet-stream", (_req, _payload, done) =>

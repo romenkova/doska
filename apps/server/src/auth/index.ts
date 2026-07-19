@@ -3,6 +3,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { bearer, mcp, username } from "better-auth/plugins"
 import { getDB } from "../db/get-db"
 import * as schema from "../db/schema"
+import { env } from "../env"
 
 /**
  * The authorization server. One account, three kinds of client, one session
@@ -19,19 +20,17 @@ import * as schema from "../db/schema"
  * `seed.ts`) so a self-hosted deploy keeps configuring itself the same way.
  */
 
-const secret = process.env.AUTH_SECRET ?? ""
+const secret = env.authSecret
 if (!secret) throw new Error("Auth misconfigured: set AUTH_SECRET.")
 
 export const auth = betterAuth({
   secret,
-  baseURL: process.env.BASE_URL?.replace(/\/$/, ""),
+  baseURL: env.baseUrl,
   trustedOrigins: [
     "tauri://localhost",
     "http://tauri.localhost",
     "https://tauri.localhost",
-    ...(process.env.AUTH_TRUSTED_ORIGINS?.split(",")
-      .map((o) => o.trim())
-      .filter(Boolean) ?? []),
+    ...env.authTrustedOrigins,
   ],
   database: drizzleAdapter(getDB(), { provider: "pg", schema }),
   emailAndPassword: { enabled: true, minPasswordLength: 1 },
@@ -39,7 +38,7 @@ export const auth = betterAuth({
     cookieCache: { enabled: true, maxAge: 60 },
   },
   rateLimit: {
-    enabled: process.env.AUTH_RATE_LIMIT !== "off",
+    enabled: env.authRateLimit,
     window: 60,
     max: 100,
     customRules: {

@@ -1,4 +1,4 @@
 {
   "extends": "@doska/configs/tsconfig/node.json",
-  "include": ["src", "drizzle.config.ts"]
+  "include": ["src", "integration-tests", "drizzle.config.ts", "vitest.config.ts"]
 }
