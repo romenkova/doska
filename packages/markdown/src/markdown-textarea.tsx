@@ -1,10 +1,11 @@
 import { cn } from "@doska/ui-kit"
-import { useRef } from "react"
+import { useRef, type ReactNode } from "react"
 import { Markdown } from "./markdown"
 import { useMarkers } from "./markers"
 import { type SlashCommand } from "./slash-menu"
 import { toggleTaskByIndex } from "./task-progress"
 import { useCutLine } from "./hooks/use-cut-line"
+import { usePasteFiles } from "./hooks/use-paste-files"
 import type { Marker } from "./markers"
 import { SlashMenu } from "./slash-menu/slash-menu"
 
@@ -19,6 +20,10 @@ interface IProps extends React.ComponentProps<"textarea"> {
   slashCommands?: SlashCommand[]
   /** Required when `slashMenu` is on, to apply inserted commands. */
   onChangeValue?: (value: string) => void
+  /** Renders `attachment:<key>` image refs in the preview; see `Markdown`. */
+  renderImage?: (attachmentKey: string, alt: string) => ReactNode
+  /** Persists pasted files; returns Markdown to splice at the caret, or null. */
+  onPasteFiles?: (files: File[]) => Promise<string | null>
   containerClassName?: string
 }
 
@@ -32,6 +37,8 @@ export function MarkdownTextarea({
   slashMenu,
   slashCommands,
   onChangeValue,
+  renderImage,
+  onPasteFiles,
   containerClassName,
   ...props
 }: IProps) {
@@ -45,11 +52,18 @@ export function MarkdownTextarea({
     enabled: !isPreview && Boolean(onChangeValue),
   })
 
+  const handlePaste = usePasteFiles(textareaRef, {
+    value,
+    onChangeValue: onChangeValue ?? NOOP,
+    onPasteFiles,
+  })
+
   if (isPreview)
     return (
       <div className={cn("space-y-4 pt-3 select-text", containerClassName)}>
         {body && (
           <Markdown
+            renderImage={renderImage}
             onToggleTask={
               onToggleTask
                 ? (index) => onToggleTask(toggleTaskByIndex(value, index))
@@ -72,6 +86,7 @@ export function MarkdownTextarea({
       <textarea
         {...props}
         ref={textareaRef}
+        onPaste={handlePaste}
         className={cn(
           "w-full resize-none bg-transparent outline-none",
           "placeholder:text-muted-foreground/50",

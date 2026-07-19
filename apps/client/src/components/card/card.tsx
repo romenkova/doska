@@ -16,6 +16,7 @@ import { useUpdateCard } from "@/lib/data/mutations"
 import { MarkdownCardPreview } from "@doska/markdown"
 import type { DetailedHTMLProps, HTMLAttributes } from "react"
 import { CardAttachments } from "./attachments/card-attachments"
+import { AttachmentImage } from "./attachments/attachment-image"
 
 interface IProps extends DetailedHTMLProps<
   HTMLAttributes<HTMLDivElement>,
@@ -69,6 +70,9 @@ export function Card({ id, showBody, isDragging, ...props }: IProps) {
                   <MarkdownCardPreview
                     body={body}
                     onChangeBody={(body) => updateCard({ body })}
+                    renderImage={(key, alt) => (
+                      <AttachmentImage cardId={id} attachmentKey={key} alt={alt} />
+                    )}
                   />
                 </CardContent>
               </div>

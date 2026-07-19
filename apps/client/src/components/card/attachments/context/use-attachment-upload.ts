@@ -37,12 +37,12 @@ export function useAttachmentUpload(cardId: string) {
   }
 
   const addFiles = useCallback(
-    async (files: FileList | File[] | null) => {
+    async (files: FileList | File[] | null): Promise<Attachment[]> => {
       const list = files ? Array.from(files) : []
-      if (!list.length) return
+      if (!list.length) return []
       if (!enabled) {
         setError(disabledReason)
-        return
+        return []
       }
       const queued = list.map((file) => ({
         id: crypto.randomUUID(),
@@ -70,8 +70,10 @@ export function useAttachmentUpload(cardId: string) {
           })
         }
         save({ attachments: [...(existing ?? []), ...added] })
+        return added
       } catch (err) {
         setError(err instanceof Error ? err.message : "Upload failed")
+        return []
       } finally {
         setPending((prev) => prev.filter((p) => !queued.some((q) => q.id === p.id)))
       }
