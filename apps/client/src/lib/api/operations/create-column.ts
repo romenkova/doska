@@ -23,6 +23,7 @@ export async function createColumn(
     position,
     dashboardId,
     collapsed: false,
+    color: "",
     updatedAt: stamp(),
     deletedAt: null,
   })

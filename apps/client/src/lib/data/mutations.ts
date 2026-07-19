@@ -131,6 +131,35 @@ export function useSetColumnCollapsed(deckId: string) {
   })
 }
 
+/**
+ * Sets a column's color. Patched into the board cache up front like the
+ * collapse toggle, so the swatch and every pill re-tint immediately.
+ */
+export function useSetColumnColor(deckId: string) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, color }: { id: string; color: string }) =>
+      api.setColumnColor(id, color),
+    onMutate: ({ id, color }) => {
+      const previous = qc.getQueryData<Board>(keys.board(deckId))
+      if (previous) {
+        const next: Board = {
+          ...previous,
+          columns: previous.columns.map((c) =>
+            c.id === id ? { ...c, color } : c
+          ),
+        }
+        qc.setQueryData(keys.board(deckId), next)
+      }
+      return { previous }
+    },
+    onError: (_err, _vars, ctx) => {
+      if (ctx?.previous) qc.setQueryData(keys.board(deckId), ctx.previous)
+    },
+    onSettled: () => qc.invalidateQueries({ queryKey: keys.board(deckId) }),
+  })
+}
+
 export function useDeleteColumn(deckId: string) {
   const qc = useQueryClient()
   return useMutation({

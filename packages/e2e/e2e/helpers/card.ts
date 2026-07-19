@@ -23,6 +23,25 @@ export function cardIdButton(page: Page) {
   return page.getByRole("button", { name: /^Copy card id / })
 }
 
+/**
+ * The display id ("ROAD-12") shown on the card titled `title`. Only exists once
+ * the server has stamped the card a number, so the board must be signed in.
+ */
+export async function cardDisplayId(page: Page, title: string): Promise<string> {
+  const chip = card(page, title).getByRole("button", { name: /^Copy card id / })
+  await expect(chip).toBeVisible()
+  const label = (await chip.getAttribute("aria-label")) ?? ""
+  return label.replace("Copy card id ", "")
+}
+
+/**
+ * A `[[…]]` reference rendered inside a card body, located by the title of the
+ * card it points at — the same text a user reads in the reference.
+ */
+export function cardRef(page: Page, toTitle: string) {
+  return page.getByRole("link").filter({ hasText: toTitle })
+}
+
 // Scope panel content through this — the board card behind the panel renders the same title/body.
 export function cardPanel(page: Page) {
   return page.getByRole("region", { name: "Card" })

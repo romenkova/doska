@@ -33,11 +33,17 @@ function MenuContent({
 }) {
   return (
     <MenuPrimitive.Portal>
-      <MenuPrimitive.Positioner sideOffset={sideOffset} align={align}>
+      {/* The positioner is the positioned element, so the stacking order has to
+          be set here — a z-index on the popup inside it does nothing. */}
+      <MenuPrimitive.Positioner
+        className="z-50"
+        sideOffset={sideOffset}
+        align={align}
+      >
         <MenuPrimitive.Popup
           data-slot="menu-content"
           className={cn(
-            "z-50 min-w-36 overflow-hidden rounded-lg border bg-popover",
+            "min-w-36 overflow-hidden rounded-lg border bg-popover",
             "text-sm text-popover-foreground shadow-md outline-none",
             "transition-[opacity,transform] duration-50",
             "data-ending-style:opacity-0 data-starting-style:opacity-0",

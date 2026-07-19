@@ -50,6 +50,11 @@ export const ColumnSchema = z.object({
   dashboardId: z.string(),
   /** When true the column's card bodies are collapsed down to their titles. */
   collapsed: z.boolean().default(false),
+  /**
+   * Palette id tinting the column and any `[[card]]` reference to a card in
+   * it. Empty for no color; see `COLUMN_COLORS` on the client.
+   */
+  color: z.string().default(""),
   updatedAt: z.number(),
   deletedAt: z.number().nullable(),
 })

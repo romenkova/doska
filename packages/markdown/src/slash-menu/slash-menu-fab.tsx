@@ -1,6 +1,6 @@
 import { Button } from "@doska/ui-kit"
 import { useEffect, useRef, useState } from "react"
-import { SlashMenuList } from "./slash-menu-list"
+import { MenuList } from "../menu"
 import type { SlashCommand } from "./commands"
 
 interface IProps {
@@ -60,7 +60,7 @@ export function SlashMenuFab({ commands, onSelect }: IProps) {
       style={{ bottom: inset + 16 }}
     >
       {open && (
-        <SlashMenuList
+        <MenuList
           items={commands}
           onSelect={(cmd) => {
             onSelect(cmd)

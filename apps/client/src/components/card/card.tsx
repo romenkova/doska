@@ -16,7 +16,7 @@ import { useUpdateCard } from "@/lib/data/mutations"
 import { MarkdownCardPreview } from "@doska/markdown"
 import type { DetailedHTMLProps, HTMLAttributes } from "react"
 import { CardAttachments } from "./attachments/card-attachments"
-import { AttachmentImage } from "./attachments/attachment-image"
+import { CardMarkdown } from "./card-markdown"
 
 interface IProps extends DetailedHTMLProps<
   HTMLAttributes<HTMLDivElement>,
@@ -67,13 +67,12 @@ export function Card({ id, showBody, isDragging, ...props }: IProps) {
             >
               <div className="overflow-hidden">
                 <CardContent className="space-y-3 pt-2">
-                  <MarkdownCardPreview
-                    body={body}
-                    onChangeBody={(body) => updateCard({ body })}
-                    renderImage={(key, alt) => (
-                      <AttachmentImage cardId={id} attachmentKey={key} alt={alt} />
-                    )}
-                  />
+                  <CardMarkdown cardId={id}>
+                    <MarkdownCardPreview
+                      body={body}
+                      onChangeBody={(body) => updateCard({ body })}
+                    />
+                  </CardMarkdown>
                 </CardContent>
               </div>
             </div>

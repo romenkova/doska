@@ -185,6 +185,108 @@
   border-top: 1px solid var(--border);
 }
 
+/* `[[target]]` wikilink, laid out like an issue reference: the raw target, the
+   resolved label, and any trailing detail, butted together into one chip. The
+   segments carry their own backgrounds rather than sitting on a shared one, so
+   the detail can be tinted independently — only the outer corners are rounded,
+   which is what makes the row read as a single block.
+   The segments stay inline rather than flex so a long label wraps with the
+   surrounding text instead of overflowing; a shared font-size and line-height
+   is what keeps their painted heights equal. */
+.markdown .wikilink {
+  display: inline;
+  font-style: normal;
+  font-size: 0.9em;
+  line-height: 1.6;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.markdown .wikilink:hover {
+  filter: brightness(0.96) saturate(1.1);
+}
+
+.dark .markdown .wikilink:hover {
+  filter: brightness(1.15);
+}
+
+.markdown .wikilink > * {
+  display: inline;
+  padding: 0.15em 0.5em;
+  background: var(--muted);
+  color: var(--muted-foreground);
+  /* Without this a segment that breaks across lines gets its padding and
+     radii only on the first and last fragment, leaving a torn edge. */
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+/* Only the label is long enough to be worth breaking. */
+.markdown .wikilink-target,
+.markdown .wikilink-badge {
+  white-space: nowrap;
+}
+
+/* The target and the label share a background, so the padding facing each
+   other reads as one wide gap — at the badge boundary its own colour marks the
+   edge instead. Tightening both sides of that seam (see `.wikilink-label`)
+   makes all three segments look evenly set. */
+.markdown .wikilink-target {
+  padding-right: 0.3em;
+}
+
+.markdown .wikilink > :first-child {
+  border-top-left-radius: 0.5em;
+  border-bottom-left-radius: 0.5em;
+}
+
+.markdown .wikilink > :last-child {
+  border-top-right-radius: 0.5em;
+  border-bottom-right-radius: 0.5em;
+}
+
+/* The label is the reference's subject, so it gets the readable foreground —
+   the target and the badge stay muted around it. */
+.markdown .wikilink-label {
+  padding-left: 0.3em;
+  font-weight: 600;
+  color: var(--card-foreground);
+}
+
+/* Trailing detail — a status, a category. Neutral until the host app sets
+   `--wikilink-h` (see `.wikilink-badge-tinted`). */
+.markdown .wikilink-badge {
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+/* Mirrors the tag palette's light-tint / dark-translucent split, so a badge
+   and a tag sitting in the same line read as the same kind of thing. */
+.markdown .wikilink-badge-tinted {
+  background: oklch(0.95 0.05 var(--wikilink-h));
+  color: oklch(0.44 0.13 var(--wikilink-h));
+}
+
+.dark .markdown .wikilink-badge-tinted {
+  background: oklch(0.62 0.14 var(--wikilink-h) / 0.24);
+  color: oklch(0.84 0.11 var(--wikilink-h));
+}
+
+/* A target that resolved to nothing — the target chip alone, kept visible but
+   inert, so a broken link looks broken rather than silently rendering as
+   plain text. */
+.markdown .wikilink-missing {
+  cursor: default;
+}
+
+.markdown .wikilink-missing > * {
+  background: none;
+  padding-left: 0;
+  padding-right: 0;
+  text-decoration: underline dashed;
+  text-underline-offset: 2px;
+}
+
 /* Tags — `[content]` rendered as a colored pill. The color index (0–9) is
    chosen by hashing the tag text in remark-tags, so the same text always gets
    the same color. Each index sets a hue (`--tag-h`) plus its own foreground

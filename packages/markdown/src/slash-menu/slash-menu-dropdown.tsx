@@ -1,4 +1,4 @@
-import { SlashMenuList } from "./slash-menu-list"
+import { MenuList } from "../menu"
 import type { SlashCommand } from "./commands"
 
 interface IProps {
@@ -21,7 +21,7 @@ export function SlashMenuDropdown({
   onHighlight,
 }: IProps) {
   return (
-    <SlashMenuList
+    <MenuList
       items={items}
       activeIndex={activeIndex}
       onSelect={onSelect}

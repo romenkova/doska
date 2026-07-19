@@ -1,12 +1,13 @@
-import type { ReactNode } from "react"
 import ReactMarkdown, { defaultUrlTransform } from "react-markdown"
 import remarkGfm from "remark-gfm"
 import { remarkMark } from "remark-mark-highlight"
 import { Checkbox, cn } from "@doska/ui-kit"
 import { remarkCut } from "./plugins/remark-cut"
+import { remarkWikilinks } from "./plugins/remark-wikilinks"
 import { remarkTags } from "./plugins/remark-tags"
 import { rehypeTaskIndex } from "./plugins/rehype-task-index"
 import { attachmentKeyFromSrc } from "./attachment-src"
+import { useMarkdownRenderers } from "./renderers"
 import "./markdown.css"
 
 // react-markdown's default transform blanks unknown URL schemes; let our
@@ -24,23 +25,32 @@ interface IProps {
    * `toggleTaskByIndex`). Without it, checkboxes render read-only as before.
    */
   onToggleTask?: (index: number) => void
-  /** Renders `attachment:<key>` image refs (async client-side URL lookup). */
-  renderImage?: (attachmentKey: string, alt: string) => ReactNode
 }
 
-export function Markdown({
-  children,
-  className,
-  onToggleTask,
-  renderImage,
-}: IProps) {
+export function Markdown({ children, className, onToggleTask }: IProps) {
+  // Attachment images and wikilinks need app data to resolve; see `renderers`.
+  const { renderImage, renderWikilink } = useMarkdownRenderers()
+
   return (
     <div className={cn("markdown", className)}>
       <ReactMarkdown
-        remarkPlugins={[remarkGfm, remarkMark, remarkCut, remarkTags]}
+        remarkPlugins={[
+          remarkGfm,
+          remarkMark,
+          remarkCut,
+          remarkWikilinks,
+          remarkTags,
+        ]}
         rehypePlugins={[rehypeTaskIndex]}
         urlTransform={urlTransform}
         components={{
+          span: ({ node, children: spanChildren, ...props }) => {
+            // `remarkWikilinks` tags each link node with its target.
+            const target = node?.properties?.dataWikilink
+            if (typeof target === "string" && renderWikilink)
+              return renderWikilink(target)
+            return <span {...props}>{spanChildren}</span>
+          },
           a: (props) => (
             <a
               {...props}
