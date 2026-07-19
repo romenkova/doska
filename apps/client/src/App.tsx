@@ -1,8 +1,9 @@
 import { SidebarInset, SidebarProvider, cn } from "@doska/ui-kit"
+import { useMemo } from "react"
 import { useRoute } from "wouter"
 import { AppSidebar, DeckView, Home } from "@/components"
 import { CardPanel } from "@/components/card-panel/card-panel"
-import { DeckPrefixProvider } from "@/components/deck/deck-context"
+import { DeckProvider } from "@/components/deck/deck-context"
 import { useActiveDashboard } from "@/lib/hooks"
 import { routes } from "@/lib/routes"
 
@@ -17,8 +18,13 @@ export default function App({ deckId }: { deckId?: string }) {
 
   const [isCardOpen] = useRoute(routes.card.pattern)
 
+  const deck = useMemo(
+    () => ({ id: dashboard.id, prefix: dashboard.prefix ?? "" }),
+    [dashboard.id, dashboard.prefix]
+  )
+
   return (
-    <DeckPrefixProvider value={dashboard.prefix ?? ""}>
+    <DeckProvider value={deck}>
       <SidebarProvider className="h-svh">
         <AppSidebar
           dashboards={dashboards}
@@ -47,6 +53,6 @@ export default function App({ deckId }: { deckId?: string }) {
         </SidebarInset>
         {deckId && <CardPanel closeHref={`~${routes.deck.to(dashboard.id)}`} />}
       </SidebarProvider>
-    </DeckPrefixProvider>
+    </DeckProvider>
   )
 }

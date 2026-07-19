@@ -27,6 +27,7 @@ export async function applyOne(
         title: record.title,
         position: record.position,
         collapsed: record.collapsed,
+        color: record.color,
         updatedAt: record.updatedAt,
         deletedAt,
         seq: nextSeq,
@@ -39,12 +40,13 @@ export async function applyOne(
         .where(eq(cards.id, record.id))
         .limit(1)
 
-      let number = existing?.number ?? null
-      let updatedAt = record.updatedAt
-      if (number === null) {
-        number = await allocateCardNumber(tx, boardId)
-        updatedAt = record.updatedAt + 1
-      }
+      const number = existing?.number ?? (await allocateCardNumber(tx, boardId))
+      // A client can't know a number it hasn't pulled yet, so whenever the
+      // stored one differs from what it pushed, the record it gets back is not
+      // the record it sent. Advance the clock or its own copy ties on pull and
+      // wins, and the number never reaches it.
+      const updatedAt =
+        number === record.number ? record.updatedAt : record.updatedAt + 1
 
       return upsertLWW(tx, cards, cards.id, cards.updatedAt, {
         id: record.id,

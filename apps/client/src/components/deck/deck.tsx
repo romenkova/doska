@@ -16,6 +16,7 @@ interface IProps {
   onAddCard: (columnId: string) => void
   onAddColumn: () => void
   onReorderColumns: (changed: Board["columns"]) => void
+  onChangeColumnColor: (columnId: string, color: string) => void
   onRenameColumn: (columnId: string, title: string) => void
   onDeleteColumn: (columnId: string) => void
   onRenameDashboard: (name: string) => void
@@ -33,6 +34,7 @@ export function Deck({
   onAddCard,
   onAddColumn,
   onReorderColumns,
+  onChangeColumnColor,
   onRenameColumn,
   onDeleteColumn,
   onRenameDashboard,
@@ -88,10 +90,12 @@ export function Deck({
                 key={column.id}
                 id={column.id}
                 title={column.title}
+                color={column.color}
                 showBody={showBody}
                 onToggleBody={() => onToggleBody(column.id, showBody)}
                 onAddCard={() => onAddCard(column.id)}
                 onRename={(title) => onRenameColumn(column.id, title)}
+                onChangeColor={(color) => onChangeColumnColor(column.id, color)}
                 onDelete={() => onDeleteColumn(column.id)}
               >
                 {cards.map((card, index) => (

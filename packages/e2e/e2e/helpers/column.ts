@@ -53,6 +53,28 @@ export async function renameColumn(
 }
 
 /**
+ * A column's color swatch in its header. Its accessible name carries the color
+ * currently set ("Column color: Violet", or "…: none"), so a test can read the
+ * state off the same control a user clicks.
+ */
+export function columnColorMenu(page: Page, name: string) {
+  return column(page, name).getByRole("button", { name: /^Column color:/ })
+}
+
+/** Sets the named column's color by picking `colorLabel` from its header menu. */
+export async function setColumnColor(
+  page: Page,
+  name: string,
+  colorLabel: string
+): Promise<void> {
+  await columnColorMenu(page, name).click()
+  await page.getByRole("menuitem", { name: colorLabel, exact: true }).click()
+  await expect(columnColorMenu(page, name)).toHaveAccessibleName(
+    `Column color: ${colorLabel}`
+  )
+}
+
+/**
  * Deletes the column titled `title` via its header trash action, then confirms
  * the "are you sure?" dialog, and waits for the column to disappear.
  */

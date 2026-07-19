@@ -88,6 +88,7 @@ export function registerBoardTools(server: McpServer, board: Board): void {
           position: positionAt(columns, "bottom"),
           dashboardId: dashboard.id,
           collapsed: false,
+          color: "",
           updatedAt: Date.now(),
           deletedAt: null,
         })

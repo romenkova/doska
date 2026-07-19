@@ -13,14 +13,47 @@ import { column } from "./column"
  * it never collides with the modal editor's title field, which is a `<textarea>`
  * holding the same text — a bare `getByText(title)` matches both while the modal
  * is open (or mid-close), so always reach for the board card through this.
+ *
+ * Matches anything the card renders, body included — several specs locate a
+ * card by a phrase in its notes. That means a card whose body references
+ * another card matches that card's title too; reach for `cardTitled` when the
+ * distinction matters.
  */
 export function card(page: Page, title: string) {
   return page.locator("[data-rfd-draggable-id]", { hasText: title })
 }
 
+/** A card matched on its title alone, ignoring whatever its body renders. */
+export function cardTitled(page: Page, title: string) {
+  return page
+    .locator("[data-rfd-draggable-id]")
+    .filter({ has: page.locator('[data-slot="card-title"]', { hasText: title }) })
+}
+
 /** A card's copy-to-clipboard id chip. Only renders once the server stamps a number (needs a synced board). */
 export function cardIdButton(page: Page) {
   return page.getByRole("button", { name: /^Copy card id / })
+}
+
+/**
+ * The display id ("ROAD-12") shown on the card titled `title`. Only exists once
+ * the server has stamped the card a number, so the board must be signed in.
+ */
+export async function cardDisplayId(page: Page, title: string): Promise<string> {
+  const chip = card(page, title).getByRole("button", { name: /^Copy card id / })
+  // The number arrives on a sync round-trip, which the default expect timeout
+  // can lose to under a loaded parallel run.
+  await expect(chip).toBeVisible({ timeout: 15_000 })
+  const label = (await chip.getAttribute("aria-label")) ?? ""
+  return label.replace("Copy card id ", "")
+}
+
+/**
+ * A `[[…]]` reference rendered inside a card body, located by the title of the
+ * card it points at — the same text a user reads in the reference.
+ */
+export function cardRef(page: Page, toTitle: string) {
+  return page.getByRole("link").filter({ hasText: toTitle })
 }
 
 // Scope panel content through this — the board card behind the panel renders the same title/body.

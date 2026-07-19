@@ -1,6 +1,4 @@
 export * from "./commands"
 export * from "./slash-menu-dropdown"
 export * from "./slash-menu-fab"
-export * from "./slash-menu-list"
 export * from "./use-slash-menu"
-export { getCaretCoords, type CaretCoords } from "./caret-position"

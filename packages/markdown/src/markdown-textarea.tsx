@@ -1,8 +1,9 @@
 import { cn } from "@doska/ui-kit"
-import { useRef, type ReactNode } from "react"
+import { useRef } from "react"
 import { Markdown } from "./markdown"
 import { useMarkers } from "./markers"
 import { type SlashCommand } from "./slash-menu"
+import { WikilinkMenu, type WikilinkOption } from "./wikilinks"
 import { toggleTaskByIndex } from "./task-progress"
 import { useCutLine } from "./hooks/use-cut-line"
 import { usePasteFiles } from "./hooks/use-paste-files"
@@ -20,8 +21,8 @@ interface IProps extends React.ComponentProps<"textarea"> {
   slashCommands?: SlashCommand[]
   /** Required when `slashMenu` is on, to apply inserted commands. */
   onChangeValue?: (value: string) => void
-  /** Renders `attachment:<key>` image refs in the preview; see `Markdown`. */
-  renderImage?: (attachmentKey: string, alt: string) => ReactNode
+  /** Targets the `[[` wikilink menu can offer. Omit to disable the menu. */
+  wikilinks?: WikilinkOption[]
   /** Persists pasted files; returns Markdown to splice at the caret, or null. */
   onPasteFiles?: (files: File[]) => Promise<string | null>
   containerClassName?: string
@@ -37,7 +38,7 @@ export function MarkdownTextarea({
   slashMenu,
   slashCommands,
   onChangeValue,
-  renderImage,
+  wikilinks,
   onPasteFiles,
   containerClassName,
   ...props
@@ -63,7 +64,6 @@ export function MarkdownTextarea({
       <div className={cn("space-y-4 pt-3 select-text", containerClassName)}>
         {body && (
           <Markdown
-            renderImage={renderImage}
             onToggleTask={
               onToggleTask
                 ? (index) => onToggleTask(toggleTaskByIndex(value, index))
@@ -102,6 +102,14 @@ export function MarkdownTextarea({
           value={value}
           onChangeValue={onChangeValue ?? NOOP}
           commands={slashCommands}
+        />
+      )}
+      {wikilinks && wikilinks.length > 0 && (
+        <WikilinkMenu
+          textareaRef={textareaRef}
+          value={value}
+          onChangeValue={onChangeValue ?? NOOP}
+          options={wikilinks}
         />
       )}
     </div>

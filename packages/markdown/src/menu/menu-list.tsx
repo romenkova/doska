@@ -1,10 +1,10 @@
 import { cn } from "@doska/ui-kit"
 import { useEffect, useRef } from "react"
-import type { SlashCommand } from "./commands"
+import type { MenuItem } from "./menu-item"
 
-interface IProps {
-  items: SlashCommand[]
-  onSelect: (command: SlashCommand) => void
+interface IProps<T extends MenuItem> {
+  items: T[]
+  onSelect: (item: T) => void
   activeIndex?: number
   onHighlight?: (index: number) => void
   className?: string
@@ -12,16 +12,17 @@ interface IProps {
 }
 
 /**
- * The slash command list popover
+ * The popover list shared by the caret-triggered menus — `/` commands and `[[`
+ * card refs.
  */
-export function SlashMenuList({
+export function MenuList<T extends MenuItem>({
   items,
   onSelect,
   activeIndex,
   onHighlight,
   className,
   style,
-}: IProps) {
+}: IProps<T>) {
   const activeRef = useRef<HTMLButtonElement>(null)
 
   // Keep the keyboard-highlighted item scrolled into view.
@@ -41,13 +42,13 @@ export function SlashMenuList({
       // Keep the textarea focused (caret/keyboard intact) when tapping an item.
       onPointerDown={(e) => e.preventDefault()}
     >
-      {items.map((cmd, index) => (
+      {items.map((item, index) => (
         <button
-          key={cmd.id}
+          key={item.id}
           ref={index === activeIndex ? activeRef : undefined}
           type="button"
           onMouseEnter={onHighlight ? () => onHighlight(index) : undefined}
-          onClick={() => onSelect(cmd)}
+          onClick={() => onSelect(item)}
           className={cn(
             "flex w-full items-baseline gap-2 px-3 py-1.5 text-left text-sm",
             index === activeIndex
@@ -56,10 +57,12 @@ export function SlashMenuList({
           )}
         >
           <span className="font-medium line line-clamp-1 max-w-60">
-            {cmd.title}
+            {item.title}
           </span>
-          {cmd.hint && (
-            <span className="text-xs text-muted-foreground">{cmd.hint}</span>
+          {item.hint && (
+            <span className="shrink-0 text-xs text-muted-foreground">
+              {item.hint}
+            </span>
           )}
         </button>
       ))}

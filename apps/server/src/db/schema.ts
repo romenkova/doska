@@ -67,6 +67,7 @@ export const columns = pgTable(
     title: text("title").notNull(),
     position: text("position").notNull(),
     collapsed: boolean("collapsed").notNull().default(false),
+    color: text("color").notNull().default(""),
     updatedAt: bigint("updated_at", { mode: "number" }).notNull(),
     deletedAt: bigint("deleted_at", { mode: "number" }),
     seq: integer("seq").notNull(),

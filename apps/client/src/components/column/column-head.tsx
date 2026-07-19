@@ -2,21 +2,26 @@ import { useState } from "react"
 import { Button, cn, InvisibleInput } from "@doska/ui-kit"
 import { Eye, EyeOff, Trash2 } from "lucide-react"
 import { ConfirmDialog } from "../confirm-dialog"
+import { ColumnColorMenu } from "./column-color-menu"
 
 interface IProps {
   title: string
+  color: string
   showBody: boolean
   onToggleBody: () => void
   onRename: (title: string) => void
+  onChangeColor: (color: string) => void
   onDelete: () => void
 }
 
 export function ColumnHead({
   onToggleBody,
   onRename,
+  onChangeColor,
   onDelete,
   showBody,
   title,
+  color,
 }: IProps) {
   const [confirmOpen, setConfirmOpen] = useState(false)
 
@@ -28,13 +33,16 @@ export function ColumnHead({
         "text-muted-foreground uppercase"
       )}
     >
-      <InvisibleInput
-        value={title}
-        onCommit={onRename}
-        label={`Rename ${title}`}
-        className="uppercase"
-        title="Click to rename"
-      />
+      <div className="flex min-w-0 items-center gap-0.5">
+        <ColumnColorMenu color={color} onChange={onChangeColor} />
+        <InvisibleInput
+          value={title}
+          onCommit={onRename}
+          label={`Rename ${title}`}
+          className="uppercase"
+          title="Click to rename"
+        />
+      </div>
       <div className="flex items-center gap-2">
         <Button
           variant="ghost"

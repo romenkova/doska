@@ -6,10 +6,11 @@ import {
 } from "@doska/markdown"
 import { useMemo } from "react"
 import { useCard } from "@/lib/data/queries"
-import { AttachmentImage } from "../card/attachments/attachment-image"
 import { imageSlashCommands } from "../card/attachments/image-slash-commands"
 import { isRenderableImage } from "../card/attachments/renderable-image"
 import { useUploads } from "../card/attachments/context/attachment-upload-context"
+import { CardMarkdown } from "../card/card-markdown"
+import { useCardRefOptions } from "../card/refs/use-card-refs"
 
 const PREVIEW_MARKERS = [cut]
 
@@ -29,6 +30,7 @@ export function CardBodyEditor({
 }: IProps) {
   const { data: card } = useCard(cardId)
   const { addFiles } = useUploads()
+  const cardRefs = useCardRefOptions(cardId)
   const attachments = card?.attachments
 
   const slashCommands = useMemo(
@@ -45,22 +47,22 @@ export function CardBodyEditor({
   }
 
   return (
-    <MarkdownTextarea
-      value={body}
-      onChange={(e) => onChangeBody(e.target.value)}
-      onChangeValue={onChangeBody}
-      onToggleTask={onChangeBody}
-      slashMenu
-      slashCommands={slashCommands}
-      renderImage={(key, alt) => (
-        <AttachmentImage cardId={cardId} attachmentKey={key} alt={alt} />
-      )}
-      onPasteFiles={handlePasteFiles}
-      placeholder="Notes"
-      isPreview={isPreview}
-      markers={PREVIEW_MARKERS}
-      className="min-h-[50vh] shrink-0 resize-none"
-      containerClassName="flex-1"
-    />
+    <CardMarkdown cardId={cardId}>
+      <MarkdownTextarea
+        value={body}
+        onChange={(e) => onChangeBody(e.target.value)}
+        onChangeValue={onChangeBody}
+        onToggleTask={onChangeBody}
+        slashMenu
+        slashCommands={slashCommands}
+        wikilinks={cardRefs}
+        onPasteFiles={handlePasteFiles}
+        placeholder="Notes"
+        isPreview={isPreview}
+        markers={PREVIEW_MARKERS}
+        className="min-h-[50vh] shrink-0 resize-none"
+        containerClassName="flex-1"
+      />
+    </CardMarkdown>
   )
 }

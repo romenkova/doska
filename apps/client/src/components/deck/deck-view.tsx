@@ -8,6 +8,7 @@ import {
   useRenameColumn,
   useRenameDashboard,
   useSetColumnCollapsed,
+  useSetColumnColor,
   useUpdateDashboardPrefix,
 } from "@/lib/data/mutations"
 import { useBoard, useDashboards } from "@/lib/data/queries"
@@ -26,6 +27,7 @@ export function DeckView({ dashboard }: { dashboard: Dashboard }) {
   useSyncShortcut()
 
   const { mutate: setColumnCollapsed } = useSetColumnCollapsed(id)
+  const { mutate: setColumnColor } = useSetColumnColor(id)
 
   const { mutate: renameDashboard } = useRenameDashboard()
   const { mutate: updateDashboardPrefix } = useUpdateDashboardPrefix()
@@ -58,6 +60,9 @@ export function DeckView({ dashboard }: { dashboard: Dashboard }) {
       onAddCard={createCard}
       onAddColumn={() => createColumn("New column")}
       onReorderColumns={moveColumn}
+      onChangeColumnColor={(columnId, color) =>
+        setColumnColor({ id: columnId, color })
+      }
       onRenameColumn={(columnId, title) => renameColumn({ id: columnId, title })}
       onDeleteColumn={deleteColumn}
       onRenameDashboard={(name) => renameDashboard({ id, name })}

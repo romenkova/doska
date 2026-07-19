@@ -29,6 +29,7 @@ export async function readSince(
         position: r.position,
         dashboardId: r.boardId,
         collapsed: r.collapsed,
+        color: r.color,
         updatedAt: r.updatedAt,
         deletedAt: r.deletedAt,
       },

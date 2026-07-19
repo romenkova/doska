@@ -8,10 +8,12 @@ interface IProps {
   children: ReactNode
   id: string
   title: string
+  color: string
   showBody: boolean
   onToggleBody: () => void
   onAddCard: () => void
   onRename: (title: string) => void
+  onChangeColor: (color: string) => void
   onDelete: () => void
 }
 
