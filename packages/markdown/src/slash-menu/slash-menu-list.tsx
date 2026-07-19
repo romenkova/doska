@@ -33,7 +33,7 @@ export function SlashMenuList({
   return (
     <div
       className={cn(
-        "max-h-64 w-60 overflow-y-auto py-1",
+        "max-h-64 w-70 overflow-y-auto py-1",
         "rounded-lg border bg-popover shadow-md text-popover-foreground",
         className
       )}
@@ -55,7 +55,9 @@ export function SlashMenuList({
               : "active:bg-accent active:text-accent-foreground"
           )}
         >
-          <span className="font-medium">{cmd.title}</span>
+          <span className="font-medium line line-clamp-1 max-w-60">
+            {cmd.title}
+          </span>
           {cmd.hint && (
             <span className="text-xs text-muted-foreground">{cmd.hint}</span>
           )}

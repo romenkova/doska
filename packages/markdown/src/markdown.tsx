@@ -1,11 +1,19 @@
-import ReactMarkdown from "react-markdown"
+import type { ReactNode } from "react"
+import ReactMarkdown, { defaultUrlTransform } from "react-markdown"
 import remarkGfm from "remark-gfm"
 import { remarkMark } from "remark-mark-highlight"
 import { Checkbox, cn } from "@doska/ui-kit"
 import { remarkCut } from "./plugins/remark-cut"
 import { remarkTags } from "./plugins/remark-tags"
 import { rehypeTaskIndex } from "./plugins/rehype-task-index"
+import { attachmentKeyFromSrc } from "./attachment-src"
 import "./markdown.css"
+
+// react-markdown's default transform blanks unknown URL schemes; let our
+// `attachment:` refs through so the img renderer can resolve them.
+function urlTransform(url: string): string {
+  return attachmentKeyFromSrc(url) !== null ? url : defaultUrlTransform(url)
+}
 
 interface IProps {
   children: string
@@ -16,14 +24,22 @@ interface IProps {
    * `toggleTaskByIndex`). Without it, checkboxes render read-only as before.
    */
   onToggleTask?: (index: number) => void
+  /** Renders `attachment:<key>` image refs (async client-side URL lookup). */
+  renderImage?: (attachmentKey: string, alt: string) => ReactNode
 }
 
-export function Markdown({ children, className, onToggleTask }: IProps) {
+export function Markdown({
+  children,
+  className,
+  onToggleTask,
+  renderImage,
+}: IProps) {
   return (
     <div className={cn("markdown", className)}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm, remarkMark, remarkCut, remarkTags]}
         rehypePlugins={[rehypeTaskIndex]}
+        urlTransform={urlTransform}
         components={{
           a: (props) => (
             <a
@@ -33,6 +49,11 @@ export function Markdown({ children, className, onToggleTask }: IProps) {
               rel="noopener noreferrer"
             />
           ),
+          img: ({ src, alt, ...props }) => {
+            const key = attachmentKeyFromSrc(src)
+            if (key !== null && renderImage) return renderImage(key, alt ?? "")
+            return <img {...props} src={src} loading="lazy" alt={alt ?? ""} />
+          },
           input: ({ node, ...props }) => {
             if (props.type !== "checkbox")
               return <input aria-label="Checkbox" {...props} />

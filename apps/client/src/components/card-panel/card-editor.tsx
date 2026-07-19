@@ -1,13 +1,12 @@
 import { CardContent, cn } from "@doska/ui-kit"
-import { MarkdownTextarea, cut } from "@doska/markdown"
+import { MarkdownTextarea } from "@doska/markdown"
 import { CardContentLayout } from "./card-content-layout"
 import { CardPanelHeader } from "./card-panel-header"
+import { CardBodyEditor } from "./card-body-editor"
 import { CardMeta } from "../card/card-meta"
 import { CardAttachments } from "../card/attachments/card-attachments"
 import { AttachmentDropZone } from "../card/attachments/attachment-drop-zone"
 import { AttachmentUploadProvider } from "../card/attachments/context/attachment-upload-provider"
-
-const PREVIEW_MARKERS = [cut]
 
 interface IProps {
   cardId: string
@@ -65,17 +64,11 @@ export function CardEditor({
                   !isPreview && "font-mono"
                 )}
               />
-              <MarkdownTextarea
-                value={body}
-                onChange={(e) => onChangeBody(e.target.value)}
-                onChangeValue={onChangeBody}
-                onToggleTask={onChangeBody}
-                slashMenu
-                placeholder="Notes"
+              <CardBodyEditor
+                cardId={cardId}
+                body={body}
                 isPreview={isPreview}
-                markers={PREVIEW_MARKERS}
-                className="min-h-[50vh] shrink-0 resize-none"
-                containerClassName="flex-1"
+                onChangeBody={onChangeBody}
               />
             </CardContent>
           </CardContentLayout>
