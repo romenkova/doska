@@ -11,10 +11,12 @@ export function useSession() {
   return useQuery({ queryKey: keys.session, queryFn: fetchSession })
 }
 
+// These read IndexedDB, so they must resolve offline (see query-client.ts).
 export function useDashboards() {
   return useQuery({
     queryKey: keys.dashboards,
     queryFn: () => api.getDashboards(),
+    networkMode: "always",
   })
 }
 
@@ -22,6 +24,7 @@ export function useBoard(deckId: string) {
   return useQuery({
     queryKey: keys.board(deckId),
     queryFn: () => api.getBoard(deckId),
+    networkMode: "always",
   })
 }
 
@@ -30,5 +33,6 @@ export function useCard(id: string | null) {
     queryKey: keys.card(id ?? ""),
     queryFn: () => api.getCard(id as string),
     enabled: id != null,
+    networkMode: "always",
   })
 }

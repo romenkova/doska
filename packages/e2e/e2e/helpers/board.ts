@@ -79,13 +79,13 @@ export async function openBoardInSidebar(
 /**
  * The sync indicator (a floating button at the bottom-right of the board). Its
  * accessible name *is* the current status ("Synced", "1 change", "2 changes",
- * "Sync failed"), so a test reads status straight off the locator's accessible
- * name. (While syncing the label is "Syncing" — but tests assert the settled
- * states.)
+ * "Sync failed", "Offline"), so a test reads status straight off the locator's
+ * accessible name. (While syncing the label is "Syncing" — but tests assert the
+ * settled states.)
  */
 export function syncIndicator(page: Page) {
   return page.getByRole("button", {
-    name: /Synced|change|Sync failed/,
+    name: /Synced|change|Sync failed|Offline/,
   })
 }
 
