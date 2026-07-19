@@ -27,8 +27,6 @@ const releases = [
     prerelease: false,
     assets: [{ name: "latest.json", url: "https://gh/asset/manifest-035" }],
   },
-  // Newer, but a draft — must be ignored by selection.
-  { tag_name: "v0.5.0", draft: true, prerelease: false, assets: [] },
 ]
 
 const manifest040 = {
@@ -49,9 +47,9 @@ function json(body: unknown): Response {
 function stubGitHub() {
   const fetchMock = vi.fn(async (input: string | URL | Request) => {
     const url = String(input)
-    if (url.includes("/releases?per_page")) return json(releases)
     if (url.includes("/releases/tags/v0.4.0")) return json(releases[0])
     if (url.includes("/releases/tags/v0.3.5")) return json(releases[1])
+    if (url.includes("/releases/tags/")) return new Response(null, { status: 404 })
     if (url.includes("manifest-040")) return json(manifest040)
     if (url.includes("manifest-035")) return json(manifest035)
     if (url.includes("dmg-040"))
@@ -71,11 +69,12 @@ describe("/api/version", () => {
 })
 
 describe("/api/desktop/latest.json", () => {
-  test("serves the newest non-draft release and rewrites the download url", async () => {
+  test("serves the pinned version and rewrites the download url", async () => {
     stubGitHub()
     const res = await h.app.inject({
       method: "GET",
       url: "/api/desktop/latest.json",
+      headers: { "x-deck-server-version": "0.4.0" },
     })
 
     expect(res.statusCode).toBe(200)
@@ -87,24 +86,32 @@ describe("/api/desktop/latest.json", () => {
     )
   })
 
-  test("pins to the client's server version line", async () => {
+  test("serves the exact pinned version, not the overall latest", async () => {
     stubGitHub()
     const res = await h.app.inject({
       method: "GET",
       url: "/api/desktop/latest.json",
-      headers: { "x-deck-server-version": "0.3.9" },
+      headers: { "x-deck-server-version": "0.3.5" },
     })
 
     expect(res.statusCode).toBe(200)
     const body = res.json()
-    // 0.3.x line → newest 0.3.z, not the overall-newest 0.4.0.
     expect(body.version).toBe("0.3.5")
     expect(body.platforms["darwin-aarch64"].url).toContain(
       "/api/desktop/download/0.3.5/"
     )
   })
 
-  test("404s when no release matches the pinned line", async () => {
+  test("400s without a server version", async () => {
+    stubGitHub()
+    const res = await h.app.inject({
+      method: "GET",
+      url: "/api/desktop/latest.json",
+    })
+    expect(res.statusCode).toBe(400)
+  })
+
+  test("404s when the pinned version has no release", async () => {
     stubGitHub()
     const res = await h.app.inject({
       method: "GET",

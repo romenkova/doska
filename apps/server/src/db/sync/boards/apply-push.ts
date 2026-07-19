@@ -1,16 +1,17 @@
 import type { Change } from "@doska/contract"
 import { eq } from "drizzle-orm"
-import { dashboards } from "../schema"
-import { applyChanges } from "./apply-changes"
+import { dashboards } from "../../schema"
+import { applyChanges } from "../core/apply-changes"
 import { applyOne } from "./apply-one"
-import { boardCounter, type Tx } from "./counter"
+import type { Tx } from "../core/counter"
+import { boardCounter } from "../constants"
 
 /**
  * Applies a client's pushed board changes under last-writer-wins, bumping the
  * board's counter once per accepted write.
  *
  * Reads the board's own tombstone once and cascades it onto every column/card
- * in the push (see {@link applyOne}): a board is a dashboard, so a deleted board
+ * in the push (see {@link applyOneBoard}): a board is a dashboard, so a deleted board
  * must never gain live contents from a peer that hasn't yet pulled the deletion.
  * The state is read inside the transaction and memoized — a board can't change
  * deletion status within one push.

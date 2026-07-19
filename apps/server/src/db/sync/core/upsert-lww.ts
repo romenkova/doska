@@ -1,6 +1,6 @@
 import { lt } from "drizzle-orm"
 import type { PgColumn, PgTable } from "drizzle-orm/pg-core"
-import type { Tx } from "../counter"
+import type { Tx } from "./counter"
 
 /**
  * Upserts one already-built `row` under last-writer-wins: writes only if it's

@@ -2,26 +2,12 @@ import type { FastifyInstance, FastifyRequest } from "fastify"
 import pkg from "../../package.json" with { type: "json" }
 import { env } from "../env"
 
-// Update distribution endpoint for the Tauri desktop app.
+// Update proxy for the Tauri desktop app. The updater polls this server (not
+// GitHub) so a client installs its sync server's exact version rather than the
+// global latest — the client sends `x-deck-server-version`, we serve that
+// release. Each git tag has its own GitHub Release, so any version is fetchable.
 //
-// The desktop app's updater is configured (src-tauri/tauri.conf.json) to poll
-// THIS server, never GitHub directly. The releases repo is public, so assets are
-// directly downloadable, but the updater endpoint is baked into every installed
-// binary — so we keep proxying here rather than pointing clients at GitHub. That
-// keeps the endpoint stable for already-installed apps and lets the version-line
-// pinning below run server-side.
-//
-// Every git tag publishes its own GitHub Release (bundles + latest.json), so all
-// versions are kept around. The updater endpoint is baked into the binary, so a
-// client doesn't poll its own sync server for builds — it polls whichever host
-// the binary was built against. To keep a client from jumping ahead of a
-// (possibly self-hosted, lagging) sync server, the client sends its server's
-// version in `x-deck-server-version` and we serve the newest release on that
-// major.minor line rather than the overall latest. No header → overall latest.
-//
-// Env:
-//   BASE_URL  this server's public origin, e.g. https://deck.example.com
-//             (used to rewrite asset URLs in the manifest back to us)
+// BASE_URL: this server's public origin, used to rewrite asset URLs back to us.
 
 const repo = "romenkova/doska"
 const publicBase = env.baseUrl ?? ""
@@ -34,8 +20,6 @@ type GhRelease = {
   assets: GhAsset[]
 }
 
-type SemVer = [major: number, minor: number, patch: number]
-
 function ghHeaders(accept: string): Record<string, string> {
   return {
     Accept: accept,
@@ -43,31 +27,11 @@ function ghHeaders(accept: string): Record<string, string> {
   }
 }
 
-/** [major, minor, patch] from a version/tag like "v0.3.2" or "0.3.2". */
-function parseVersion(value: string): SemVer | null {
-  const m = /^v?(\d+)\.(\d+)\.(\d+)/.exec(value)
-  return m ? [Number(m[1]), Number(m[2]), Number(m[3])] : null
-}
-
-/** Descending semver order (newest first). */
-function compareDesc(a: SemVer, b: SemVer): number {
-  return b[0] - a[0] || b[1] - a[1] || b[2] - a[2]
-}
-
-/** Reads the client's sync-server version hint, if present. */
-function serverLine(req: FastifyRequest): SemVer | null {
+/** The client's sync-server version, from the pinning header. */
+function serverVersion(req: FastifyRequest): string | null {
   const raw = req.headers["x-deck-server-version"]
   const value = Array.isArray(raw) ? raw[0] : raw
-  return value ? parseVersion(value) : null
-}
-
-async function listReleases(): Promise<GhRelease[]> {
-  const res = await fetch(
-    `https://api.github.com/repos/${repo}/releases?per_page=100`,
-    { headers: ghHeaders("application/vnd.github+json") }
-  )
-  if (!res.ok) throw new Error(`GitHub releases: ${res.status}`)
-  return (await res.json()) as GhRelease[]
+  return value?.replace(/^v/, "") || null
 }
 
 async function releaseByVersion(version: string): Promise<GhRelease | null> {
@@ -79,40 +43,21 @@ async function releaseByVersion(version: string): Promise<GhRelease | null> {
   return (await res.json()) as GhRelease
 }
 
-// Picks the release to offer. When the client pins to a server line, we return
-// the newest published build whose major.minor matches; if none exists on that
-// line we offer nothing (better than a mismatched jump). With no pin we return
-// the newest release overall (official channel).
-async function selectRelease(line: SemVer | null): Promise<GhRelease | null> {
-  const versioned = (await listReleases())
-    .filter((r) => !r.draft && !r.prerelease)
-    .map((r) => ({ r, v: parseVersion(r.tag_name) }))
-    .filter((x): x is { r: GhRelease; v: SemVer } => x.v !== null)
-    .sort((a, b) => compareDesc(a.v, b.v))
-  if (versioned.length === 0) return null
-  if (!line) return versioned[0].r
-  return (
-    versioned.find(({ v }) => v[0] === line[0] && v[1] === line[1])?.r ?? null
-  )
-}
-
 export function registerUpdateRoutes(app: FastifyInstance): void {
-  // The other half of the version-line pinning above: the desktop app reads this
-  // to learn its server's version, then only installs a release that matches it,
-  // so a client never runs ahead of a server it can't talk to.
+  // The client reads this to learn its server's version, then pins updates to it.
   app.get("/api/version", async (_req, reply) => {
     return reply.send({ version: env.appVersion || pkg.version })
   })
 
-  // The updater fetches this first. We take the selected release's generated
-  // latest.json and rewrite each platform's `url` so the binary download also
-  // routes back through this proxy (rather than straight at GitHub, keeping the
-  // baked-in endpoint the single source). The version is encoded in the
-  // rewritten path so the download streams from the matching release, not just
-  // the overall latest.
+  // Serves the release's latest.json, rewriting each platform `url` to route the
+  // binary download back through this proxy (version encoded in the path).
   app.get("/api/desktop/latest.json", async (req, reply) => {
     try {
-      const release = await selectRelease(serverLine(req))
+      const version = serverVersion(req)
+      if (!version)
+        return reply.code(400).send({ error: "No server version" })
+
+      const release = await releaseByVersion(version)
       if (!release)
         return reply.code(404).send({ error: "No matching release" })
 
@@ -130,7 +75,6 @@ export function registerUpdateRoutes(app: FastifyInstance): void {
         platforms?: Record<string, { url: string }>
       }
       const base = publicBase || `${req.protocol}://${req.host}`
-      const version = release.tag_name.replace(/^v/, "")
       for (const platform of Object.values(manifest.platforms ?? {})) {
         const name = platform.url.split("/").pop() ?? ""
         platform.url = `${base}/api/desktop/download/${encodeURIComponent(version)}/${encodeURIComponent(name)}`

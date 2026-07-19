@@ -22,36 +22,19 @@ export type DesktopUpdateState = Exclude<UpdateState, { kind: "web" }>
 
 const NONE: DesktopUpdateState = { status: "none" }
 
-/** True when two versions share the same `major.minor` (patch may differ). */
-function sameMinor(a: string, b: string): boolean {
-  const minor = (v: string) => v.split(".").slice(0, 2).join(".")
-  return minor(a) === minor(b)
-}
-
 export async function checkForUpdates(): Promise<DesktopUpdateState> {
-  if (!isDesktop()) return NONE
+  if (!isDesktop() || !getServerUrl()) return NONE
   try {
+    // Desktop pins to whatever version the server runs. We send it to the
+    // update proxy, which serves that exact build.
+    const serverVersion = await getServerVersion()
+    if (!serverVersion) return NONE
+
     const { check } = await import("@tauri-apps/plugin-updater")
-
-    // Pin to the server's release line when a server is configured. We send the
-    // server version to the update proxy so it serves the newest build on that
-    // major.minor line .
-    let serverVersion: string | null = null
-    const headers: Record<string, string> = {}
-    if (getServerUrl()) {
-      serverVersion = await getServerVersion()
-      if (!serverVersion) return NONE
-      headers["x-deck-server-version"] = serverVersion
-    }
-
-    const update = await check({ headers })
-    if (!update) return NONE
-
-    // Safety net: an older proxy may ignore the hint and return the overall
-    // latest, so re-check the line client-side before offering the update.
-    if (serverVersion && !sameMinor(update.version, serverVersion)) {
-      return NONE
-    }
+    const update = await check({
+      headers: { "x-deck-server-version": serverVersion },
+    })
+    if (!update || update.version !== serverVersion) return NONE
 
     const install = async () => {
       await update.downloadAndInstall()
@@ -64,12 +47,7 @@ export async function checkForUpdates(): Promise<DesktopUpdateState> {
       return NONE
     }
 
-    return {
-      status: "available",
-      kind: "desktop",
-      version: update.version,
-      install,
-    }
+    return { status: "available", kind: "desktop", version: update.version, install }
   } catch (err) {
     // Never let a failed update check break app startup.
     console.error("update check failed", err)

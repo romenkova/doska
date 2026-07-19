@@ -23,8 +23,6 @@ export function registerMcpRoutes(app: FastifyInstance): void {
     })
 
     await server.connect(transport)
-    // The body is still on the raw stream — the JSON parser in index.ts is a
-    // no-op — so the transport reads and parses it itself.
     await transport.handleRequest(req.raw, reply.raw)
     return reply.hijack()
   })
