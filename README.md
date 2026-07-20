@@ -5,6 +5,8 @@ in the browser (IndexedDB), so it's fast and works without an account. Sync is
 opt-in. Point it at a server you run and that server keeps the canonical copy,
 replicated to every device.
 
+https://github.com/user-attachments/assets/d35e6162-0b85-4cab-bab8-6ac6272bb7b6
+
 Runs in the browser, installs as a PWA, or ships as a native macOS app.
 
 > Browser storage isn't permanent. The app asks the browser not to evict it, but
