@@ -1,4 +1,6 @@
+import { useState } from "react"
 import { Button, cn } from "@doska/ui-kit"
+import { X } from "lucide-react"
 import { sync, useConnection } from "@/lib/api/sync"
 
 /**
@@ -8,7 +10,17 @@ import { sync, useConnection } from "@/lib/api/sync"
  */
 export function ConnectionBanner() {
   const connection = useConnection()
-  if (connection.status !== "dropped") return null
+  const dropped = connection.status === "dropped"
+  const [dismissed, setDismissed] = useState(false)
+
+  // Reset the dismissal once sync recovers, so a fresh drop shows again.
+  const [wasDropped, setWasDropped] = useState(dropped)
+  if (wasDropped !== dropped) {
+    setWasDropped(dropped)
+    setDismissed(false)
+  }
+
+  if (!dropped || dismissed) return null
 
   return (
     <div className="fixed top-4 z-50 flex w-full justify-center px-2">
@@ -34,6 +46,15 @@ export function ConnectionBanner() {
           onClick={sync.reconcile}
         >
           Retry
+        </Button>
+        <Button
+          size="icon"
+          variant="ghost"
+          className="size-7 shrink-0"
+          aria-label="Dismiss"
+          onClick={() => setDismissed(true)}
+        >
+          <X className="size-4" />
         </Button>
       </div>
     </div>
