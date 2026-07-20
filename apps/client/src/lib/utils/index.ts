@@ -4,6 +4,7 @@ export { isAuthed, subscribeAuthed } from "./is-authed"
 export {
   deadlineStatus,
   formatDeadline,
+  deadlineRelative,
   deadlineLabel,
   todayIso,
 } from "./deadline"

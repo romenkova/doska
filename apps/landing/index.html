@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Doska — a fast, keyboard-friendly Kanban board for organizing tasks across columns."
+    />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f7fa" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#232939" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Doska — a keyboard-first Kanban board" />
+    <meta
+      property="og:description"
+      content="A fast, keyboard-friendly Kanban board for organizing tasks across columns."
+    />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Doska — a keyboard-first Kanban board" />
+    <meta
+      name="twitter:description"
+      content="A fast, keyboard-friendly Kanban board for organizing tasks across columns."
+    />
+    <title>Doska — a keyboard-first Kanban board</title>
+    <script>
+      // Apply the persisted theme before first paint to avoid a light/dark
+      // flash on load. Mirrors the toggle in App (storageKey "theme").
+      ;(function () {
+        try {
+          var t = localStorage.getItem("theme")
+          if (t !== "dark" && t !== "light" && t !== "system") t = "system"
+          var resolved =
+            t === "system"
+              ? window.matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light"
+              : t
+          document.documentElement.classList.add(resolved)
+        } catch (e) {}
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="root"><!--app-html--></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

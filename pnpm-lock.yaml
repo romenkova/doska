@@ -155,6 +155,70 @@ importers:
         specifier: ^2
         version: 2.11.3
 
+  apps/landing:
+    dependencies:
+      '@doska/ui-kit':
+        specifier: workspace:*
+        version: link:../../packages/ui-kit
+      '@fontsource-variable/geist-mono':
+        specifier: 5.2.8
+        version: 5.2.8
+      '@fontsource-variable/mulish':
+        specifier: 5.2.8
+        version: 5.2.8
+      '@tailwindcss/vite':
+        specifier: ^4
+        version: 4.3.1(vite@8.0.16(@types/node@22.19.21)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.49.0)(tsx@4.22.4)(yaml@2.9.0))
+      clsx:
+        specifier: 2.1.1
+        version: 2.1.1
+      lucide-react:
+        specifier: 1.21.0
+        version: 1.21.0(react@19.2.7)
+      react:
+        specifier: ^19.2.7
+        version: 19.2.7
+      react-dom:
+        specifier: ^19.2.7
+        version: 19.2.7(react@19.2.7)
+      tailwind-merge:
+        specifier: 3.6.0
+        version: 3.6.0
+      tailwindcss:
+        specifier: ^4
+        version: 4.3.1
+    devDependencies:
+      '@doska/configs':
+        specifier: workspace:*
+        version: link:../../packages/configs
+      '@types/node':
+        specifier: ^22
+        version: 22.19.21
+      '@types/react':
+        specifier: ^19
+        version: 19.2.17
+      '@types/react-dom':
+        specifier: ^19
+        version: 19.2.3(@types/react@19.2.17)
+      '@vitejs/plugin-react':
+        specifier: ^6
+        version: 6.0.2(vite@8.0.16(@types/node@22.19.21)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.49.0)(tsx@4.22.4)(yaml@2.9.0))
+      eslint:
+        specifier: ^10
+        version: 10.5.0(jiti@2.7.0)
+      prettier:
+        specifier: ^3.8.4
+        version: 3.8.4
+      prettier-plugin-tailwindcss:
+        specifier: ^0.8.0
+        version: 0.8.0(prettier@3.8.4)
+      typescript:
+        specifier: ~6
+        version: 6.0.3
+      vite:
+        specifier: ^8
+        version: 8.0.16(@types/node@22.19.21)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.49.0)(tsx@4.22.4)(yaml@2.9.0)
+
   apps/server:
     dependencies:
       '@doska/contract':

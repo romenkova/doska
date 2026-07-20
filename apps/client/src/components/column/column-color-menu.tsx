@@ -8,12 +8,18 @@ interface IProps {
 }
 
 /** A palette dot. `hue` of null is the "no color" swatch. */
-function Swatch({ hue, className }: { hue: number | null; className?: string }) {
+function Swatch({
+  hue,
+  className,
+}: {
+  hue: number | null
+  className?: string
+}) {
   return (
     <span
       className={cn(
-        "size-4 shrink-0 rounded-full border",
-        hue === null && "border-dashed border-muted-foreground/60",
+        "size-3 shrink-0 rounded-full",
+        hue === null && "border border-dashed border-muted-foreground/60",
         className
       )}
       style={

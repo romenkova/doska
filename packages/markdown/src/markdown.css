@@ -1,9 +1,13 @@
 .markdown {
   line-height: 1.6;
-  font-size: 16px;
+  font-size: 14px;
   color: var(--card-foreground);
   word-break: break-word;
   position: relative;
+}
+
+.preview {
+    color: var(--muted-foreground);
 }
 
 .markdown mark {
@@ -150,7 +154,6 @@
 
 .markdown li.task-list-item:has([data-slot="checkbox"][data-checked]) {
   color: var(--muted-foreground);
-  text-decoration: line-through;
   text-decoration-color: color-mix(
     in oklab,
     var(--muted-foreground) 45%,

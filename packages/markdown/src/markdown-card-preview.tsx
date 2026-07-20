@@ -27,6 +27,7 @@ export function MarkdownCardPreview({ body, onChangeBody }: IProps) {
             ? (index) => onChangeBody(toggleTaskByIndex(body, index))
             : undefined
         }
+        className="preview"
       >
         {preview}
       </Markdown>

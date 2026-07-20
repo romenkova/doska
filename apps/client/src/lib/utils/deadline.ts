@@ -19,8 +19,17 @@ function daysUntil(iso: string): number {
 export function deadlineStatus(iso: string): DeadlineStatus {
   const days = daysUntil(iso)
   if (days < 0) return "overdue"
-  if (days <= 2) return "soon"
+  if (days <= 3) return "soon"
   return "upcoming"
+}
+
+/** A soon deadline reads as relative time ("in 3 days") rather than a date. */
+export function deadlineRelative(iso: string): string {
+  const days = daysUntil(iso)
+  if (days < 0) return "overdue"
+  if (days === 0) return "today"
+  if (days === 1) return "tomorrow"
+  return `in ${days} days`
 }
 
 /** Renders an ISO date (`YYYY-MM-DD`) as `DD.MM.YYYY`. */

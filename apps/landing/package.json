@@ -1,0 +1,38 @@
+{
+  "name": "landing",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build && vite build --ssr src/entry-server.tsx --outDir dist/server && node prerender.js",
+    "lint": "eslint .",
+    "format": "prettier --write \"**/*.{ts,tsx}\"",
+    "typecheck": "tsc --noEmit",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@doska/ui-kit": "workspace:*",
+    "@fontsource-variable/geist-mono": "5.2.8",
+    "@fontsource-variable/mulish": "5.2.8",
+    "@tailwindcss/vite": "^4",
+    "clsx": "2.1.1",
+    "lucide-react": "1.21.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "tailwind-merge": "3.6.0",
+    "tailwindcss": "^4"
+  },
+  "devDependencies": {
+    "@doska/configs": "workspace:*",
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^6",
+    "eslint": "^10",
+    "prettier": "^3.8.4",
+    "prettier-plugin-tailwindcss": "^0.8.0",
+    "typescript": "~6",
+    "vite": "^8"
+  }
+}

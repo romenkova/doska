@@ -1,0 +1,85 @@
+@import "tailwindcss";
+@import "@fontsource-variable/geist-mono";
+@import "@fontsource-variable/mulish";
+
+@source "../../../packages/ui-kit/src";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-heading: var(--font-sans);
+  --font-sans: "Mulish Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, monospace;
+  --color-ring: var(--ring);
+  --color-border: var(--border);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-input: var(--input);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+}
+
+:root {
+  --background: #f7f7fa;
+  --foreground: #343c54;
+  --card: #ffffff;
+  --card-foreground: #343c54;
+  --primary: #725cff;
+  --primary-foreground: #ffffff;
+  --secondary: #eeeff2;
+  --secondary-foreground: #343c54;
+  --input: #eeeff2;
+  --muted: #f7f7f8;
+  --muted-foreground: #676d7f;
+  --accent: #f4f2ff;
+  --accent-foreground: #725cff;
+  --border: #eeeff2;
+  --ring: #725cff;
+  --radius: 0.625rem;
+}
+
+.dark {
+  --background: #232939;
+  --foreground: #f7f7f8;
+  --card: #2d3447;
+  --card-foreground: #f7f7f8;
+  --primary: #9585ff;
+  --primary-foreground: #232939;
+  --secondary: #343c54;
+  --secondary-foreground: #f7f7f8;
+  --input: #ffffff26;
+  --muted: #343c54;
+  --muted-foreground: #999da9;
+  --accent: #343c54;
+  --accent-foreground: #f7f7f8;
+  --border: #ffffff1f;
+  --ring: #9585ff;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  button {
+    cursor: pointer;
+  }
+}
