@@ -27,6 +27,11 @@ function hasTextSelection(): boolean {
   return selection !== null && !selection.isCollapsed
 }
 
+/** A click on an inline body image should view it, not drop into edit mode. */
+function isImageClick(target: EventTarget): boolean {
+  return target instanceof Element && target.closest("img") !== null
+}
+
 /** Presentational card editor: renders the draft and reports edits upward. */
 export function CardEditor({
   cardId,
@@ -49,15 +54,7 @@ export function CardEditor({
           onTogglePreivew={onTogglePreview}
         />
         <AttachmentDropZone className="flex min-h-0 flex-1 flex-col">
-          <CardContentLayout
-            onClick={
-              isPreview
-                ? () => {
-                    if (!hasTextSelection()) onEdit()
-                  }
-                : undefined
-            }
-          >
+          <CardContentLayout>
             <CardContent className="py-2">
               <CardMeta cardId={cardId} body={body} />
             </CardContent>
@@ -66,7 +63,17 @@ export function CardEditor({
               cardId={cardId}
               isReadonly={isPreview}
             />
-            <CardContent className="flex min-h-0 flex-1 flex-col px-4 pt-2">
+            <CardContent
+              className="flex min-h-0 flex-1 flex-col px-4 pt-2"
+              onClick={
+                isPreview
+                  ? (e) => {
+                      if (isImageClick(e.target)) return
+                      if (!hasTextSelection()) onEdit()
+                    }
+                  : undefined
+              }
+            >
               <MarkdownTextarea
                 autoFocus
                 value={title}
