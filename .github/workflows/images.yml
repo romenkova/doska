@@ -3,9 +3,9 @@ name: Publish Images
 # Builds and pushes the self-host Docker images (web UI + sync server) to GHCR so
 # people can run docker-compose.selfhost.yml without cloning or building.
 #
-# Tags published per release (v* tag): the version (e.g. 0.4.0) and `latest`.
-# Manual runs (workflow_dispatch) also publish `latest`. The git tag is the
-# single source of truth for the version.
+# Tags published per release (v* tag): the immutable version (e.g. 0.4.0) plus a
+# moving channel tag — `latest` for clean semver, `beta` for prerelease tags
+# (v*-beta.N). The git tag is the single source of truth for the version.
 on:
   push:
     tags:
@@ -53,7 +53,8 @@ jobs:
           images: ghcr.io/${{ github.repository_owner }}/${{ matrix.image }}
           tags: |
             type=semver,pattern={{version}}
-            type=raw,value=latest
+            type=raw,value=latest,enable=${{ !contains(github.ref_name, '-') }}
+            type=raw,value=beta,enable=${{ contains(github.ref_name, '-') }}
 
       # QEMU emulates arm64 on the amd64 runner for the cross-build below.
       - name: Set up QEMU
