@@ -16,9 +16,15 @@ interface IProps {
   onChangeTitle: (value: string) => void
   onChangeBody: (value: string) => void
   onTogglePreview: () => void
-  /** Fired by double-clicking the read-only preview. */
+  /** Fired by clicking the read-only preview. */
   onEdit: () => void
   onClose: () => void
+}
+
+/** Ignore the click that ends a text selection — treat it as selecting, not editing. */
+function hasTextSelection(): boolean {
+  const selection = window.getSelection()
+  return selection !== null && !selection.isCollapsed
 }
 
 /** Presentational card editor: renders the draft and reports edits upward. */
@@ -43,7 +49,15 @@ export function CardEditor({
           onTogglePreivew={onTogglePreview}
         />
         <AttachmentDropZone className="flex min-h-0 flex-1 flex-col">
-          <CardContentLayout onDoubleClick={isPreview ? onEdit : undefined}>
+          <CardContentLayout
+            onClick={
+              isPreview
+                ? () => {
+                    if (!hasTextSelection()) onEdit()
+                  }
+                : undefined
+            }
+          >
             <CardContent className="py-2">
               <CardMeta cardId={cardId} body={body} />
             </CardContent>
