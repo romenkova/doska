@@ -1,6 +1,9 @@
 import { useMemo } from "react"
+import { useQueryClient } from "@tanstack/react-query"
 import { cardDisplayId, type Card } from "@doska/contract"
 import type { WikilinkOption } from "@doska/markdown"
+import type { Board } from "@/lib/types"
+import { keys } from "@/lib/data/keys"
 import { useBoard } from "@/lib/data/queries"
 import { useDeck } from "../../deck/deck-context"
 
@@ -53,7 +56,11 @@ export interface ResolvedCardRef {
  */
 export function useCardRef(displayId: string): ResolvedCardRef | undefined {
   const { id: deckId, prefix } = useDeck()
-  const { data: board } = useBoard(deckId)
+
+  // read from cache
+  const qc = useQueryClient()
+  const board = qc.getQueryData<Board>(keys.board(deckId))
+
   const cards = board?.cards ?? NO_CARDS
   const columns = board?.columns
 
