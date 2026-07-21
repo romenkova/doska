@@ -1,12 +1,10 @@
-import { cn } from "@doska/ui-kit"
+import { CardId, TaskIndicator, cn } from "@doska/ui-kit"
 import { cardDisplayId } from "@doska/contract"
 import { taskProgress } from "@doska/markdown"
 import { fallbackCard } from "@/lib/seed"
 import { useCard } from "@/lib/data/queries"
 import { useUpdateCard } from "@/lib/data/mutations"
 import { useDeckPrefix } from "../deck/deck-context"
-import { CardId } from "./card-id"
-import { TaskIndicator } from "./task-indicator"
 import { CardDeadline } from "./deadline/card-deadline"
 
 interface IProps {

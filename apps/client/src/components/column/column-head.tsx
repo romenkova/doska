@@ -30,7 +30,7 @@ export function ColumnHead({
       className={cn(
         "sticky top-0 z-10 flex shrink-0 items-center justify-between gap-2 py-3",
         "bg-background/80 backdrop-blur-xs",
-        "text-muted-foreground uppercase"
+        "text-muted-foreground"
       )}
     >
       <div className="flex min-w-0 items-center gap-0.5">

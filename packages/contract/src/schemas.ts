@@ -52,7 +52,7 @@ export const ColumnSchema = z.object({
   collapsed: z.boolean().default(false),
   /**
    * Palette id tinting the column and any `[[card]]` reference to a card in
-   * it. Empty for no color; see `COLUMN_COLORS` on the client.
+   * it. Empty for no color; see `COLUMN_COLORS` in the ui-kit.
    */
   color: z.string().default(""),
   updatedAt: z.number(),

@@ -82,7 +82,10 @@ function ModalHeader({
   return (
     <div
       data-slot="modal-header"
-      className={cn("flex items-center justify-between gap-2 py-2 px-3", className)}
+      className={cn(
+        "flex items-center justify-between gap-2 py-2 px-3",
+        className
+      )}
     >
       <ModalTitle>{children}</ModalTitle>
       {onClose && (

@@ -1,6 +1,12 @@
-import { Menu, MenuContent, MenuItem, MenuTrigger, cn } from "@doska/ui-kit"
+import {
+  COLUMN_COLORS,
+  Menu,
+  MenuContent,
+  MenuItem,
+  MenuTrigger,
+  cn,
+} from "@doska/ui-kit"
 import { Check } from "lucide-react"
-import { COLUMN_COLORS } from "@/lib/column-colors"
 
 interface IProps {
   color: string

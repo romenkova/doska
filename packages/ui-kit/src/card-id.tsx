@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import { cn } from "@doska/ui-kit"
+import { cn } from "./lib/cn"
 import { Check, Hash } from "lucide-react"
 
 /**

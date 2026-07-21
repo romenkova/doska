@@ -21,6 +21,7 @@
   --color-input: var(--input);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary: var(--primary);
+  --color-destructive: var(--destructive);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
   --color-foreground: var(--foreground);
@@ -48,6 +49,7 @@
   --accent-foreground: #725cff;
   --border: #eeeff2;
   --ring: #725cff;
+  --destructive: #ff5656;
   --radius: 0.625rem;
 }
 
@@ -57,7 +59,7 @@
   --card: #2d3447;
   --card-foreground: #f7f7f8;
   --primary: #9585ff;
-  --primary-foreground: #232939;
+  --primary-foreground: #f7f7f8;
   --secondary: #343c54;
   --secondary-foreground: #f7f7f8;
   --input: #ffffff26;
@@ -67,6 +69,7 @@
   --accent-foreground: #f7f7f8;
   --border: #ffffff1f;
   --ring: #9585ff;
+  --destructive: #ff5656;
 }
 
 @layer base {

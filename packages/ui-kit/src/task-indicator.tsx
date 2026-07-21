@@ -1,4 +1,4 @@
-import { cn } from "@doska/ui-kit"
+import { cn } from "./lib/cn"
 import { Circle, CircleCheck } from "lucide-react"
 
 interface IProps {

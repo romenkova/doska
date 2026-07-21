@@ -1,7 +1,11 @@
-import { cn } from "@doska/ui-kit"
 import { Calendar } from "lucide-react"
-import { deadlineRelative, deadlineStatus, formatDeadline } from "@/lib/utils"
-import type { DeadlineStatus } from "@/lib/utils"
+import { cn } from "./lib/cn"
+import {
+  deadlineRelative,
+  deadlineStatus,
+  formatDeadline,
+  type DeadlineStatus,
+} from "./lib/deadline"
 
 const CHIP_BY_STATUS: Record<DeadlineStatus, string> = {
   overdue: "bg-destructive/10 text-destructive/80",

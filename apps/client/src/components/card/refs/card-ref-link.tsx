@@ -1,7 +1,6 @@
 import type { CSSProperties } from "react"
 import { useLocation } from "wouter"
-import { cn } from "@doska/ui-kit"
-import { columnHue } from "@/lib/column-colors"
+import { cn, columnHue } from "@doska/ui-kit"
 import { routes } from "@/lib/routes"
 import { useCardRef } from "./use-card-refs"
 

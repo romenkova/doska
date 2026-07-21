@@ -157,6 +157,9 @@ importers:
 
   apps/landing:
     dependencies:
+      '@doska/markdown':
+        specifier: workspace:*
+        version: link:../../packages/markdown
       '@doska/ui-kit':
         specifier: workspace:*
         version: link:../../packages/ui-kit

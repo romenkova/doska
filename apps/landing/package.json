@@ -12,6 +12,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@doska/markdown": "workspace:*",
     "@doska/ui-kit": "workspace:*",
     "@fontsource-variable/geist-mono": "5.2.8",
     "@fontsource-variable/mulish": "5.2.8",
