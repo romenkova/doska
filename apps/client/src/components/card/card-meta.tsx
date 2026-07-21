@@ -24,7 +24,7 @@ export function CardMeta({ cardId, body, className }: IProps) {
   const { done, total } = taskProgress(body ?? card.body)
 
   return (
-    <div className={cn("flex items-center gap-2 text-sm", className)}>
+    <div className={cn("flex items-center gap-4 text-sm", className)}>
       {displayId && <CardId id={displayId} />}
       {total > 0 && <TaskIndicator done={done} total={total} />}
       <CardDeadline

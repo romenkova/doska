@@ -8,8 +8,7 @@
       name="description"
       content="Doska — a fast, keyboard-friendly Kanban board for organizing tasks across columns."
     />
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f7fa" />
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#232939" />
+    <meta name="theme-color" content="#232939" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Doska — a keyboard-first Kanban board" />
     <meta
@@ -26,18 +25,14 @@
     <script>
       // Apply the persisted theme before first paint to avoid a light/dark
       // flash on load. Mirrors the toggle in App (storageKey "theme").
+      // Dark unless the visitor has explicitly picked light here before.
       ;(function () {
         try {
           var t = localStorage.getItem("theme")
-          if (t !== "dark" && t !== "light" && t !== "system") t = "system"
-          var resolved =
-            t === "system"
-              ? window.matchMedia("(prefers-color-scheme: dark)").matches
-                ? "dark"
-                : "light"
-              : t
-          document.documentElement.classList.add(resolved)
-        } catch (e) {}
+          document.documentElement.classList.add(t === "light" ? "light" : "dark")
+        } catch (e) {
+          document.documentElement.classList.add("dark")
+        }
       })()
     </script>
   </head>

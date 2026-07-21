@@ -12,7 +12,7 @@ export function TaskIndicator({ done, total }: IProps) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-full px-2 font-mono",
+        "inline-flex items-center gap-1 rounded-full font-mono",
         "text-xs text-muted-foreground tabular-nums"
         // complete
         //   ? "bg-success text-success-foreground"

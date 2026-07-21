@@ -1,5 +1,9 @@
 import { CARDS_BY_COLUMN, idb } from "./idb"
-import { BOARD_COLUMNS, cards as seedCards, seedDashboards } from "../../seed"
+import {
+  cards as seedCards,
+  seedColumns,
+  seedDashboards,
+} from "../../seed"
 import type { Card, Column, Dashboard } from "../../types"
 import { CARDS, COLUMNS, DASHBOARDS } from "../constants"
 import { stamp } from "../sync/hlc"
@@ -12,7 +16,7 @@ export async function seed(): Promise<void> {
   if ((await idb.count(DASHBOARDS)) > 0) return
   await Promise.all([
     ...seedDashboards.map((d) => idb.set(DASHBOARDS, d.id, d)),
-    ...BOARD_COLUMNS.map((c) => idb.set(COLUMNS, c.id, c)),
+    ...seedColumns.map((c) => idb.set(COLUMNS, c.id, c)),
     ...seedCards.map((c) => idb.set(CARDS, c.id, c)),
   ])
 }

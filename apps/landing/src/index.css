@@ -31,6 +31,31 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) * 1.4);
   --radius-2xl: calc(var(--radius) * 1.8);
+  --color-terminal: var(--terminal);
+  --color-terminal-foreground: var(--terminal-foreground);
+  --color-terminal-muted: var(--terminal-muted);
+  --color-terminal-border: var(--terminal-border);
+  --color-terminal-accent: var(--terminal-accent);
+  --color-terminal-ok: var(--terminal-ok);
+}
+
+/* The terminal's cursor blink — the only motion in the card. */
+@theme {
+  --animate-terminal-blink: terminal-blink 1s steps(1) infinite;
+
+  @keyframes terminal-blink {
+    50% {
+      opacity: 0;
+    }
+  }
+
+  --animate-nudge: nudge 1.4s ease-in-out infinite;
+
+  @keyframes nudge {
+    50% {
+      transform: translateX(3px);
+    }
+  }
 }
 
 :root {
@@ -51,6 +76,13 @@
   --ring: #725cff;
   --destructive: #ff5656;
   --radius: 0.625rem;
+  --dots: #676d7f40;
+  --terminal: #ffffff;
+  --terminal-foreground: #343c54;
+  --terminal-muted: #7b8199;
+  --terminal-border: #e4e5ea;
+  --terminal-accent: #725cff;
+  --terminal-ok: #3f8f76;
 }
 
 .dark {
@@ -70,6 +102,13 @@
   --border: #ffffff1f;
   --ring: #9585ff;
   --destructive: #ff5656;
+  --dots: #ffffff26;
+  --terminal: #1d2230;
+  --terminal-foreground: #e6e8ee;
+  --terminal-muted: #e6e8ee73;
+  --terminal-border: #ffffff14;
+  --terminal-accent: #9585ff;
+  --terminal-ok: #66ae96;
 }
 
 @layer base {
@@ -77,7 +116,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply bg-background font-sans text-foreground antialiased;
   }
   html {
     scroll-behavior: smooth;
