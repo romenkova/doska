@@ -6,10 +6,6 @@
   position: relative;
 }
 
-.preview {
-    color: var(--muted-foreground);
-}
-
 .markdown mark {
   background: oklch(0.69 0.17 286.88 / 0.3);
   color: inherit;
