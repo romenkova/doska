@@ -8,8 +8,10 @@ export function App() {
   return (
     <div className="min-h-svh">
       <SiteHeader />
-      <Hero />
-      <Board />
+      <main>
+        <Hero />
+        <Board />
+      </main>
       <SiteFooter />
     </div>
   )

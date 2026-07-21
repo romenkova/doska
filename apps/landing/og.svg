@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#232939" />
+
+  <g fill="#676d7f" opacity="0.35">
+    <circle cx="60" cy="60" r="2" /><circle cx="114" cy="60" r="2" /><circle cx="168" cy="60" r="2" />
+    <circle cx="60" cy="114" r="2" /><circle cx="114" cy="114" r="2" /><circle cx="168" cy="114" r="2" />
+    <circle cx="1032" cy="516" r="2" /><circle cx="1086" cy="516" r="2" /><circle cx="1140" cy="516" r="2" />
+    <circle cx="1032" cy="570" r="2" /><circle cx="1086" cy="570" r="2" /><circle cx="1140" cy="570" r="2" />
+  </g>
+
+  <g transform="translate(80 82)">
+    <!-- public/favicon.svg verbatim, scaled — the same mark the header renders.
+         Its tile is the background colour, so only the anchor reads. -->
+    <g transform="scale(1.25)">
+      <rect width="32" height="32" rx="7" fill="#232939" />
+      <g transform="translate(6 6) scale(0.833)" fill="none" stroke="#f7f7f8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22V8" />
+        <path d="M5 12H2a10 10 0 0 0 20 0h-3" />
+        <circle cx="12" cy="5" r="3" />
+      </g>
+    </g>
+    <text x="50" y="30" font-family="Avenir Next, Helvetica, sans-serif" font-weight="600" font-size="34" fill="#f7f7f8">Doska</text>
+  </g>
+
+  <g font-family="Avenir Next, Helvetica, sans-serif" font-weight="800" font-size="88" letter-spacing="-2">
+    <text x="80" y="272" fill="#f7f7f8">A Kanban board</text>
+    <text x="80" y="370" fill="#9585ff">made of Markdown</text>
+  </g>
+
+  <text x="80" y="438" font-family="Avenir Next, Helvetica, sans-serif" font-weight="600" font-size="30" fill="#a2a7b5">Local-first. Works offline. Self-host the sync.</text>
+
+  <text x="80" y="504" font-family="Geist Mono, Menlo, monospace" font-size="22" fill="#676d7f">Open source · self-hosted · MCP-ready</text>
+</svg>

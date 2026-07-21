@@ -13,13 +13,13 @@ export function Column({
   children: ReactNode
 }) {
   return (
-    <div className="flex w-[85vw] max-w-80 shrink-0 flex-col sm:w-80">
+    <section className="flex w-[85vw] max-w-80 shrink-0 flex-col sm:w-80">
       <div className="mb-3 flex items-center gap-2 px-1 text-sm text-muted-foreground uppercase">
         <span
           className="size-2.5 rounded-full"
           style={{ background: `oklch(0.72 0.14 ${columnHue(color)})` }}
         />
-        <span className="font-heading font-bold">{title}</span>
+        <h2 className="font-heading font-bold">{title}</h2>
         <span className="ml-auto rounded-full bg-muted px-1.5 text-[11px] font-medium">
           {count}
         </span>
@@ -32,6 +32,6 @@ export function Column({
       >
         {children}
       </div>
-    </div>
+    </section>
   )
 }

@@ -4,24 +4,70 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Doska — local-first Kanban board in Markdown, self-hosted</title>
     <meta
       name="description"
-      content="Doska — a fast, keyboard-friendly Kanban board for organizing tasks across columns."
+      content="Doska is an open-source Kanban board where every card is Markdown. Boards live in your browser, work offline, sync through a server you host, and agents can edit them over MCP."
     />
-    <meta name="theme-color" content="#232939" />
+    <link rel="canonical" href="https://doska.sh/" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f7fa" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#232939" />
+
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Doska — a keyboard-first Kanban board" />
+    <meta property="og:site_name" content="Doska" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:url" content="https://doska.sh/" />
+    <meta
+      property="og:title"
+      content="Doska — local-first Kanban board in Markdown"
+    />
     <meta
       property="og:description"
-      content="A fast, keyboard-friendly Kanban board for organizing tasks across columns."
+      content="Open source, offline-first, self-hosted. Every card is Markdown, and your agent can edit the board over MCP."
     />
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="Doska — a keyboard-first Kanban board" />
+    <meta property="og:image" content="https://doska.sh/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Doska — a Kanban board made of Markdown"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Doska — local-first Kanban board in Markdown"
+    />
     <meta
       name="twitter:description"
-      content="A fast, keyboard-friendly Kanban board for organizing tasks across columns."
+      content="Open source, offline-first, self-hosted. Every card is Markdown, and your agent can edit the board over MCP."
     />
-    <title>Doska — a keyboard-first Kanban board</title>
+    <meta name="twitter:image" content="https://doska.sh/og.png" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Doska",
+        "url": "https://doska.sh/",
+        "applicationCategory": "BusinessApplication",
+        "applicationSubCategory": "Project Management",
+        "operatingSystem": "Web, macOS",
+        "description": "An open-source, local-first Kanban board where every card is Markdown. Works offline, syncs through a server you host, and exposes boards over MCP so agents can edit them.",
+        "license": "https://opensource.org/licenses/MIT",
+        "isAccessibleForFree": true,
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "author": {
+          "@type": "Person",
+          "name": "Rita Romenkova",
+          "url": "https://github.com/romenkova"
+        },
+        "codeRepository": "https://github.com/romenkova/doska"
+      }
+    </script>
     <script>
       // Apply the persisted theme before first paint to avoid a light/dark
       // flash on load. Mirrors the toggle in App (storageKey "theme").

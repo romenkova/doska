@@ -31,7 +31,9 @@ export function BoardCard({
   return (
     <Card className="mb-3">
       <CardHeader>
-        <CardTitle className="font-bold">{title}</CardTitle>
+        <CardTitle className="font-bold">
+          <h3>{title}</h3>
+        </CardTitle>
         <CardAction>
           <CardId id={id} />
         </CardAction>

@@ -15,7 +15,7 @@ const phrases = [
 
 export function Hero() {
   return (
-    <main className="mx-auto max-w-6xl px-4 sm:px-6">
+    <div className="mx-auto max-w-6xl px-4 sm:px-6">
       <section className="pt-10 pb-10 sm:pt-16">
         <p className="mb-4 font-mono text-sm tracking-tight text-muted-foreground">
           Open source · local-first · by{" "}
@@ -69,6 +69,6 @@ export function Hero() {
           thing: no signup, no install
         </p>
       </section>
-    </main>
+    </div>
   )
 }
