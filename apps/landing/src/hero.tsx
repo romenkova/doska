@@ -2,6 +2,16 @@ import { Button } from "@doska/ui-kit"
 import { Download, ExternalLink } from "lucide-react"
 import { SiGithub } from "react-icons/si"
 import { app, releases, repo } from "./links"
+import { Typewriter } from "./typewriter"
+
+// Each reads as the tail of "A Kanban board …". The first is what SSR and
+// reduced-motion visitors see, so it's the plainest of them.
+const phrases = [
+  "made of Markdown",
+  "your agent can edit",
+  "that works offline",
+  "you can self-host",
+]
 
 export function Hero() {
   return (
@@ -10,13 +20,13 @@ export function Hero() {
         <p className="mb-4 font-mono text-sm tracking-tight text-muted-foreground">
           Open source · local-first
         </p>
-        <h1 className="max-w-2xl text-3xl font-extrabold tracking-tight text-balance sm:text-5xl">
-          A Kanban board where the cards are Markdown
+        <h1 className="max-w-2xl text-4xl font-black tracking-tight sm:text-5xl">
+          A Kanban board <Typewriter phrases={phrases} />
         </h1>
         <p className="mt-5 max-w-xl text-base text-pretty text-muted-foreground sm:text-lg">
-          It's local-first: your boards live in the browser, so it's fast and
-          works without an account. Sync is opt-in — point it at a server you
-          run and it keeps the canonical copy.
+          Boards live in your browser, so the UI is instant and works offline.
+          <br />
+          For anything you want to keep, run the sync server you host yourself.
         </p>
         <div className="mt-7 flex flex-wrap items-center gap-3">
           <Button
@@ -47,7 +57,8 @@ export function Hero() {
           </Button>
         </div>
         <p className="mt-8 font-mono text-xs text-muted-foreground">
-          ↓ the rest of this page is one of its boards. tick a box, copy an id.
+          ↓ this isn't a real board, just a bunch of features. but you can click
+          around.
         </p>
       </section>
     </main>
