@@ -4,14 +4,22 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Doska — local-first Kanban board in Markdown, self-hosted</title>
+    <title>Doska | local-first Kanban board in Markdown, self-hosted</title>
     <meta
       name="description"
       content="Doska is an open-source Kanban board where every card is Markdown. Boards live in your browser, work offline, sync through a server you host, and agents can edit them over MCP."
     />
     <link rel="canonical" href="https://doska.sh/" />
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f7fa" />
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#232939" />
+    <meta
+      name="theme-color"
+      media="(prefers-color-scheme: light)"
+      content="#f7f7fa"
+    />
+    <meta
+      name="theme-color"
+      media="(prefers-color-scheme: dark)"
+      content="#232939"
+    />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Doska" />
@@ -75,7 +83,9 @@
       ;(function () {
         try {
           var t = localStorage.getItem("theme")
-          document.documentElement.classList.add(t === "light" ? "light" : "dark")
+          document.documentElement.classList.add(
+            t === "light" ? "light" : "dark"
+          )
         } catch (e) {
           document.documentElement.classList.add("dark")
         }
