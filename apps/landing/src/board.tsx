@@ -44,7 +44,10 @@ export function Board() {
               <p>
                 GitHub-flavored Markdown, edited in place —{" "}
                 <strong>bold</strong>, <code>code</code>,{" "}
-                <a href={repo}>links</a>, <mark>highlights</mark>. Task lists
+                <a href={repo} target="_blank" rel="noreferrer">
+                  links
+                </a>
+                , <mark>highlights</mark>. Task lists
                 carry a live count, up in the header:
               </p>
               <TaskList tasks={tasks} onToggle={toggleTask} />
@@ -124,13 +127,19 @@ export function Board() {
               <p>
                 Generates the secrets and brings the stack up. Re-run any time
                 to pull newer images — it keeps your config. There's a{" "}
-                <a href={`${repo}#self-hosting`}>self-hosting guide</a>.
+                <a href={`${repo}#self-hosting`} target="_blank" rel="noreferrer">
+                  self-hosting guide
+                </a>
+                .
               </p>
             </BoardCard>
 
             <BoardCard id="RUN-2" title="Runs where you do">
               <p>
-                <a href={app}>In the browser</a>, installed as a PWA, or a
+                <a href={app} target="_blank" rel="noreferrer">
+                  In the browser
+                </a>
+                , installed as a PWA, or a
                 native macOS app that reuses the same client and auto-updates.
               </p>
             </BoardCard>

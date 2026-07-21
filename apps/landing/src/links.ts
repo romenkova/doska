@@ -1,3 +1,4 @@
 export const app = "https://app.doska.sh/"
-export const repo = "https://github.com/romenkova/doska"
+export const author = "https://github.com/romenkova"
+export const repo = `${author}/doska`
 export const releases = `${repo}/releases`

@@ -16,7 +16,7 @@ export function SiteHeader() {
           <Button
             variant="outline"
             className="ml-2 h-9 gap-2 px-4"
-            render={<a href={repo} />}
+            render={<a href={repo} target="_blank" rel="noreferrer" />}
           >
             <SiGithub className="size-4" />
             GitHub

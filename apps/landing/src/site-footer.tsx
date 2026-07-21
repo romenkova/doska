@@ -6,6 +6,8 @@ export function SiteFooter() {
       <span className="text-muted-foreground">Doska. MIT licensed. 2026</span>
       <a
         href={repo}
+        target="_blank"
+        rel="noreferrer"
         className="text-muted-foreground transition-colors hover:text-foreground"
       >
         Source
