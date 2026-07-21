@@ -65,8 +65,8 @@ export function Hero() {
           </Button>
         </div>
         <p className="mt-8 font-mono text-xs text-muted-foreground">
-          ↓ this isn't a real board, just a bunch of features. but you can click
-          around.
+          ↓ this is a demo, not a real board. "Open in browser" runs the whole
+          thing: no signup, no install
         </p>
       </section>
     </main>

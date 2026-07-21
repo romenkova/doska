@@ -17,7 +17,7 @@ export function Wikilink({
   color: string
 }) {
   return (
-    <span className="wikilink" title={`${title} — ${column}`}>
+    <span className="wikilink" title={`${title}, ${column}`}>
       <span className="wikilink-target">{target}</span>
       <span className="wikilink-label">{title}</span>
       <span

@@ -42,21 +42,25 @@ export function Board() {
               tasks={{ done, total: tasks.length }}
             >
               <p>
-                GitHub-flavored Markdown, edited in place —{" "}
-                <strong>bold</strong>, <code>code</code>,{" "}
+                GitHub-flavored Markdown:
+                <br /> <strong>bold</strong>, <code>code</code>,{" "}
                 <a href={repo} target="_blank" rel="noreferrer">
                   links
                 </a>
-                , <mark>highlights</mark>. Task lists
-                carry a live count, up in the header:
+                , <mark>highlights</mark>.<br />
+                Task lists carry a live count, up in the header (try clicking):
               </p>
               <TaskList tasks={tasks} onToggle={toggleTask} />
+              <p>
+                I tried to make Markdown editing more bearable: slash commands,
+                suggestions.
+              </p>
             </BoardCard>
 
             <BoardCard id="CARD-2" title="Attachments and tags">
               <p>
-                Drop images or files onto a card. Images preview inline,
-                everything else lands as a link:
+                File attachments, inline images, support for dragging files into
+                a card or pasting from the buffer:
               </p>
               {/* Stands in for an attached screenshot — same box `.markdown img`
                 gives a real one, so the layout matches. */}
@@ -72,25 +76,24 @@ export function Board() {
                 board-preview.png
               </p>
               <p>
-                Bracketed words become colored pills, so a card can carry its
-                own labels: <Tag color={4}>design</Tag>{" "}
-                <Tag color={9}>needs review</Tag>
+                Bracketed words become colored pills:{" "}
+                <Tag color={4}>design</Tag> <Tag color={9}>needs review</Tag>
               </p>
             </BoardCard>
 
             <BoardCard id="CARD-3" title="Deadlines" deadline="2020-04-01">
               <p>
-                Set a due date and the chip shifts color as it nears — muted,
-                then amber, then red once it's overdue. Like this one, which has
-                been overdue for a while.
+                Set a due date and the chip shifts color as it nears.
+                <br />
+                Like this one, which has been overdue for a while.
               </p>
             </BoardCard>
 
             <BoardCard id="CARD-4" title="Cards link to cards">
               <p>
-                Type <code>[[</code> and pick a card. The reference carries its
-                title and the column it's in — both read live, so a rename or a
-                move updates every mention:
+                Type <code>[[</code> and pick a card. The reference (wikilink)
+                carries its title and the column it's in: both read live, so a
+                rename or a move updates every mention:
               </p>
               <p>
                 <Wikilink
@@ -106,17 +109,16 @@ export function Board() {
           <Column title="Where it lives" color="green" count={2}>
             <BoardCard id="DATA-1" title="Local-first">
               <p>
-                Boards live in the browser (IndexedDB). Reads and writes hit
-                your device, not the network — so it's fast, and it works
-                offline.
+                Boards live in the browser. Reads and writes hit your device,
+                not the network, so it's fast, and it works offline.
               </p>
             </BoardCard>
 
             <BoardCard id="DATA-2" title="Sync is opt-in">
               <p>
                 Point it at a server you run and boards replicate to every
-                device in the background. Nothing leaves your machine until you
-                set that up.
+                device in the background. Sync happens every couple of seconds,
+                or on <code>⌘</code>+<code>S</code>.
               </p>
             </BoardCard>
           </Column>
@@ -125,9 +127,15 @@ export function Board() {
             <BoardCard id="RUN-1" title="Self-host in one line">
               <InstallTerminal />
               <p>
-                Generates the secrets and brings the stack up. Re-run any time
-                to pull newer images — it keeps your config. There's a{" "}
-                <a href={`${repo}#self-hosting`} target="_blank" rel="noreferrer">
+                Comes with an install script.
+                <br /> The script backs up your data, and bundles all you need
+                to run the app. Re-run any time to pull newer images. It keeps
+                your config. There's a{" "}
+                <a
+                  href={`${repo}#self-hosting`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   self-hosting guide
                 </a>
                 .
@@ -139,15 +147,19 @@ export function Board() {
                 <a href={app} target="_blank" rel="noreferrer">
                   In the browser
                 </a>
-                , installed as a PWA, or a
-                native macOS app that reuses the same client and auto-updates.
+                , installed as a PWA, or a Tauri macOS app that reuses the same
+                client and auto-updates.
+                <br />
+                No mobile app yet, but the PWA makes the mobile experience
+                closer to native.
               </p>
             </BoardCard>
 
             <BoardCard id="RUN-3" title="Agents can edit it too">
               <p>
-                The server exposes your boards over MCP, so Claude can read and
-                edit them — create cards, tick task lists, move things.
+                The server exposes your boards over MCP, so Claude or other
+                agents can read and edit them: create cards, tick task lists,
+                move things.
               </p>
               <McpTerminal />
             </BoardCard>

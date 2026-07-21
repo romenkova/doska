@@ -17,12 +17,18 @@ export const cards: Card[] = [
     updatedAt: 0,
     deletedAt: null,
     title: "Cards are Markdown",
-    body: `GitHub-flavored Markdown, edited in place — **bold**, \`code\`, [links](${REPO}), ==highlights==. Task lists carry a live count, up in the header:
+    body: `GitHub-flavored Markdown:
+
+**bold**, \`code\`, [links](${REPO}), ==highlights==.
+
+Task lists carry a live count, up in the header (try clicking):
 
 - [x] Written in Markdown
 - [x] Slash menu for formatting
-- [ ] Tick a box — watch the count
-- [ ] Nothing left to do`,
+- [ ] Tick a box, watch the count
+- [ ] Nothing left to do
+
+I tried to make Markdown editing more bearable: slash commands, suggestions.`,
   },
   {
     id: "seed-cards-2",
@@ -48,7 +54,9 @@ Bracketed words become colored pills, so a card can carry its own labels: [desig
     updatedAt: 0,
     deletedAt: null,
     title: "Deadlines",
-    body: `Set a due date and the chip shifts color as it nears — muted, then amber, then red once it's overdue. Like this one, which has been overdue for a while.`,
+    body: `Set a due date and the chip shifts color as it nears.
+
+Like this one, which has been overdue for a while.`,
   },
   {
     id: "seed-cards-4",
@@ -60,7 +68,7 @@ Bracketed words become colored pills, so a card can carry its own labels: [desig
     updatedAt: 0,
     deletedAt: null,
     title: "Cards link to cards",
-    body: `Type \`[[\` and pick a card. The reference carries its title and the column it's in — both read live, so a rename or a move updates every mention:
+    body: `Type \`[[\` and pick a card. The reference (wikilink) carries its title and the column it's in: both read live, so a rename or a move updates every mention:
 
 [[DECK-3]]`,
   },
@@ -74,7 +82,7 @@ Bracketed words become colored pills, so a card can carry its own labels: [desig
     updatedAt: 0,
     deletedAt: null,
     title: "Local-first",
-    body: `Boards live in the browser (IndexedDB). Reads and writes hit your device, not the network — so it's fast, and it works offline.`,
+    body: `Boards live in the browser. Reads and writes hit your device, not the network, so it's fast, and it works offline.`,
   },
   {
     id: "seed-data-2",
@@ -86,7 +94,7 @@ Bracketed words become colored pills, so a card can carry its own labels: [desig
     updatedAt: 0,
     deletedAt: null,
     title: "Sync is opt-in",
-    body: `Point it at a server you run and boards replicate to every device in the background. Nothing leaves your machine until you set that up.`,
+    body: `Point it at a server you run and boards replicate to every device in the background. Sync happens every couple of seconds, or on \`⌘\`+\`S\`.`,
   },
   {
     id: "seed-run-1",
@@ -102,7 +110,9 @@ Bracketed words become colored pills, so a card can carry its own labels: [desig
 curl -fsSL https://raw.githubusercontent.com/romenkova/doska/main/install.sh -o install.sh && sh install.sh
 \`\`\`
 
-Generates the secrets and brings the stack up. Re-run any time to pull newer images — it keeps your config. There's a [self-hosting guide](${REPO}#self-hosting).`,
+Comes with an install script.
+
+The script backs up your data, and bundles all you need to run the app. Re-run any time to pull newer images. It keeps your config. There's a [self-hosting guide](${REPO}#self-hosting).`,
   },
   {
     id: "seed-run-2",
@@ -114,7 +124,9 @@ Generates the secrets and brings the stack up. Re-run any time to pull newer ima
     updatedAt: 0,
     deletedAt: null,
     title: "Runs where you do",
-    body: `In the browser, installed as a PWA, or a native macOS app that reuses the same client and auto-updates.`,
+    body: `In the browser, installed as a PWA, or a Tauri macOS app that reuses the same client and auto-updates.
+
+No mobile app yet, but the PWA makes the mobile experience closer to native.`,
   },
   {
     id: "seed-run-3",
@@ -126,7 +138,7 @@ Generates the secrets and brings the stack up. Re-run any time to pull newer ima
     updatedAt: 0,
     deletedAt: null,
     title: "Agents can edit it too",
-    body: `The server exposes your boards over MCP, so Claude can read and edit them — create cards, tick task lists, move things.
+    body: `The server exposes your boards over MCP, so Claude or other agents can read and edit them: create cards, tick task lists, move things.
 
 \`\`\`
 claude mcp add --transport http doska https://your-server/mcp
