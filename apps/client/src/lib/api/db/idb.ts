@@ -2,7 +2,7 @@ import { IDB } from "@doska/client-db"
 import { STORES } from "../constants"
 
 const DB_NAME = "deck"
-const VERSION = 9
+const VERSION = 11
 
 /** Sync bookkeeping (the pull cursor) — kept in the DB so it shares the data's
  * lifetime. Not dropped on upgrade, but gone if the whole DB is deleted. */
@@ -12,6 +12,12 @@ export const META_STORE = "meta"
  * (`getCards(columnId)`) instead of a full-store scan. The primary key stays the
  * card id, so lookups by id (`getCard`) remain a direct get. */
 export const CARDS_BY_COLUMN = "columnId"
+
+/** Index on `cards.deadline` for the digest's date-range reads. Deadlines are
+ * `YYYY-MM-DD`, so index order is chronological and a range seek needs no sort.
+ * A `null` deadline yields no index key, so undated cards are absent by
+ * construction — the index can't answer "cards with no deadline". */
+export const CARDS_BY_DEADLINE = "deadline"
 
 class DeckDB extends IDB {
   upgrade(db: IDBDatabase, tx: IDBTransaction) {
@@ -27,6 +33,8 @@ class DeckDB extends IDB {
     const cards = tx.objectStore("cards")
     if (!cards.indexNames.contains(CARDS_BY_COLUMN))
       cards.createIndex(CARDS_BY_COLUMN, "columnId")
+    if (!cards.indexNames.contains(CARDS_BY_DEADLINE))
+      cards.createIndex(CARDS_BY_DEADLINE, "deadline")
   }
 }
 

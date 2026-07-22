@@ -152,6 +152,15 @@ class DeckSync {
     void this.list.reconcile()
   }
 
+  /**
+   * Pulls every listed board once, leaving the active board as it is. The
+   * digest reads across all boards, and a board never opened on this device has
+   * nothing local to read.
+   */
+  reconcileBoards(boardIds: string[]): Promise<void> {
+    return this.board.reconcileScopes(boardIds)
+  }
+
   /** Reconciles both channels once. Each engine no-ops while not configured. */
   async reconcile(): Promise<void> {
     await Promise.all([this.board.reconcile(), this.list.reconcile()])

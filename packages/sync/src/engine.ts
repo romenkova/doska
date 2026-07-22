@@ -62,6 +62,10 @@ export class SyncEngine<Scope, Change> {
   /** Set when a reconcile arrives mid-flight; the running one loops once more. */
   private rerun = false
 
+  /** Scopes to pull once alongside the active one, then forget — see
+   * {@link reconcileScopes}. */
+  private readonly extraScopes = new Set<Scope>()
+
   private readonly driver: SyncDriver<Scope, Change>
 
   // Gate consulted before every reconcile.
@@ -151,6 +155,16 @@ export class SyncEngine<Scope, Change> {
     return this.running
   }
 
+  /**
+   * Reconciles these scopes once, in addition to the active one, without making
+   * any of them active. For a view that reads across scopes (deck's digest
+   * spans every board) and so needs them all pulled, but is not "in" any of them.
+   */
+  reconcileScopes(scopes: Scope[]): Promise<void> {
+    for (const scope of scopes) this.extraScopes.add(scope)
+    return this.reconcile()
+  }
+
   private async cycle(): Promise<void> {
     do {
       this.rerun = false
@@ -224,6 +238,11 @@ export class SyncEngine<Scope, Change> {
     }
 
     add(this.activeScope)
+    // Copied out first: a one-shot request is spent by the pass that runs it,
+    // even if that pass fails — the caller asks again rather than the engine
+    // retrying forever.
+    for (const scope of [...this.extraScopes]) add(scope)
+    this.extraScopes.clear()
     if (this.driver.pendingScopes)
       for (const scope of await this.driver.pendingScopes(this.dirty))
         add(scope)

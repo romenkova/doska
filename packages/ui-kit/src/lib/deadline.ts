@@ -8,6 +8,21 @@ export function todayIso(): string {
   return `${d.getFullYear()}-${month}-${day}`
 }
 
+/** The `YYYY-MM-DD` `days` away from `iso`. Parsed as UTC and shifted in UTC, so
+ * a DST boundary can't land the result on the wrong calendar day. */
+export function addDays(iso: string, days: number): string {
+  const d = new Date(`${iso}T00:00:00Z`)
+  d.setUTCDate(d.getUTCDate() + days)
+  return d.toISOString().slice(0, 10)
+}
+
+/** The Monday of the week `iso` falls in. Sunday closes the week, so it maps
+ * back six days rather than forward. */
+export function startOfWeek(iso: string): string {
+  const day = new Date(`${iso}T00:00:00Z`).getUTCDay()
+  return addDays(iso, day === 0 ? -6 : 1 - day)
+}
+
 /** Whole days from today to the deadline (negative once it's in the past). */
 function daysUntil(iso: string): number {
   const today = new Date(todayIso()).getTime()

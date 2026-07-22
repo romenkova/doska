@@ -1,4 +1,4 @@
-import { CARDS_BY_COLUMN, idb } from "./idb"
+import { CARDS_BY_COLUMN, CARDS_BY_DEADLINE, idb } from "./idb"
 import {
   cards as seedCards,
   seedColumns,
@@ -45,6 +45,14 @@ export const db = {
         ? { index: CARDS_BY_COLUMN, range: IDBKeyRange.only(columnId) }
         : undefined
     )
+  },
+  /** Cards deadlined within `[from, to]` (inclusive `YYYY-MM-DD` bounds), in
+   * date order. Spans every board — the index is global. */
+  getCardsByDeadline(from: string, to: string): Promise<Card[]> {
+    return idb.getAll<Card>(CARDS, {
+      index: CARDS_BY_DEADLINE,
+      range: IDBKeyRange.bound(from, to),
+    })
   },
   setCard(card: Card): Promise<void> {
     return idb.set(CARDS, card.id, card)

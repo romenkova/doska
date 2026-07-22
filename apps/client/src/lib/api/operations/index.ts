@@ -1,5 +1,9 @@
 export { getDashboards } from "./get-dashboards"
 export { getBoard } from "./get-board"
+export { getDigest, weekBounds } from "./get-digest"
+export { getCardDeck } from "./get-card-deck"
+export type { CardDeck } from "./get-card-deck"
+export type { DigestCard, DigestFilter } from "./get-digest"
 export { createDashboard } from "./create-dashboard"
 export { renameDashboard } from "./rename-dashboard"
 export {

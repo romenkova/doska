@@ -62,7 +62,10 @@ export function useDeleteDashboard() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (id: string) => api.deleteDashboard(id),
-    onSettled: () => qc.invalidateQueries({ queryKey: keys.dashboards }),
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: keys.dashboards })
+      qc.invalidateQueries({ queryKey: keys.digest })
+    },
   })
 }
 
@@ -81,6 +84,7 @@ export function useDeleteCard(deckId: string) {
     onSettled: (_data, _error, id) => {
       qc.invalidateQueries({ queryKey: keys.board(deckId) })
       qc.invalidateQueries({ queryKey: keys.card(id) })
+      qc.invalidateQueries({ queryKey: keys.digest })
     },
   })
 }
@@ -164,7 +168,10 @@ export function useDeleteColumn(deckId: string) {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (id: string) => api.deleteColumn(deckId, id),
-    onSettled: () => qc.invalidateQueries({ queryKey: keys.board(deckId) }),
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: keys.board(deckId) })
+      qc.invalidateQueries({ queryKey: keys.digest })
+    },
   })
 }
 
@@ -205,7 +212,10 @@ export function useUpdateCard(id: string) {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (patch: CardPatch) => api.updateCard(id, patch),
-    onSettled: () => qc.invalidateQueries({ queryKey: keys.card(id) }),
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: keys.card(id) })
+      qc.invalidateQueries({ queryKey: keys.digest })
+    },
   })
 }
 
@@ -219,8 +229,10 @@ export function useSaveCard() {
   return useMutation({
     mutationFn: ({ id, patch }: { id: string; patch: CardPatch }) =>
       api.updateCard(id, patch),
-    onSettled: (_data, _err, { id }) =>
-      qc.invalidateQueries({ queryKey: keys.card(id) }),
+    onSettled: (_data, _err, { id }) => {
+      qc.invalidateQueries({ queryKey: keys.card(id) })
+      qc.invalidateQueries({ queryKey: keys.digest })
+    },
   })
 }
 
@@ -270,6 +282,10 @@ export function useMoveCard(deckId: string) {
     onError: (_err, _changed, ctx) => {
       if (ctx?.previous) qc.setQueryData(keys.board(deckId), ctx.previous)
     },
-    onSettled: () => qc.invalidateQueries({ queryKey: keys.board(deckId) }),
+    // A move can land the card in another column, changing its digest tag.
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: keys.board(deckId) })
+      qc.invalidateQueries({ queryKey: keys.digest })
+    },
   })
 }
