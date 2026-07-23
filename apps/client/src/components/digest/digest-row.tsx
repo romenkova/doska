@@ -42,7 +42,7 @@ export function DigestRow({ entry, isActive, onOpen }: IProps) {
         <span className="flex min-w-0 flex-1 flex-col">
           <span
             className={cn(
-              "truncate text-sm font-medium",
+              "truncate text-base font-medium",
               isDone && "line-through"
             )}
           >
@@ -54,7 +54,7 @@ export function DigestRow({ entry, isActive, onOpen }: IProps) {
               e.stopPropagation()
               selectDashboard(boardId)
             }}
-            className="self-start truncate text-xs text-muted-foreground hover:text-foreground hover:underline"
+            className="self-start truncate text-sm text-muted-foreground hover:text-foreground hover:underline"
           >
             {boardTitle || "Untitled board"}
           </button>

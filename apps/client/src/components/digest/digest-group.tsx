@@ -22,10 +22,10 @@ export function DigestGroup({
         </span>
         {date && (
           <>
-            <span className="text-xs text-muted-foreground">
+            <span className="text-sm text-muted-foreground">
               {weekday(date)}
             </span>
-            <span className="text-xs text-muted-foreground/70">
+            <span className="text-sm text-muted-foreground/70">
               {deadlineLabel(date)}
             </span>
           </>

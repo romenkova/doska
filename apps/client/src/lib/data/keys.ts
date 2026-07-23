@@ -10,5 +10,6 @@ export const keys = {
   digest: ["digest"] as const,
   digestFilter: (filter: DigestFilter) => ["digest", filter] as const,
   cardDeck: (id: string) => ["card-deck", id] as const,
+  cardCol: (id: string) => ["card-col", id] as const,
   session: ["session"] as const,
 }

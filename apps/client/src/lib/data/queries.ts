@@ -48,6 +48,16 @@ export function useCardDeck(id: string | null) {
   })
 }
 
+/** The column an arbitrary card lives in — see {@link api.getCardCol}. */
+export function useCardCol(id: string | null) {
+  return useQuery({
+    queryKey: keys.cardCol(id ?? ""),
+    queryFn: () => api.getCardCol(id as string),
+    enabled: id != null,
+    networkMode: "always",
+  })
+}
+
 export function useCard(id: string | null) {
   return useQuery({
     queryKey: keys.card(id ?? ""),

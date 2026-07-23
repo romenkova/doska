@@ -1,6 +1,6 @@
 .markdown {
   line-height: 1.6;
-  font-size: 14px;
+  font-size: 1rem;
   color: var(--card-foreground);
   word-break: break-word;
   position: relative;

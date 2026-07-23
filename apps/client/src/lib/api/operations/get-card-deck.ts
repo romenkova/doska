@@ -1,4 +1,5 @@
 import { db } from "../db/db"
+import { getCardCol } from "./get-card-col"
 
 /** The board a card belongs to. */
 export interface CardDeck {
@@ -12,10 +13,7 @@ export interface CardDeck {
  * to resolve its own deck rather than inherit the route's.
  */
 export async function getCardDeck(cardId: string): Promise<CardDeck | null> {
-  const card = await db.getCard(cardId)
-  if (!card) return null
-  const columns = await db.getColumns()
-  const column = columns.find((c) => c.id === card.columnId)
+  const column = await getCardCol(cardId)
   if (!column) return null
   const dashboards = await db.getDashboards()
   const board = dashboards.find((d) => d.id === column.dashboardId)

@@ -19,7 +19,8 @@
         "minHeight": 480,
         "titleBarStyle": "Overlay",
         "hiddenTitle": true,
-        "dragDropEnabled": false
+        "dragDropEnabled": false,
+        "zoomHotkeysEnabled": true
       }
     ],
     "security": {

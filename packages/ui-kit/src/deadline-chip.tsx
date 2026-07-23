@@ -13,18 +13,19 @@ const CHIP_BY_STATUS: Record<DeadlineStatus, string> = {
   upcoming: "text-muted-foreground hover:text-foreground",
 }
 
+interface IProps {
+  value: string | null
+  className?: string
+  done: boolean
+}
+
 /**
  * The deadline badge: a rounded chip, shaded by how close the deadline is.
  * Soon reads as relative time ("in 3 days"); anything further out shows the date.
  */
-export function DeadlineChip({
-  value,
-  className,
-}: {
-  value: string | null
-  className?: string
-}) {
-  const status = value ? deadlineStatus(value) : "upcoming"
+export function DeadlineChip({ value, className, done }: IProps) {
+  // A done card is neutral whatever its deadline: no red, plain date.
+  const status = done || !value ? "upcoming" : deadlineStatus(value)
   const label = value
     ? status === "soon" || status === "overdue"
       ? deadlineRelative(value)
