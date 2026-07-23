@@ -1,5 +1,6 @@
 import { Button } from "@doska/ui-kit"
 import { useEffect, useRef, useState } from "react"
+import { createPortal } from "react-dom"
 import { MenuList } from "../menu"
 import type { SlashCommand } from "./commands"
 
@@ -53,7 +54,7 @@ export function SlashMenuFab({ commands, onSelect }: IProps) {
     return () => document.removeEventListener("pointerdown", onDown)
   }, [open])
 
-  return (
+  return createPortal(
     <div
       ref={rootRef}
       className="fixed right-4 z-50"
@@ -79,6 +80,7 @@ export function SlashMenuFab({ commands, onSelect }: IProps) {
       >
         /
       </Button>
-    </div>
+    </div>,
+    document.body
   )
 }

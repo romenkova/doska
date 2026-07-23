@@ -2,10 +2,10 @@ import { Button, SidebarTrigger, cn } from "@doska/ui-kit"
 import { Check } from "lucide-react"
 import type { DigestFilter } from "@/lib/api/operations"
 
-const FILTERS: { id: DigestFilter; label: string }[] = [
-  { id: "today", label: "Today" },
-  { id: "week", label: "Upcoming" },
-]
+// const FILTERS: { id: DigestFilter; label: string }[] = [
+//   // { id: "today", label: "Today" },
+//   { id: "week", label: "Upcoming" },
+// ]
 
 interface IProps {
   filter: DigestFilter
@@ -15,8 +15,8 @@ interface IProps {
 }
 
 export function DigestHeader({
-  filter,
-  onChangeFilter,
+  // filter,
+  // onChangeFilter,
   hideDone,
   onToggleHideDone,
 }: IProps) {
@@ -32,10 +32,9 @@ export function DigestHeader({
           className={cn(!hideDone && "text-muted-foreground")}
           onClick={onToggleHideDone}
         >
-          <Check />
           Hide done
         </Button>
-        {FILTERS.map(({ id, label }) => (
+        {/*{FILTERS.map(({ id, label }) => (
           <Button
             key={id}
             size="sm"
@@ -46,7 +45,7 @@ export function DigestHeader({
           >
             {label}
           </Button>
-        ))}
+        ))}*/}
       </div>
     </header>
   )
