@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Button, cn, InvisibleInput } from "@doska/ui-kit"
-import { CircleCheckBig, Eye, EyeOff, Trash2 } from "lucide-react"
+import { CircleCheck, Eye, EyeOff, Trash2 } from "lucide-react"
 import { ConfirmDialog } from "../confirm-dialog"
 import { ColumnColorMenu } from "./column-color-menu"
 
@@ -47,16 +47,18 @@ export function ColumnHead({
           title="Click to rename"
         />
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center">
         <Button
           variant="ghost"
           size="icon-lg"
           aria-pressed={done}
-          aria-label={done ? `Unmark ${title} as done` : `Mark ${title} as done`}
+          aria-label={
+            done ? `Unmark ${title} as done` : `Mark ${title} as done`
+          }
           onClick={() => onChangeDone(!done)}
           className={cn(done && "text-emerald-600 dark:text-emerald-500")}
         >
-          <CircleCheckBig />
+          <CircleCheck />
         </Button>
         <Button
           variant="ghost"

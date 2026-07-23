@@ -1,6 +1,4 @@
-import { useLocation } from "wouter"
-import { type Dashboard } from "@/lib/types"
-import { routes } from "@/lib/routes"
+import { useLocation, useParams, useRouter } from "wouter"
 import {
   Button,
   Sidebar,
@@ -11,6 +9,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@doska/ui-kit"
+import { useDashboards } from "@/lib/data/queries"
+import { useDashboardNav } from "@/lib/hooks"
+import { routes } from "@/lib/routes"
 import { AppSidebarHeader } from "./app-sidebar-header"
 import { DashboardsList } from "./dashboards-list"
 import { ThemeToggle } from "./theme-toggle"
@@ -18,28 +19,21 @@ import { SidebarAccount } from "./sidebar-account"
 import { GitHubButton } from "./github-button"
 import { SettingsButton } from "@/components/settings/settings-button"
 
-type AppSidebarProps = {
-  dashboards: Dashboard[]
-  activeDashboardId: string
-  isDigestActive: boolean
-  onSelectDashboard: (dashboard: Dashboard) => void
-  onCreateDashboard: () => void
-}
-
-export function AppSidebar({
-  dashboards,
-  activeDashboardId,
-  isDigestActive,
-  onSelectDashboard,
-  onCreateDashboard,
-}: AppSidebarProps) {
+export function AppSidebar() {
   const [, navigate] = useLocation()
+  const { data: dashboards = [] } = useDashboards()
+  const { selectDashboard, createAndOpenDashboard } = useDashboardNav()
+
+  const { base } = useRouter()
+  const activeDashboardId = useParams().id ?? ""
+  const isDigestActive = base === routes.digest()
+
   return (
     <Sidebar>
       <AppSidebarHeader />
       <SidebarContent>
         <SidebarGroup>
-          <Button variant="secondary" onClick={onCreateDashboard}>
+          <Button variant="secondary" onClick={createAndOpenDashboard}>
             Add a dashboard
           </Button>
         </SidebarGroup>
@@ -59,7 +53,7 @@ export function AppSidebar({
         <DashboardsList
           dashboards={dashboards}
           activeDashboardId={activeDashboardId}
-          onSelectDashboard={onSelectDashboard}
+          onSelectDashboard={(d) => selectDashboard(d.id)}
         />
       </SidebarContent>
       <SidebarFooter>

@@ -8,9 +8,7 @@ import { useDeck } from "../deck/deck-context"
 import { ColumnTag } from "../column/column-tag"
 
 /**
- * Moves the open card between the columns of its board — the panel's stand-in
- * for dragging it, and the only way to restage a card opened from the digest,
- * where the board it belongs to isn't on screen at all.
+ * Moves the open card between the columns of its board
  */
 export function CardColumnPicker({ cardId }: { cardId: string }) {
   const { id: deckId } = useDeck()
@@ -33,7 +31,11 @@ export function CardColumnPicker({ cardId }: { cardId: string }) {
       .sort(byPosition)
       .at(-1)
     moveCard([
-      { ...card, columnId, position: generateKeyBetween(last?.position ?? null, null) },
+      {
+        ...card,
+        columnId,
+        position: generateKeyBetween(last?.position ?? null, null),
+      },
     ])
   }
 

@@ -10,14 +10,7 @@ export function HomePage() {
     useActiveDashboard()
 
   return (
-    <AppShell
-      deck={NO_DECK}
-      dashboards={dashboards}
-      activeDashboardId=""
-      isDigestActive={false}
-      onSelectDashboard={(d) => selectDashboard(d.id)}
-      onCreateDashboard={createAndOpenDashboard}
-    >
+    <AppShell deck={NO_DECK}>
       <Home
         hasBoards={dashboards.length > 0}
         lastBoard={lastBoard}

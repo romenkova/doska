@@ -1,6 +1,7 @@
 import { Card as CardBase, cn } from "@doska/ui-kit"
 import { CircleCheckBig } from "lucide-react"
 import type { DigestCard } from "@/lib/api/operations"
+import { useDashboardNav } from "@/lib/hooks"
 import { ColumnTag } from "../column/column-tag"
 
 interface IProps {
@@ -10,13 +11,11 @@ interface IProps {
 }
 
 /**
- * One card in the digest: what it is, where it lives, and when it's due. The
- * trailing columns are fixed-width so they line up down the list — a digest is
- * read by scanning a column, not a row. Read-only except the deadline, which
- * stays editable so a card can be rescheduled without leaving the digest.
+ * One card in the digest
  */
 export function DigestRow({ entry, isActive, onOpen }: IProps) {
-  const { card, boardTitle, columnTitle, columnColor, isDone } = entry
+  const { card, boardId, boardTitle, columnTitle, columnColor, isDone } = entry
+  const { selectDashboard } = useDashboardNav()
 
   return (
     <li>
@@ -41,12 +40,24 @@ export function DigestRow({ entry, isActive, onOpen }: IProps) {
           <CircleCheckBig className="size-4 shrink-0 text-emerald-600 dark:text-emerald-500" />
         )}
         <span className="flex min-w-0 flex-1 flex-col">
-          <span className={cn("truncate text-sm", isDone && "line-through")}>
+          <span
+            className={cn(
+              "truncate text-sm font-medium",
+              isDone && "line-through"
+            )}
+          >
             {card.title || "Untitled card"}
           </span>
-          <span className="truncate text-xs text-muted-foreground">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation()
+              selectDashboard(boardId)
+            }}
+            className="self-start truncate text-xs text-muted-foreground hover:text-foreground hover:underline"
+          >
             {boardTitle || "Untitled board"}
-          </span>
+          </button>
         </span>
         <span className="flex w-28 shrink-0 justify-end">
           {columnTitle && <ColumnTag title={columnTitle} color={columnColor} />}

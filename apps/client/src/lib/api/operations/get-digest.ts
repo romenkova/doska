@@ -3,21 +3,15 @@ import type { Card } from "@/lib/types"
 import { db } from "../db/db"
 import { live } from "./live"
 
-/** Which slice of deadlines the digest shows. */
 export type DigestFilter = "today" | "week"
 
-/** A digest card carries the board and column it came from, since the digest
- * mixes cards from every board and can't infer either from context. */
 export interface DigestCard {
   card: Card
   boardId: string
   boardTitle: string
-  /** The board's card id prefix, for rendering `ROAD-12`. */
   prefix: string
   columnTitle: string
-  /** Palette id tinting the column tag; empty when the column has none. */
   columnColor: string
-  /** The card sits in its board's done column, so its deadline is settled. */
   isDone: boolean
 }
 
@@ -34,9 +28,7 @@ export function upcomingBounds(): [string, string] {
   return [today, addDays(today, RANGE_DAYS)]
 }
 
-/** Inclusive `[from, to]` deadline bounds for a filter, as of today. The
- * upcoming range opens at the earliest deadline there is, so anything still
- * overdue shows ahead of today's cards. */
+/** Inclusive `[from, to]` deadline bounds for a filter, as of today.*/
 function bounds(filter: DigestFilter): [string, string] {
   const today = todayIso()
   if (filter === "today") return [today, today]
@@ -45,9 +37,7 @@ function bounds(filter: DigestFilter): [string, string] {
 
 /**
  * Cards across every board whose deadline falls in the filter's range, in date
- * order. Reads the deadline index, so undated cards never enter and the result
- * needs no sort; the board and column each card belongs to are joined in from
- * the (small) columns and dashboards stores.
+ * order.
  */
 export async function getDigest(filter: DigestFilter): Promise<DigestCard[]> {
   const [from, to] = bounds(filter)

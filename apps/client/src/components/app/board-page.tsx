@@ -4,10 +4,13 @@ import { useActiveDashboard } from "@/lib/hooks"
 import { routes } from "@/lib/routes"
 import { AppShell } from "./app-shell"
 
+interface IProps {
+  deckId: string
+}
+
 /** One board, at `/d/:id`. */
-export function BoardPage({ deckId }: { deckId: string }) {
-  const { dashboards, dashboard, selectDashboard, createAndOpenDashboard } =
-    useActiveDashboard(deckId)
+export function BoardPage({ deckId }: IProps) {
+  const { dashboard } = useActiveDashboard(deckId)
 
   const deck = useMemo(
     () => ({ id: dashboard.id, prefix: dashboard.prefix ?? "" }),
@@ -17,11 +20,6 @@ export function BoardPage({ deckId }: { deckId: string }) {
   return (
     <AppShell
       deck={deck}
-      dashboards={dashboards}
-      activeDashboardId={dashboard.id}
-      isDigestActive={false}
-      onSelectDashboard={(d) => selectDashboard(d.id)}
-      onCreateDashboard={createAndOpenDashboard}
       cardCloseHref={`~${routes.deck.to(dashboard.id)}`}
     >
       <DeckView dashboard={dashboard} />

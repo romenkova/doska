@@ -1,20 +1,16 @@
 import type { CSSProperties } from "react"
 import { cn, columnHue } from "@doska/ui-kit"
 
-/**
- * A column as a pill tinted with its own color — a card's status, shown where
- * the board's layout can't say it: in the digest, and in the card panel. Same
- * tint formula as the wikilink badge, so the two read as one kind of thing.
- */
-export function ColumnTag({
-  title,
-  color,
-  className,
-}: {
+interface IProps {
   title: string
   color: string
   className?: string
-}) {
+}
+
+/**
+ * A column as a pill tinted with its own color
+ */
+export function ColumnTag({ title, color, className }: IProps) {
   const hue = columnHue(color)
   return (
     <span
