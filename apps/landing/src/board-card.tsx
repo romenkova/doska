@@ -42,7 +42,7 @@ export function BoardCard({
         <CardContent>
           <div className="mt-2 flex items-center gap-2 text-sm">
             {tasks && <TaskIndicator done={tasks.done} total={tasks.total} />}
-            {deadline && <DeadlineChip value={deadline} />}
+            {deadline && <DeadlineChip value={deadline} done={false} />}
           </div>
         </CardContent>
       )}
