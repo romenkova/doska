@@ -1,5 +1,6 @@
 import * as React from "react"
 import { Popover as PopoverPrimitive } from "@base-ui/react/popover"
+import { X } from "lucide-react"
 import { cn } from "./lib/cn"
 import { useIsMobile } from "./lib/use-mobile"
 import type { DateInputCalendarProps } from "./date-input-calendar"
@@ -54,6 +55,19 @@ function DateInput({
           className="absolute inset-0 cursor-pointer opacity-0"
           {...inputProps}
         />
+        {value && (
+          <button
+            type="button"
+            aria-label="Clear date"
+            onClick={(e) => {
+              e.stopPropagation()
+              onChange?.(null)
+            }}
+            className="relative z-10 rounded-full p-0.5 text-muted-foreground hover:text-foreground"
+          >
+            <X className="size-3.5" />
+          </button>
+        )}
       </span>
     )
   }
