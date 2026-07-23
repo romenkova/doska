@@ -12,13 +12,18 @@ export interface ColumnColor {
  * in both themes. A column with no color (`""`) renders neutral.
  */
 export const COLUMN_COLORS: ColumnColor[] = [
-  { id: "blue", label: "Blue", hue: 240 },
-  { id: "violet", label: "Violet", hue: 285 },
-  { id: "magenta", label: "Magenta", hue: 320 },
   { id: "rose", label: "Rose", hue: 10 },
+  { id: "orange", label: "Orange", hue: 45 },
   { id: "amber", label: "Amber", hue: 70 },
+  { id: "lime", label: "Lime", hue: 110 },
   { id: "green", label: "Green", hue: 145 },
   { id: "teal", label: "Teal", hue: 195 },
+  { id: "cyan", label: "Cyan", hue: 215 },
+  { id: "blue", label: "Blue", hue: 240 },
+  { id: "indigo", label: "Indigo", hue: 265 },
+  { id: "violet", label: "Violet", hue: 285 },
+  { id: "magenta", label: "Magenta", hue: 320 },
+  { id: "pink", label: "Pink", hue: 350 },
 ]
 
 /** The hue for a stored color id, or null when unset or no longer in the palette. */
