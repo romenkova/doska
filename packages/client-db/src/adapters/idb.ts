@@ -16,28 +16,43 @@ export class IDB implements ClientDB {
   upgrade(_db: IDBDatabase, _tx: IDBTransaction) {}
 
   open(): Promise<IDBDatabase> {
-    if (!this.connection) {
-      this.connection = new Promise((resolve, reject) => {
-        const req = indexedDB.open(this.name, this.version)
-        // `req.transaction` is the versionchange tx — the only handle to stores
-        // that already exist, e.g. for adding an index on an upgrade.
-        req.onupgradeneeded = () => this.upgrade(req.result, req.transaction!)
-        req.onsuccess = () => {
-          const db = req.result
-          db.onversionchange = () => {
-            db.close()
-            this.connection = undefined
-          }
-          resolve(db)
-        }
-        req.onerror = () => reject(req.error)
-        req.onblocked = () =>
-          console.warn(
-            `IndexedDB "${this.name}" upgrade to v${this.version} is blocked by another open connection`
-          )
-      })
-    }
+    if (!this.connection) this.connection = this.connect(this.version)
     return this.connection
+  }
+
+  /** Opens the DB at `version`, or at whatever version already exists when
+   * `version` is undefined. The undefined form is the downgrade fallback: an
+   * older client whose `version` is below the stored one can't open with its
+   * own number (IndexedDB rejects it as a downgrade), but the schema is only
+   * ever added to, so attaching to the newer version is safe. */
+  private connect(version?: number): Promise<IDBDatabase> {
+    return new Promise((resolve, reject) => {
+      const req = indexedDB.open(this.name, version)
+      // `req.transaction` is the versionchange tx — the only handle to stores
+      // that already exist, e.g. for adding an index on an upgrade.
+      req.onupgradeneeded = () => this.upgrade(req.result, req.transaction!)
+      req.onsuccess = () => {
+        const db = req.result
+        db.onversionchange = () => {
+          db.close()
+          this.connection = undefined
+        }
+        resolve(db)
+      }
+      req.onerror = () => {
+        // The stored version is newer than ours — reopen without a version to
+        // attach to it rather than fail the whole app with a blank page.
+        if (req.error?.name === "VersionError" && version !== undefined) {
+          this.connect(undefined).then(resolve, reject)
+        } else {
+          reject(req.error)
+        }
+      }
+      req.onblocked = () =>
+        console.warn(
+          `IndexedDB "${this.name}" upgrade to v${this.version} is blocked by another open connection`
+        )
+    })
   }
 
   async run<T>(
