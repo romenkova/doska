@@ -20,6 +20,7 @@ export function registerColumnTools(server: McpServer, board: Board): void {
         position: positionAt(columns, "bottom"),
         dashboardId: boardId,
         collapsed: false,
+        done: false,
         color: "",
         updatedAt: Date.now(),
         deletedAt: null,

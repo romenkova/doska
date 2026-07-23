@@ -27,7 +27,7 @@ function digestRow(page: Page, title: string) {
 test.describe("digest", () => {
   test.use({ viewport: { width: 500, height: 800 } })
 
-  test("a card due in three days shows under This week", async ({ page }) => {
+  test("a card due in three days shows under Upcoming", async ({ page }) => {
     await createBoard(page)
     await addCard(page, "To Do")
     await deadlineInput(page).fill(isoIn(3))
@@ -36,9 +36,7 @@ test.describe("digest", () => {
     await expect(digestRow(page, "Untitled card")).toBeVisible()
   })
 
-  test("a card due today shows under Today, and not under Overdue", async ({
-    page,
-  }) => {
+  test("a card due today shows under Today", async ({ page }) => {
     await createBoard(page)
     await addCard(page, "To Do")
     await deadlineInput(page).fill(isoIn(0))
@@ -46,20 +44,30 @@ test.describe("digest", () => {
     await page.goto("/digest")
     await filterChip(page, "Today").click()
     await expect(digestRow(page, "Untitled card")).toBeVisible()
-
-    // Not asserted as empty: the seeded demo board carries an overdue card of
-    // its own, which the digest is right to show.
-    await filterChip(page, "Overdue").click()
-    await expect(digestRow(page, "Untitled card")).toHaveCount(0)
   })
 
-  test("a card due next month is in no default range", async ({ page }) => {
+  test("a card past its deadline lands in the overdue group", async ({
+    page,
+  }) => {
     await createBoard(page)
     await addCard(page, "To Do")
-    await deadlineInput(page).fill(isoIn(40))
+    await deadlineInput(page).fill(isoIn(-30))
 
     await page.goto("/digest")
-    await expect(page.getByText("Nothing due this week.")).toBeVisible()
+    const overdue = page.getByRole("heading", { name: "Overdue" })
+    await expect(overdue).toBeVisible()
+    await expect(digestRow(page, "Untitled card")).toBeVisible()
+  })
+
+  test("a card past the upcoming range is not shown", async ({ page }) => {
+    await createBoard(page)
+    await addCard(page, "To Do")
+    await deadlineInput(page).fill(isoIn(90))
+
+    await page.goto("/digest")
+    // Not asserted as empty: the seeded demo board carries an overdue card of
+    // its own, which the range is right to show.
+    await expect(digestRow(page, "Untitled card")).toHaveCount(0)
   })
 
   test("a deadline set before the digest ever opened is still indexed", async ({

@@ -1,4 +1,3 @@
-import { CalendarClock } from "lucide-react"
 import { useLocation } from "wouter"
 import { type Dashboard } from "@/lib/types"
 import { routes } from "@/lib/routes"
@@ -48,11 +47,10 @@ export function AppSidebar({
             <SidebarMenuItem>
               <SidebarMenuButton
                 isActive={isDigestActive}
-                tooltip="Digest"
+                tooltip="Upcoming"
                 onClick={() => navigate(`~${routes.digest()}`)}
               >
-                <CalendarClock />
-                <span>Digest</span>
+                <span>Upcoming</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>

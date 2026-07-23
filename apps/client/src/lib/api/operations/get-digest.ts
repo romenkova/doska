@@ -1,10 +1,10 @@
-import { addDays, startOfWeek, todayIso } from "@doska/ui-kit"
+import { addDays, todayIso } from "@doska/ui-kit"
 import type { Card } from "@/lib/types"
 import { db } from "../db/db"
 import { live } from "./live"
 
 /** Which slice of deadlines the digest shows. */
-export type DigestFilter = "overdue" | "today" | "week"
+export type DigestFilter = "today" | "week"
 
 /** A digest card carries the board and column it came from, since the digest
  * mixes cards from every board and can't infer either from context. */
@@ -17,23 +17,30 @@ export interface DigestCard {
   columnTitle: string
   /** Palette id tinting the column tag; empty when the column has none. */
   columnColor: string
+  /** The card sits in its board's done column, so its deadline is settled. */
+  isDone: boolean
 }
 
 /** Sorts below every real `YYYY-MM-DD`, so it opens an overdue range. */
 const MIN_DATE = ""
 
-/** Inclusive `[from, to]` deadline bounds of the current calendar week. */
-export function weekBounds(): [string, string] {
-  const monday = startOfWeek(todayIso())
-  return [monday, addDays(monday, 6)]
+/** How far ahead the upcoming range looks. */
+const RANGE_DAYS = 60
+
+/** Inclusive `[from, to]` deadline bounds of the upcoming range: today through
+ * `RANGE_DAYS` out. */
+export function upcomingBounds(): [string, string] {
+  const today = todayIso()
+  return [today, addDays(today, RANGE_DAYS)]
 }
 
-/** Inclusive `[from, to]` deadline bounds for a filter, as of today. */
+/** Inclusive `[from, to]` deadline bounds for a filter, as of today. The
+ * upcoming range opens at the earliest deadline there is, so anything still
+ * overdue shows ahead of today's cards. */
 function bounds(filter: DigestFilter): [string, string] {
   const today = todayIso()
-  if (filter === "overdue") return [MIN_DATE, addDays(today, -1)]
   if (filter === "today") return [today, today]
-  return weekBounds()
+  return [MIN_DATE, upcomingBounds()[1]]
 }
 
 /**
@@ -67,6 +74,7 @@ export async function getDigest(filter: DigestFilter): Promise<DigestCard[]> {
         prefix: board.prefix,
         columnTitle: column.title,
         columnColor: column.color,
+        isDone: column.done,
       },
     ]
   })

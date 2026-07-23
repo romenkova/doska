@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Button, cn, InvisibleInput } from "@doska/ui-kit"
-import { Eye, EyeOff, Trash2 } from "lucide-react"
+import { CircleCheckBig, Eye, EyeOff, Trash2 } from "lucide-react"
 import { ConfirmDialog } from "../confirm-dialog"
 import { ColumnColorMenu } from "./column-color-menu"
 
@@ -11,6 +11,8 @@ interface IProps {
   onToggleBody: () => void
   onRename: (title: string) => void
   onChangeColor: (color: string) => void
+  done: boolean
+  onChangeDone: (done: boolean) => void
   onDelete: () => void
 }
 
@@ -18,6 +20,8 @@ export function ColumnHead({
   onToggleBody,
   onRename,
   onChangeColor,
+  done,
+  onChangeDone,
   onDelete,
   showBody,
   title,
@@ -44,6 +48,16 @@ export function ColumnHead({
         />
       </div>
       <div className="flex items-center gap-2">
+        <Button
+          variant="ghost"
+          size="icon-lg"
+          aria-pressed={done}
+          aria-label={done ? `Unmark ${title} as done` : `Mark ${title} as done`}
+          onClick={() => onChangeDone(!done)}
+          className={cn(done && "text-emerald-600 dark:text-emerald-500")}
+        >
+          <CircleCheckBig />
+        </Button>
         <Button
           variant="ghost"
           size="icon-lg"

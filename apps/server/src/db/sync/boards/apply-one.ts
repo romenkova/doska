@@ -28,6 +28,7 @@ export async function applyOne(
         position: record.position,
         collapsed: record.collapsed,
         color: record.color,
+        done: record.done,
         updatedAt: record.updatedAt,
         deletedAt,
         seq: nextSeq,

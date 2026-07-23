@@ -164,6 +164,39 @@ export function useSetColumnColor(deckId: string) {
   })
 }
 
+/**
+ * Marks the board's done column. Only one column can hold the flag, so the
+ * optimistic patch clears it everywhere else instead of toggling in place.
+ */
+export function useSetColumnDone(deckId: string) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, done }: { id: string; done: boolean }) =>
+      api.setColumnDone(id, done),
+    onMutate: ({ id, done }) => {
+      const previous = qc.getQueryData<Board>(keys.board(deckId))
+      if (previous) {
+        const next: Board = {
+          ...previous,
+          columns: previous.columns.map((c) => ({
+            ...c,
+            done: c.id === id ? done : done ? false : c.done,
+          })),
+        }
+        qc.setQueryData(keys.board(deckId), next)
+      }
+      return { previous }
+    },
+    onError: (_err, _vars, ctx) => {
+      if (ctx?.previous) qc.setQueryData(keys.board(deckId), ctx.previous)
+    },
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: keys.board(deckId) })
+      qc.invalidateQueries({ queryKey: keys.digest })
+    },
+  })
+}
+
 export function useDeleteColumn(deckId: string) {
   const qc = useQueryClient()
   return useMutation({
