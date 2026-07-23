@@ -48,9 +48,8 @@ export function useSlashMenu(
     []
   )
 
-  const { menu, activeIndex, select, setActiveIndex, spliceAt } = useTriggerMenu(
-    ref,
-    {
+  const { menu, activeIndex, select, setActiveIndex, spliceAt } =
+    useTriggerMenu(ref, {
       value,
       onChangeValue,
       enabled,
@@ -58,8 +57,7 @@ export function useSlashMenu(
       triggerLength: 1,
       getItems,
       toInsert,
-    }
-  )
+    })
 
   /**
    * Inserts a command at the current caret, without a typed `/` trigger (used
@@ -70,6 +68,7 @@ export function useSlashMenu(
     (command: SlashCommand) => {
       const textarea = ref.current
       if (!textarea) return
+      textarea.focus()
       const start = textarea.selectionStart
       const atLineStart = start === 0 || textarea.value[start - 1] === "\n"
       const prefix =

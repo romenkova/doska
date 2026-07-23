@@ -55,6 +55,8 @@ export const ColumnSchema = z.object({
    * it. Empty for no color; see `COLUMN_COLORS` in the ui-kit.
    */
   color: z.string().default(""),
+  /** Cards in this column are finished. At most one column per board has it. */
+  done: z.boolean().default(false),
   updatedAt: z.number(),
   deletedAt: z.number().nullable(),
 })

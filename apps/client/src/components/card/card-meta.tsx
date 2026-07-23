@@ -2,7 +2,7 @@ import { CardId, TaskIndicator, cn } from "@doska/ui-kit"
 import { cardDisplayId } from "@doska/contract"
 import { taskProgress } from "@doska/markdown"
 import { fallbackCard } from "@/lib/seed"
-import { useCard } from "@/lib/data/queries"
+import { useCard, useCardCol } from "@/lib/data/queries"
 import { useUpdateCard } from "@/lib/data/mutations"
 import { useDeckPrefix } from "../deck/deck-context"
 import { CardDeadline } from "./deadline/card-deadline"
@@ -18,6 +18,7 @@ interface IProps {
 export function CardMeta({ cardId, body, className }: IProps) {
   const prefix = useDeckPrefix()
   const { data: card = fallbackCard } = useCard(cardId)
+  const { data: column } = useCardCol(cardId)
   const { mutate: updateCard } = useUpdateCard(cardId)
 
   const displayId = cardDisplayId(prefix, card.number)
@@ -28,6 +29,7 @@ export function CardMeta({ cardId, body, className }: IProps) {
       {displayId && <CardId id={displayId} />}
       {total > 0 && <TaskIndicator done={done} total={total} />}
       <CardDeadline
+        done={column?.done ?? false}
         value={card.deadline}
         onChange={(deadline) => updateCard({ deadline })}
       />

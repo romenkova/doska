@@ -2,9 +2,8 @@ import { useEffect, useState } from "react"
 import { generateKeyBetween } from "fractional-indexing"
 import { useLocation } from "wouter"
 import { sync } from "@/lib/api/sync"
-import { useCreateDashboard } from "@/lib/data/mutations"
 import { useDashboards } from "@/lib/data/queries"
-import { routes } from "@/lib/routes"
+import { useDashboardNav } from "@/lib/hooks/use-dashboard-nav"
 import type { Dashboard } from "@/lib/types"
 
 /** localStorage key holding the id of the board that was open most recently. */
@@ -19,7 +18,7 @@ export function useActiveDashboard(deckId?: string) {
   const [, navigate] = useLocation()
   const { data: dashboards = [], isPending: dashboardsLoading } =
     useDashboards()
-  const { mutate: createDashboard } = useCreateDashboard()
+  const { selectDashboard, createAndOpenDashboard } = useDashboardNav()
 
   const active = dashboards.find((d) => d.id === deckId)
   const dashboard: Dashboard = active ?? {
@@ -59,16 +58,6 @@ export function useActiveDashboard(deckId?: string) {
   useEffect(() => {
     sync.setActiveBoard(deckId ?? null)
   }, [deckId])
-
-  function selectDashboard(id: string) {
-    navigate(`~${routes.deck.to(id)}`)
-  }
-
-  function createAndOpenDashboard() {
-    createDashboard("Untitled board", {
-      onSuccess: (created) => selectDashboard(created.id),
-    })
-  }
 
   return {
     dashboards,

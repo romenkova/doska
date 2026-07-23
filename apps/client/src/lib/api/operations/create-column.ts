@@ -24,6 +24,7 @@ export async function createColumn(
     dashboardId,
     collapsed: false,
     color: "",
+    done: false,
     updatedAt: stamp(),
     deletedAt: null,
   })

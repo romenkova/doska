@@ -14,6 +14,9 @@ interface IProps {
   onAddCard: () => void
   onRename: (title: string) => void
   onChangeColor: (color: string) => void
+  /** Cards in this column count as finished. */
+  done: boolean
+  onChangeDone: (done: boolean) => void
   onDelete: () => void
 }
 

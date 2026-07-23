@@ -4,6 +4,7 @@ import { CardContentLayout } from "./card-content-layout"
 import { CardPanelHeader } from "./card-panel-header"
 import { CardBodyEditor } from "./card-body-editor"
 import { CardMeta } from "../card/card-meta"
+import { CardColumnPicker } from "./card-column-picker"
 import { CardAttachments } from "../card/attachments/card-attachments"
 import { AttachmentDropZone } from "../card/attachments/attachment-drop-zone"
 import { AttachmentUploadProvider } from "../card/attachments/context/attachment-upload-provider"
@@ -55,8 +56,9 @@ export function CardEditor({
         />
         <AttachmentDropZone className="flex min-h-0 flex-1 flex-col">
           <CardContentLayout>
-            <CardContent className="py-2">
+            <CardContent className="flex flex-wrap items-center gap-x-4 gap-y-2 py-2">
               <CardMeta cardId={cardId} body={body} />
+              <CardColumnPicker cardId={cardId} />
             </CardContent>
             <CardAttachments
               className="py-2"

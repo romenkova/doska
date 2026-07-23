@@ -29,7 +29,8 @@ test.describe("card deadline", () => {
 
     await deadlineInput(page).fill("2020-01-01")
 
-    const overdueChip = card(page, "Untitled card").getByText("01.01.2020")
+    // An overdue deadline reads as the relative label ("overdue"), not the date.
+    const overdueChip = card(page, "Untitled card").getByText("overdue")
     await expect(overdueChip).toBeVisible()
     await expect(overdueChip).toHaveClass(/text-destructive/)
 

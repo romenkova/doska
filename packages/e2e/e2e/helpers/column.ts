@@ -75,6 +75,29 @@ export async function setColumnColor(
 }
 
 /**
+ * A column's "done" toggle in its header. Its accessible name flips with the
+ * state — "Mark {title} as done" when off, "Unmark {title} as done" when on —
+ * and it carries `aria-pressed`, so a test reads the flag off the same control
+ * a user clicks.
+ */
+export function columnDoneToggle(page: Page, name: string) {
+  return column(page, name).getByRole("button", {
+    name: new RegExp(`(Mark|Unmark) ${name} as done`),
+  })
+}
+
+/** Toggles the named column's "done" flag and waits for the pressed state to settle. */
+export async function setColumnDone(
+  page: Page,
+  name: string,
+  done: boolean
+): Promise<void> {
+  const toggle = columnDoneToggle(page, name)
+  await toggle.click()
+  await expect(toggle).toHaveAttribute("aria-pressed", String(done))
+}
+
+/**
  * Deletes the column titled `title` via its header trash action, then confirms
  * the "are you sure?" dialog, and waits for the column to disappear.
  */

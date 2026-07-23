@@ -1,7 +1,9 @@
 import { Route, Switch } from "wouter"
+import { BoardPage } from "@/components/app/board-page"
+import { DigestPage } from "@/components/app/digest-page"
+import { HomePage } from "@/components/app/home-page"
 import { SignInPage } from "@/components/login/sign-in-page"
 import { routes } from "./lib/routes"
-import App from "./App"
 
 export function Router() {
   return (
@@ -10,11 +12,14 @@ export function Router() {
       <Route path={routes.signIn()}>
         <SignInPage />
       </Route>
+      <Route path={routes.digest()} nest>
+        <DigestPage />
+      </Route>
       <Route path={routes.deck.pattern} nest>
-        {(params) => <App deckId={params.id} />}
+        {(params) => <BoardPage deckId={params.id} />}
       </Route>
       <Route>
-        <App />
+        <HomePage />
       </Route>
     </Switch>
   )

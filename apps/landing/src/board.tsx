@@ -64,7 +64,7 @@ export function Board() {
               </p>
               {/* Stands in for an attached screenshot — same box `.markdown img`
                 gives a real one, so the layout matches. */}
-              <div className="flex aspect-video items-center justify-center rounded-lg bg-gradient-to-br from-primary/15 to-accent">
+              <div className="flex aspect-video items-center justify-center rounded-lg bg-linear-to-br from-primary/15 to-accent">
                 <img
                   src="/favicon.svg"
                   alt=""

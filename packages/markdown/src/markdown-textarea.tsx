@@ -7,6 +7,7 @@ import { WikilinkMenu, type WikilinkOption } from "./wikilinks"
 import { toggleTaskByIndex } from "./task-progress"
 import { useCutLine } from "./hooks/use-cut-line"
 import { usePasteFiles } from "./hooks/use-paste-files"
+import { useCaretScroll } from "./hooks/use-caret-scroll"
 import type { Marker } from "./markers"
 import { SlashMenu } from "./slash-menu/slash-menu"
 
@@ -52,6 +53,8 @@ export function MarkdownTextarea({
     onChangeValue: onChangeValue ?? NOOP,
     enabled: !isPreview && Boolean(onChangeValue),
   })
+
+  useCaretScroll(textareaRef, !isPreview)
 
   const handlePaste = usePasteFiles(textareaRef, {
     value,

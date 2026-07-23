@@ -48,9 +48,12 @@ test.describe("card preview & edit", () => {
     await card(page, "Edit me").click()
     await expect(page.getByPlaceholder("Notes")).toHaveCount(0)
 
-    await cardPanel(page).dblclick()
-    await expect(page.getByPlaceholder("Title")).toBeFocused()
-    await expect(page.getByPlaceholder("Notes")).toHaveValue("Some content")
+    // Double-clicking the rendered note drops into the editor with the caret
+    // where you clicked — the Notes field, back and holding the same content.
+    await cardPanel(page).getByText("Some content").dblclick()
+    const notes = page.getByPlaceholder("Notes")
+    await expect(notes).toBeFocused()
+    await expect(notes).toHaveValue("Some content")
   })
 
   test("preview can be toggled to edit and back", async ({ page }) => {

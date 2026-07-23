@@ -13,7 +13,7 @@ export function Column({
   children: ReactNode
 }) {
   return (
-    <section className="flex w-[85vw] max-w-80 shrink-0 flex-col sm:w-80">
+    <section className="flex w-[90vw] max-w-90 shrink-0 flex-col">
       <div className="mb-3 flex items-center gap-2 px-1 text-sm text-muted-foreground uppercase">
         <span
           className="size-2.5 rounded-full"

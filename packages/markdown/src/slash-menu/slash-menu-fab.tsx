@@ -1,5 +1,6 @@
 import { Button } from "@doska/ui-kit"
 import { useEffect, useRef, useState } from "react"
+import { createPortal } from "react-dom"
 import { MenuList } from "../menu"
 import type { SlashCommand } from "./commands"
 
@@ -8,12 +9,18 @@ interface IProps {
   onSelect: (command: SlashCommand) => void
 }
 
+// Space the FAB and its opened menu occupy below the menu's top edge: the
+// button, the gap above it, and a little breathing room from the viewport top.
+const MENU_CHROME = 96
+
 /**
- * Tracks the on-screen keyboard height (via the visual viewport) so a fixed
- * element can stay above the keyboard instead of hiding behind it.
+ * Tracks the on-screen keyboard (via the visual viewport) so a fixed element
+ * can stay above it: `inset` is the keyboard height, `menuMaxHeight` is how
+ * tall the opened menu may be without running under the keyboard.
  */
-function useKeyboardInset() {
+function useKeyboardViewport() {
   const [inset, setInset] = useState(0)
+  const [visibleHeight, setVisibleHeight] = useState(0)
 
   useEffect(() => {
     const vv = window.visualViewport
@@ -21,6 +28,7 @@ function useKeyboardInset() {
     const onChange = () => {
       const bottom = window.innerHeight - (vv.height + vv.offsetTop)
       setInset(Math.max(0, bottom))
+      setVisibleHeight(vv.height)
     }
     onChange()
     vv.addEventListener("resize", onChange)
@@ -31,7 +39,9 @@ function useKeyboardInset() {
     }
   }, [])
 
-  return inset
+  // Cap at the design default; only shrink when the keyboard leaves less room.
+  const menuMaxHeight = Math.max(160, Math.min(256, visibleHeight - MENU_CHROME))
+  return { inset, menuMaxHeight }
 }
 
 /**
@@ -40,7 +50,7 @@ function useKeyboardInset() {
  */
 export function SlashMenuFab({ commands, onSelect }: IProps) {
   const [open, setOpen] = useState(false)
-  const inset = useKeyboardInset()
+  const { inset, menuMaxHeight } = useKeyboardViewport()
   const rootRef = useRef<HTMLDivElement>(null)
 
   // Close when tapping anywhere outside the button or its menu.
@@ -53,7 +63,7 @@ export function SlashMenuFab({ commands, onSelect }: IProps) {
     return () => document.removeEventListener("pointerdown", onDown)
   }, [open])
 
-  return (
+  return createPortal(
     <div
       ref={rootRef}
       className="fixed right-4 z-50"
@@ -67,6 +77,7 @@ export function SlashMenuFab({ commands, onSelect }: IProps) {
             setOpen(false)
           }}
           className="absolute right-0 bottom-14"
+          style={{ maxHeight: menuMaxHeight }}
         />
       )}
       <Button
@@ -79,6 +90,7 @@ export function SlashMenuFab({ commands, onSelect }: IProps) {
       >
         /
       </Button>
-    </div>
+    </div>,
+    document.body
   )
 }

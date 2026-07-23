@@ -1,4 +1,5 @@
 export { useActiveDashboard } from "./use-active-dashboard"
+export { useDashboardNav } from "./use-dashboard-nav"
 export { useAuth } from "./use-auth"
 export { useDragEnd } from "./use-drag-end"
 export { useSyncShortcut } from "./use-sync-shortcut"
