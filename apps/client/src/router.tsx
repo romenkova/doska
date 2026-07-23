@@ -12,7 +12,6 @@ export function Router() {
       <Route path={routes.signIn()}>
         <SignInPage />
       </Route>
-      {/* Nested, so the card panel composes onto `routes.card` — as on a deck. */}
       <Route path={routes.digest()} nest>
         <DigestPage />
       </Route>
