@@ -17,20 +17,19 @@ function read(): number {
 
 async function apply(level: number): Promise<void> {
   localStorage.setItem(STORAGE_KEY, String(level))
-  if (isDesktop()) {
-    // Native webview zoom reflows the layout like a browser; CSS `zoom` on the
-    // root instead scales past the fixed app shell and clips.
-    const { getCurrentWebviewWindow } = await import(
-      "@tauri-apps/api/webviewWindow"
-    )
-    await getCurrentWebviewWindow().setZoom(level)
-  } else {
-    document.documentElement.style.zoom = String(level)
-  }
+  const { getCurrentWebviewWindow } = await import(
+    "@tauri-apps/api/webviewWindow"
+  )
+  await getCurrentWebviewWindow().setZoom(level)
 }
 
-/** Cmd/Ctrl +/-/0 zoom for the whole app, persisted across launches. */
+/**
+ * Cmd/Ctrl +/-/0 zoom for the whole app, persisted across launches. Desktop
+ * only — browsers already zoom natively, so we leave those shortcuts alone.
+ */
 export function initZoom(): void {
+  if (!isDesktop()) return
+
   void apply(read())
 
   window.addEventListener("keydown", (e) => {
