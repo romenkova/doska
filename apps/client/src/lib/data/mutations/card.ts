@@ -35,6 +35,7 @@ export function useUpdateCard(id: string) {
     onSettled: () => {
       qc.invalidateQueries({ queryKey: keys.card(id) })
       qc.invalidateQueries({ queryKey: keys.digest })
+      qc.invalidateQueries({ queryKey: keys.boards })
     },
   })
 }
@@ -52,6 +53,7 @@ export function useSaveCard() {
     onSettled: (_data, _err, { id }) => {
       qc.invalidateQueries({ queryKey: keys.card(id) })
       qc.invalidateQueries({ queryKey: keys.digest })
+      qc.invalidateQueries({ queryKey: keys.boards })
     },
   })
 }
@@ -83,10 +85,15 @@ export function useMoveCard(deckId: string) {
     onError: (_err, _changed, ctx) => {
       if (ctx?.previous) qc.setQueryData(keys.board(deckId), ctx.previous)
     },
-    // A move can land the card in another column, changing its digest tag.
-    onSettled: () => {
+    // A move can land the card in another column, changing its digest tag — and
+    // the open card panel reads its column off the per-card query, so refresh
+    // that too or the panel's column picker keeps showing the old column.
+    onSettled: (_data, _err, changed) => {
       qc.invalidateQueries({ queryKey: keys.board(deckId) })
       qc.invalidateQueries({ queryKey: keys.digest })
+      for (const card of changed) {
+        qc.invalidateQueries({ queryKey: keys.card(card.id) })
+      }
     },
   })
 }
