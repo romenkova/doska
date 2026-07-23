@@ -19,37 +19,45 @@ export function UpdateBanner() {
   const desktop = state.kind === "desktop"
 
   return (
-    <div className="fixed bottom-4 left-1/2 z-50 flex -translate-x-1/2 items-center gap-3 rounded-lg border bg-popover px-4 py-2 text-sm text-popover-foreground shadow-xl">
-      <span>
-        {desktop
-          ? `Update to v${state.version} available`
-          : "A new version is available"}
-      </span>
-      <Button
-        size="sm"
-        disabled={installing}
-        onClick={() => {
-          setInstalling(true)
-          void state.install().catch(() => setInstalling(false))
-        }}
+    <div className="fixed bottom-4 z-50 flex w-full justify-center px-2">
+      <div
+        role="status"
+        aria-live="polite"
+        className="flex max-w-md items-center gap-3 rounded-lg border bg-popover px-4 py-2 text-sm text-popover-foreground shadow-2xl"
       >
-        <Download className="size-4" />
-        {desktop
-          ? installing
-            ? "Installing…"
-            : "Install"
-          : installing
-            ? "Reloading…"
-            : "Reload"}
-      </Button>
-      <Button
-        variant="ghost"
-        size="icon-sm"
-        aria-label="Dismiss"
-        onClick={() => setDismissed(true)}
-      >
-        <X />
-      </Button>
+        <span className="min-w-0">
+          {desktop
+            ? `Update to v${state.version} available`
+            : "An update is available"}
+        </span>
+        <Button
+          size="sm"
+          className="shrink-0"
+          disabled={installing}
+          onClick={() => {
+            setInstalling(true)
+            void state.install().catch(() => setInstalling(false))
+          }}
+        >
+          <Download className="size-4" />
+          {desktop
+            ? installing
+              ? "Installing…"
+              : "Install"
+            : installing
+              ? "Loading…"
+              : "Reload"}
+        </Button>
+        <Button
+          size="icon"
+          variant="ghost"
+          className="size-7 shrink-0"
+          aria-label="Dismiss"
+          onClick={() => setDismissed(true)}
+        >
+          <X className="size-4" />
+        </Button>
+      </div>
     </div>
   )
 }

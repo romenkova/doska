@@ -19,7 +19,11 @@ export function registerServiceWorker(
   void import("virtual:pwa-register").then(({ registerSW }) => {
     const updateSW = registerSW({
       immediate: true,
-      onNeedRefresh: () => onUpdate(() => updateSW(true)),
+      onNeedRefresh: () =>
+        onUpdate(async () => {
+          void updateSW(true)
+          setTimeout(() => location.reload(), 1500)
+        }),
     })
   })
 }
