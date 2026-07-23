@@ -153,9 +153,7 @@ class DeckSync {
   }
 
   /**
-   * Pulls every listed board once, leaving the active board as it is. The
-   * digest reads across all boards, and a board never opened on this device has
-   * nothing local to read.
+   * Pulls every listed board once, leaving the active board as it is.
    */
   reconcileBoards(boardIds: string[]): Promise<void> {
     return this.board.reconcileScopes(boardIds)
