@@ -16,6 +16,7 @@ export function Typewriter({ phrases }: { phrases: string[] }) {
   // prerendered HTML stops crawlers reading the heading as every phrase at once.
   const [mounted, setMounted] = useState(false)
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- deliberate: gate prerendered HTML on mount
   useEffect(() => setMounted(true), [])
 
   useEffect(() => {
@@ -55,7 +56,7 @@ export function Typewriter({ phrases }: { phrases: string[] }) {
         ))}
       <span className="col-start-1 row-start-1">
         {phrases[index].slice(0, length)}
-        <span className="ml-0.5 inline-block h-[0.8em] w-[3px] animate-terminal-blink bg-primary align-baseline motion-reduce:hidden" />
+        <span className="ml-0.5 inline-block h-[0.8em] w-0.75 animate-terminal-blink bg-primary align-baseline motion-reduce:hidden" />
       </span>
     </span>
   )
