@@ -1,5 +1,4 @@
 import { Button, SidebarTrigger, cn } from "@doska/ui-kit"
-import { Check } from "lucide-react"
 import type { DigestFilter } from "@/lib/api/operations"
 
 // const FILTERS: { id: DigestFilter; label: string }[] = [

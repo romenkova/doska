@@ -14,12 +14,6 @@ function isoIn(days: number): string {
   return `${d.getFullYear()}-${month}-${String(d.getDate()).padStart(2, "0")}`
 }
 
-/** A filter chip, scoped to the header — a row due today reads "… today", which
- * a bare name match confuses with the "Today" chip. */
-function filterChip(page: Page, name: string) {
-  return page.locator("header").getByRole("button", { name, exact: true })
-}
-
 function digestRow(page: Page, title: string) {
   return page.getByRole("button", { name: new RegExp(title) })
 }
@@ -36,13 +30,12 @@ test.describe("digest", () => {
     await expect(digestRow(page, "Untitled card")).toBeVisible()
   })
 
-  test("a card due today shows under Today", async ({ page }) => {
+  test("a card due today shows in the digest", async ({ page }) => {
     await createBoard(page)
     await addCard(page, "To Do")
     await deadlineInput(page).fill(isoIn(0))
 
     await page.goto("/digest")
-    await filterChip(page, "Today").click()
     await expect(digestRow(page, "Untitled card")).toBeVisible()
   })
 

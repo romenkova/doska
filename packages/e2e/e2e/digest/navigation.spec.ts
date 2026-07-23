@@ -21,7 +21,7 @@ test.describe("digest navigation", () => {
 
     await page.getByRole("button", { name: "Upcoming" }).click()
     await page.waitForURL(/\/digest/)
-    await expect(page.getByRole("button", { name: "Today" })).toBeVisible()
+    await expect(page.getByRole("button", { name: "Hide done" })).toBeVisible()
   })
 
   test("a digest row's board link opens that card's board", async ({ page }) => {

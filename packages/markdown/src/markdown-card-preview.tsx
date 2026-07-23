@@ -1,11 +1,13 @@
 import { Markdown } from "./markdown"
 import { toggleTaskByIndex } from "./task-progress"
-import { cut, useMarkers } from "./markers"
-
-const BOARD_MARKERS = [cut]
 
 interface IProps {
+  /** The card body already reduced to the visible portion (before the cut). */
+  preview: string
+  /** The full, unreduced body — task toggles operate on this. */
   body: string
+  /** Whether content was hidden by the cut marker, showing an "open to see more" hint. */
+  hasMore: boolean
   /** Called with the new body when a task-list checkbox is toggled. */
   onChangeBody?: (body: string) => void
 }
@@ -13,10 +15,12 @@ interface IProps {
 /**
  * Renders a board card's body
  */
-export function MarkdownCardPreview({ body, onChangeBody }: IProps) {
-  const { body: preview, applied } = useMarkers(body, BOARD_MARKERS, "card")
-  const hasMore = applied.includes(cut.name)
-
+export function MarkdownCardPreview({
+  preview,
+  body,
+  hasMore,
+  onChangeBody,
+}: IProps) {
   if (!preview) return null
 
   return (

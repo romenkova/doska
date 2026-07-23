@@ -13,10 +13,12 @@ import { CardMeta } from "./card-meta"
 import { CardContextMenu, CardMenu } from "./menu/card-menu"
 import { useCard } from "@/lib/data/queries"
 import { useUpdateCard } from "@/lib/data/mutations"
-import { MarkdownCardPreview } from "@doska/markdown"
+import { MarkdownCardPreview, cut, useMarkers } from "@doska/markdown"
 import type { DetailedHTMLProps, HTMLAttributes } from "react"
 import { CardAttachments } from "./attachments/card-attachments"
 import { CardMarkdown } from "./card-markdown"
+
+const BOARD_MARKERS = [cut]
 
 interface IProps extends DetailedHTMLProps<
   HTMLAttributes<HTMLDivElement>,
@@ -33,6 +35,9 @@ export function Card({ id, showBody, isDragging, ...props }: IProps) {
   const { data: card = fallbackCard } = useCard(id)
   const { mutate: updateCard } = useUpdateCard(id)
   const { title, body } = card
+  const { body: preview, applied } = useMarkers(body, BOARD_MARKERS, "card")
+  const hasBody = preview.trim().length > 0
+  const hasMore = applied.includes(cut.name)
   const attachments = card.attachments ?? []
 
   return (
@@ -54,11 +59,11 @@ export function Card({ id, showBody, isDragging, ...props }: IProps) {
               />
             </CardAction>
           </CardHeader>
-          <CardContent className={cn(!showBody && "-mb-2")}>
+          <CardContent className={cn(!showBody && hasBody && "-mb-2")}>
             <CardMeta cardId={id} className="mt-2" />
           </CardContent>
 
-          {body.trim() && (
+          {hasBody && (
             <div
               className={cn(
                 "grid transition-[grid-template-rows] duration-200 ease-out",
@@ -69,7 +74,9 @@ export function Card({ id, showBody, isDragging, ...props }: IProps) {
                 <CardContent className="space-y-3 pt-2">
                   <CardMarkdown cardId={id}>
                     <MarkdownCardPreview
+                      preview={preview}
                       body={body}
+                      hasMore={hasMore}
                       onChangeBody={(body) => updateCard({ body })}
                     />
                   </CardMarkdown>

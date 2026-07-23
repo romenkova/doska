@@ -101,7 +101,7 @@ export function PrefixEditor({ prefix, taken, onCommit }: IProps) {
       type="button"
       onClick={open}
       title="Click to edit board prefix"
-      className="rounded-sm px-2 py-0.5 font-mono text-sm text-muted-foreground hover:text-foreground"
+      className="rounded-sm px-2 py-0.5 font-mono text-muted-foreground hover:text-foreground"
     >
       {prefix}
     </button>
