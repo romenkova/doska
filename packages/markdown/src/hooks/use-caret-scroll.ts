@@ -68,7 +68,11 @@ function findScrollParent(el: HTMLElement): HTMLElement | null {
   return null
 }
 
-const MARGIN = 24
+const TOP_MARGIN = 24
+// Clear the iOS keyboard's accessory bar (the ~44px prev/next arrows + Done
+// strip), which docks at the top of the keyboard and isn't always subtracted
+// from visualViewport.height. Without this the caret lands behind the bar.
+const BOTTOM_MARGIN = 72
 
 /**
  * Keeps the caret line visible while editing. The textarea uses
@@ -102,10 +106,10 @@ export function useCaretScroll(
       const viewTop = viewport ? viewport.offsetTop : 0
       const viewBottom = viewTop + (viewport ? viewport.height : window.innerHeight)
 
-      if (bottom + MARGIN > viewBottom) {
-        scroller.scrollTop += bottom + MARGIN - viewBottom
-      } else if (top - MARGIN < viewTop) {
-        scroller.scrollTop -= viewTop - (top - MARGIN)
+      if (bottom + BOTTOM_MARGIN > viewBottom) {
+        scroller.scrollTop += bottom + BOTTOM_MARGIN - viewBottom
+      } else if (top - TOP_MARGIN < viewTop) {
+        scroller.scrollTop -= viewTop - (top - TOP_MARGIN)
       }
     }
 

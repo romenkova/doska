@@ -21,20 +21,22 @@ export function MarkdownCardPreview({
   hasMore,
   onChangeBody,
 }: IProps) {
-  if (!preview) return null
+  if (!preview && !hasMore) return null
 
   return (
     <>
-      <Markdown
-        onToggleTask={
-          onChangeBody
-            ? (index) => onChangeBody(toggleTaskByIndex(body, index))
-            : undefined
-        }
-        className="preview"
-      >
-        {preview}
-      </Markdown>
+      {preview && (
+        <Markdown
+          onToggleTask={
+            onChangeBody
+              ? (index) => onChangeBody(toggleTaskByIndex(body, index))
+              : undefined
+          }
+          className="preview"
+        >
+          {preview}
+        </Markdown>
+      )}
       {hasMore && (
         <span className="text-muted-foreground select-none">
           Open to see more

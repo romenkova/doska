@@ -25,17 +25,17 @@ function useKeyboardViewport() {
   useEffect(() => {
     const vv = window.visualViewport
     if (!vv) return
+    // Keyboard height only — deliberately not offsetTop. Scrolling the content
+    // pans the visual viewport (offsetTop jitters, especially at rubber-band
+    // edges); tracking that would make the button drift while you scroll.
     const onChange = () => {
-      const bottom = window.innerHeight - (vv.height + vv.offsetTop)
-      setInset(Math.max(0, bottom))
+      setInset(Math.max(0, window.innerHeight - vv.height))
       setVisibleHeight(vv.height)
     }
     onChange()
     vv.addEventListener("resize", onChange)
-    vv.addEventListener("scroll", onChange)
     return () => {
       vv.removeEventListener("resize", onChange)
-      vv.removeEventListener("scroll", onChange)
     }
   }, [])
 
