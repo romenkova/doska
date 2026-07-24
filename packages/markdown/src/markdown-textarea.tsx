@@ -6,6 +6,7 @@ import { type SlashCommand } from "./slash-menu"
 import { WikilinkMenu, type WikilinkOption } from "./wikilinks"
 import { toggleTaskByIndex } from "./task-progress"
 import { useCutLine } from "./hooks/use-cut-line"
+import { useListContinuation } from "./hooks/use-list-continuation"
 import { usePasteFiles } from "./hooks/use-paste-files"
 import { useCaretScroll } from "./hooks/use-caret-scroll"
 import type { Marker } from "./markers"
@@ -49,6 +50,12 @@ export function MarkdownTextarea({
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   useCutLine(textareaRef, {
+    value,
+    onChangeValue: onChangeValue ?? NOOP,
+    enabled: !isPreview && Boolean(onChangeValue),
+  })
+
+  useListContinuation(textareaRef, {
     value,
     onChangeValue: onChangeValue ?? NOOP,
     enabled: !isPreview && Boolean(onChangeValue),
