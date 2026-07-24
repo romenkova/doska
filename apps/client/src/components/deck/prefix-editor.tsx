@@ -86,7 +86,7 @@ export function PrefixEditor({ prefix, taken, onCommit }: IProps) {
             if (e.key === "Escape") cancel()
           }}
           className={cn(
-            "w-20 rounded-sm bg-secondary px-2 py-0.5 font-mono text-sm uppercase outline-none",
+            "w-20 rounded-sm bg-secondary px-2 py-0.5 font-mono text-base uppercase outline-none",
             error && "ring-1 ring-destructive"
           )}
         />
