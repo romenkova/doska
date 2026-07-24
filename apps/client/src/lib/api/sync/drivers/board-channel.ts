@@ -65,7 +65,7 @@ export async function collectBoardChanges(
     }
   }
 
-  if (dead.length) dirty.clear(dead)
+  if (dead.length) dirty.drop(dead)
 
   return { changes, refs }
 }

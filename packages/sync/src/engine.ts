@@ -238,22 +238,25 @@ export class SyncEngine<Scope, Change> {
     }
 
     add(this.activeScope)
-    // Copied out first: a one-shot request is spent by the pass that runs it,
-    // even if that pass fails — the caller asks again rather than the engine
-    // retrying forever.
     for (const scope of [...this.extraScopes]) add(scope)
-    this.extraScopes.clear()
     if (this.driver.pendingScopes)
       for (const scope of await this.driver.pendingScopes(this.dirty))
         add(scope)
 
-    for (const scope of scopes) await this.run(scope)
+    // A one-shot request is spent by the pass that runs it, even if that pass
+    // fails — the caller asks again rather than the engine retrying forever. A
+    // pass that never got to run it (the gate was shut, as on a cold start
+    // before the session resolves) spends nothing.
+    for (const scope of scopes) {
+      if (await this.run(scope)) this.extraScopes.delete(scope)
+    }
   }
 
   // Exclusivity is `cycle`'s job, so this only screens out unsyncable scopes.
-  // The verdict is recorded on `attempt`; `settle` publishes it.
-  private async run(scope: Scope | null): Promise<void> {
-    if (scope === null || !this.canSync()) return
+  // The verdict is recorded on `attempt`; `settle` publishes it. Returns whether
+  // the scope was actually attempted.
+  private async run(scope: Scope | null): Promise<boolean> {
+    if (scope === null || !this.canSync()) return false
     this.attempt.ran = true
     this.setState({
       ...this.state,
@@ -266,17 +269,21 @@ export class SyncEngine<Scope, Change> {
         scope,
         this.dirty
       )
-      // Optimistically clear the refs we're pushing; restore them on failure.
-      this.dirty.clear(refs)
+      const pushed = this.dirty.marksFor(refs)
 
       let result: PushResult<Change>
       try {
         result = await this.driver.push({ scope, since, changes })
       } catch (err) {
-        this.dirty.restore(refs)
         this.fail(err)
-        return
+        return true
       }
+
+      // Only once the server has them. Clearing before the push would strand
+      // the refs if it never settles at all — which is what a mobile OS does to
+      // a backgrounded app mid-fetch: no rejection, so no chance to put them
+      // back, and the edit is lost.
+      this.dirty.clearPushed(pushed)
 
       await this.driver.applyRemote(scope, result.changes)
       await this.driver.saveCursor(scope, result.cursor)
@@ -288,6 +295,7 @@ export class SyncEngine<Scope, Change> {
     } catch (err) {
       this.fail(err)
     }
+    return true
   }
 
   private fail(err: unknown) {

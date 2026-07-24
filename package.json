@@ -14,6 +14,7 @@
     "desktop": "pnpm --filter desktop dev",
     "lint": "turbo run lint",
     "type-check": "turbo run typecheck",
+    "test": "turbo run test --filter=!desktop",
     "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\"",
     "e2e": "turbo run e2e --filter=!desktop",
     "upd": "pnpm dlx npm-check-updates --workspaces --root -i"

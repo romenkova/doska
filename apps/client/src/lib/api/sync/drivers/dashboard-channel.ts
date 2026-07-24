@@ -29,7 +29,7 @@ export async function collectDashboardChanges(
     refs.push(ref)
   }
 
-  if (dead.length) dirty.clear(dead)
+  if (dead.length) dirty.drop(dead)
 
   return { changes, refs }
 }
