@@ -54,6 +54,7 @@ export function SlashMenu({
       activeIndex={activeIndex}
       left={menu.left}
       top={menu.top}
+      bottom={menu.bottom}
       onSelect={select}
       onHighlight={setActiveIndex}
     />

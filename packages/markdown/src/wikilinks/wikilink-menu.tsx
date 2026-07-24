@@ -1,5 +1,5 @@
 import { useCallback } from "react"
-import { MenuList, useTriggerMenu } from "../menu"
+import { AnchoredMenu, useTriggerMenu } from "../menu"
 import { filterWikilinks, toWikilink, type WikilinkOption } from "./wikilink"
 
 // `[[` followed by the query up to the caret. The query may contain spaces —
@@ -56,13 +56,14 @@ export function WikilinkMenu({
 
   if (!menu) return null
   return (
-    <MenuList
+    <AnchoredMenu
       items={menu.items}
       activeIndex={activeIndex}
+      left={menu.left}
+      top={menu.top}
+      bottom={menu.bottom}
       onSelect={select}
       onHighlight={setActiveIndex}
-      className="absolute z-50"
-      style={{ left: menu.left, top: menu.top }}
     />
   )
 }

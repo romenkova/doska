@@ -1,33 +1,36 @@
-import { MenuList } from "../menu"
+import { AnchoredMenu } from "../menu"
 import type { SlashCommand } from "./commands"
 
 interface IProps {
   items: SlashCommand[]
   activeIndex: number
-  /** Position of the dropdown's top-left, relative to the textarea wrapper. */
+  /** Caret line, relative to the textarea wrapper. */
   left: number
   top: number
+  bottom: number
   onSelect: (command: SlashCommand) => void
   onHighlight: (index: number) => void
 }
 
-/** Desktop `/` dropdown: the shared list positioned at the caret. */
+/** Desktop `/` dropdown: the shared list anchored at the caret. */
 export function SlashMenuDropdown({
   items,
   activeIndex,
   left,
   top,
+  bottom,
   onSelect,
   onHighlight,
 }: IProps) {
   return (
-    <MenuList
+    <AnchoredMenu
       items={items}
       activeIndex={activeIndex}
+      left={left}
+      top={top}
+      bottom={bottom}
       onSelect={onSelect}
       onHighlight={onHighlight}
-      className="absolute z-50"
-      style={{ left, top }}
     />
   )
 }

@@ -17,7 +17,10 @@ interface MenuState<T> {
   triggerStart: number
   items: T[]
   left: number
+  /** Top of the caret's line, in wrapper coords (anchor for opening upward). */
   top: number
+  /** Bottom of the caret's line, in wrapper coords (anchor for opening down). */
+  bottom: number
 }
 
 /** Text to splice in, and where the caret should land inside it. */
@@ -108,7 +111,7 @@ export function useTriggerMenu<T extends MenuItem>(
     if (items.length === 0) return setMenu(null)
 
     const { left, top, height } = getCaretCoords(textarea, triggerStart)
-    setMenu({ triggerStart, items, left, top: top + height })
+    setMenu({ triggerStart, items, left, top, bottom: top + height })
     setActiveIndex(0)
   }, [ref, trigger, triggerLength, getItems])
 

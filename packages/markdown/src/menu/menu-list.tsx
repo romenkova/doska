@@ -9,6 +9,7 @@ interface IProps<T extends MenuItem> {
   onHighlight?: (index: number) => void
   className?: string
   style?: React.CSSProperties
+  ref?: React.Ref<HTMLDivElement>
 }
 
 /**
@@ -22,6 +23,7 @@ export function MenuList<T extends MenuItem>({
   onHighlight,
   className,
   style,
+  ref,
 }: IProps<T>) {
   const activeRef = useRef<HTMLButtonElement>(null)
 
@@ -33,6 +35,7 @@ export function MenuList<T extends MenuItem>({
 
   return (
     <div
+      ref={ref}
       className={cn(
         "max-h-64 w-70 overflow-y-auto py-1",
         "rounded-lg border bg-popover shadow-md text-popover-foreground",
