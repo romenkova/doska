@@ -1,4 +1,4 @@
-import { cn } from "@doska/ui-kit"
+import { cn, useIsMobile } from "@doska/ui-kit"
 import { useCallback, useEffect, useState, type CSSProperties } from "react"
 import { useLocation, useRoute } from "wouter"
 import { routes } from "@/lib/routes"
@@ -25,7 +25,8 @@ export function CardPanel({ closeHref }: IProps) {
   const { width, isResizing, startResizing, resetWidth } = usePanelResize()
   const { queue, flush } = useCardSave()
 
-  const card = routeId ?? lastCard
+  const isMobile = useIsMobile()
+  const card = routeId ?? (isMobile ? null : lastCard)
   const isOpen = routeId != null
   const { data: content } = useCard(card)
 

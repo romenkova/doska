@@ -54,7 +54,11 @@ export function CardColumnPicker({ cardId }: { cardId: string }) {
       </MenuTrigger>
       <MenuContent>
         {columns.map((column) => (
-          <MenuItem key={column.id} onClick={() => moveTo(column.id)}>
+          <MenuItem
+            className="uppercase"
+            key={column.id}
+            onClick={() => moveTo(column.id)}
+          >
             {column.title}
             {column.id === current.id && <Check className="ml-auto" />}
           </MenuItem>
