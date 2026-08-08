@@ -28,6 +28,11 @@ describe("sign-up", () => {
     })
     expect(res.statusCode).toBe(403)
   })
+
+  test("the bare sign-up path is refused too", async () => {
+    const res = await h.app.inject({ method: "POST", url: "/api/auth/sign-up" })
+    expect(res.statusCode).toBe(403)
+  })
 })
 
 describe("auth discovery", () => {

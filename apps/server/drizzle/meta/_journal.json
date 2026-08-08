@@ -71,6 +71,13 @@
       "when": 1784756588339,
       "tag": "0009_dizzy_shadow_king",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1786217128502,
+      "tag": "0010_curved_paper_doll",
+      "breakpoints": true
     }
   ]
 }

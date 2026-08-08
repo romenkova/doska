@@ -1,12 +1,12 @@
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
-import { bearer, mcp, username } from "better-auth/plugins"
+import { admin, bearer, mcp, username } from "better-auth/plugins"
 import { getDB } from "../db/get-db"
 import * as schema from "../db/schema"
 import { env } from "../env"
 
 /**
- * The authorization server. One account, three kinds of client, one session
+ * The authorization server. Many accounts, three kinds of client, one session
  * model underneath all of them:
  *
  *  - the **browser** holds a session cookie, set on sign-in;
@@ -16,8 +16,10 @@ import { env } from "../env"
  *    dynamic registration, PKCE, consent — against the `mcp` plugin, and hold an
  *    access token bound to this server.
  *
- * The account is a real user row, seeded from AUTH_LOGIN/AUTH_PASSWORD (see
- * `seed.ts`) so a self-hosted deploy keeps configuring itself the same way.
+ * The first account is a real user row, seeded from AUTH_LOGIN/AUTH_PASSWORD
+ * (see `seed.ts`) so a self-hosted deploy keeps configuring itself the same way.
+ * It gets `role: "admin"`, and the rest are created through the `admin` plugin's
+ * `/api/auth/admin/*` routes
  */
 
 const secret = env.authSecret
@@ -51,5 +53,6 @@ export const auth = betterAuth({
     username({ minUsernameLength: 1, usernameValidator: () => true }),
     bearer(),
     mcp({ loginPage: "/sign-in" }),
+    admin(),
   ],
 })
