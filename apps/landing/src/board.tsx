@@ -33,7 +33,7 @@ export function Board() {
       >
         <MarkdownRenderersProvider value={renderers}>
           <div className="mx-auto flex max-w-6xl items-start gap-5 px-4 py-8 sm:px-6">
-            <Column title="Cards" color="violet" count={5}>
+            <Column title="Cards" color="violet">
               <BoardCard title="Cards are Markdown" body={cards.markdown} />
               <BoardCard title="Attachments" body={cards.attachments} />
               <BoardCard title="Cards link to cards" body={cards.refs} />
@@ -41,7 +41,7 @@ export function Board() {
               <BoardCard title="Columns or rows" body={cards.views} />
             </Column>
 
-            <Column title="Where it lives" color="green" count={6}>
+            <Column title="Where it lives" color="green">
               <BoardCard title="Local-first" body={cards.localFirst} />
               <BoardCard title="Sync with a folder" body={cards.vault} />
               <BoardCard title="Sync is opt-in" body={cards.sync} />
@@ -53,7 +53,7 @@ export function Board() {
               <BoardCard title="Deleting is reversible" body={cards.trash} />
             </Column>
 
-            <Column title="Run it" color="amber" count={5}>
+            <Column title="Run it" color="amber">
               <BoardCard title="Self-host in one line" body={cards.selfHost} />
               <BoardCard
                 title="Multiple accounts on one server"
