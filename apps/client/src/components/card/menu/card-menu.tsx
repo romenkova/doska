@@ -28,6 +28,7 @@ export function CardMenu({ cardId, onEdit }: IProps) {
             size="icon-sm"
             aria-label="Card actions"
             onClick={(e) => e.stopPropagation()}
+            tooltip={false}
           />
         }
       >
