@@ -1,9 +1,10 @@
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
-import { admin, bearer, mcp, username } from "better-auth/plugins"
+import { admin, bearer, genericOAuth, mcp, username } from "better-auth/plugins"
 import { getDB } from "../db/get-db"
 import * as schema from "../db/schema"
 import { env } from "../env"
+import { oidcProvider } from "./oidc"
 
 /**
  * The authorization server. Many accounts, three kinds of client, one session
@@ -19,15 +20,21 @@ import { env } from "../env"
  * The first account is a real user row, seeded from AUTH_LOGIN/AUTH_PASSWORD
  * (see `seed.ts`) so a self-hosted deploy keeps configuring itself the same way.
  * It gets `role: "admin"`, and the rest are created through the `admin` plugin's
- * `/api/auth/admin/*` routes
+ * `/api/auth/admin/*` routes, or by a first sign-in through the optional OIDC
+ * provider (`oidc.ts`).
  */
 
 const secret = env.authSecret
 if (!secret) throw new Error("Auth misconfigured: set AUTH_SECRET.")
 
+const oidc = oidcProvider()
+
 export const auth = betterAuth({
   secret,
   baseURL: env.baseUrl,
+  // Local accounts carry a synthetic email (see seed.ts), so connecting a
+  // provider identity to one must not insist the two emails match.
+  account: { accountLinking: { allowDifferentEmails: true } },
   trustedOrigins: [
     "tauri://localhost",
     "http://tauri.localhost",
@@ -54,5 +61,6 @@ export const auth = betterAuth({
     bearer(),
     mcp({ loginPage: "/sign-in" }),
     admin(),
+    ...(oidc ? [genericOAuth({ config: [oidc] })] : []),
   ],
 })

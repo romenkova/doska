@@ -31,6 +31,7 @@ export function AccountRow({ account, isSelf }: IProps) {
           <span className="truncate text-sm font-medium">{account.login}</span>
           <div className="flex items-center gap-1">
             {account.isAdmin && <AccountTag>Owner</AccountTag>}
+            {account.sso && <AccountTag>SSO</AccountTag>}
             {isSelf && <AccountTag>You</AccountTag>}
             {!account.active && <AccountTag>Inactive</AccountTag>}
           </div>

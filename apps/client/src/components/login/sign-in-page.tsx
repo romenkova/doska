@@ -3,6 +3,7 @@ import { useState } from "react"
 import { useSearch } from "wouter"
 import { authClient } from "@doska/core/auth-client"
 import { apiUrl } from "@doska/core/server"
+import { SsoButtons } from "./sso-buttons"
 
 /**
  * The standalone sign-in page, and the server's `mcp({ loginPage: "/sign-in" })`.
@@ -19,7 +20,13 @@ export function SignInPage() {
   const [pending, setPending] = useState(false)
   const [failed, setFailed] = useState(false)
 
-  const pendingOAuth = new URLSearchParams(search).has("client_id")
+  const params = new URLSearchParams(search)
+  const pendingOAuth = params.has("client_id")
+  const ssoError = params.get("error")
+
+  const done = pendingOAuth
+    ? `${apiUrl("/api/auth/mcp/authorize")}?${search}`
+    : "/"
 
   async function submit(e: React.FormEvent) {
     e.preventDefault()
@@ -46,11 +53,7 @@ export function SignInPage() {
       return
     }
 
-    // A full navigation, not a client-side route: the authorize endpoint answers
-    // with a redirect to the MCP client, and only the browser can follow it.
-    window.location.assign(
-      pendingOAuth ? `${apiUrl("/api/auth/mcp/authorize")}?${search}` : "/"
-    )
+    window.location.assign(done)
   }
 
   return (
@@ -64,6 +67,14 @@ export function SignInPage() {
               : "Sign in to sync your boards."}
           </p>
         </div>
+
+        {ssoError && (
+          <p className="text-xs text-destructive">
+            The identity provider did not sign you in: {ssoError}
+          </p>
+        )}
+
+        <SsoButtons callbackURL={done} />
 
         <div className="flex flex-col gap-2">
           <Input

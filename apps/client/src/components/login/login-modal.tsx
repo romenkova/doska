@@ -14,6 +14,7 @@ import {
 } from "@doska/core/queries"
 import { getServerUrl, setServerUrl } from "@doska/core/server"
 import { isDesktop } from "@/lib/platform"
+import { SsoButtons } from "./sso-buttons"
 
 interface IProps {
   open: boolean
@@ -72,6 +73,10 @@ function SyncSetup({ onDone }: { onDone: () => void }) {
       {unclaimedBoards && (
         <p className="text-muted-foreground">{UNCLAIMED_BOARDS_WARNING}</p>
       )}
+
+      {/* The provider round trip needs a real browser; the desktop webview
+          has none, so it keeps to the password for now. */}
+      {!desktop && <SsoButtons callbackURL={window.location.pathname} />}
 
       <div className="flex flex-col gap-2">
         {desktop && (

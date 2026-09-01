@@ -17,6 +17,11 @@ export const keys = {
   cardCols: ["card-col"] as const,
   cardCol: (id: string) => ["card-col", id] as const,
   session: ["session"] as const,
+  sso: ["sso"] as const,
+  /** Per account: signing out and back in as someone else must not show the
+   * previous person's connections. */
+  linkedProviders: (userId: string) =>
+    ["session", "linked-providers", userId] as const,
   accounts: ["accounts"] as const,
   /** Under the accounts prefix, so deleting an account clears its own count. */
   ownedBoards: (userId: string) =>

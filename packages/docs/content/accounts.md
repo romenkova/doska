@@ -3,17 +3,21 @@ title: Accounts
 nav: Accounts
 description: "More than one person on your Doska server: adding accounts, what each one gets, and how boards are shared."
 order: 3
-updated: "2026-08-11"
+updated: "2026-09-02"
 ---
 
 Your server can hold more than one account. Everyone signs in with their own
-login and password.
+login and password, or through your identity provider once single sign-on is
+set up (see [Environment](/docs/self-hosting/environment#single-sign-on)).
 
 ## Add someone
 
 Sign in as the admin, open **Accounts** in settings, and give them a login and a
 first password. Only the admin sees that screen; there's no way for someone to
-sign themselves up.
+sign themselves up with a password.
+
+With single sign-on, there is nothing to add: their first sign-in through the
+provider creates the account, and Accounts marks it **SSO**.
 
 The admin is the account from `AUTH_LOGIN` / `AUTH_PASSWORD`, see
 [Environment](/docs/self-hosting/environment).

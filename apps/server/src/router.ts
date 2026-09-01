@@ -5,6 +5,7 @@ import {
   countOwnedBoards,
   deleteAccount,
   findAccount,
+  listSsoUserIds,
 } from "./db/accounts"
 import { assertBoardAccess, assertBoardOwner, boardAccess } from "./db/access"
 import {
@@ -145,6 +146,10 @@ export const router = os.router({
 
       await revokeAllMemberships(input.userId)
       await deleteAccount(input.userId)
+    }),
+    sso: os.accounts.sso.handler(async ({ context }) => {
+      await assertAdmin(context.userId)
+      return { userIds: await listSsoUserIds() }
     }),
   },
 })

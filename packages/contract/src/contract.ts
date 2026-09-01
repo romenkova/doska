@@ -113,5 +113,7 @@ export const contract = {
      * is already deactivated and owns no live board
      */
     remove: oc.input(z.object({ userId: z.string() })).output(z.void()),
+    /** Accounts with an identity-provider sign-in. Admin-only. */
+    sso: oc.output(z.object({ userIds: z.array(z.string()) })),
   },
 }

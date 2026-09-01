@@ -1,6 +1,8 @@
 import { toNodeHandler } from "better-auth/node"
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
 import { auth } from "../auth"
+import { OIDC_PROVIDER_ID } from "../auth/oidc"
+import { env } from "../env"
 
 const authHandler = toNodeHandler(auth)
 
@@ -15,13 +17,21 @@ async function delegateToAuth(
 
 /** better-auth owns /api/auth/* — these are the public, pre-session routes. */
 export function registerAuthRoutes(app: FastifyInstance): void {
-  // Accounts only come from an admin: the first from AUTH_LOGIN/AUTH_PASSWORD,
-  // the rest through the admin plugin. Nobody signs themselves up.
+  // Accounts come from an admin (the first from AUTH_LOGIN/AUTH_PASSWORD, the
+  // rest through the admin plugin) or from a first SSO sign-in.
   for (const url of ["/api/auth/sign-up", "/api/auth/sign-up/*"]) {
     app.all(url, async (_req, reply) =>
       reply.code(403).send({ error: "Sign-up is disabled" })
     )
   }
+
+  app.get("/api/sso", async (_req, reply) =>
+    reply.send({
+      providers: env.oidcIssuer
+        ? [{ id: OIDC_PROVIDER_ID, name: env.oidcName }]
+        : [],
+    })
+  )
 
   app.all("/api/auth/*", delegateToAuth)
 

@@ -4,6 +4,7 @@ import { FaGithub } from "react-icons/fa"
 import { useAuth } from "@/lib/hooks"
 import { SettingsSection } from "./section"
 import { SettingsRow } from "./settings-row"
+import { SignInSection } from "./sections/sign-in"
 import { UpdatesSection } from "./sections/updates"
 
 interface IProps {
@@ -21,6 +22,7 @@ export function SettingsModal({ open, onOpenChange, onOpenAccounts }: IProps) {
         <ModalHeader onClose={() => onOpenChange(false)}>Settings</ModalHeader>
         <CardContent className="flex flex-col gap-4 overflow-y-auto py-4">
           <UpdatesSection />
+          <SignInSection />
           <SettingsSection>
             <div className="flex flex-col">
               {isAdmin && (
