@@ -1,8 +1,8 @@
 ---
 title: Attachments
 nav: Attachments
-description: "How to attach files and images to cards?"
-order: 3
+description: "Put files and images on a card from the paperclip, a paste or a drag. Needs a sync server."
+order: 4
 updated: "2026-08-07"
 ---
 

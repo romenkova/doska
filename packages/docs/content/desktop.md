@@ -1,13 +1,13 @@
 ---
 title: Desktop and mobile
 nav: Desktop & mobile
-description: "The Doska macOS app, installing the client as a PWA"
+description: "The signed, auto-updating macOS app, and installing the same client as a PWA on a phone or a dock."
 order: 6
 updated: "2026-08-12"
 ---
 
 The same client runs in three places: a browser tab, a phone home screen, and a
-Tauri macOS app. 
+Tauri macOS app.
 
 ## macOS app
 
@@ -23,7 +23,7 @@ address, the same one you open the web UI at. Sign in with the `AUTH_LOGIN` /
 
 The desktop app follows whatever version its server runs, and downloads the same version of the app on updates.
 
-## Install as a PWA 
+## Install as a PWA
 
 From the browser, install the app to your home screen or dock. It runs
 fullscreen, and because the boards are already local it works offline the same

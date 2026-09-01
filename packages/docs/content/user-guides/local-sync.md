@@ -1,7 +1,7 @@
 ---
 title: Sync to a local folder
 nav: Sync to a local folder
-description: "How to sync a board to the folder on my device?"
+description: "Sync a board to a folder on your own disk with the desktop app: columns become folders, cards become Markdown files."
 order: 2
 updated: "2026-08-07"
 ---

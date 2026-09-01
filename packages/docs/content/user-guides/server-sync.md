@@ -1,8 +1,8 @@
 ---
 title: Sync to server
 nav: Sync to server
-description: "How to sync a board to a sync server?"
-order: 2
+description: "Sign the web or desktop app into your self-hosted server so a board syncs across your devices."
+order: 3
 updated: "2026-08-07"
 ---
 
