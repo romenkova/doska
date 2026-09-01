@@ -172,6 +172,7 @@ export async function callTool(
 }
 
 /** The JSON a successful tool packs into its single text block. */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function toolJson(result: ToolResult): any {
   if (result.isError) throw new Error(result.content[0].text)
   return JSON.parse(result.content[0].text)
