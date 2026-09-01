@@ -3,6 +3,7 @@ import type { FastifyInstance } from "fastify"
 import { requireMCPSession, requireSession } from "./auth/guard"
 import { loggerOptions } from "./logger"
 import { registerAuthRoutes } from "./routes/auth"
+import { registerDesktopLoginRoutes } from "./routes/desktop-login"
 import { registerFileRoutes, type ServerStorage } from "./routes/files"
 import { registerMcpRoutes } from "./routes/mcp"
 import { registerPublicRoutes } from "./routes/public"
@@ -36,6 +37,7 @@ export function buildApp(opts: BuildOptions = {}): FastifyInstance {
 
   // Public: login, OAuth discovery, version, desktop updates, shared boards.
   registerAuthRoutes(app)
+  registerDesktopLoginRoutes(app)
   registerUpdateRoutes(app)
   // Must stay out here. Inside either scope below it inherits that scope's
   // session check, and the one feature whose visitors have no session breaks.

@@ -1,11 +1,8 @@
 import { useQuery } from "@tanstack/react-query"
 import { countOwnedBoards, listAccounts } from "../api/accounts"
 import { publicBoardToken, publishedBoards } from "../api/boards"
-import {
-  fetchLinkedProviders,
-  fetchSession,
-  fetchSsoProviders,
-} from "../api/auth"
+import { fetchSession } from "../api/auth"
+import { fetchLinkedProviders, fetchSsoProviders } from "../api/sso"
 import { fetchPublicBoard } from "../api/public"
 import { listDirectory, listMembers, listSharedBoards } from "../api/members"
 import {
@@ -17,7 +14,7 @@ import type { DigestFilter } from "../api/operations"
 import { keys } from "./keys"
 
 export type { Account } from "../api/accounts"
-export type { SsoProvider } from "../api/auth"
+export type { SsoProvider } from "../api/sso"
 export { UNCLAIMED_BOARDS_WARNING }
 
 /** Identity providers offered at sign-in. Empty without a server, or SSO. */

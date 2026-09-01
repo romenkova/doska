@@ -1,6 +1,6 @@
 import { Button } from "@doska/ui-kit"
 import { useState } from "react"
-import { ssoSignInUrl } from "@doska/core/auth"
+import { ssoSignInUrl } from "@doska/core/sso"
 import { useSsoProviders } from "@doska/core/queries"
 
 interface IProps {

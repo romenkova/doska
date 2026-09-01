@@ -1,7 +1,6 @@
 import { runtime } from "../runtime"
 import { authClient } from "./auth-client"
-import { appFetch } from "./fetch"
-import { apiUrl, isSyncConfigured } from "./server"
+import { isSyncConfigured } from "./server"
 
 export type Session = {
   authed: boolean
@@ -69,63 +68,19 @@ export async function login(login: string, password: string): Promise<Session> {
   return toSession(data.user)
 }
 
+/** Signs in with the token a desktop browser sign-in ended with. */
+export async function loginWithToken(token: string): Promise<Session> {
+  runtime().auth.capture(token)
+  const session = await fetchSession()
+  if (!session.authed) {
+    runtime().auth.clear()
+    throw new Error("The server did not accept the sign-in")
+  }
+  return session
+}
+
 /** Drops this client's session: the cookie, and any token that was stored. */
 export async function logout(): Promise<void> {
   await authClient().signOut()
   runtime().auth.clear()
-}
-
-export type SsoProvider = { id: string; name: string }
-
-/** Identity providers the server signs people in through, besides a password. */
-export async function fetchSsoProviders(): Promise<SsoProvider[]> {
-  if (!isSyncConfigured()) return []
-  const res = await appFetch(apiUrl("/api/sso"))
-  if (!res.ok) return []
-  const body = (await res.json()) as { providers?: SsoProvider[] }
-  return body.providers ?? []
-}
-
-/**
- * Where to send the browser to sign in through a provider. It comes back at
- * `callbackURL` with a session, or at /sign-in with `?error=` when the provider
- * said no.
- */
-export async function ssoSignInUrl(
-  providerId: string,
-  callbackURL: string
-): Promise<string> {
-  const { data, error } = await authClient().signIn.oauth2({
-    providerId,
-    callbackURL,
-    errorCallbackURL: "/sign-in",
-    disableRedirect: true,
-  })
-  if (error || !data?.url)
-    throw new Error(error?.message ?? "Could not start sign-in")
-  return data.url
-}
-
-/** The same round trip for an account already signed in: from then on the
- * provider's identity opens this account. */
-export async function ssoLinkUrl(
-  providerId: string,
-  callbackURL: string
-): Promise<string> {
-  const { data, error } = await authClient().oauth2.link({
-    providerId,
-    callbackURL,
-    errorCallbackURL: callbackURL,
-  })
-  if (error || !data?.url)
-    throw new Error(error?.message ?? "Could not start connecting")
-  return data.url
-}
-
-/** Provider ids connected to the signed-in account. */
-export async function fetchLinkedProviders(): Promise<string[]> {
-  const { data, error } = await authClient().listAccounts()
-  if (error || !data)
-    throw new Error(error?.message ?? "Could not load sign-in methods")
-  return data.map((account) => account.providerId)
 }

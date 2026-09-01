@@ -3,7 +3,7 @@ title: Desktop and mobile
 nav: Desktop & mobile
 description: "The signed, auto-updating macOS app, and installing the same client as a PWA on a phone or a dock."
 order: 6
-updated: "2026-08-12"
+updated: "2026-09-02"
 ---
 
 The same client runs in three places: a browser tab, a phone home screen, and a
@@ -17,9 +17,9 @@ with [Tauri](https://tauri.app) and auto-updates.
 
 Builds are signed with a Developer ID certificate and notarized by Apple.
 
-To sync, open the app's sync settings and set the server URL to your server's
-address, the same one you open the web UI at. Sign in with the `AUTH_LOGIN` /
-`AUTH_PASSWORD` from its `.env`.
+To sync, open the app's sync settings, set the server URL to your server's
+address, the same one you open the web UI at, and press **Sign in in browser**.
+Sign in there however you like, then come back and press **I've signed in**.
 
 The desktop app follows whatever version its server runs, and downloads the same version of the app on updates.
 

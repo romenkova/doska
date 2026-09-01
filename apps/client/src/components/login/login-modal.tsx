@@ -1,19 +1,12 @@
-import {
-  Button,
-  Input,
-  Modal,
-  ModalContent,
-  ModalDescription,
-  ModalTitle,
-} from "@doska/ui-kit"
+import { Button, Input, Modal, ModalContent, ModalTitle } from "@doska/ui-kit"
 import { useState } from "react"
 import { useLogin } from "@doska/core/mutations"
 import {
   UNCLAIMED_BOARDS_WARNING,
   useUnclaimedLocalBoards,
 } from "@doska/core/queries"
-import { getServerUrl, setServerUrl } from "@doska/core/server"
 import { isDesktop } from "@/lib/platform"
+import { BrowserLogin } from "./browser-login"
 import { SsoButtons } from "./sso-buttons"
 
 interface IProps {
@@ -22,8 +15,7 @@ interface IProps {
 }
 
 /**
- * Set-up-sync dialog: sign in to a remote sync server. Desktop has no
- * same-origin server, so it also asks for the server URL.
+ * Set-up-sync dialog.
  */
 export function LoginModal({ open, onOpenChange }: IProps) {
   return (
@@ -37,19 +29,32 @@ export function LoginModal({ open, onOpenChange }: IProps) {
 }
 
 function SyncSetup({ onDone }: { onDone: () => void }) {
-  const [server, setServer] = useState(() => getServerUrl())
+  const { data: unclaimedBoards } = useUnclaimedLocalBoards()
+
+  return (
+    <div className="flex flex-col gap-4 p-6">
+      <ModalTitle>Set up sync</ModalTitle>
+
+      {unclaimedBoards && (
+        <p className="text-muted-foreground">{UNCLAIMED_BOARDS_WARNING}</p>
+      )}
+
+      {isDesktop() ? (
+        <BrowserLogin onDone={onDone} />
+      ) : (
+        <PasswordLogin onDone={onDone} />
+      )}
+    </div>
+  )
+}
+
+function PasswordLogin({ onDone }: { onDone: () => void }) {
   const [login, setLogin] = useState("")
   const [password, setPassword] = useState("")
   const { mutate, isPending, isError, reset } = useLogin()
-  const { data: unclaimedBoards } = useUnclaimedLocalBoards()
 
-  const desktop = isDesktop()
-
-  function submit(e: React.FormEvent) {
+  function submit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault()
-    // No same-origin server on desktop — persist the URL before signing in so
-    // the auth and sync calls know where to go.
-    if (desktop) setServerUrl(server)
     mutate(
       { login, password },
       {
@@ -62,34 +67,10 @@ function SyncSetup({ onDone }: { onDone: () => void }) {
   }
 
   return (
-    <form onSubmit={submit} className="flex flex-col gap-4 p-6">
-      <div className="flex flex-col gap-1">
-        <ModalTitle>Set up sync</ModalTitle>
-        <ModalDescription>
-          Your boards stay on this device until you set up sync.
-        </ModalDescription>
-      </div>
-
-      {unclaimedBoards && (
-        <p className="text-muted-foreground">{UNCLAIMED_BOARDS_WARNING}</p>
-      )}
-
-      {/* The provider round trip needs a real browser; the desktop webview
-          has none, so it keeps to the password for now. */}
-      {!desktop && <SsoButtons callbackURL={window.location.pathname} />}
+    <form onSubmit={submit} className="flex flex-col gap-4">
+      <SsoButtons callbackURL={window.location.pathname} />
 
       <div className="flex flex-col gap-2">
-        {desktop && (
-          <Input
-            name="server"
-            type="url"
-            inputMode="url"
-            autoComplete="off"
-            placeholder="Server URL (https://…)"
-            value={server}
-            onChange={(e) => setServer(e.target.value)}
-          />
-        )}
         <Input
           autoFocus
           name="login"
@@ -122,12 +103,7 @@ function SyncSetup({ onDone }: { onDone: () => void }) {
         >
           Cancel
         </Button>
-        <Button
-          type="submit"
-          disabled={
-            isPending || !login || !password || (desktop && !server.trim())
-          }
-        >
+        <Button type="submit" disabled={isPending || !login || !password}>
           {isPending ? "Signing in..." : "Sign in"}
         </Button>
       </div>

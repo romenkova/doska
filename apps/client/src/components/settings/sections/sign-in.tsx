@@ -1,6 +1,6 @@
 import { Button } from "@doska/ui-kit"
 import { useState } from "react"
-import { ssoLinkUrl } from "@doska/core/auth"
+import { ssoLinkUrl } from "@doska/core/sso"
 import { useLinkedProviders, useSsoProviders } from "@doska/core/queries"
 import { useAuth } from "@/lib/hooks"
 import { isDesktop } from "@/lib/platform"
