@@ -43,6 +43,7 @@ export function BoardActionsMenu({
               size="icon-sm"
               aria-label="Board actions"
               className="text-muted-foreground"
+              tooltip={false}
             />
           }
         >

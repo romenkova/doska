@@ -40,7 +40,12 @@ export function CardPanelMenu({
     <Menu actionsRef={actionsRef}>
       <MenuTrigger
         render={
-          <Button variant="ghost" size="icon-sm" aria-label="Card actions" />
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            aria-label="Card actions"
+            tooltip={false}
+          />
         }
       >
         <MoreHorizontal />

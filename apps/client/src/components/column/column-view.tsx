@@ -99,6 +99,7 @@ export function ColumnView({
             onClick={onAddCard}
             aria-label={`Add card to ${title}`}
             className="mb-3 w-full"
+            tooltip={false}
           >
             <Plus />
           </Button>

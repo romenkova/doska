@@ -83,6 +83,7 @@ export function SyncIndicator() {
         title="Sign in to sync"
         onClick={openLogin}
         className="text-muted-foreground"
+        tooltip={false}
       >
         <span>Sign in to sync</span>
         <LogIn />
@@ -99,6 +100,7 @@ export function SyncIndicator() {
       title={label}
       onClick={() => void sync.reconcile()}
       className={cn("w-25 text-muted-foreground", className)}
+      tooltip={false}
     >
       <Icon className={cn(spin && "animate-spin")} />
       <span>{label}</span>
