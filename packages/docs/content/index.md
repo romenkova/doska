@@ -6,43 +6,44 @@ order: 1
 updated: "2026-08-09"
 ---
 
-Doska is a Kanban board where the cards are Markdown. It runs in your browser
-and keeps the boards there, so it's fast, needs no account, and works offline.
-Point it at a server you run and that server holds the canonical
-copy, replicated to every device you sign in from.
+Doska is a Kanban board where the cards are Markdown. 
 
-## Two ways to run it
+Doska uses IndexedDB as the intermediate data source, and every few seconds (3 by default) syncs to the destination of choice: a local folder, or a sync server's database.
 
-### Local only
-Open [app.doska.sh](https://app.doska.sh/d/welcome) and start.
-Nothing is sent anywhere; the boards live in your browser's IndexedDB.
+## How to run it
 
-### With a server
-Run the selfhosted sync server. Boards
-replicate across your devices in the background, the desktop app can point at
-it, and agents can reach it over MCP.
+### Demo
 
-> Browser storage isn't permanent. The app asks the browser not to evict it, but
-> that's best-effort: the browser can still clear it, and "clear site data"
-> always will. Treat local-only as a working copy. If the boards matter, run a
-> server and let it keep the durable one.
+The demo doesn't require any setup, and is available here: [app.doska.sh](https://app.doska.sh/d/welcome).
+You can even point it at your own sync server.
+
+### Fully local setup: folder sync
+
+Download the app (currently only macOS is supported) from the [latest release](https://github.com/romenkova/doska/releases/latest), or grab the `.dmg` straight from [doska.sh](https://doska.sh).
+
+Local folder sync is fairly new, so please [submit an issue](https://github.com/romenkova/doska/issues/new) if you find anything buggy. More on it in the [folder sync guide](/docs/user-guides/local-sync).
+
+### Self-hosting
+
+More on self-hosting here: [Self-hosting guide](/docs/self-hosting).
+
+You will need Docker and Docker Compose. The self-hosting setup spins up the web server and the sync server. It also sets up the database and S3 (or local storage).
 
 ## What a card is
 
-A card body is GitHub-flavored Markdown, edited in place, with a few additions to the syntax:
+A card body is GitHub-flavored Markdown, with a few additions to the syntax:
 
 - `- [ ]` task lists are first class,  the card header carries a live done/total
   count and the boxes are clickable.
-- `[[CARD-12]]` links to another card and picks up its column's color.
+- `[[12|Card title]]` links to another card and picks up its column's color.
 - A line containing only `-cut-` ends the card's preview: the board shows what's
   above it, the full body opens in the card view.
 
-Cards take deadlines (a plain `YYYY-MM-DD` date) and file attachments, and an
-**Upcoming** view gathers cards from every board by deadline,  overdue first,
-then grouped by day.
+Cards also have deadlines and priorities. Boards support search and sort, as well as a simplified column view, and a cross-board view sorted by date.
 
 ## Where to go next
 
+- [User guides](/docs/user-guides).
 - [Self-hosting](/docs/self-hosting),  one-line installer, HTTPS, backups.
 - [Accounts](/docs/accounts),  more than one person on your server.
 - [MCP](/docs/mcp),  let an agent read and edit your boards.

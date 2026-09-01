@@ -14,7 +14,7 @@ async function checkMissing<T>(boardId: string, run: Promise<T>): Promise<T> {
     return await run
   } catch (err) {
     if (err instanceof ORPCError && err.code === "FORBIDDEN")
-      throw new Error(`No board ${boardId}`)
+      throw new Error(`No board ${boardId}`, { cause: err })
     throw err
   }
 }

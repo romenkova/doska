@@ -95,17 +95,26 @@
 
 .docs-prose h2 {
   font-size: 1.5rem;
+  font-weight: 800;
   margin-top: 2.5rem;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
   color: var(--foreground);
 }
 .docs-prose h3 {
   font-size: 1.125rem;
+  font-weight: 700;
   margin-top: 2rem;
   margin-bottom: 0.5rem;
   color: var(--foreground);
 }
-.docs-prose p,
+.docs-prose h2 + *,
+.docs-prose h3 + * {
+  margin-top: 0;
+}
+
+.docs-prose p {
+  margin-block: 0.6rem;
+}
 .docs-prose ul,
 .docs-prose ol,
 .docs-prose blockquote,
@@ -117,6 +126,10 @@
 }
 .docs-prose hr {
   margin-block: 2.5rem;
+}
+
+.docs-prose img {
+  max-width: 30rem;
 }
 
 .docs-prose table {
