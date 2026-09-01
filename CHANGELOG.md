@@ -4,21 +4,15 @@
 
 ### Added
 
-- Folder sync on desktop: a board mirrors to a folder.
-- Attachments mirror into `_files`.
-- Deleted cards land in `_trash`.
-- Deleting a column takes its folder with it, its cards' files going to `_trash`.
-- A folder dropped into the root becomes a column, cards and all.
-- Pointing an empty board at a folder fills it: a column per folder, a card per file.
-- Any folder syncs into any board, whichever board wrote it. One board at a
-  time.
-- Folder names read back as display titles: `in_progress` is In progress.
+- Folder sync on desktop: a board mirrors to a folder (two way sync)
+- More docs, ui changes for the docs.
 
 ### Fixed
 
 - The user id on a device is now stamped per sync server, so pointing the app
   at a second server no longer looks like a different person and wipes the
   local store. 
+- Undo fix for the markdown editor.
 
 ## [0.20.0] - 2026-08-22
 
