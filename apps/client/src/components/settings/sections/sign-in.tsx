@@ -30,8 +30,10 @@ export function SignInSection() {
     }
   }
 
+  if (!providers.length) return null
+
   return (
-    <SettingsSection title="Sign-in">
+    <SettingsSection>
       {providers.map((provider) => (
         <div key={provider.id} className="flex items-center gap-2 text-sm">
           <span>{provider.name}</span>

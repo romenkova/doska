@@ -33,7 +33,7 @@ function SyncSetup({ onDone }: { onDone: () => void }) {
 
   return (
     <div className="flex flex-col gap-4 p-6">
-      <ModalTitle>Set up sync</ModalTitle>
+      <ModalTitle>Sign in</ModalTitle>
 
       {unclaimedBoards && (
         <p className="text-muted-foreground">{UNCLAIMED_BOARDS_WARNING}</p>

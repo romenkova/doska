@@ -41,6 +41,15 @@ export function apiUrl(path: string): string {
   return runtime().http.url(path)
 }
 
+export function apiUrlDomain(): string {
+  const base = apiUrl("")
+  try {
+    return new URL(base).host
+  } catch {
+    return base
+  }
+}
+
 // Pins desktop updates to the server's release line; null if unreachable.
 export async function getServerVersion(): Promise<string | null> {
   try {

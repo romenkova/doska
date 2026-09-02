@@ -28,9 +28,9 @@ test.describe("authentication", { tag: "@container" }, () => {
   }) => {
     await signIn(page)
 
-    // Signed in: the account shows the login and offers a sign-out control.
+    // Signed in: the account row shows the login, and opens the account modal
+    // that offers a sign-out (signOut goes through it).
     await expect(page.getByText(TEST_CREDENTIALS.login)).toBeVisible()
-    await expect(page.getByRole("button", { name: "Sign out" })).toBeVisible()
 
     await signOut(page)
 
