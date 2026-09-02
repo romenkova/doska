@@ -1,6 +1,6 @@
 import { useAccount } from "@doska/core/account"
 import { useLogout } from "@doska/core/mutations"
-import { apiUrl, apiUrlDomain } from "@doska/core/server"
+import { apiUrlDomain } from "@doska/core/server"
 import { initials } from "@doska/core/utils"
 import {
   Avatar,
