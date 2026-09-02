@@ -8,7 +8,7 @@ updated: "2026-09-02"
 
 Your server can hold more than one account. Everyone signs in with their own
 login and password, or through your identity provider if you set up
-[single sign-on](/docs/self-hosting/environment#single-sign-on).
+[single sign-on](/docs/user-guides/sso).
 
 ## Add someone
 

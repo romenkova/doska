@@ -49,11 +49,27 @@ Doska there as a web app with this redirect URI
 ```
 
 and put the issuer URL, client id and secret into the `OIDC_*` variables. The
-sign-in page gets a **Continue with SSO** button, or whatever `OIDC_NAME` says.
-Passwords keep working, so the admin can always get in.
+issuer must serve the standard discovery document at
+`<OIDC_ISSUER>/.well-known/openid-configuration`. The sign-in page gets a
+**Continue with SSO** button, or whatever `OIDC_NAME` says. Passwords keep
+working, so the admin can always get in.
+
+Doska asks for the `openid`, `profile` and `email` scopes, with PKCE, so allow
+those for the client. It reads three claims from the profile, each with a
+fallback:
+
+| Claim                | Used for                                                                                                    |
+| -------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `preferred_username` | The login. |
+| `name`               | The account's name. Missing, the login is used.                                                             |
+| `email`              | The account's email. Missing, a placeholder built from `sub` is stored.                                     |
+
+A login that is already taken gets a number appended, so the second `rita`
+becomes `rita2`.
 
 First sign-in through the provider creates an account, named after the
 provider's username or the email's local part. It never takes over an existing
 one: to attach the provider to an account you already have, sign in with the
-password and press **Connect** under Sign-in in Settings.
+password, open your account from the bottom of the sidebar and press
+**Connect** under Sign-in.
 `OIDC_AUTO_CREATE=off` makes that the only way in through the provider.

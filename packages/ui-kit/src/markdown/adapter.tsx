@@ -44,9 +44,9 @@ export function createWebAdapter({
       )
     },
 
-    heading(depth, children, key) {
+    heading(depth, children, id, key) {
       return (
-        <MdHeading key={key} depth={depth}>
+        <MdHeading key={key} depth={depth} id={id}>
           {children}
         </MdHeading>
       )

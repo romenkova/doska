@@ -68,7 +68,7 @@ export function createNativeAdapter(
 
     // Every heading level is body-sized on the web; only the weight and, at h3,
     // the colour set them apart.
-    heading(depth, children, key) {
+    heading(depth, children, _id, key) {
       return (
         <Text
           key={key}
