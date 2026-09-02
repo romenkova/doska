@@ -146,6 +146,7 @@ has defaults "BASE_URL=http://localhost:8080"
 hasnt defaults "DOMAIN"
 hasnt defaults "DATABASE_URL"
 hasnt defaults "S3_BUCKET"
+hasnt defaults "OIDC_ISSUER"
 if grep -qE '^AUTH_SECRET=[0-9a-f]{64}$' "$WORK/defaults/.env"; then pass "AUTH_SECRET is 32 random bytes"
 else fail "AUTH_SECRET is not 64 hex chars: $(grep '^AUTH_SECRET=' "$WORK/defaults/.env")"; fi
 if grep -qE '^POSTGRES_PASSWORD=[0-9a-f]{64}$' "$WORK/defaults/.env"; then pass "POSTGRES_PASSWORD generated"
@@ -177,6 +178,7 @@ run supplied \
   DATABASE_URL=postgres://u:p@db.example:5432/doska \
   S3_BUCKET=cards S3_REGION=eu-central-1 \
   AWS_ACCESS_KEY_ID=AKIA AWS_SECRET_ACCESS_KEY=shh \
+  OIDC_ISSUER=https://auth.example OIDC_CLIENT_ID=doska OIDC_CLIENT_SECRET=oidcshh OIDC_NAME=Authentik \
   -- --yes --no-start
 [ "$(exit_code supplied)" = 0 ] || fail "exit $(exit_code supplied): $(cat "$WORK/supplied/out.log")"
 has supplied "AUTH_LOGIN=rita"
@@ -187,6 +189,10 @@ has supplied "S3_BUCKET=cards"
 has supplied "S3_REGION=eu-central-1"
 has supplied "AWS_ACCESS_KEY_ID=AKIA"
 has supplied "AWS_SECRET_ACCESS_KEY=shh"
+has supplied "OIDC_ISSUER=https://auth.example"
+has supplied "OIDC_CLIENT_ID=doska"
+has supplied "OIDC_CLIENT_SECRET=oidcshh"
+has supplied "OIDC_NAME=Authentik"
 
 # ---------------------------------------------------------------------------
 case_name="https domain"

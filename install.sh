@@ -274,7 +274,8 @@ Usage: sh install.sh [--yes] [--no-start]
 
 Pre-supply any answer by exporting the variable it writes: AUTH_LOGIN,
 AUTH_PASSWORD, BASE_URL, DOMAIN, WEB_PORT, DATABASE_URL, S3_BUCKET, S3_REGION,
-S3_ENDPOINT, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY.
+S3_ENDPOINT, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, OIDC_ISSUER,
+OIDC_CLIENT_ID, OIDC_CLIENT_SECRET, OIDC_NAME.
 EOF
 }
 
@@ -438,6 +439,23 @@ else
     S3_SECRET=$(ask_secret AWS_SECRET_ACCESS_KEY "  Secret access key")
   fi
 
+  # Single sign-on: only worth asking about once BASE_URL is settled, since the
+  # provider needs the callback built from it.
+  OIDC_ISSUER=${OIDC_ISSUER:-}; OIDC_CLIENT_ID=${OIDC_CLIENT_ID:-}; OIDC_NAME=${OIDC_NAME:-}
+  OIDC_SECRET=""
+  if [ -n "$OIDC_ISSUER" ] || ask_yn "Sign in through an identity provider (OIDC)"; then
+    info "Register Doska there as a web app with this redirect URI:"
+    info "  $BASE_URL/api/auth/oauth2/callback/oidc"
+    info "and allow the openid, profile and email scopes."
+    info "Docs: https://doska.sh/docs/user-guides/sso"
+    OIDC_ISSUER=$(ask OIDC_ISSUER "  Issuer URL" "")
+    OIDC_CLIENT_ID=$(ask OIDC_CLIENT_ID "  Client id" "")
+    OIDC_SECRET=$(ask_secret OIDC_CLIENT_SECRET "  Client secret")
+    OIDC_NAME=$(ask OIDC_NAME "  Name on the sign-in button" "")
+    info "Sign in as admin with the password first and press Connect under Sign-in in your account."
+    info "Going through the provider straight away creates a member instead."
+  fi
+
   SECRET=$(gen_secret)
   PGPASS=$(gen_secret)
 
@@ -460,10 +478,18 @@ else
       printf 'AWS_ACCESS_KEY_ID=%s\n'    "$(env_escape "$S3_KEY")"
       printf 'AWS_SECRET_ACCESS_KEY=%s\n' "$(env_escape "$S3_SECRET")"
     fi
+    if [ -n "$OIDC_ISSUER" ]; then
+      printf 'OIDC_ISSUER=%s\n'        "$(env_escape "$OIDC_ISSUER")"
+      printf 'OIDC_CLIENT_ID=%s\n'     "$(env_escape "$OIDC_CLIENT_ID")"
+      printf 'OIDC_CLIENT_SECRET=%s\n' "$(env_escape "$OIDC_SECRET")"
+      [ -n "$OIDC_NAME" ] && printf 'OIDC_NAME=%s\n' "$(env_escape "$OIDC_NAME")"
+    fi
     printf '\n# Optional — uncomment and set, then re-run this script to apply:\n'
     [ -z "$DBURL" ] && printf '# DATABASE_URL=postgres://user:pass@host:5432/doska  # use managed Postgres instead of bundled\n'
     printf '# DOCKER_IMAGE_TAG=0.4.0  # pin a release instead of latest\n'
     [ -z "$S3_BUCKET" ] && printf '# S3_BUCKET=  S3_REGION=  AWS_ACCESS_KEY_ID=  AWS_SECRET_ACCESS_KEY=  # move attachments off the local volume into S3\n'
+    [ -z "$OIDC_ISSUER" ] && printf '# OIDC_ISSUER=  OIDC_CLIENT_ID=  OIDC_CLIENT_SECRET=  # single sign-on through your identity provider\n'
+    [ -n "$OIDC_ISSUER" ] && printf '# OIDC_AUTO_CREATE=off  # only accounts already connected to the provider can sign in through it\n'
     :
   } > "$ENV_FILE"
   chmod 600 "$ENV_FILE"
