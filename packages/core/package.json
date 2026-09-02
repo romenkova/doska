@@ -50,12 +50,12 @@
     "@doska/sync": "workspace:*",
     "@doska/tokens": "workspace:*",
     "@doska/utils": "workspace:*",
-    "@orpc/client": "^1.14.12",
-    "@orpc/contract": "^1.14.12",
-    "@tanstack/react-query": "5.101.4",
-    "better-auth": "^1.6.25",
+    "@orpc/client": "^1.15.0",
+    "@orpc/contract": "^1.15.0",
+    "@tanstack/react-query": "5.102.8",
+    "better-auth": "~1.6.30",
     "fractional-indexing": "^3.2.0",
-    "uuid": "^14.0.1"
+    "uuid": "^14.0.2"
   },
   "peerDependencies": {
     "react": "^19"
@@ -63,10 +63,10 @@
   "devDependencies": {
     "@doska/configs": "workspace:*",
     "@types/node": "^22",
-    "@types/react": "^19",
-    "eslint": "^10",
+    "@types/react": "^19.2.18",
+    "eslint": "^10.9.1",
     "react": "^19.2.8",
     "typescript": "~6",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.11"
   }
 }

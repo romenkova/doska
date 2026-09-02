@@ -23,8 +23,8 @@
   "devDependencies": {
     "@doska/configs": "workspace:*",
     "@types/mdast": "^4.0.4",
-    "@types/react": "^19",
-    "eslint": "^10",
+    "@types/react": "^19.2.18",
+    "eslint": "^10.9.1",
     "react": "^19.2.8",
     "typescript": "~6"
   }
