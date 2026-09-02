@@ -23,6 +23,7 @@ export const PNG = Buffer.from(PNG_BASE64, "base64")
 
 interface FileTransfer {
   items: { add(file: unknown): void }
+  setData(type: string, data: string): void
 }
 
 // The callbacks below are typechecked here but run in the page, where these
@@ -36,9 +37,7 @@ declare const ClipboardEvent: {
 }
 
 /**
- * A `DataTransfer` carrying one PNG, for driving drags and pastes — the only
- * way to hand the page a file without a file input, which is exactly what the
- * drop zone and the paste handler exist to serve.
+ * A `DataTransfer` carrying one PNG, for driving drags and pastes
  */
 export function pngDataTransfer(
   page: Page,
@@ -53,6 +52,18 @@ export function pngDataTransfer(
     },
     { b64: PNG_BASE64, fileName: name }
   )
+}
+
+/** A `DataTransfer` carrying plain text, for driving a text paste. */
+export function textDataTransfer(
+  page: Page,
+  text: string
+): Promise<JSHandle<FileTransfer>> {
+  return page.evaluateHandle((text) => {
+    const transfer = new DataTransfer()
+    transfer.setData("text/plain", text)
+    return transfer
+  }, text)
 }
 
 /**
