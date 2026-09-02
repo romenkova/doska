@@ -10,7 +10,7 @@ import {
 import { HighlightOverlay } from "./highlight/highlight-overlay"
 import { useCutLine } from "./hooks/use-cut-line"
 import { useListContinuation } from "./hooks/use-list-continuation"
-import { usePasteFiles } from "./hooks/use-paste-files"
+import { usePaste } from "./hooks/use-paste"
 import { useCaretScroll } from "./hooks/use-caret-scroll"
 import { SlashMenu } from "./slash-menu/slash-menu"
 import { WikilinkMenu } from "./wikilink-menu"
@@ -91,7 +91,7 @@ export function MarkdownTextarea({
 
   useCaretScroll(textareaRef, !isPreview)
 
-  const handlePaste = usePasteFiles(textareaRef, {
+  const handlePaste = usePaste(textareaRef, {
     value,
     onChangeValue: onChangeValue ?? NOOP,
     onPasteFiles,
