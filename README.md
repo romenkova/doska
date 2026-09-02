@@ -41,7 +41,7 @@ I wanted a Kanban board that works natively with Markdown and fits my way of wor
 
 - **Personal projects**: sync a board to a folder inside the project, so the cards are Markdown files.
 - **Editing on the go**: spin up a sync server with Docker Compose, and have my data on my phone, or just in the browser.
-- **Sharing with family and friends**: account management, and public links for boards.
+- **Sharing with other people**: account management, SSO support, and public links for boards.
 - **MCP**: let agents sort my cards and point out what I am missing.
 
 ## Where the data lives

@@ -14,7 +14,13 @@ import type { ImageSource } from "./url"
 export interface MarkdownAdapter {
   // ------------------------------------------------------------- blocks
   paragraph(runs: ParagraphRun[], style: ParagraphStyle, key: string): ReactNode
-  heading(depth: number, children: ReactNode[], key: string): ReactNode
+  /** `id` is the GitHub-style slug of the heading text, for in-page anchors. */
+  heading(
+    depth: number,
+    children: ReactNode[],
+    id: string,
+    key: string
+  ): ReactNode
   /** `start` is the first ordinal of an ordered list, else 1. */
   list(
     ordered: boolean,

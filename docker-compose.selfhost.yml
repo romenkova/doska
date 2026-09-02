@@ -20,6 +20,12 @@ services:
       AUTH_LOGIN: ${AUTH_LOGIN:?set AUTH_LOGIN in .env}
       AUTH_PASSWORD: ${AUTH_PASSWORD:?set AUTH_PASSWORD in .env}
       AUTH_SECRET: ${AUTH_SECRET:?set AUTH_SECRET in .env}
+      # Optional single sign-on (see the docs on environment variables).
+      OIDC_ISSUER: ${OIDC_ISSUER:-}
+      OIDC_CLIENT_ID: ${OIDC_CLIENT_ID:-}
+      OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET:-}
+      OIDC_NAME: ${OIDC_NAME:-}
+      OIDC_AUTO_CREATE: ${OIDC_AUTO_CREATE:-}
       S3_BUCKET: ${S3_BUCKET:-}
       S3_REGION: ${S3_REGION:-}
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}

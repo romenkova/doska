@@ -3,7 +3,7 @@
 # Required in the Dokploy env UI: DATABASE_URL (your managed Postgres),
 # AUTH_LOGIN, AUTH_PASSWORD, AUTH_SECRET, BASE_URL (public origin, e.g.
 # https://doska.example.com). Optional: the S3_* / AWS_* vars enable card
-# attachments, DOCKER_IMAGE_TAG pins a version.
+# attachments, OIDC_* turn on single sign-on, DOCKER_IMAGE_TAG pins a version.
 services:
   server:
     image: ghcr.io/romenkova/doska-server:${DOCKER_IMAGE_TAG:-latest}
@@ -13,6 +13,12 @@ services:
       AUTH_LOGIN: ${AUTH_LOGIN:?set AUTH_LOGIN in the Dokploy env UI}
       AUTH_PASSWORD: ${AUTH_PASSWORD:?set AUTH_PASSWORD in the Dokploy env UI}
       AUTH_SECRET: ${AUTH_SECRET:?set AUTH_SECRET in the Dokploy env UI}
+      # Optional single sign-on (see the docs on environment variables).
+      OIDC_ISSUER: ${OIDC_ISSUER:-}
+      OIDC_CLIENT_ID: ${OIDC_CLIENT_ID:-}
+      OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET:-}
+      OIDC_NAME: ${OIDC_NAME:-}
+      OIDC_AUTO_CREATE: ${OIDC_AUTO_CREATE:-}
       # Attachments are optional: leave S3_BUCKET unset and the feature stays off.
       # Set these in the Dokploy env UI to enable card file uploads.
       S3_BUCKET: ${S3_BUCKET:-}

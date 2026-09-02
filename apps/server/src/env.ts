@@ -35,6 +35,14 @@ export const env = {
   authTrustedOrigins: list(process.env.AUTH_TRUSTED_ORIGINS),
   authRateLimit: process.env.AUTH_RATE_LIMIT !== "off",
 
+  // Single sign-on through one OIDC provider. OIDC_ISSUER switches it on; the
+  // other two are then required (auth/oidc.ts throws without them).
+  oidcIssuer: trimSlash(process.env.OIDC_ISSUER),
+  oidcClientId: process.env.OIDC_CLIENT_ID ?? "",
+  oidcClientSecret: process.env.OIDC_CLIENT_SECRET ?? "",
+  oidcName: process.env.OIDC_NAME || "SSO",
+  oidcAutoCreate: process.env.OIDC_AUTO_CREATE !== "off",
+
   // Public board links. Their route is the only unauthenticated data endpoint
   // here, and better-auth's own limiter covers `/api/auth` alone, so it gets its
   // own per-IP cap — with the same "off" escape hatch, for e2e and for a

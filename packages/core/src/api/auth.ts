@@ -68,6 +68,17 @@ export async function login(login: string, password: string): Promise<Session> {
   return toSession(data.user)
 }
 
+/** Signs in with the token a desktop browser sign-in ended with. */
+export async function loginWithToken(token: string): Promise<Session> {
+  runtime().auth.capture(token)
+  const session = await fetchSession()
+  if (!session.authed) {
+    runtime().auth.clear()
+    throw new Error("The server did not accept the sign-in")
+  }
+  return session
+}
+
 /** Drops this client's session: the cookie, and any token that was stored. */
 export async function logout(): Promise<void> {
   await authClient().signOut()

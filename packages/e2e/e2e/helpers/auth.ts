@@ -13,17 +13,24 @@ export const TEST_CREDENTIALS = {
 }
 
 /**
- * The sidebar's sign-in control. Scoped to the sidebar because an open board
- * shows a second control with the same accessible name — the deck's sync
- * indicator turns into one while signed out.
- *
- * `exact` so this picks the control, not the account row that wraps it (whose
- * accessible name also ends in "Sign in to sync").
+ * The sidebar's sign-in control: the whole account row, labelled so only once
+ * the session check has resolved to signed-out. Scoped to the sidebar because
+ * an open board shows a second control with the same accessible name (the
+ * deck's sync indicator turns into one while signed out).
  */
 function sidebarSignIn(page: Page) {
   return page
     .locator('[data-slot="sidebar"]')
     .getByRole("button", { name: "Sign in to sync", exact: true })
+}
+
+/**
+ * The sidebar's account row, by the login it names. This is the signed-in
+ * signal: it appears once the session check, or a sign-in, resolves to a
+ * session. Clicking it opens the account modal.
+ */
+export function sidebarAccount(page: Page, login = TEST_CREDENTIALS.login) {
+  return page.locator('[data-slot="sidebar"]').getByText(login, { exact: true })
 }
 
 /**
@@ -41,18 +48,23 @@ export async function signIn(
   await page.getByPlaceholder("Login").fill(credentials.login)
   await page.getByPlaceholder("Password").fill(credentials.password)
   await page.getByRole("button", { name: "Sign in", exact: true }).click()
-  // Wait for the *signed-in* control, not the absence of the signed-out one: an
-  // open modal already hides the sidebar from the a11y tree, so asserting the
-  // sign-in control is gone passes the moment the dialog opens — before the
-  // request even lands — and the next navigation cancels it mid-flight.
-  await expect(page.getByRole("button", { name: "Sign out" })).toBeVisible()
+  // Wait for the *signed-in* state, not the absence of the signed-out control:
+  // an open modal already hides the sidebar from the a11y tree, so asserting
+  // the sign-in control is gone passes the moment the dialog opens, before the
+  // request even lands, and the next navigation cancels it mid-flight.
+  await expect(sidebarAccount(page, credentials.login)).toBeVisible()
 }
 
 /**
- * Signs the open page out via the sidebar account control, and waits for the
- * signed-out state (the sign-in control returns).
+ * Signs the open page out from the account modal (which closes itself on the
+ * way), and waits for the signed-out state (the sign-in control returns). Pass
+ * the login when the page is signed in as someone other than the default.
  */
-export async function signOut(page: Page): Promise<void> {
+export async function signOut(
+  page: Page,
+  login: string = TEST_CREDENTIALS.login
+): Promise<void> {
+  await sidebarAccount(page, login).click()
   await page.getByRole("button", { name: "Sign out" }).click()
   await expect(sidebarSignIn(page)).toBeVisible()
 }

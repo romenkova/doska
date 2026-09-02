@@ -1,9 +1,16 @@
+import { useEffect } from "react"
 import { Markdown } from "@doska/ui-kit"
 import { DocsNav } from "./docs-nav"
 import { DocsSteps } from "./docs-steps"
 import type { DocPage } from "./pages"
 
 export function DocsPage({ page }: { page: DocPage }) {
+  // Dev renders client-side, after the browser's load-time hash scroll.
+  useEffect(() => {
+    const id = decodeURIComponent(window.location.hash.slice(1))
+    if (id) document.getElementById(id)?.scrollIntoView()
+  }, [])
+
   return (
     <div className="mx-auto max-w-6xl gap-10 px-4 py-10 sm:px-6 md:flex">
       <DocsNav current={page} />

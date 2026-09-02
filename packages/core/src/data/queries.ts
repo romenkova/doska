@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query"
 import { countOwnedBoards, listAccounts } from "../api/accounts"
 import { publicBoardToken, publishedBoards } from "../api/boards"
 import { fetchSession } from "../api/auth"
+import { fetchLinkedProviders, fetchSsoProviders } from "../api/sso"
 import { fetchPublicBoard } from "../api/public"
 import { listDirectory, listMembers, listSharedBoards } from "../api/members"
 import {
@@ -13,7 +14,25 @@ import type { DigestFilter } from "../api/operations"
 import { keys } from "./keys"
 
 export type { Account } from "../api/accounts"
+export type { SsoProvider } from "../api/sso"
 export { UNCLAIMED_BOARDS_WARNING }
+
+/** Identity providers offered at sign-in. Empty without a server, or SSO. */
+export function useSsoProviders() {
+  return useQuery({
+    queryKey: keys.sso,
+    queryFn: fetchSsoProviders,
+    networkMode: "always",
+  })
+}
+
+export function useLinkedProviders(userId: string | null) {
+  return useQuery({
+    queryKey: keys.linkedProviders(userId ?? ""),
+    queryFn: fetchLinkedProviders,
+    enabled: userId !== null,
+  })
+}
 
 /**
  * The sync session. `data` is `undefined` until the first check resolves; auth

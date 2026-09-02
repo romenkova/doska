@@ -112,6 +112,12 @@
   margin-top: 0;
 }
 
+/* Keep anchored headings clear of the sticky header. */
+.docs-prose h2,
+.docs-prose h3 {
+  scroll-margin-top: 4.5rem;
+}
+
 .docs-prose p {
   margin-block: 0.6rem;
 }

@@ -19,7 +19,7 @@ export function SettingsModal({ open, onOpenChange, onOpenAccounts }: IProps) {
     <Modal open={open} onOpenChange={onOpenChange}>
       <ModalContent className="md:max-w-sm">
         <ModalHeader onClose={() => onOpenChange(false)}>Settings</ModalHeader>
-        <CardContent className="flex flex-col gap-4 overflow-y-auto py-4">
+        <CardContent className="flex flex-col overflow-y-auto px-0">
           <UpdatesSection />
           <SettingsSection>
             <div className="flex flex-col">

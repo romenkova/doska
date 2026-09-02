@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test"
-import { createBoard, signIn, syncIndicator } from "../helpers"
+import { createBoard, sidebarAccount, signIn, syncIndicator } from "../helpers"
 
 /**
  * The app-wide "sync is down" notice, mounted outside the board so a dropped
@@ -59,11 +59,11 @@ test.describe("connection banner", () => {
     // dropping the connection — a load with no session yet reads as signed out,
     // which is local-only, which has nothing to report.
     await page.goto("/")
-    await expect(page.getByRole("button", { name: "Sign out" })).toBeVisible()
+    await expect(sidebarAccount(page)).toBeVisible()
     await page.context().setOffline(true)
 
     await expect(banner(page)).toBeVisible({ timeout: 15_000 })
     // Still signed in, too: the sidebar keeps the account it knows.
-    await expect(page.getByRole("button", { name: "Sign out" })).toBeVisible()
+    await expect(sidebarAccount(page)).toBeVisible()
   })
 })

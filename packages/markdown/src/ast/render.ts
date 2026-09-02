@@ -57,6 +57,15 @@ function flatten(node: MdNode): string {
   return (node.children ?? []).map(flatten).join("")
 }
 
+/** GitHub's heading anchor: lowercase, punctuation dropped, spaces to dashes. */
+function slug(text: string): string {
+  return text
+    .trim()
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}\s-]/gu, "")
+    .replace(/\s+/g, "-")
+}
+
 // ---------------------------------------------------------------- inline
 
 function renderInline(node: MdNode, ctx: Ctx, key: string): ReactNode {
@@ -263,6 +272,7 @@ function renderBlock(node: MdNode, ctx: Ctx, key: string): ReactNode {
       return adapter.heading(
         node.depth ?? 1,
         renderInlines(node.children, nested(ctx)),
+        slug(flatten(node)),
         key
       )
 

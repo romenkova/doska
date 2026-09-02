@@ -83,7 +83,6 @@ export async function deleteBoard(page: Page): Promise<void> {
     .click()
 }
 
-
 /** Opens the board named `name` from the sidebar's dashboards list. */
 export async function openBoardInSidebar(
   page: Page,
@@ -114,8 +113,10 @@ export async function toggleSort(page: Page, label: string): Promise<void> {
  * settled states.)
  */
 export function syncIndicator(page: Page) {
+  // Anchored: the sidebar's account row is a button too, and its name ends in
+  // the same words ("e2e Offline") once the connection drops.
   return page.getByRole("button", {
-    name: /Synced|change|Sync failed|Offline/,
+    name: /^(Synced|\d+ changes?|Sync failed|Offline)$/,
   })
 }
 

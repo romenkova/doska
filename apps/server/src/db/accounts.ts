@@ -1,7 +1,7 @@
 import { ORPCError } from "@orpc/server"
-import { and, count, eq, isNull } from "drizzle-orm"
+import { and, count, eq, isNull, ne } from "drizzle-orm"
 import { db } from "./client"
-import { dashboards, user } from "./schema"
+import { account, dashboards, user } from "./schema"
 
 export interface AccountRow {
   id: string
@@ -39,6 +39,14 @@ export async function countOwnedBoards(userId: string): Promise<number> {
     .where(and(eq(dashboards.ownerId, userId), isNull(dashboards.deletedAt)))
 
   return row?.boards ?? 0
+}
+
+export async function listSsoUserIds(): Promise<string[]> {
+  const rows = await db
+    .selectDistinct({ userId: account.userId })
+    .from(account)
+    .where(ne(account.providerId, "credential"))
+  return rows.map((row) => row.userId)
 }
 
 /** Sessions and credentials go with the row — both cascade on delete. */

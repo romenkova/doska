@@ -13,6 +13,8 @@ export type Account = {
   login: string
   isAdmin: boolean
   active: boolean
+  /** Signs in through an identity provider, maybe besides a password. */
+  sso: boolean
 }
 
 /**
@@ -44,16 +46,21 @@ function fail(error: ClientError, fallback: string): never {
 }
 
 export async function listAccounts(): Promise<Account[]> {
-  const { data, error } = await authClient().admin.listUsers({
-    query: { limit: 200, sortBy: "createdAt", sortDirection: "asc" },
-  })
+  const [{ data, error }, { userIds }] = await Promise.all([
+    authClient().admin.listUsers({
+      query: { limit: 200, sortBy: "createdAt", sortDirection: "asc" },
+    }),
+    orpc.accounts.sso(),
+  ])
   if (error) fail(error, "Could not load accounts")
 
+  const sso = new Set(userIds)
   return (data.users as AdminUser[]).map((user) => ({
     id: user.id,
     login: user.username ?? user.name,
     isAdmin: user.role === "admin",
     active: !user.banned,
+    sso: sso.has(user.id),
   }))
 }
 

@@ -3,7 +3,11 @@
  */
 
 import { createAuthClient } from "better-auth/react"
-import { adminClient, usernameClient } from "better-auth/client/plugins"
+import {
+  adminClient,
+  genericOAuthClient,
+  usernameClient,
+} from "better-auth/client/plugins"
 import { runtime } from "../runtime"
 import { rawFetch } from "./fetch"
 import { apiUrl } from "./server"
@@ -11,7 +15,7 @@ import { apiUrl } from "./server"
 function create(baseURL: string) {
   return createAuthClient({
     baseURL,
-    plugins: [usernameClient(), adminClient()],
+    plugins: [usernameClient(), adminClient(), genericOAuthClient()],
     fetchOptions: {
       customFetchImpl: rawFetch,
       credentials: "include",
