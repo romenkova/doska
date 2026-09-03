@@ -50,6 +50,7 @@ export function DashboardsList({
           variant="ghost"
           size="icon-sm"
           aria-label="New folder"
+          className="text-muted-foreground"
           onClick={() => createFolder("New folder")}
         >
           <Folder />
@@ -58,6 +59,7 @@ export function DashboardsList({
           variant="ghost"
           size="icon-sm"
           aria-label="New board"
+          className="text-muted-foreground"
           onClick={createAndOpenDashboard}
         >
           <Plus />
