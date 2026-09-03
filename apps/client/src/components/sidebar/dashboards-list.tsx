@@ -1,64 +1,87 @@
 import {
+  Button,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
 } from "@doska/ui-kit"
-import { Globe, Users } from "lucide-react"
+import { Folder, Plus } from "lucide-react"
 import { type Dashboard } from "@doska/core/types"
+import { useSidebarTree } from "@doska/core/queries"
+import { useCreateFolder, useSetFolderCollapsed } from "@doska/core/mutations"
+import { useDashboardNav } from "@/lib/hooks"
+import { BoardItem } from "./board-item"
+import { FolderItem } from "./folder-item"
 
 interface IProps {
-  dashboards: Dashboard[]
   activeDashboardId: string
   sharedIds: string[]
   publishedIds: string[]
-  onSelectDashboard: (dashboard: Dashboard) => void
 }
 
 export function DashboardsList({
-  dashboards,
   activeDashboardId,
   sharedIds,
   publishedIds,
-  onSelectDashboard,
 }: IProps) {
-  if (!dashboards.length) return null
+  const { data: nodes = [] } = useSidebarTree()
+  const { selectDashboard, createAndOpenDashboard } = useDashboardNav()
+  const { mutate: createFolder } = useCreateFolder()
+  const { mutate: setFolderCollapsed } = useSetFolderCollapsed()
   const shared = new Set(sharedIds)
   const published = new Set(publishedIds)
+
+  const boardItem = (dashboard: Dashboard) => (
+    <BoardItem
+      key={dashboard.id}
+      dashboard={dashboard}
+      isActive={dashboard.id === activeDashboardId}
+      isPublished={published.has(dashboard.id)}
+      isShared={shared.has(dashboard.id)}
+      onSelect={() => selectDashboard(dashboard.id)}
+    />
+  )
+
   return (
-    <SidebarGroup>
-      <SidebarGroupLabel>Dashboards</SidebarGroupLabel>
+    <SidebarGroup className="px-0">
+      <SidebarGroupLabel className="mb-1 gap-1 rounded-none pr-0">
+        <span className="flex-1 truncate text-sm">Boards</span>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          aria-label="New folder"
+          onClick={() => createFolder("New folder")}
+        >
+          <Folder />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          aria-label="New board"
+          onClick={createAndOpenDashboard}
+        >
+          <Plus />
+        </Button>
+      </SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu>
-          {dashboards.map((dashboard) => (
-            <SidebarMenuItem key={dashboard.id}>
-              <SidebarMenuButton
-                isActive={dashboard.id === activeDashboardId}
-                tooltip={dashboard.title}
-                onClick={() => onSelectDashboard(dashboard)}
-              >
-                <span className="truncate">{dashboard.title}</span>
-                <span className="ml-auto flex items-center gap-1">
-                  {published.has(dashboard.id) && (
-                    <Globe
-                      role="img"
-                      aria-label="Public"
-                      className="size-3.5 text-muted-foreground"
-                    />
-                  )}
-                  {shared.has(dashboard.id) && (
-                    <Users
-                      role="img"
-                      aria-label="Shared"
-                      className="size-3.5 text-muted-foreground"
-                    />
-                  )}
-                </span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
+          {nodes.map((node) =>
+            node.type === "board" ? (
+              boardItem(node.dashboard)
+            ) : (
+              <FolderItem
+                key={node.id}
+                node={node}
+                onToggle={() =>
+                  setFolderCollapsed({
+                    id: node.id,
+                    collapsed: !node.collapsed,
+                  })
+                }
+                renderBoard={boardItem}
+              />
+            )
+          )}
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>
