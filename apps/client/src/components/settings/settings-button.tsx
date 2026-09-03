@@ -14,7 +14,7 @@ export function SettingsButton() {
       <Button
         variant="ghost"
         size="sm"
-        className="justify-start gap-2"
+        className="justify-start gap-2 px-2"
         onClick={() => setOpen(true)}
       >
         <Settings className="size-4" />

@@ -12,7 +12,7 @@ export function TrashButton() {
     <Button
       variant="ghost"
       size="sm"
-      className={cn("justify-start gap-2", isActive && "bg-muted")}
+      className={cn("justify-start gap-2 px-2", isActive && "bg-muted")}
       onClick={() => navigate(`~${routes.trash()}`)}
     >
       <Trash2 className="size-4" />

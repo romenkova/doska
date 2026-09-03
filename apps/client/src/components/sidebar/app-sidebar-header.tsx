@@ -1,7 +1,7 @@
 import { cn, SidebarHeader, SidebarMenu, SidebarMenuItem } from "@doska/ui-kit"
-import { Anchor } from "lucide-react"
 import { Link } from "wouter"
 import { isDesktop } from "@/lib/platform"
+import { FiAnchor } from "react-icons/fi"
 
 export function AppSidebarHeader() {
   return (
@@ -14,9 +14,9 @@ export function AppSidebarHeader() {
       <SidebarMenu>
         <SidebarMenuItem>
           <Link to="~/">
-            <div className="flex items-center space-x-1">
-              <Anchor className="size-4 shrink-0" />
-              <span className="cn-font-heading pr-2 text-base font-semibold">
+            <div className="flex items-center space-x-1.5">
+              <FiAnchor className="size-4 shrink-0" />
+              <span className="cn-font-heading text-base text-[18px]">
                 Doska
               </span>
             </div>

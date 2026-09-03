@@ -19,7 +19,7 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <AppSidebarHeader />
-      <SidebarContent className="group/sidebar mt-4">
+      <SidebarContent className="group/sidebar mt-[10px]">
         <DashboardsList
           activeDashboardId={activeDashboardId}
           sharedIds={sharedIds}
