@@ -43,9 +43,9 @@ export function DashboardsList({
   )
 
   return (
-    <SidebarGroup className="px-0">
+    <SidebarGroup className="mt-4">
       <SidebarGroupLabel className="mb-1 gap-1 rounded-none pr-0">
-        <span className="flex-1 truncate text-sm">Boards</span>
+        <span className="flex-1 text-sm">Boards</span>
         <Button
           variant="ghost"
           size="icon-sm"

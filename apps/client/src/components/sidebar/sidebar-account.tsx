@@ -53,7 +53,9 @@ export function SidebarAccount() {
                 {subtitle}
               </span>
             </div>
-            {signedOut && <LogIn className="ml-auto text-muted-foreground" />}
+            {signedOut && (
+              <LogIn className="ml-auto size-4 text-muted-foreground" />
+            )}
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarMenu>

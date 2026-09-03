@@ -3,9 +3,9 @@ export const routes = {
   about: () => "/about",
   /** Also the server's OAuth login page — see `SignInPage`. */
   signIn: () => "/sign-in",
-  /** Deadlined cards from every board, or the empty state with no board. Nested
-   * like a deck, so it can host the card panel on the same `routes.card` pattern. */
-  home: () => "/",
+  /** Deadlined cards from every board. Nested like a deck, so it can host the
+   * card panel on the same `routes.card` pattern. */
+  digest: () => "/digest",
   /** Deleted boards, columns and cards, restorable until they age out. */
   trash: () => "/trash",
   /** Top-level deck route — one per dashboard. */

@@ -1,15 +1,11 @@
 import { cn, SidebarHeader, SidebarMenu, SidebarMenuItem } from "@doska/ui-kit"
 import { Link } from "wouter"
-import { isDesktop } from "@/lib/platform"
 import { FiAnchor } from "react-icons/fi"
 
 export function AppSidebarHeader() {
   return (
     <SidebarHeader
-      className={cn(
-        "pt-[calc(--spacing(2)+env(safe-area-inset-top))]",
-        isDesktop() && "pt-10"
-      )}
+      className={cn("mt-2 pt-[calc(--spacing(2)+env(safe-area-inset-top))]")}
     >
       <SidebarMenu>
         <SidebarMenuItem>
