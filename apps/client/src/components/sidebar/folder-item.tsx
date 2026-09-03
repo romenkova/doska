@@ -1,11 +1,11 @@
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@doska/ui-kit"
 import { Folder } from "lucide-react"
 import type { ReactNode } from "react"
-import type { SidebarNode } from "@doska/core/operations"
+import type { SidebarFolderNode } from "@doska/core/operations"
 import type { Dashboard } from "@doska/core/types"
 
 interface IProps {
-  node: Extract<SidebarNode, { type: "folder" }>
+  node: SidebarFolderNode
   onToggle: () => void
   renderBoard: (dashboard: Dashboard) => ReactNode
 }

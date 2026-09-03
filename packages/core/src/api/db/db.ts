@@ -1,6 +1,6 @@
 import { runtime } from "../../runtime"
 import { cards as seedCards, seedColumns, seedDashboards } from "../../seed"
-import type { Card, Column, Dashboard } from "../../types"
+import type { Card, Column, Dashboard, SidebarLayout } from "../../types"
 import {
   CARDS,
   CARDS_BY_COLUMN,
@@ -8,6 +8,8 @@ import {
   CARDS_BY_NUMBER,
   COLUMNS,
   DASHBOARDS,
+  SIDEBAR,
+  SIDEBAR_LAYOUT_ID,
   type StoreName,
 } from "../constants"
 import { stamp } from "../sync/hlc"
@@ -118,6 +120,24 @@ export const db = {
   },
   restoreDashboard(dashboard: Dashboard): Promise<void> {
     return runtime().db.set(DASHBOARDS, dashboard.id, revive(dashboard))
+  },
+  /** The account's sidebar layout; an empty one until the first edit. */
+  async getSidebarLayout(): Promise<SidebarLayout> {
+    const layout = await runtime().db.get<SidebarLayout>(
+      SIDEBAR,
+      SIDEBAR_LAYOUT_ID
+    )
+    return (
+      layout ?? {
+        id: SIDEBAR_LAYOUT_ID,
+        items: [],
+        updatedAt: 0,
+        deletedAt: null,
+      }
+    )
+  },
+  setSidebarLayout(layout: SidebarLayout): Promise<void> {
+    return runtime().db.set(SIDEBAR, SIDEBAR_LAYOUT_ID, layout)
   },
   /** Removes a record outright. Only for tombstones past retention. */
   hardDelete(store: StoreName, id: string): Promise<void> {

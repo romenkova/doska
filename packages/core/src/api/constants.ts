@@ -1,8 +1,11 @@
 export const CARDS = "cards"
 export const COLUMNS = "columns"
 export const DASHBOARDS = "dashboards"
+/** The account's sidebar layout: one record under `SIDEBAR_LAYOUT_ID`. */
+export const SIDEBAR = "sidebar"
+export const SIDEBAR_LAYOUT_ID = "layout"
 
-export const STORES = [CARDS, COLUMNS, DASHBOARDS] as const
+export const STORES = [CARDS, COLUMNS, DASHBOARDS, SIDEBAR] as const
 export type StoreName = (typeof STORES)[number]
 
 /** Sync bookkeeping (the pull cursor) — kept in the DB so it shares the data's

@@ -1,4 +1,11 @@
 export { getDashboards } from "./get-dashboards"
+export { getSidebarTree } from "./get-sidebar-tree"
+export type {
+  SidebarBoardNode,
+  SidebarFolderNode,
+  SidebarNode,
+} from "./get-sidebar-tree"
+export { createFolder, setFolderCollapsed } from "./sidebar-layout"
 export { getBoard } from "./get-board"
 export { getDeletedIds } from "./get-deleted-ids"
 export type { DeletedIds } from "./get-deleted-ids"
