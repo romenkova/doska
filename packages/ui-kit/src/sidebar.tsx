@@ -241,8 +241,8 @@ function SidebarGroupLabel({ className, ...props }: ComponentProps<"div">) {
       data-slot="sidebar-group-label"
       className={cn(
         "flex h-8 shrink-0 items-center rounded-md px-2",
-        "text-xs font-medium text-sidebar-foreground/70",
-        "[&>svg]:size-4 [&>svg]:shrink-0",
+        "text-xs font-medium text-sidebar-foreground/60",
+        "[&>svg]:shrink-0",
         className
       )}
       {...props}
@@ -301,10 +301,10 @@ function SidebarMenuButton({
         "group/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2",
         "text-left text-sm ring-sidebar-ring outline-hidden transition-colors",
         "hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground",
-        "active:bg-sidebar-accent active:text-sidebar-accent-foreground",
+        "active:bg-sidebar-accent/50 active:text-sidebar-accent-foreground",
         "focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50",
-        "data-active:bg-sidebar-accent data-active:font-medium data-active:text-sidebar-accent-foreground",
-        "[&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
+        "data-active:bg-sidebar-accent/50 data-active:font-medium data-active:text-sidebar-accent-foreground",
+        "[&>span:last-child]:truncate [&>svg]:shrink-0",
         size === "lg" ? "h-12" : "h-8",
         className
       )}
