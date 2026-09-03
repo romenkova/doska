@@ -1,6 +1,5 @@
 import { Route, Switch } from "wouter"
 import { BoardPage } from "@/components/app/board-page"
-import { DigestPage } from "@/components/app/digest-page"
 import { HomePage } from "@/components/app/home-page"
 import { SignInPage } from "@/components/login/sign-in-page"
 import { TrashPage } from "@/components/app/trash-page"
@@ -13,16 +12,13 @@ export function Router() {
       <Route path={routes.signIn()}>
         <SignInPage />
       </Route>
-      <Route path={routes.digest()} nest>
-        <DigestPage />
-      </Route>
       <Route path={routes.trash()}>
         <TrashPage />
       </Route>
       <Route path={routes.deck.pattern} nest>
         {(params) => <BoardPage deckId={params.id} />}
       </Route>
-      <Route>
+      <Route path={routes.home()} nest>
         <HomePage />
       </Route>
     </Switch>
