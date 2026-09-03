@@ -22,8 +22,8 @@
     "@doska/core": "workspace:*",
     "@doska/ports": "workspace:*",
     "@types/node": "^22",
-    "eslint": "^10",
+    "eslint": "^10.9.1",
     "typescript": "~6",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.11"
   }
 }

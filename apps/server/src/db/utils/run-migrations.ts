@@ -1,11 +1,13 @@
 import path from "node:path"
 import { fileURLToPath } from "node:url"
 import { migrate as migrateNodePg } from "drizzle-orm/node-postgres/migrator"
+import type { PgliteDatabase } from "drizzle-orm/pglite"
 import { migrate as migratePglite } from "drizzle-orm/pglite/migrator"
 import { Pool } from "pg"
 import { waitForConnection } from "./wait-for-connection"
 import { env } from "../../env"
 import { getDB } from "../get-db"
+import type * as schema from "../schema"
 
 /** Applies any pending migrations. Run once at startup, before serving. */
 export async function runMigrations(): Promise<void> {
@@ -22,5 +24,8 @@ export async function runMigrations(): Promise<void> {
     return migrateNodePg(db, { migrationsFolder })
   }
 
-  return migratePglite(db, { migrationsFolder })
+  // PG for e2e and dev
+  return migratePglite(db as unknown as PgliteDatabase<typeof schema>, {
+    migrationsFolder,
+  })
 }

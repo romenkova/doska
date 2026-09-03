@@ -9,12 +9,12 @@
     "./server": "./src/server/index.ts"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.1096.0"
+    "@aws-sdk/client-s3": "^3.1124.0"
   },
   "devDependencies": {
     "@doska/configs": "workspace:*",
     "@types/node": "^22",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.11"
   },
   "scripts": {
     "test": "vitest run",

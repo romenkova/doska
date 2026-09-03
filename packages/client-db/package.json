@@ -12,10 +12,9 @@
     "test": "vitest run",
     "test:watch": "vitest"
   },
-  "dependencies": {},
   "devDependencies": {
     "@doska/configs": "workspace:*",
-    "fake-indexeddb": "^6.2.4",
-    "vitest": "^4.1.10"
+    "fake-indexeddb": "^6.2.5",
+    "vitest": "^4.1.11"
   }
 }

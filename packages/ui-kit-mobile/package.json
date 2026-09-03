@@ -25,14 +25,15 @@
   "devDependencies": {
     "@doska/configs": "workspace:*",
     "@doska/tokens": "workspace:*",
-    "@types/react": "^19",
-    "eslint": "^10",
+    "@types/react": "^19.2.18",
+    "eslint": "^10.9.1",
     "expo-blur": "^57.0.2",
-    "expo-haptics": "^57.0.1",
-    "lucide-react-native": "^1.28.0",
+    "expo-haptics": "^57.0.2",
+    "lucide-react-native": "^1.39.0",
     "nativewind": "^4.2.6",
     "react": "^19.2.3",
-    "react-native": "0.86.2",
+    "react-native": "0.86.3",
+    "react-native-reanimated": "4.5.1",
     "react-native-safe-area-context": "~5.7.0",
     "typescript": "~6"
   }
