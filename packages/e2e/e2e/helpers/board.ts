@@ -9,14 +9,15 @@ import { menu } from "./menu"
 /* -------------------------------------------------------------------------- */
 
 /**
- * Creates a fresh board from Home and returns its generated deck id (read off
- * the URL — the one identifier a user can actually see, in their address bar).
- * A new board lands with the three default columns (To Do / In Progress / Done)
- * and no cards; seed any cards a test needs with `addCard`.
+ * Creates a fresh board from the sidebar's "New board" button and returns its
+ * generated deck id (read off the URL — the one identifier a user can actually
+ * see, in their address bar). A new board lands with the three default columns
+ * (To Do / In Progress / Done) and no cards; seed any cards a test needs with
+ * `addCard`.
  */
 export async function createBoard(page: Page): Promise<string> {
   await page.goto("/")
-  await page.getByRole("button", { name: "Create a board" }).click()
+  await page.getByRole("button", { name: "New board" }).click()
   await page.waitForURL(/\/d\/board-/)
   return new URL(page.url()).pathname.split("/d/")[1]
 }
