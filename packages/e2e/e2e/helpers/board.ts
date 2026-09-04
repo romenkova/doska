@@ -17,7 +17,8 @@ import { menu } from "./menu"
  */
 export async function createBoard(page: Page): Promise<string> {
   await page.goto("/")
-  await page.getByRole("button", { name: "New board" }).click()
+  // Home's button, not the sidebar's: the sidebar is hidden on narrow viewports.
+  await page.getByRole("button", { name: "Create a board" }).click()
   await page.waitForURL(/\/d\/board-/)
   return new URL(page.url()).pathname.split("/d/")[1]
 }

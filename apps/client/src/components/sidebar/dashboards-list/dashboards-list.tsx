@@ -74,6 +74,7 @@ export function DashboardsList({
                           ref={dragProvided.innerRef}
                           {...dragProvided.draggableProps}
                           {...dragProvided.dragHandleProps}
+                          role="listitem"
                           style={{
                             ...dragProvided.draggableProps.style,
                             ...(snapshot.isDropAnimating && {
