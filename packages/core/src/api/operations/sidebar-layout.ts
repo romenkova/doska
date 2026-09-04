@@ -33,3 +33,25 @@ export function setFolderCollapsed(
     )
   )
 }
+
+export function renameFolder(id: string, title: string): Promise<void> {
+  return updateSidebarLayout((items) =>
+    items.map((item) =>
+      item.type === "folder" && item.id === id ? { ...item, title } : item
+    )
+  )
+}
+
+/** The folder's boards take its place at the root, so nothing moves on screen. */
+export function deleteFolder(id: string): Promise<void> {
+  return updateSidebarLayout((items) =>
+    items.flatMap((item) =>
+      item.type === "folder" && item.id === id
+        ? item.boardIds.map((boardId) => ({
+            type: "board" as const,
+            id: boardId,
+          }))
+        : [item]
+    )
+  )
+}

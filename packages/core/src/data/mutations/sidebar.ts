@@ -18,3 +18,20 @@ export function useSetFolderCollapsed() {
     onSettled: () => qc.invalidateQueries({ queryKey: keys.sidebar }),
   })
 }
+
+export function useRenameFolder() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, title }: { id: string; title: string }) =>
+      api.renameFolder(id, title),
+    onSettled: () => qc.invalidateQueries({ queryKey: keys.sidebar }),
+  })
+}
+
+export function useDeleteFolder() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => api.deleteFolder(id),
+    onSettled: () => qc.invalidateQueries({ queryKey: keys.sidebar }),
+  })
+}

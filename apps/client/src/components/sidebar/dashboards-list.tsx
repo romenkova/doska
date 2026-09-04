@@ -8,10 +8,16 @@ import {
 import { Folder, Plus } from "lucide-react"
 import { type Dashboard } from "@doska/core/types"
 import { useSidebarTree } from "@doska/core/queries"
-import { useCreateFolder, useSetFolderCollapsed } from "@doska/core/mutations"
+import {
+  useCreateFolder,
+  useDeleteFolder,
+  useRenameFolder,
+  useSetFolderCollapsed,
+} from "@doska/core/mutations"
+import { useState } from "react"
 import { useDashboardNav } from "@/lib/hooks"
 import { BoardItem } from "./board-item"
-import { FolderItem } from "./folder-item"
+import { FolderItem } from "./folder/folder-item"
 
 interface IProps {
   activeDashboardId: string
@@ -28,6 +34,9 @@ export function DashboardsList({
   const { selectDashboard, createAndOpenDashboard } = useDashboardNav()
   const { mutate: createFolder } = useCreateFolder()
   const { mutate: setFolderCollapsed } = useSetFolderCollapsed()
+  const { mutate: renameFolder } = useRenameFolder()
+  const { mutate: deleteFolder } = useDeleteFolder()
+  const [renamingId, setRenamingId] = useState<string | null>(null)
   const shared = new Set(sharedIds)
   const published = new Set(publishedIds)
 
@@ -51,7 +60,9 @@ export function DashboardsList({
           size="icon-sm"
           aria-label="New folder"
           className="text-muted-foreground"
-          onClick={() => createFolder("New folder")}
+          onClick={() =>
+            createFolder("New folder", { onSuccess: setRenamingId })
+          }
         >
           <Folder />
         </Button>
@@ -74,12 +85,17 @@ export function DashboardsList({
               <FolderItem
                 key={node.id}
                 node={node}
+                renaming={node.id === renamingId}
                 onToggle={() =>
                   setFolderCollapsed({
                     id: node.id,
                     collapsed: !node.collapsed,
                   })
                 }
+                onRenameStart={() => setRenamingId(node.id)}
+                onRename={(title) => renameFolder({ id: node.id, title })}
+                onRenameEnd={() => setRenamingId(null)}
+                onDelete={() => deleteFolder(node.id)}
                 renderBoard={boardItem}
               />
             )

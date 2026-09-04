@@ -5,7 +5,12 @@ export type {
   SidebarFolderNode,
   SidebarNode,
 } from "./get-sidebar-tree"
-export { createFolder, setFolderCollapsed } from "./sidebar-layout"
+export {
+  createFolder,
+  deleteFolder,
+  renameFolder,
+  setFolderCollapsed,
+} from "./sidebar-layout"
 export { getBoard } from "./get-board"
 export { getDeletedIds } from "./get-deleted-ids"
 export type { DeletedIds } from "./get-deleted-ids"

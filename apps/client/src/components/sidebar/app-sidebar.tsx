@@ -25,7 +25,7 @@ export function AppSidebar() {
   const activeDashboardId = useParams().id ?? ""
 
   return (
-    <Sidebar>
+    <Sidebar className="ml-1">
       {!isDesktop() && <AppSidebarHeader />}
       <SidebarContent className="group/sidebar mt-6">
         <SidebarGroup>
