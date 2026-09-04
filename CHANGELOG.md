@@ -1,6 +1,26 @@
 # Changelog
 
-## [0.20.0] - 2026-09-01
+## [Unreleased]
+
+### Added
+
+- Single sign-on for self-hosted servers: any OIDC provider
+  (Authentik, Keycloak, Pocket ID, Google). The first sign-in creates the
+  account, and an existing password account can connect a provider from its
+  account modal.
+- Desktop signs in through the browser: press **Sign in in browser**, sign in
+  there however you like, and come back.
+- Sidebar folders and reorder.
+- The sidebar layout is per user and syncs between devices.
+- Cmd+V over selected text in the markdown editor wraps it in a link.
+- Tooltips on every icon button, using the button's aria label.
+- Docs: single sign-on guide, heading anchors.
+
+### Changed
+
+- Packages updated.
+
+## [0.21.0] - 2026-09-01
 
 ### Added
 
