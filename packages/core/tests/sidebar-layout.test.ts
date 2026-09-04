@@ -1,7 +1,10 @@
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 import type { Dashboard, SidebarItem } from "../src/types"
 import { buildTree, treeItems } from "../src/api/operations/get-sidebar-tree"
 import { moveItem, placeBoards } from "../src/api/operations/sidebar-layout"
+
+// The module marks the layout dirty on write; the pure helpers under test never do.
+vi.mock("../src/api/sync", () => ({ sync: { markDirty: () => {} } }))
 
 const board = (id: string): SidebarItem => ({ type: "board", id })
 const folder = (id: string, boardIds: string[]): SidebarItem => ({

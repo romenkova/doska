@@ -131,17 +131,26 @@ export const DirectoryUserSchema = z.object({
   username: z.string(),
 })
 
-/** A dashboard list change. The dashboard list syncs on its own account-level
- * channel (see `dashboards.sync`), independent of any open board, so it carries
- * only dashboard records. */
-export const DashboardChangeSchema = z.object({
+const DashboardRecordChangeSchema = z.object({
   store: z.literal("dashboards"),
   record: DashboardSchema,
 })
 
-/** One record change, tagged by the store it belongs to. */
+const SidebarChangeSchema = z.object({
+  store: z.literal("sidebar"),
+  record: SidebarLayoutSchema,
+})
+
+/** A change on the account-level channel (see `dashboards.sync`): a dashboard
+ * or the caller's sidebar layout. */
+export const DashboardChangeSchema = z.discriminatedUnion("store", [
+  DashboardRecordChangeSchema,
+  SidebarChangeSchema,
+])
+
+/** One board-channel record change, tagged by the store it belongs to. */
 export const ChangeSchema = z.discriminatedUnion("store", [
   z.object({ store: z.literal("cards"), record: CardSchema }),
   z.object({ store: z.literal("columns"), record: ColumnSchema }),
-  DashboardChangeSchema,
+  DashboardRecordChangeSchema,
 ])

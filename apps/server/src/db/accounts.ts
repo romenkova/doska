@@ -1,7 +1,7 @@
 import { ORPCError } from "@orpc/server"
 import { and, count, eq, isNull, ne } from "drizzle-orm"
 import { db } from "./client"
-import { account, dashboards, user } from "./schema"
+import { account, dashboards, sidebarLayouts, user } from "./schema"
 
 export interface AccountRow {
   id: string
@@ -51,5 +51,6 @@ export async function listSsoUserIds(): Promise<string[]> {
 
 /** Sessions and credentials go with the row — both cascade on delete. */
 export async function deleteAccount(userId: string): Promise<void> {
+  await db.delete(sidebarLayouts).where(eq(sidebarLayouts.userId, userId))
   await db.delete(user).where(eq(user.id, userId))
 }

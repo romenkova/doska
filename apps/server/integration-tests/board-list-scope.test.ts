@@ -3,7 +3,13 @@ import { beforeAll, beforeEach, describe, expect, test } from "vitest"
 import { auth } from "../src/auth"
 import { getDB } from "../src/db/get-db"
 import { dashboards } from "../src/db/schema"
-import { rpcClient, resetTables, startServer, type Harness } from "./harness"
+import {
+  dashboardTitles,
+  rpcClient,
+  resetTables,
+  startServer,
+  type Harness,
+} from "./harness"
 
 let h: Harness
 let owner: ReturnType<typeof rpcClient>
@@ -75,20 +81,20 @@ describe("dashboards.sync is scoped to the owner", () => {
       since: 0,
       changes: [board("b1", "Roadmap")],
     })
-    expect(first.changes.map((c) => c.record.title)).toEqual(["Roadmap"])
+    expect(dashboardTitles(first.changes)).toEqual(["Roadmap"])
 
     const theirs = await second.dashboards.sync({
       since: 0,
       changes: [board("b2", "Theirs")],
     })
-    expect(theirs.changes.map((c) => c.record.title)).toEqual(["Theirs"])
+    expect(dashboardTitles(theirs.changes)).toEqual(["Theirs"])
 
     // And past a cursor: neither account is handed the other's write.
     const renamed = await owner.dashboards.sync({
       since: first.cursor,
       changes: [board("b1", "Renamed", now + 1)],
     })
-    expect(renamed.changes.map((c) => c.record.title)).toEqual(["Renamed"])
+    expect(dashboardTitles(renamed.changes)).toEqual(["Renamed"])
   })
 
   test("a push naming another account's board is dropped, not failed", async () => {

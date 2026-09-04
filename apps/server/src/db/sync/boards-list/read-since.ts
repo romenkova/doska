@@ -9,15 +9,15 @@ import {
   or,
 } from "drizzle-orm"
 import { db } from "../../client"
-import { boardMembers, dashboards } from "../../schema"
+import { boardMembers, dashboards, sidebarLayouts } from "../../schema"
 import { boardsListCounter } from "../constants"
 
 /**
  * Returns every dashboard `userId` can reach that changed past `since` — owned
- * or shared with them — plus the ids of boards they have just lost, plus the
- * dashboards counter's high-water mark to hand back as the next cursor.
- * Board-independent: a client gets the metadata of every board it can reach,
- * regardless of which one it has open.
+ * or shared with them — plus the ids of boards they have just lost, plus their
+ * sidebar layout if it changed, plus the dashboards counter's high-water mark
+ * to hand back as the next cursor. Board-independent: a client gets the
+ * metadata of every board it can reach, regardless of which one it has open.
  */
 export async function readSince(
   since: number,
@@ -56,6 +56,27 @@ export async function readSince(
         sort: r.sort,
         updatedAt: r.updatedAt,
         deletedAt: r.deletedAt,
+      },
+    })
+  }
+
+  const [layout] = await db
+    .select({
+      items: sidebarLayouts.items,
+      updatedAt: sidebarLayouts.updatedAt,
+    })
+    .from(sidebarLayouts)
+    .where(
+      and(eq(sidebarLayouts.userId, userId), gt(sidebarLayouts.seq, since))
+    )
+  if (layout) {
+    changes.push({
+      store: "sidebar",
+      record: {
+        id: "layout",
+        items: layout.items,
+        updatedAt: layout.updatedAt,
+        deletedAt: null,
       },
     })
   }

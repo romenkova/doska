@@ -159,9 +159,10 @@ async function readDashboard(
   id: string
 ): Promise<Dashboard> {
   const { changes } = await dashboardSync(request, { since: 0, changes: [] })
-  const hit = changes.find((c) => c.record.id === id)
-  if (!hit) throw new Error(`board ${id} not found on the server`)
-  return hit.record
+  for (const c of changes) {
+    if (c.store === "dashboards" && c.record.id === id) return c.record
+  }
+  throw new Error(`board ${id} not found on the server`)
 }
 
 /** Another client renames the board titled `fromTitle`. */

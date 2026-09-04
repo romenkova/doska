@@ -1,6 +1,8 @@
 import type { Dashboard, SidebarItem } from "../../types"
+import { SIDEBAR, SIDEBAR_LAYOUT_ID } from "../constants"
 import { db } from "../db/db"
 import { stamp } from "../sync/hlc"
+import { sync } from "../sync"
 import { getDashboards } from "./get-dashboards"
 import { newId } from "./new-id"
 
@@ -43,6 +45,7 @@ async function updateSidebarLayout(
     items: edit(layout.items),
     updatedAt: stamp(),
   })
+  sync.markDirty(SIDEBAR, SIDEBAR_LAYOUT_ID)
 }
 
 export async function createFolder(title: string): Promise<string> {

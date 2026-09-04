@@ -1,7 +1,7 @@
 import type { DashboardChange } from "@doska/contract"
 import { eq } from "drizzle-orm"
 import { type Tx } from "../core/counter"
-import { dashboards } from "../../schema"
+import { dashboards, sidebarLayouts } from "../../schema"
 import { upsertLWW } from "../core/upsert-lww"
 
 /**
@@ -11,10 +11,26 @@ import { upsertLWW } from "../core/upsert-lww"
  */
 export async function applyOne(
   tx: Tx,
-  { record }: DashboardChange,
+  change: DashboardChange,
   nextSeq: number,
   userId: string
 ): Promise<boolean> {
+  if (change.store === "sidebar") {
+    return upsertLWW(
+      tx,
+      sidebarLayouts,
+      sidebarLayouts.userId,
+      sidebarLayouts.updatedAt,
+      {
+        userId,
+        items: change.record.items,
+        updatedAt: change.record.updatedAt,
+        seq: nextSeq,
+      }
+    )
+  }
+
+  const { record } = change
   const [existing] = await tx
     .select({ ownerId: dashboards.ownerId })
     .from(dashboards)
