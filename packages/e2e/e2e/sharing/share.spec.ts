@@ -156,7 +156,7 @@ test.describe("sharing a board", () => {
     // An open modal hides the sidebar from the a11y tree, so a board is
     // trivially "gone" while one is up: get back to the app before asserting.
     await page.keyboard.press("Escape")
-    await expect(page.getByRole("button", { name: "Upcoming" })).toBeVisible()
+    await expect(page.getByRole("button", { name: "New board" })).toBeVisible()
     await expect(sidebarBoard(page, shared.board)).toHaveCount(0, {
       timeout: 15_000,
     })

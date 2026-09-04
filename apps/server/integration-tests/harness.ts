@@ -1,5 +1,5 @@
 import { createHash, randomBytes } from "node:crypto"
-import { contract } from "@doska/contract"
+import { contract, type DashboardChange } from "@doska/contract"
 import { createORPCClient } from "@orpc/client"
 import { RPCLink } from "@orpc/client/fetch"
 import type { ContractRouterClient } from "@orpc/contract"
@@ -181,6 +181,10 @@ export function toolJson(result: ToolResult): any {
 /** Clears the sync tables; leaves the auth tables (and thus the session) intact. */
 export async function resetTables(): Promise<void> {
   await getDB().execute(
-    sql`TRUNCATE cards, columns, dashboards, board_members, counters RESTART IDENTITY`
+    sql`TRUNCATE cards, columns, dashboards, board_members, sidebar_layouts, counters RESTART IDENTITY`
   )
 }
+
+/** Board titles off the account-level channel; sidebar changes fall out. */
+export const dashboardTitles = (changes: DashboardChange[]): string[] =>
+  changes.flatMap((c) => (c.store === "dashboards" ? [c.record.title] : []))

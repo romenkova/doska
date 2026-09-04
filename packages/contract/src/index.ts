@@ -10,6 +10,8 @@ import type {
   MemberRoleSchema,
   MemberSchema,
   PublicBoardSchema,
+  SidebarItemSchema,
+  SidebarLayoutSchema,
 } from "./schemas"
 
 export * from "./schemas"
@@ -27,3 +29,5 @@ export type Member = z.infer<typeof MemberSchema>
 export type MemberRole = z.infer<typeof MemberRoleSchema>
 export type DirectoryUser = z.infer<typeof DirectoryUserSchema>
 export type PublicBoard = z.infer<typeof PublicBoardSchema>
+export type SidebarItem = z.infer<typeof SidebarItemSchema>
+export type SidebarLayout = z.infer<typeof SidebarLayoutSchema>

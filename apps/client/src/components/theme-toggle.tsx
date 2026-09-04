@@ -23,7 +23,7 @@ export function ThemeToggle({ iconOnly }: IProps) {
       aria-label={iconOnly ? label : undefined}
       className={cn(
         "shrink-0",
-        iconOnly ? "text-muted-foreground" : "justify-start gap-2"
+        iconOnly ? "text-muted-foreground" : "justify-start gap-2 px-2"
       )}
       onClick={() => {
         setTheme(theme === "dark" ? "light" : "dark")

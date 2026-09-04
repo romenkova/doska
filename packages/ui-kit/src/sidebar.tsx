@@ -27,7 +27,7 @@ import {
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
-const SIDEBAR_WIDTH = "16rem"
+const SIDEBAR_WIDTH = "15rem"
 const SIDEBAR_WIDTH_MOBILE = "18rem"
 const SIDEBAR_KEYBOARD_SHORTCUT = "b"
 
@@ -116,7 +116,7 @@ function Sidebar({ className, children, ...props }: ComponentProps<"div">) {
             <SheetTitle>Sidebar</SheetTitle>
             <SheetDescription>Displays the mobile sidebar.</SheetDescription>
           </SheetHeader>
-          <div className="flex h-full w-full flex-col">{children}</div>
+          <div className="flex h-full w-full flex-col p-2">{children}</div>
         </SheetContent>
       </Sheet>
     )
@@ -183,7 +183,7 @@ function SidebarInset({ className, ...props }: ComponentProps<"main">) {
       data-slot="sidebar-inset"
       className={cn(
         "relative flex w-full flex-1 flex-col bg-background",
-        "md:m-2 md:ml-0 md:rounded-xl md:shadow-e1",
+        "md:m-2 md:ml-4 md:rounded-xl md:shadow-e1",
         "md:peer-data-[state=collapsed]:m-0 md:peer-data-[state=collapsed]:rounded-none md:peer-data-[state=collapsed]:shadow-none",
         className
       )}
@@ -206,7 +206,7 @@ function SidebarFooter({ className, ...props }: ComponentProps<"div">) {
   return (
     <div
       data-slot="sidebar-footer"
-      className={cn("flex flex-col gap-2 p-2", className)}
+      className={cn("flex flex-col gap-2", className)}
       {...props}
     />
   )
@@ -229,7 +229,7 @@ function SidebarGroup({ className, ...props }: ComponentProps<"div">) {
   return (
     <div
       data-slot="sidebar-group"
-      className={cn("relative flex w-full min-w-0 flex-col p-2", className)}
+      className={cn("relative flex w-full min-w-0 flex-col py-2", className)}
       {...props}
     />
   )
@@ -241,8 +241,8 @@ function SidebarGroupLabel({ className, ...props }: ComponentProps<"div">) {
       data-slot="sidebar-group-label"
       className={cn(
         "flex h-8 shrink-0 items-center rounded-md px-2",
-        "text-xs font-medium text-sidebar-foreground/70",
-        "[&>svg]:size-4 [&>svg]:shrink-0",
+        "text-xs font-medium text-sidebar-foreground/60",
+        "[&>svg]:shrink-0",
         className
       )}
       {...props}
@@ -301,10 +301,10 @@ function SidebarMenuButton({
         "group/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2",
         "text-left text-sm ring-sidebar-ring outline-hidden transition-colors",
         "hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground",
-        "active:bg-sidebar-accent active:text-sidebar-accent-foreground",
+        "active:bg-sidebar-accent/50 active:text-sidebar-accent-foreground",
         "focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50",
-        "data-active:bg-sidebar-accent data-active:font-medium data-active:text-sidebar-accent-foreground",
-        "[&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
+        "data-active:bg-sidebar-accent/50 data-active:font-medium data-active:text-sidebar-accent-foreground",
+        "[&>span:last-child]:truncate [&>svg]:shrink-0",
         size === "lg" ? "h-12" : "h-8",
         className
       )}

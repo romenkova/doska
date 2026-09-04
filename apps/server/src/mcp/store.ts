@@ -36,8 +36,11 @@ export class DbStore implements BoardStore {
 
   async readDashboards(): Promise<Dashboard[]> {
     const { changes } = await boardsListSync.readSince(0, this.userId)
-    const records = changes.map((change) => change.record)
-    for (const record of records) clock.receive(record.updatedAt)
+    const records: Dashboard[] = []
+    for (const change of changes) {
+      clock.receive(change.record.updatedAt)
+      if (change.store === "dashboards") records.push(change.record)
+    }
     return records
   }
 

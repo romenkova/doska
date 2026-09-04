@@ -1,77 +1,43 @@
-import { useLocation, useParams, useRouter } from "wouter"
+import { useParams } from "wouter"
 import {
-  Button,
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
   SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
 } from "@doska/ui-kit"
-import {
-  useDashboards,
-  usePublishedBoards,
-  useSharedBoards,
-} from "@doska/core/queries"
-import { useAuth, useDashboardNav } from "@/lib/hooks"
-import { routes } from "@/lib/routes"
+import { usePublishedBoards, useSharedBoards } from "@doska/core/queries"
+import { useAuth } from "@/lib/hooks"
 import { AppSidebarHeader } from "./app-sidebar-header"
-import { DashboardsList } from "./dashboards-list"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { DashboardsList } from "./dashboards-list/dashboards-list"
 import { SidebarAccount } from "./sidebar-account"
 import { SettingsButton } from "@/components/settings/settings-button"
+import { TrashButton } from "@/components/trash/trash-button"
+import { UpcomingButton } from "@/components/digest/upcoming-button"
+import { isDesktop } from "@/lib/platform"
 
 export function AppSidebar() {
-  const [location, navigate] = useLocation()
-  const { data: dashboards = [] } = useDashboards()
-  const { selectDashboard, createAndOpenDashboard } = useDashboardNav()
   const { authed } = useAuth()
   const { data: sharedIds = [] } = useSharedBoards(authed === true)
   const { data: publishedIds = [] } = usePublishedBoards(authed === true)
 
-  const { base } = useRouter()
   const activeDashboardId = useParams().id ?? ""
-  const isDigestActive = base === routes.digest()
-  const isTrashActive = location === routes.trash()
 
   return (
-    <Sidebar>
-      <AppSidebarHeader />
-      <SidebarContent>
-        <SidebarGroup>
-          <Button variant="secondary" onClick={createAndOpenDashboard}>
-            Add a dashboard
-          </Button>
-        </SidebarGroup>
+    <Sidebar className="ml-1">
+      {!isDesktop() && <AppSidebarHeader />}
+      <SidebarContent className="group/sidebar mt-6">
         <SidebarGroup>
           <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                isActive={isDigestActive}
-                tooltip="Upcoming"
-                onClick={() => navigate(`~${routes.digest()}`)}
-              >
-                <span>Upcoming</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                isActive={isTrashActive}
-                tooltip="Trash"
-                onClick={() => navigate(`~${routes.trash()}`)}
-              >
-                <span>Trash</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
+            <UpcomingButton />
+            <TrashButton />
           </SidebarMenu>
         </SidebarGroup>
         <DashboardsList
-          dashboards={dashboards}
           activeDashboardId={activeDashboardId}
           sharedIds={sharedIds}
           publishedIds={publishedIds}
-          onSelectDashboard={(d) => selectDashboard(d.id)}
         />
       </SidebarContent>
       <SidebarFooter>
