@@ -1,108 +1,70 @@
-import { beforeEach, describe, expect, it } from "vitest"
-import type { Runtime } from "../src/runtime"
-import { installRuntime } from "../src/runtime"
-import { SIDEBAR, SIDEBAR_LAYOUT_ID } from "../src/api/constants"
-import type { SidebarItem, SidebarLayout } from "../src/types"
+import { describe, expect, it } from "vitest"
+import type { Dashboard, SidebarItem } from "../src/types"
+import { buildTree, treeItems } from "../src/api/operations/get-sidebar-tree"
+import { moveItem, placeBoards } from "../src/api/operations/sidebar-layout"
 
-const rows = new Map<string, unknown>()
-
-const db = {
-  get: (store: string, key: string) =>
-    Promise.resolve(rows.get(`${store}/${key}`)),
-  set: (store: string, key: string, value: unknown) => {
-    rows.set(`${store}/${key}`, value)
-    return Promise.resolve()
-  },
-}
-
-const kvStore = new Map<string, string>()
-const kv = {
-  get: (key: string) => kvStore.get(key) ?? null,
-  set: (key: string, value: string) => void kvStore.set(key, value),
-  remove: (key: string) => void kvStore.delete(key),
-}
-
-function seed(items: SidebarItem[]) {
-  rows.set(`${SIDEBAR}/${SIDEBAR_LAYOUT_ID}`, {
-    id: SIDEBAR_LAYOUT_ID,
-    items,
-    updatedAt: 1,
-    deletedAt: null,
-  })
-}
-
-const layoutItems = () =>
-  (rows.get(`${SIDEBAR}/${SIDEBAR_LAYOUT_ID}`) as SidebarLayout).items
-
-beforeEach(() => {
-  rows.clear()
-  kvStore.clear()
-  installRuntime({ db, kv } as unknown as Runtime)
+const board = (id: string): SidebarItem => ({ type: "board", id })
+const folder = (id: string, boardIds: string[]): SidebarItem => ({
+  type: "folder",
+  id,
+  title: id,
+  collapsed: false,
+  boardIds,
 })
+const ids = (items: SidebarItem[]) =>
+  items.map((item) =>
+    item.type === "board" ? item.id : `${item.id}[${item.boardIds.join(",")}]`
+  )
 
-describe("renameFolder", () => {
-  it("changes only that folder's title", async () => {
-    seed([
-      {
-        type: "folder",
-        id: "f1",
-        title: "Old",
-        collapsed: false,
-        boardIds: [],
-      },
-      {
-        type: "folder",
-        id: "f2",
-        title: "Other",
-        collapsed: true,
-        boardIds: ["b"],
-      },
+describe("moveItem", () => {
+  const items = [board("a"), folder("f", ["b"]), board("c")]
+
+  it("reorders at the root", () => {
+    expect(ids(moveItem(items, "a", { kind: "root", index: 2 }))).toEqual([
+      "f[b]",
+      "c",
+      "a",
     ])
-    const { renameFolder } =
-      await import("../src/api/operations/sidebar-layout")
-    await renameFolder("f1", "New")
+  })
 
-    expect(layoutItems()).toEqual([
-      {
-        type: "folder",
-        id: "f1",
-        title: "New",
-        collapsed: false,
-        boardIds: [],
-      },
-      {
-        type: "folder",
-        id: "f2",
-        title: "Other",
-        collapsed: true,
-        boardIds: ["b"],
-      },
+  it("moves a board into a folder and back out", () => {
+    const into = moveItem(items, "c", {
+      kind: "folder",
+      folderId: "f",
+      index: 0,
+    })
+    expect(ids(into)).toEqual(["a", "f[c,b]"])
+    expect(ids(moveItem(into, "b", { kind: "root", index: 0 }))).toEqual([
+      "b",
+      "a",
+      "f[c]",
+    ])
+  })
+
+  it("moves a folder as a block and never into another folder", () => {
+    const two = [folder("f", ["a"]), folder("g", ["b"]), board("c")]
+    expect(
+      moveItem(two, "f", { kind: "folder", folderId: "g", index: 0 })
+    ).toBe(two)
+    expect(ids(moveItem(two, "f", { kind: "root", index: 2 }))).toEqual([
+      "g[b]",
+      "c",
+      "f[a]",
     ])
   })
 })
 
-describe("deleteFolder", () => {
-  it("drops the folder and leaves its boards at its spot in the root", async () => {
-    seed([
-      { type: "board", id: "a" },
-      {
-        type: "folder",
-        id: "f1",
-        title: "F",
-        collapsed: false,
-        boardIds: ["b", "c"],
-      },
-      { type: "board", id: "d" },
-    ])
-    const { deleteFolder } =
-      await import("../src/api/operations/sidebar-layout")
-    await deleteFolder("f1")
+describe("placeBoards and buildTree", () => {
+  const dashboards = ["a", "b", "c"].map((id) => ({ id }) as Dashboard)
+  const items = [board("a"), folder("f", ["gone", "b"])]
 
-    expect(layoutItems()).toEqual([
-      { type: "board", id: "a" },
-      { type: "board", id: "b" },
-      { type: "board", id: "c" },
-      { type: "board", id: "d" },
-    ])
+  it("drops dead ids and appends unlisted boards at the root", () => {
+    expect(ids(placeBoards(items, dashboards))).toEqual(["a", "f[b]", "c"])
+  })
+
+  it("round-trips through the tree", () => {
+    const tree = buildTree(items, dashboards)
+    expect(tree[1]).toMatchObject({ type: "folder", boards: [{ id: "b" }] })
+    expect(ids(treeItems(tree))).toEqual(["a", "f[b]", "c"])
   })
 })

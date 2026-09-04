@@ -1,4 +1,11 @@
-import { Button, Menu, MenuContent, MenuItem, MenuTrigger } from "@doska/ui-kit"
+import {
+  Button,
+  Menu,
+  MenuContent,
+  MenuItem,
+  MenuTrigger,
+  cn,
+} from "@doska/ui-kit"
 import { MoreVertical, Pencil, Trash2 } from "lucide-react"
 
 interface IProps {
@@ -16,10 +23,10 @@ export function FolderMenu({ onRename, onDelete }: IProps) {
             size="icon-sm"
             aria-label="Folder actions"
             tooltip={false}
-            className={
-              "absolute top-0.5 right-px text-muted-foreground opacity-0 " +
+            className={cn(
+              "absolute top-1.5 right-px text-muted-foreground opacity-0",
               "group-hover/menu-item:opacity-100 focus-visible:opacity-100 data-popup-open:opacity-100"
-            }
+            )}
           />
         }
       >
