@@ -3,6 +3,7 @@ import { DocsPage } from "./docs/docs-page"
 import { findDoc } from "./docs/pages"
 import { Hero } from "./hero"
 import { DevicesSection } from "./sections/devices-section"
+import { FeaturesSection } from "./sections/features-section"
 import { FolderSection } from "./sections/folder-section"
 import { SharingSection } from "./sections/sharing-section"
 import { SiteFooter } from "./site-footer"
@@ -23,6 +24,7 @@ export function App({ path }: { path: string }) {
             <FolderSection />
             <DevicesSection />
             <SharingSection />
+            <FeaturesSection />
           </>
         )}
       </main>
