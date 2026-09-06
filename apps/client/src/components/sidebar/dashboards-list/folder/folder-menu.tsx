@@ -24,7 +24,7 @@ export function FolderMenu({ onRename, onDelete }: IProps) {
             aria-label="Folder actions"
             tooltip={false}
             className={cn(
-              "absolute top-1.5 right-px text-muted-foreground opacity-0",
+              "absolute top-1.5 right-px text-muted-foreground opacity-0 max-md:opacity-100",
               "group-hover/menu-item:opacity-100 focus-visible:opacity-100 data-popup-open:opacity-100"
             )}
           />
