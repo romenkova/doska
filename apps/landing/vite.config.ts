@@ -1,10 +1,45 @@
-import path from "path"
+import { readFileSync } from "node:fs"
+import path from "node:path"
 import tailwindcss from "@tailwindcss/vite"
 import react from "@vitejs/plugin-react"
-import { defineConfig } from "vite"
+import { defineConfig, type Plugin } from "vite"
+
+// Pages are React-rendered at build time only
+// and the client bundle is framework-free.
+function prerenderDev(): Plugin {
+  return {
+    name: "prerender-dev",
+    configureServer(server) {
+      return () => {
+        server.middlewares.use(async (req, res, next) => {
+          if (!req.headers.accept?.includes("text/html")) return next()
+          const url = (req.url ?? "/").split("?")[0]
+          try {
+            const { render } = await server.ssrLoadModule(
+              "/src/entry-server.tsx"
+            )
+            const template = await server.transformIndexHtml(
+              url,
+              readFileSync(
+                path.resolve(import.meta.dirname, "index.html"),
+                "utf-8"
+              )
+            )
+            res.setHeader("Content-Type", "text/html")
+            res.end(template.replace("<!--app-html-->", render(url)))
+          } catch (error) {
+            server.ssrFixStacktrace(error as Error)
+            next(error)
+          }
+        })
+      }
+    },
+  }
+}
 
 // https://vite.dev/config/
 export default defineConfig({
+  appType: "custom",
   server: {
     port: 5174,
     strictPort: true,
@@ -12,13 +47,13 @@ export default defineConfig({
   preview: {
     port: 3002,
   },
-  plugins: [react(), tailwindcss()],
+  plugins: [react(), tailwindcss(), prerenderDev()],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      "@": path.resolve(import.meta.dirname, "./src"),
       // The docs markdown lives in @doska/docs; import.meta.glob can only walk
       // a directory it can resolve at build time, so point it at the package.
-      "@docs": path.resolve(__dirname, "../../packages/docs/content"),
+      "@docs": path.resolve(import.meta.dirname, "../../packages/docs/content"),
     },
   },
 })

@@ -12,34 +12,31 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@doska/docs": "workspace:*",
-    "@doska/markdown": "workspace:*",
     "@doska/tokens": "workspace:*",
-    "@doska/ui-kit": "workspace:*",
     "@fontsource-variable/geist-mono": "5.3.0",
-    "@fontsource-variable/mulish": "5.3.0",
-    "@tailwindcss/vite": "^4.3.3",
-    "clsx": "2.1.1",
-    "lucide-react": "1.39.0",
-    "motion": "^13.1.1",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8",
-    "react-icons": "^5.7.0",
-    "tailwind-merge": "3.6.0",
-    "tailwindcss": "^4",
-    "vfile": "^6.0.3",
-    "vfile-matter": "^5.0.1"
+    "@fontsource-variable/mulish": "5.3.0"
   },
   "devDependencies": {
     "@doska/configs": "workspace:*",
+    "@doska/docs": "workspace:*",
+    "@doska/markdown": "workspace:*",
+    "@doska/ui-kit": "workspace:*",
+    "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^22",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.5",
     "@vitejs/plugin-react": "^6.1.1",
     "eslint": "^10.9.1",
+    "lucide-react": "1.39.0",
     "prettier": "^3.9.6",
     "prettier-plugin-tailwindcss": "^0.8.1",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-icons": "^5.7.0",
+    "tailwindcss": "^4",
     "typescript": "~6",
+    "vfile": "^6.0.3",
+    "vfile-matter": "^5.0.1",
     "vite": "^8.2.2"
   }
 }

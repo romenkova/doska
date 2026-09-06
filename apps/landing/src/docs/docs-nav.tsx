@@ -1,13 +1,5 @@
-import { useState } from "react"
 import { PanelLeft } from "lucide-react"
-import {
-  Button,
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  cn,
-} from "@doska/ui-kit"
+import { Button, cn } from "@doska/ui-kit"
 import { depth, docs, type DocPage } from "./pages"
 
 export function DocsNav({ current }: { current: DocPage }) {
@@ -24,14 +16,12 @@ export function DocsNav({ current }: { current: DocPage }) {
 }
 
 function DocsDrawer({ current }: { current: DocPage }) {
-  const [open, setOpen] = useState(false)
-
   return (
     <div className="mb-6 md:hidden">
       <Button
         variant="muted"
         className="h-10 w-full justify-between gap-2 px-3"
-        onClick={() => setOpen(true)}
+        data-drawer-open
       >
         <span className="flex items-center gap-1.5">
           <PanelLeft className="size-4" />
@@ -39,16 +29,19 @@ function DocsDrawer({ current }: { current: DocPage }) {
         </span>
         <span className="font-semibold">{current.nav}</span>
       </Button>
-      <Sheet open={open} onOpenChange={setOpen}>
-        <SheetContent className="gap-0">
-          <SheetHeader>
-            <SheetTitle>Documentation</SheetTitle>
-          </SheetHeader>
+      <dialog
+        className="m-0 h-full max-h-none w-3/4 border-r bg-popover text-sm text-popover-foreground shadow-e3 backdrop:bg-black/10 backdrop:supports-backdrop-filter:backdrop-blur-xs sm:max-w-sm"
+        data-drawer
+      >
+        <div className="flex h-full flex-col">
+          <div className="p-4 text-base font-medium text-foreground">
+            Documentation
+          </div>
           <div className="overflow-y-auto px-2 pb-4">
             <DocsLinks current={current} />
           </div>
-        </SheetContent>
-      </Sheet>
+        </div>
+      </dialog>
     </div>
   )
 }

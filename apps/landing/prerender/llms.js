@@ -16,7 +16,9 @@ export function llms(site, { outline, links }) {
     "> An open-source, local-first Kanban board where every card is Markdown." +
       " Boards live in the browser and work offline, sync through a server you" +
       " host yourself, share with the other accounts on it or publish as a" +
-      " read-only link, and are exposed over MCP so agents can edit them.",
+      " read-only link, and are exposed over MCP so agents can edit them." +
+      " A self-hosted server can sign people in through any OpenID Connect (OIDC)" +
+      " provider: Authentik, Keycloak, Pocket ID, Google.",
     "",
     "Doska is free and MIT licensed.",
     "",

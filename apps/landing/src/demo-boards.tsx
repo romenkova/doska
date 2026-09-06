@@ -5,13 +5,11 @@ const boards = [
     title: "Product roadmap",
     note: "Features, releases, bugfixes",
     href: "https://app.doska.sh/p/c941951c0ac518ff127f22fa72434b8a",
-    image: "/demo-product.png",
   },
   {
     title: "Trip inspiration",
     note: "Places to visit",
     href: "https://app.doska.sh/p/eea7fd332a6a268bc12dd41e3861ab54",
-    image: "/demo-trip.png",
   },
 ]
 
@@ -36,15 +34,6 @@ export function DemoBoards() {
             </div>
             <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:-translate-y-0.5" />
           </div>
-          {board.image && (
-            <div className="h-40 overflow-hidden rounded-md border">
-              <img
-                src={board.image}
-                alt=""
-                className="-mt-0.5 h-[calc(100%+2px)] w-full object-cover object-left-top"
-              />
-            </div>
-          )}
         </a>
       ))}
     </div>

@@ -22,29 +22,10 @@
   --color-docs-nav: var(--docs-nav);
 }
 
-@theme {
-  --animate-terminal-blink: terminal-blink 1s steps(1) infinite;
-
-  @keyframes terminal-blink {
-    50% {
-      opacity: 0;
-    }
-  }
-
-  --animate-nudge: nudge 1.4s ease-in-out infinite;
-
-  @keyframes nudge {
-    50% {
-      transform: translateX(3px);
-    }
-  }
-}
-
 :root {
   --radius: 0.625rem;
 
   --background: #f1f2f6;
-  --dots: #676d7f40;
 
   --terminal: #1d2230;
   --terminal-foreground: #e6e8ee;
@@ -64,7 +45,6 @@
 
 .dark:root {
   --background: #1e2432;
-  --dots: #ffffff26;
   --inline-code: #343c54;
   --inline-code-foreground: #f7f7f8;
   --inline-code-border: #ffffff1f;
@@ -160,8 +140,16 @@
   border-color: var(--code-border);
   color: #e6e8eeb3;
 }
-.docs-prose [aria-label="Copy code"]:hover {
+.docs-prose [aria-label="Copy code"]:hover,
+.docs-prose [aria-label="Copy code"][data-copied] {
   color: var(--code-foreground);
+  opacity: 1;
+}
+.docs-prose [aria-label="Copy code"][data-copied]::after {
+  content: "Copied";
+}
+.docs-prose code[data-copied] {
+  border-color: var(--primary);
 }
 
 .docs-prose :not(pre) > code {

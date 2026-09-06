@@ -6,6 +6,7 @@ function Screenshot({
   alt,
   className,
   zoom,
+  priority,
 }: {
   src: string
   alt: string
@@ -13,6 +14,7 @@ function Screenshot({
   className: string
 
   zoom: string
+  priority?: boolean
 }) {
   return (
     <div
@@ -24,6 +26,7 @@ function Screenshot({
       <img
         src={src}
         alt={alt}
+        fetchPriority={priority ? "high" : undefined}
         className={cn(
           "-m-0.5 block h-[calc(100%+4px)] max-w-none object-cover object-left-top sm:h-auto sm:w-[calc(100%+4px)]",
           zoom
@@ -52,6 +55,7 @@ export function FolderSection() {
           alt="A board with columns of cards"
           className="flex-[1789]"
           zoom="w-[200%]"
+          priority
         />
         <Screenshot
           src="/files-dark.png"

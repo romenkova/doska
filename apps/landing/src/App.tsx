@@ -2,7 +2,6 @@ import { BottomBadges } from "./bottom-badges"
 import { DocsPage } from "./docs/docs-page"
 import { findDoc } from "./docs/pages"
 import { Hero } from "./hero"
-import { BoardSection } from "./sections/board-section"
 import { DevicesSection } from "./sections/devices-section"
 import { FolderSection } from "./sections/folder-section"
 import { SharingSection } from "./sections/sharing-section"
@@ -24,7 +23,6 @@ export function App({ path }: { path: string }) {
             <FolderSection />
             <DevicesSection />
             <SharingSection />
-            <BoardSection />
           </>
         )}
       </main>

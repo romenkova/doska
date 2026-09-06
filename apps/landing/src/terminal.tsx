@@ -76,16 +76,7 @@ const installSession: Line[] = [
   [{ text: "  Login  ", className: bold }, { text: "admin" }],
 ]
 
-const mcpSession: Line[] = [
-  [{ text: "$ claude" }],
-  [{ text: "> add a card for the offline bug" }],
-  [{ text: "⏺ get_board(roadmap)", className: accent }],
-  [{ text: "  ⎿ 3 columns · 12 cards", className: dim }],
-  [{ text: '⏺ create_card("Offline banner")', className: accent }],
-  [{ text: "  ⎿ created card 13 in Todo", className: ok }],
-]
-
-function Terminal({ lines, cursor }: { lines: Line[]; cursor?: boolean }) {
+function Terminal({ lines }: { lines: Line[] }) {
   return (
     <div className="overflow-hidden rounded-2xl border border-terminal-border bg-terminal text-terminal-foreground">
       <div className="overflow-x-auto px-3 py-2.5 font-mono text-xs leading-relaxed whitespace-pre">
@@ -98,9 +89,6 @@ function Terminal({ lines, cursor }: { lines: Line[]; cursor?: boolean }) {
             ))}
           </span>
         ))}
-        {cursor && (
-          <span className="inline-block h-[0.9em] w-0.5 animate-terminal-blink bg-terminal-accent align-text-bottom motion-reduce:animate-none" />
-        )}
       </div>
     </div>
   )
@@ -108,8 +96,4 @@ function Terminal({ lines, cursor }: { lines: Line[]; cursor?: boolean }) {
 
 export function InstallTerminal() {
   return <Terminal lines={installSession} />
-}
-
-export function McpTerminal() {
-  return <Terminal lines={mcpSession} cursor />
 }
