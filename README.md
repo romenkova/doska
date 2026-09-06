@@ -27,11 +27,7 @@
   <a href="https://doska.sh/docs/mcp">MCP</a>
 </p>
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/board-dark.png">
-  <source media="(prefers-color-scheme: light)" srcset=".github/assets/board-light.png">
-  <img alt="A Doska board with a card open in the editor" src=".github/assets/board-light.png" width="900">
-</picture>
+![A Doska board with a card open in the editor](.github/assets/board-demo-dark-3.png)
 
 </div>
 
