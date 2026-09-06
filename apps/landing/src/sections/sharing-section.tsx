@@ -1,17 +1,23 @@
 import { DemoBoards } from "../demo-boards"
-import { SharePreview } from "../share-preview"
 import { Section } from "./section"
 
 export function SharingSection() {
   return (
     <Section
       title="Shared between multiple people"
-      subtitle="Create accounts and share with others, or make a public board."
+      subtitle={
+        <>
+          <p className="text-muted-foreground">
+            Create accounts and share with others, or make a public board.
+          </p>
+          <p className="text-muted-foreground">
+            Admins can create users. Users can have their own boards or become
+            members of someone else's board.
+          </p>
+        </>
+      }
     >
-      <div className="flex flex-col gap-8 lg:flex-row lg:items-stretch">
-        <SharePreview />
-        <DemoBoards />
-      </div>
+      <DemoBoards />
     </Section>
   )
 }
