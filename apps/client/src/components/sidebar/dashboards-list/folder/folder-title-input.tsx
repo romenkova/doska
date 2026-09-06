@@ -29,7 +29,7 @@ export function FolderTitleInput({ value, onCommit, onDone }: IProps) {
         if (e.key === "Enter") commit()
         if (e.key === "Escape") onDone()
       }}
-      className="h-8 w-full rounded-md bg-sidebar-accent/50 px-2 text-sm outline-none"
+      className="h-8 w-full rounded-md bg-sidebar-accent/50 px-2 text-base outline-none sm:text-sm"
     />
   )
 }
