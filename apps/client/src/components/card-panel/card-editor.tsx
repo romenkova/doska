@@ -18,12 +18,12 @@ interface IProps {
   isPreview: boolean
   onChangeTitle: (value: string) => void
   onChangeBody: (value: string) => void
-  onTogglePreview: () => void
-  /** Fired by clicking the read-only preview. */
+  onTogglePreview?: () => void
+  withHeader?: boolean
   onEdit: () => void
   onClose: () => void
-  onDelete: () => void
-  onReveal: () => void
+  onDelete?: () => void
+  onReveal?: () => void
 }
 
 /** Ignore the click that ends a text selection — treat it as selecting, not editing. */
@@ -46,6 +46,7 @@ export function CardEditor({
   onChangeTitle,
   onChangeBody,
   onTogglePreview,
+  withHeader = true,
   onEdit,
   onClose,
   onDelete,
@@ -53,6 +54,7 @@ export function CardEditor({
 }: IProps) {
   // State, not a ref: the slash button renders into this node once it mounts.
   const [overlay, setOverlay] = useState<HTMLDivElement | null>(null)
+  const [focusBody] = useState(() => Boolean(title.trim() || body.trim()))
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
@@ -64,22 +66,27 @@ export function CardEditor({
           >
             <CardPaneLayout
               header={
-                <CardPanelHeader
-                  isPreview={isPreview}
-                  onClose={onClose}
-                  onTogglePreivew={onTogglePreview}
-                  actions={<AddAttachmentButton />}
-                  menu={
-                    <CardPanelMenu
-                      cardId={cardId}
-                      isPreview={isPreview}
-                      onEdit={onEdit}
-                      onReveal={onReveal}
-                      onDelete={onDelete}
-                    />
-                  }
-                  meta={<CardMetaLive cardId={cardId} body={body} />}
-                />
+                withHeader && (
+                  <CardPanelHeader
+                    isPreview={isPreview}
+                    onClose={onClose}
+                    onTogglePreivew={onTogglePreview}
+                    actions={<AddAttachmentButton />}
+                    menu={
+                      onDelete &&
+                      onReveal && (
+                        <CardPanelMenu
+                          cardId={cardId}
+                          isPreview={isPreview}
+                          onEdit={onEdit}
+                          onReveal={onReveal}
+                          onDelete={onDelete}
+                        />
+                      )
+                    }
+                    meta={<CardMetaLive cardId={cardId} body={body} />}
+                  />
+                )
               }
               attachments={
                 <CardAttachments
@@ -99,7 +106,7 @@ export function CardEditor({
               title={
                 <MarkdownTextarea
                   renderPreview={Markdown}
-                  autoFocus
+                  autoFocus={!focusBody}
                   value={title}
                   onChange={(e) => onChangeTitle(e.target.value)}
                   placeholder="Title"
@@ -114,6 +121,7 @@ export function CardEditor({
                 <CardBodyEditor
                   cardId={cardId}
                   body={body}
+                  autoFocus={focusBody}
                   isPreview={isPreview}
                   onChangeBody={onChangeBody}
                   overlayContainer={overlay}

@@ -1,5 +1,9 @@
 import { useCallback, useEffect, useRef } from "react"
+import { runtime } from "../../runtime"
 import { useSaveCard, type CardPatch } from "./card"
+
+/** The card edited most recently, in any window; the desktop popup continues it. */
+export const LAST_CARD_KEY = "doska:last-card"
 
 /** Long enough to coalesce a burst of typing, short enough to read as live. */
 const SAVE_DELAY = 500
@@ -25,6 +29,7 @@ export function useCardSave() {
     (id: string, patch: CardPatch) => {
       // Edits for a card we've navigated away from go out on their own.
       if (pending.current && pending.current.id !== id) flush()
+      runtime().kv.set(LAST_CARD_KEY, id)
       pending.current = { id, patch: { ...pending.current?.patch, ...patch } }
       clearTimeout(timer.current)
       timer.current = setTimeout(flush, SAVE_DELAY)

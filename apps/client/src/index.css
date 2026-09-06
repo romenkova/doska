@@ -47,6 +47,15 @@
     @apply font-sans;
     font-size: 16px;
   }
+  /* The quick-note popup is a transparent window; the page draws its own card. */
+  html.quick-note,
+  html.quick-note body {
+    background: transparent;
+  }
+  /* Caret menus height. */
+  html.quick-note {
+    --menu-max-height: 9rem;
+  }
   /* Disable the macOS WKWebView rubber-band/overscroll */
   html,
   body {
