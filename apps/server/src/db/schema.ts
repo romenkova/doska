@@ -1,4 +1,4 @@
-import type { Attachment, MemberRole } from "@doska/contract"
+import type { Attachment, MemberRole, SidebarItem } from "@doska/contract"
 import {
   bigint,
   boolean,
@@ -135,3 +135,12 @@ export const boardMembers = pgTable(
     index("board_members_user_seq").on(t.userId, t.seq),
   ]
 )
+
+// Keyed by user, so a push can only land on the caller's row. `seq` is from the
+// board-list counter. Never tombstoned.
+export const sidebarLayouts = pgTable("sidebar_layouts", {
+  userId: text("user_id").primaryKey(),
+  items: jsonb("items").$type<SidebarItem[]>().notNull().default([]),
+  updatedAt: bigint("updated_at", { mode: "number" }).notNull(),
+  seq: integer("seq").notNull(),
+})

@@ -77,6 +77,30 @@ export const DashboardSchema = z.object({
 })
 
 /**
+ * One entry of the sidebar tree
+ */
+export const SidebarItemSchema = z.discriminatedUnion("type", [
+  z.object({ type: z.literal("board"), id: z.string() }),
+  z.object({
+    type: z.literal("folder"),
+    id: z.string(),
+    title: z.string(),
+    collapsed: z.boolean().default(false),
+    boardIds: z.array(z.string()).default([]),
+  }),
+])
+
+/**
+ * How one account lays out its sidebar. A single record per user.
+ */
+export const SidebarLayoutSchema = z.object({
+  id: z.literal("layout"),
+  items: z.array(SidebarItemSchema).default([]),
+  updatedAt: z.number(),
+  deletedAt: z.null(),
+})
+
+/**
  * The whole of a published board, as `GET /api/public/b/:token` returns it.
  *
  * Built out of the record schemas above on purpose: everything the sync tables
@@ -107,17 +131,26 @@ export const DirectoryUserSchema = z.object({
   username: z.string(),
 })
 
-/** A dashboard list change. The dashboard list syncs on its own account-level
- * channel (see `dashboards.sync`), independent of any open board, so it carries
- * only dashboard records. */
-export const DashboardChangeSchema = z.object({
+const DashboardRecordChangeSchema = z.object({
   store: z.literal("dashboards"),
   record: DashboardSchema,
 })
 
-/** One record change, tagged by the store it belongs to. */
+const SidebarChangeSchema = z.object({
+  store: z.literal("sidebar"),
+  record: SidebarLayoutSchema,
+})
+
+/** A change on the account-level channel (see `dashboards.sync`): a dashboard
+ * or the caller's sidebar layout. */
+export const DashboardChangeSchema = z.discriminatedUnion("store", [
+  DashboardRecordChangeSchema,
+  SidebarChangeSchema,
+])
+
+/** One board-channel record change, tagged by the store it belongs to. */
 export const ChangeSchema = z.discriminatedUnion("store", [
   z.object({ store: z.literal("cards"), record: CardSchema }),
   z.object({ store: z.literal("columns"), record: ColumnSchema }),
-  DashboardChangeSchema,
+  DashboardRecordChangeSchema,
 ])

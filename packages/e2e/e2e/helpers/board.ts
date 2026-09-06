@@ -9,13 +9,15 @@ import { menu } from "./menu"
 /* -------------------------------------------------------------------------- */
 
 /**
- * Creates a fresh board from Home and returns its generated deck id (read off
- * the URL — the one identifier a user can actually see, in their address bar).
- * A new board lands with the three default columns (To Do / In Progress / Done)
- * and no cards; seed any cards a test needs with `addCard`.
+ * Creates a fresh board from the sidebar's "New board" button and returns its
+ * generated deck id (read off the URL — the one identifier a user can actually
+ * see, in their address bar). A new board lands with the three default columns
+ * (To Do / In Progress / Done) and no cards; seed any cards a test needs with
+ * `addCard`.
  */
 export async function createBoard(page: Page): Promise<string> {
   await page.goto("/")
+  // Home's button, not the sidebar's: the sidebar is hidden on narrow viewports.
   await page.getByRole("button", { name: "Create a board" }).click()
   await page.waitForURL(/\/d\/board-/)
   return new URL(page.url()).pathname.split("/d/")[1]
@@ -158,9 +160,10 @@ async function readDashboard(
   id: string
 ): Promise<Dashboard> {
   const { changes } = await dashboardSync(request, { since: 0, changes: [] })
-  const hit = changes.find((c) => c.record.id === id)
-  if (!hit) throw new Error(`board ${id} not found on the server`)
-  return hit.record
+  for (const c of changes) {
+    if (c.store === "dashboards" && c.record.id === id) return c.record
+  }
+  throw new Error(`board ${id} not found on the server`)
 }
 
 /** Another client renames the board titled `fromTitle`. */

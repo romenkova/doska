@@ -6,6 +6,8 @@ export type {
   Column,
   Dashboard,
   Member,
+  SidebarItem,
+  SidebarLayout,
 } from "@doska/contract"
 
 /** A board assembled for the UI: its columns and the cards that live in them. */

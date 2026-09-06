@@ -6,7 +6,7 @@ import {
 } from "@doska/sync"
 import { ORPCError } from "@orpc/client"
 import type { StoreName } from "../constants"
-import { DASHBOARDS } from "../constants"
+import { DASHBOARDS, SIDEBAR } from "../constants"
 import { DeckSyncDriver } from "./drivers/board-driver"
 import {
   DashboardListDriver,
@@ -40,6 +40,8 @@ export const classify = (err: unknown): SyncFailure => {
   if (err instanceof TypeError) return "offline"
   return "server"
 }
+
+const LIST_STORES: StoreName[] = [DASHBOARDS, SIDEBAR]
 
 const createDrivers = (onRemoved: (boardId: string) => Promise<void>) => ({
   board: new DeckSyncDriver(),
@@ -167,7 +169,7 @@ class DeckSync {
   }
 
   private engineFor(store: StoreName) {
-    return store === DASHBOARDS ? this.list : this.board
+    return LIST_STORES.includes(store) ? this.list : this.board
   }
 
   /** Abandons these records' pending refs, routed to the channel that holds them. */

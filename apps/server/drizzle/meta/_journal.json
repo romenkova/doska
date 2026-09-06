@@ -120,6 +120,13 @@
       "when": 1787249768112,
       "tag": "0016_oval_doomsday",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1788560337942,
+      "tag": "0017_sidebar_layouts",
+      "breakpoints": true
     }
   ]
 }

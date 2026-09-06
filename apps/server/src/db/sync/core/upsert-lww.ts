@@ -16,7 +16,7 @@ export async function upsertLWW<T extends PgTable>(
   table: T,
   idCol: PgColumn,
   updatedAtCol: PgColumn,
-  row: T["$inferInsert"] & { id: string; updatedAt: number },
+  row: T["$inferInsert"] & { updatedAt: number },
   insertOnly: (keyof T["$inferInsert"])[] = []
 ): Promise<boolean> {
   const set = { ...row }

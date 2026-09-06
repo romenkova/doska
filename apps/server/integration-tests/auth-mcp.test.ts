@@ -2,6 +2,7 @@ import { beforeAll, beforeEach, describe, expect, test } from "vitest"
 import { auth } from "../src/auth"
 import {
   callTool,
+  dashboardTitles,
   mcpToken,
   rpcClient,
   resetTables,
@@ -222,9 +223,7 @@ describe("mcp is scoped to its token's user", () => {
     expect(renamed.title).toBe("Renamed by an agent")
 
     const list = await second.dashboards.sync({ since: 0, changes: [] })
-    expect(list.changes.map((c) => c.record.title)).toEqual([
-      "Renamed by an agent",
-    ])
+    expect(dashboardTitles(list.changes)).toEqual(["Renamed by an agent"])
   })
 })
 

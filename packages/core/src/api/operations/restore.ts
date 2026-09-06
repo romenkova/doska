@@ -1,11 +1,11 @@
 import type { Card, Column, Dashboard } from "../../types"
-import { CARDS, COLUMNS, DASHBOARDS, type StoreName } from "../constants"
+import { CARDS, COLUMNS, DASHBOARDS } from "../constants"
 import { db } from "../db/db"
 import { sync } from "../sync"
 import { live } from "./live"
 
-/** Which store a trashed thing lives in. */
-export type TrashKind = StoreName
+/** Which store a trashed thing lives in: the tombstoned ones, not the layout. */
+export type TrashKind = typeof CARDS | typeof COLUMNS | typeof DASHBOARDS
 
 /**
  * Deleting cascades downwards, so restoring has to cascade both ways.

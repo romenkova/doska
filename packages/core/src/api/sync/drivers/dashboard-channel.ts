@@ -1,10 +1,16 @@
 import type { DashboardChange } from "@doska/contract"
 import type { DirtyStore } from "@doska/sync"
-import type { Card, Column, Dashboard } from "../../../types"
+import type { Card, Column, Dashboard, SidebarLayout } from "../../../types"
 import { keys } from "../../../data/keys"
 import { queryClient } from "../../../query-client"
 import { runtime } from "../../../runtime"
-import { CARDS, CARDS_BY_COLUMN, COLUMNS, DASHBOARDS } from "../../constants"
+import {
+  CARDS,
+  CARDS_BY_COLUMN,
+  COLUMNS,
+  DASHBOARDS,
+  SIDEBAR,
+} from "../../constants"
 import { clock, persistClock } from "../hlc"
 
 /** Account-level dashboard-list steps, shared server ⇄ filesystem. */
@@ -18,14 +24,27 @@ export async function collectDashboardChanges(
 
   for (const ref of dirty.all()) {
     const [store, id] = ref.split("/")
-    if (store !== DASHBOARDS) continue
+    let change: DashboardChange | undefined
+    switch (store) {
+      case DASHBOARDS: {
+        const record = await runtime().db.get<Dashboard>(DASHBOARDS, id)
+        if (record) change = { store: DASHBOARDS, record }
+        break
+      }
+      case SIDEBAR: {
+        const record = await runtime().db.get<SidebarLayout>(SIDEBAR, id)
+        if (record) change = { store: SIDEBAR, record }
+        break
+      }
+      default:
+        continue
+    }
 
-    const record = await runtime().db.get<Dashboard>(DASHBOARDS, id)
-    if (!record) {
+    if (!change) {
       dead.push(ref)
       continue
     }
-    changes.push({ store: DASHBOARDS, record })
+    changes.push(change)
     refs.push(ref)
   }
 
@@ -55,16 +74,17 @@ export async function applyDashboardRemote(
 ): Promise<void> {
   let touched = false
 
-  for (const { record } of changes) {
+  for (const { store, record } of changes) {
     clock.receive(record.updatedAt)
     const existing = await runtime().db.get<{ updatedAt: number }>(
-      DASHBOARDS,
+      store,
       record.id
     )
     if (existing && existing.updatedAt >= record.updatedAt) continue
-    await runtime().db.set(DASHBOARDS, record.id, record)
+    await runtime().db.set(store, record.id, record)
     touched = true
-    if (record.deletedAt != null) await purgeBoard(record.id)
+    if (store === DASHBOARDS && record.deletedAt != null)
+      await purgeBoard(record.id)
   }
   void persistClock()
 

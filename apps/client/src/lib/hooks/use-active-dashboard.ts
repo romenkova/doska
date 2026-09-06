@@ -57,6 +57,7 @@ export function useActiveDashboard(deckId?: string) {
 
   return {
     dashboards,
+    dashboardsLoading,
     dashboard,
     lastBoard,
     selectDashboard,

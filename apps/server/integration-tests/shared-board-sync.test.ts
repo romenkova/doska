@@ -1,7 +1,13 @@
 import { ORPCError } from "@orpc/client"
 import { beforeAll, beforeEach, describe, expect, test } from "vitest"
 import { auth } from "../src/auth"
-import { rpcClient, resetTables, startServer, type Harness } from "./harness"
+import {
+  dashboardTitles,
+  rpcClient,
+  resetTables,
+  startServer,
+  type Harness,
+} from "./harness"
 
 let h: Harness
 let owner: ReturnType<typeof rpcClient>
@@ -123,7 +129,7 @@ describe("a shared board reaches the member's list", () => {
       since: caughtUp.cursor,
       changes: [],
     })
-    expect(res.changes.map((c) => c.record.title)).toEqual(["Roadmap"])
+    expect(dashboardTitles(res.changes)).toEqual(["Roadmap"])
     expect(res.removed).toEqual([])
   })
 
@@ -151,7 +157,7 @@ describe("a shared board reaches the member's list", () => {
       since: caughtUp.cursor,
       changes: [],
     })
-    expect(res.changes.map((c) => c.record.title)).toEqual(["Renamed"])
+    expect(dashboardTitles(res.changes)).toEqual(["Renamed"])
   })
 })
 
@@ -284,7 +290,7 @@ describe("revocation", () => {
       since: gone.cursor,
       changes: [],
     })
-    expect(res.changes.map((c) => c.record.title)).toEqual(["Roadmap"])
+    expect(dashboardTitles(res.changes)).toEqual(["Roadmap"])
     expect(res.removed).toEqual([])
 
     // From zero, because the member's board cursor was dropped with the board.

@@ -13,6 +13,14 @@ export const TEST_CREDENTIALS = {
 }
 
 /**
+ * The app's own origin, which a browser puts on every POST it makes. Raw
+ * request contexts have to say it themselves: better-auth rejects a request
+ * that carries a cookie without one, so any call after the first sign-in
+ * needs it. Matches the base URL both configs serve the app from.
+ */
+const APP_ORIGIN = process.env.BASE_URL || "http://localhost:4173"
+
+/**
  * The sidebar's sign-in control: the whole account row, labelled so only once
  * the session check has resolved to signed-out. Scoped to the sidebar because
  * an open board shows a second control with the same accessible name (the
@@ -75,13 +83,52 @@ export async function signOut(
  * an email, so this is better-auth's username sign-in; the context keeps the
  * session cookie it answers with, exactly as a browser would.
  */
-export async function authenticate(request: APIRequestContext): Promise<void> {
+export async function authenticate(
+  request: APIRequestContext,
+  credentials: { login: string; password: string } = TEST_CREDENTIALS
+): Promise<void> {
   const res = await request.post("/api/auth/sign-in/username", {
-    data: {
-      username: TEST_CREDENTIALS.login,
-      password: TEST_CREDENTIALS.password,
-    },
+    headers: { Origin: APP_ORIGIN },
+    data: { username: credentials.login, password: credentials.password },
   })
   if (!res.ok())
     throw new Error(`e2e sign-in failed (${res.status()}): ${await res.text()}`)
+}
+
+/**
+ * A login no other run or retry can collide with. The server keeps every
+ * account the suite ever makes, so a fixed one would already exist.
+ */
+export function uniqueLogin(prefix: string): string {
+  return `e2e-${prefix}-${Date.now()}-${Math.floor(Math.random() * 1000)}`
+}
+
+/**
+ * Creates an account through the same admin call the accounts modal makes,
+ * from a context signed in as the owner. Per-account state (the sidebar layout
+ * is one last-writer-wins record per account) is racy on the shared `e2e`
+ * account with every worker pushing to it, so specs that assert on it sign in
+ * as a throwaway account of their own. Returns its credentials.
+ */
+export async function createAccount(
+  request: APIRequestContext,
+  prefix: string
+): Promise<{ login: string; password: string }> {
+  await authenticate(request)
+  const login = uniqueLogin(prefix)
+  const password = "created-pass"
+  const res = await request.post("/api/auth/admin/create-user", {
+    headers: { Origin: APP_ORIGIN },
+    data: {
+      name: login,
+      email: `${encodeURIComponent(login)}@deck.invalid`,
+      password,
+      data: { username: login, displayUsername: login },
+    },
+  })
+  if (!res.ok())
+    throw new Error(
+      `creating account failed (${res.status()}): ${await res.text()}`
+    )
+  return { login, password }
 }

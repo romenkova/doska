@@ -8,7 +8,7 @@ import {
 } from "@doska/core/constants"
 
 const DB_NAME = "deck"
-const VERSION = 12
+const VERSION = 13
 
 class DeckDB extends IDB {
   upgrade(db: IDBDatabase, tx: IDBTransaction) {

@@ -2,6 +2,8 @@ import type { DigestFilter } from "../api/operations"
 
 export const keys = {
   dashboards: ["dashboards"] as const,
+  /** Under the dashboards prefix: whatever refreshes the list refreshes the tree. */
+  sidebar: ["dashboards", "sidebar"] as const,
   /** The bare key is the invalidation prefix for every board. */
   boards: ["board"] as const,
   board: (deckId: string) => ["board", deckId] as const,
@@ -38,8 +40,7 @@ export const keys = {
   directory: ["directory"] as const,
   unclaimedLocalBoards: ["unclaimed-local-boards"] as const,
   /** Both sit under the board key, so a board invalidation refreshes them. */
-  cardRefOptions: (deckId: string) =>
-    ["board", deckId, "ref-options"] as const,
+  cardRefOptions: (deckId: string) => ["board", deckId, "ref-options"] as const,
   cardRef: (deckId: string, displayId: string) =>
     ["board", deckId, "ref", displayId] as const,
 }

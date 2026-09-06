@@ -145,6 +145,15 @@ export function useDashboards() {
   })
 }
 
+/** The sidebar's boards and folders, in order. */
+export function useSidebarTree() {
+  return useQuery({
+    queryKey: keys.sidebar,
+    queryFn: () => api.getSidebarTree(),
+    networkMode: "always",
+  })
+}
+
 export function useBoard(deckId: string) {
   return useQuery({
     queryKey: keys.board(deckId),
