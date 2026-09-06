@@ -28,7 +28,7 @@
 </p>
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/board-dark.png">
+  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/board-demo-dark-2.png">
   <source media="(prefers-color-scheme: light)" srcset=".github/assets/board-demo-light-2.png">
   <img alt="A Doska board with a card open in the editor" src=".github/assets/board-demo-dark-2.png" width="900">
 </picture>
