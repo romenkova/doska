@@ -1,5 +1,5 @@
 import { cn } from "@doska/ui-kit"
-import { useRef, type ComponentType } from "react"
+import { type ComponentType, useRef } from "react"
 import {
   toggleTaskByIndex,
   useMarkers,
@@ -12,6 +12,7 @@ import { useCutLine } from "./hooks/use-cut-line"
 import { useListContinuation } from "./hooks/use-list-continuation"
 import { usePaste } from "./hooks/use-paste"
 import { useCaretScroll } from "./hooks/use-caret-scroll"
+import { useEndBodyFocus } from "./hooks/use-end-body-focus"
 import { SlashMenu } from "./slash-menu/slash-menu"
 import { WikilinkMenu } from "./wikilink-menu"
 
@@ -76,6 +77,8 @@ export function MarkdownTextarea({
   const value = typeof props.value === "string" ? props.value : ""
   const { body } = useMarkers(value, markers, "preview")
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  useEndBodyFocus(textareaRef, props.autoFocus)
 
   useCutLine(textareaRef, {
     value,

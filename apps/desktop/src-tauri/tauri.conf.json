@@ -20,11 +20,27 @@
         "titleBarStyle": "Overlay",
         "hiddenTitle": true,
         "dragDropEnabled": false
+      },
+      {
+        "label": "quick-note",
+        "title": "Quick note",
+        "url": "/quick-note",
+        "width": 768,
+        "height": 440,
+        "visible": false,
+        "decorations": false,
+        "transparent": true,
+        "alwaysOnTop": true,
+        "resizable": false,
+        "skipTaskbar": true,
+        "center": true,
+        "dragDropEnabled": false
       }
     ],
     "security": {
       "csp": null
-    }
+    },
+    "macOSPrivateApi": true
   },
   "bundle": {
     "active": true,

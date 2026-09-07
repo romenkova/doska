@@ -1,11 +1,12 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "Default capabilities for the Doska desktop window.",
-  "windows": ["main"],
+  "description": "Default capabilities for the Doska desktop windows.",
+  "windows": ["main", "quick-note"],
   "permissions": [
     "core:default",
     "core:window:allow-start-dragging",
+    "core:window:allow-hide",
     "core:webview:allow-set-webview-zoom",
     "window-state:default",
     "updater:default",
@@ -26,10 +27,18 @@
     {
       "identifier": "http:default",
       "allow": [
-        { "url": "http://localhost:*/*" },
-        { "url": "http://127.0.0.1:*/*" },
-        { "url": "http://**" },
-        { "url": "https://**" }
+        {
+          "url": "http://localhost:*/*"
+        },
+        {
+          "url": "http://127.0.0.1:*/*"
+        },
+        {
+          "url": "http://**"
+        },
+        {
+          "url": "https://**"
+        }
       ]
     }
   ]

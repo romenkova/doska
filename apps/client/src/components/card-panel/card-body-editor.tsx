@@ -15,6 +15,7 @@ const PREVIEW_MARKERS = [cut]
 interface IProps {
   cardId: string
   body: string
+  autoFocus?: boolean
   isPreview: boolean
   onChangeBody: (value: string) => void
   /** Non-scrolling pane element the mobile slash button anchors to. */
@@ -25,6 +26,7 @@ interface IProps {
 export function CardBodyEditor({
   cardId,
   body,
+  autoFocus,
   isPreview,
   onChangeBody,
   overlayContainer,
@@ -53,6 +55,7 @@ export function CardBodyEditor({
       <MarkdownTextarea
         renderPreview={Markdown}
         value={body}
+        autoFocus={autoFocus}
         onChange={(e) => onChangeBody(e.target.value)}
         onChangeValue={onChangeBody}
         onToggleTask={onChangeBody}

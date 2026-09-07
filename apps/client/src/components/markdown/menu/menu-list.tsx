@@ -37,8 +37,8 @@ export function MenuList<T extends MenuItem>({
     <div
       ref={ref}
       className={cn(
-        "max-h-64 w-70 overflow-y-auto py-1",
-        "rounded-lg border bg-popover text-popover-foreground shadow-e3",
+        "max-h-(--menu-max-height,16rem) w-70 overflow-y-auto py-1",
+        "rounded-lg border bg-popover/60 text-popover-foreground shadow-e3 backdrop-blur-md",
         className
       )}
       style={style}
