@@ -30,13 +30,13 @@ interface IProps {
  * Soon reads as relative time ("in 3 days"); anything further out shows the date.
  */
 export function DeadlineChip({ value, className, done }: IProps) {
-  // A done card is neutral whatever its deadline: no red, plain date.
   const status = done || !value ? "upcoming" : deadlineStatus(value)
   const label = value
     ? status === "soon" || status === "overdue"
       ? deadlineRelative(value)
       : formatDeadlineNoYearIfCurrent(value)
     : null
+
   return (
     <span
       className={cn(
@@ -46,8 +46,8 @@ export function DeadlineChip({ value, className, done }: IProps) {
         className
       )}
     >
-      <Calendar className="size-4 md:size-3.5" />
-      {label}
+      <Calendar className="size-4 md:size-3.5 shrink-0" />
+      <span className="whitespace-nowrap">{label}</span>
     </span>
   )
 }
