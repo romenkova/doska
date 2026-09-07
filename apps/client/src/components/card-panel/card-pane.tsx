@@ -27,6 +27,11 @@ export function CardPane({
   onReveal,
 }: IProps) {
   const [draft, setDraft] = useState<Draft>({})
+
+  const title = draft.title === content.title ? undefined : draft.title
+  const body = draft.body === content.body ? undefined : draft.body
+  if (title !== draft.title || body !== draft.body) setDraft({ title, body })
+
   const [isPreview, setPreview] = useState(
     () => !bare && Boolean(content.body.trim())
   )
@@ -39,8 +44,8 @@ export function CardPane({
   return (
     <CardEditor
       cardId={cardId}
-      title={draft.title ?? content.title}
-      body={draft.body ?? content.body}
+      title={title ?? content.title}
+      body={body ?? content.body}
       isPreview={isPreview}
       onChangeTitle={(title) => edit({ title })}
       onChangeBody={(body) => edit({ body })}
