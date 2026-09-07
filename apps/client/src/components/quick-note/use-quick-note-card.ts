@@ -14,6 +14,7 @@ import { useCard, useCardCol } from "@doska/core/queries"
 import { sync } from "@doska/core/sync"
 import type { Column } from "@doska/core/types"
 import type { Draft } from "@/components/card-panel/card-pane"
+import { isDesktop } from "@/lib/platform"
 
 interface Target {
   boardId: string | null
@@ -63,6 +64,10 @@ export function useQuickNoteCard(target: Target) {
   })
   useEffect(() => {
     if (cardId || !target.column) return
+    if (!isDesktop()) {
+      void latest.current()
+      return
+    }
     void getCurrentWindow()
       .isVisible()
       .then((visible) => {

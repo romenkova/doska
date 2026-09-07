@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react"
 import { invoke } from "@tauri-apps/api/core"
 import { emit } from "@tauri-apps/api/event"
 import { getCurrentWindow } from "@tauri-apps/api/window"
+import { isDesktop } from "@/lib/platform"
 import { BLUR_EVENT, CHANGED_EVENT } from "./quick-note-event"
 
 interface Handlers {
@@ -10,10 +11,14 @@ interface Handlers {
   onNew: () => void
 }
 
-export const hideWindow = () => invoke("hide_quick_note")
+export const hideWindow = async () => {
+  if (isDesktop()) await invoke("hide_quick_note")
+}
 
 /** Tells the main window its query cache is behind. */
-export const announceChange = () => emit(CHANGED_EVENT)
+export const announceChange = async () => {
+  if (isDesktop()) await emit(CHANGED_EVENT)
+}
 
 /** Everything the popup window itself reports: focus, blur, and its two keys. */
 export function useQuickNoteWindow(handlers: Handlers) {
@@ -28,6 +33,7 @@ export function useQuickNoteWindow(handlers: Handlers) {
   }, [])
 
   useEffect(() => {
+    if (!isDesktop()) return
     const win = getCurrentWindow()
     let cancelled = false
     const stops: (() => void)[] = []
