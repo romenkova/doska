@@ -71,7 +71,12 @@ curl -fsSL https://raw.githubusercontent.com/romenkova/doska/main/install.sh -o 
 
 Then open `http://<your-host>:8080` and sign in with the credentials you gave it.
 
-Setting it up by hand, every environment variable, HTTPS, attachments and
+Or manually: grab [docker-compose.selfhost.yml](docker-compose.selfhost.yml),
+copy [.env.selfhost.example](.env.selfhost.example) to `.env` next to it and fill in
+`AUTH_LOGIN`, `AUTH_PASSWORD`, `AUTH_SECRET` and `BASE_URL`, then run
+`docker compose -f docker-compose.selfhost.yml up -d`
+
+Environment variables, HTTPS, attachments and
 backups: [doska.sh/docs/self-hosting](https://doska.sh/docs/self-hosting).
 
 Parts:

@@ -1,13 +1,12 @@
 # Self-host the full app (web UI + sync server) from prebuilt images
 #
-# Postgres is bundled by default (data lives in the doska-pgdata volume), so this
-# is genuinely one command. To use your own managed Postgres instead, set
-# DATABASE_URL in .env — the server will use it and the bundled db sits idle
-# (comment the `db` service out if you want it gone).
+# Postgres is bundled by default (data lives in the doska-pgdata volume).
+# To use your own managed Postgres, set DATABASE_URL in .env
 #
 # For automatic HTTPS, set DOMAIN in .env and add `--profile https` to start a
 # Caddy reverse proxy in front (Let's Encrypt certs, auto-renewed):
 #   docker compose -f docker-compose.selfhost.yml --profile https up -d
+#
 services:
   server:
     image: ghcr.io/romenkova/doska-server:${DOCKER_IMAGE_TAG:-latest}
@@ -43,7 +42,6 @@ services:
           - doska-api
     depends_on: { db: { condition: service_healthy } }
     healthcheck:
-      # Migrations run on boot before the port opens, hence the start_period.
       test:
         [
           "CMD",
@@ -54,16 +52,13 @@ services:
       interval: 15s
       timeout: 5s
       retries: 5
+      # Migrations run on boot before the port opens.
       start_period: 40s
     restart: unless-stopped
 
   web:
     image: ghcr.io/romenkova/doska-web:${DOCKER_IMAGE_TAG:-latest}
     pull_policy: always
-    # With the https profile, Caddy terminates TLS and reaches web over the
-    # internal network, so the install pins WEB_HOST_BIND=127.0.0.1 to keep the
-    # plain-http port off the public interface. Plain-http installs leave it
-    # unset, publishing on all interfaces as before.
     ports:
       - "${WEB_HOST_BIND:+${WEB_HOST_BIND}:}${WEB_PORT:-8080}:80"
     depends_on:
