@@ -5,32 +5,15 @@ use tauri::{AppHandle, Emitter, Manager, Window, WindowEvent};
 mod macos;
 
 pub const WINDOW: &str = "quick-note";
-const SHORTCUT: &str = "Ctrl+Alt+D";
 /// Sent to the popup when focus has moved on; it closes itself.
 const BLUR_EVENT: &str = "quick-note:blur";
 /// Long enough for whatever took focus to have become key.
 const BLUR_SETTLE: Duration = Duration::from_millis(150);
 
-/// Registers the global shortcut and prepares the popup window.
-pub fn init(app: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {
-    #[cfg(desktop)]
-    {
-        use tauri_plugin_global_shortcut::{GlobalShortcutExt, ShortcutState};
-
-        app.plugin(
-            tauri_plugin_global_shortcut::Builder::new()
-                .with_handler(|app, _shortcut, event| {
-                    if event.state() == ShortcutState::Pressed {
-                        toggle(app);
-                    }
-                })
-                .build(),
-        )?;
-        app.global_shortcut().register(SHORTCUT)?;
-    }
+pub fn init(app: &AppHandle) {
     #[cfg(target_os = "macos")]
     macos::setup(app);
-    Ok(())
+    let _ = app;
 }
 
 pub fn on_window_event(window: &Window, event: &WindowEvent) {
@@ -39,7 +22,7 @@ pub fn on_window_event(window: &Window, event: &WindowEvent) {
     }
 }
 
-fn toggle(app: &AppHandle) {
+pub fn toggle(app: &AppHandle) {
     let Some(win) = app.get_webview_window(WINDOW) else {
         return;
     };

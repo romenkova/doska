@@ -1,4 +1,5 @@
 mod quick_note;
+mod shortcuts;
 mod vault;
 
 use tauri::{Manager, RunEvent, WindowEvent};
@@ -8,7 +9,10 @@ pub fn run() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             vault::ignore_vault,
-            quick_note::hide_quick_note
+            quick_note::hide_quick_note,
+            shortcuts::get_shortcut,
+            shortcuts::suspend_shortcut,
+            shortcuts::set_shortcut
         ])
         .plugin(
             tauri_plugin_window_state::Builder::default()
@@ -29,7 +33,8 @@ pub fn run() {
                     .plugin(tauri_plugin_updater::Builder::new().build())?;
                 app.handle().plugin(tauri_plugin_process::init())?;
             }
-            quick_note::init(app.handle())?;
+            quick_note::init(app.handle());
+            shortcuts::init(app.handle())?;
             Ok(())
         })
         .on_window_event(|window, event| {
