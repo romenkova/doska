@@ -8,7 +8,6 @@ import { LAST_CARD_KEY, useCardSave } from "@doska/core/mutations"
 import {
   createCard,
   deleteCard,
-  getBoard,
   moveCardToColumn,
 } from "@doska/core/operations"
 import { useCard, useCardCol } from "@doska/core/queries"
@@ -110,12 +109,10 @@ export function useQuickNoteCard(target: Target) {
     }
   }
 
-  /** To the top of that board's first column. */
-  async function moveTo(boardId: string) {
-    if (!cardId || column?.dashboardId === boardId) return
-    const first = (await getBoard(boardId)).columns[0]
-    if (!first) return
-    await moveCardToColumn(cardId, first.id)
+  /** To the top of that column. */
+  async function moveTo(columnId: string) {
+    if (!cardId || column?.id === columnId) return
+    await moveCardToColumn(cardId, columnId)
     qc.invalidateQueries({ queryKey: keys.boards })
     qc.invalidateQueries({ queryKey: keys.card(cardId) })
     qc.invalidateQueries({ queryKey: keys.cardCol(cardId) })

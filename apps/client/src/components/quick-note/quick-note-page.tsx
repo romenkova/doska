@@ -1,6 +1,8 @@
+import { getBoard } from "@doska/core/operations"
 import { CardPane } from "@/components/card-panel/card-pane"
 import { DeckProvider } from "@/providers/deck/deck-context"
 import { BoardPicker } from "./board-picker"
+import { ColumnPicker } from "./column-picker"
 import { useQuickNoteCard } from "./use-quick-note-card"
 import {
   announceChange,
@@ -48,8 +50,14 @@ export function QuickNotePage() {
   }
 
   /** The next new card goes there; the current one moves there now. */
-  function pickBoard(id: string) {
+  async function pickBoard(id: string) {
     target.pick(id)
+    const first = (await getBoard(id)).columns[0]
+    if (first) void note.moveTo(first.id)
+  }
+
+  function pickColumn(id: string) {
+    target.pickColumn(id)
     void note.moveTo(id)
   }
 
@@ -69,12 +77,23 @@ export function QuickNotePage() {
           )}
         </DeckProvider>
         <div className="flex items-center justify-between gap-3 border-t px-3 py-2 text-xs text-muted-foreground">
-          <BoardPicker
-            dashboards={target.dashboards}
-            board={board}
-            column={column}
-            onPick={pickBoard}
-          />
+          <div className="flex min-w-0 items-center">
+            <BoardPicker
+              dashboards={target.dashboards}
+              board={board}
+              onPick={(id) => void pickBoard(id)}
+            />
+            {column && (
+              <>
+                <span className="text-muted-foreground/70">·</span>
+                <ColumnPicker
+                  columns={target.columns}
+                  column={column}
+                  onPick={pickColumn}
+                />
+              </>
+            )}
+          </div>
           <span className="shrink-0">⌘N new · esc close</span>
         </div>
       </div>
