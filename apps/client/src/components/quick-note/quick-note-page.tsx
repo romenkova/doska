@@ -1,8 +1,10 @@
+import { ChevronRight } from "lucide-react"
 import { getBoard } from "@doska/core/operations"
 import { CardPane } from "@/components/card-panel/card-pane"
 import { DeckProvider } from "@/providers/deck/deck-context"
 import { BoardPicker } from "./board-picker"
 import { ColumnPicker } from "./column-picker"
+import { ShortcutHint } from "./shortcut-hint"
 import { useQuickNoteCard } from "./use-quick-note-card"
 import {
   announceChange,
@@ -76,8 +78,8 @@ export function QuickNotePage() {
             />
           )}
         </DeckProvider>
-        <div className="flex items-center justify-between gap-3 border-t px-3 py-2 text-xs text-muted-foreground">
-          <div className="flex min-w-0 items-center">
+        <div className="flex items-center justify-between gap-3 border-t bg-muted/30 px-2 py-1.5 text-xs text-muted-foreground">
+          <div className="flex min-w-0 items-center gap-0.5">
             <BoardPicker
               dashboards={target.dashboards}
               board={board}
@@ -85,7 +87,7 @@ export function QuickNotePage() {
             />
             {column && (
               <>
-                <span className="text-muted-foreground/70">·</span>
+                <ChevronRight className="size-3 shrink-0 text-muted-foreground/50" />
                 <ColumnPicker
                   columns={target.columns}
                   column={column}
@@ -94,7 +96,18 @@ export function QuickNotePage() {
               </>
             )}
           </div>
-          <span className="shrink-0">⌘N new · esc close</span>
+          <div className="flex shrink-0 items-center gap-0.5">
+            <ShortcutHint
+              keys="⌘N"
+              label="New"
+              onClick={() => void startNew()}
+            />
+            <ShortcutHint
+              keys="esc"
+              label="Close"
+              onClick={() => void close()}
+            />
+          </div>
         </div>
       </div>
     </div>
