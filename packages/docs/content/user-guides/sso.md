@@ -6,7 +6,7 @@ order: 5
 updated: "2026-09-02"
 ---
 
-Single sign-on is available only with the [self-hosted setup](/docs/self-hosting). It works with any OpenID Connect provider: Authentik, Keycloak, Pocket ID, Google, etc.
+Single sign-on is available only with the [self-hosted setup](/self-hosting). It works with any OpenID Connect provider: Authentik, Keycloak, Pocket ID, Google, etc.
 
 ## How to enable single sign-on?
 

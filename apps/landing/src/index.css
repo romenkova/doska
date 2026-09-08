@@ -19,7 +19,6 @@
   --color-terminal-border: var(--terminal-border);
   --color-terminal-accent: var(--terminal-accent);
   --color-terminal-ok: var(--terminal-ok);
-  --color-docs-nav: var(--docs-nav);
 }
 
 :root {
@@ -33,22 +32,10 @@
   --terminal-border: #ffffff14;
   --terminal-accent: #9585ff;
   --terminal-ok: #66ae96;
-
-  --code: #1d2230;
-  --code-foreground: #e6e8ee;
-  --code-border: #ffffff1a;
-  --inline-code: #e9eaf1;
-  --inline-code-foreground: #1e2436;
-  --inline-code-border: #dcdee8;
-  --docs-nav: #4b5266;
 }
 
 .dark:root {
   --background: #1e2432;
-  --inline-code: #343c54;
-  --inline-code-foreground: #f7f7f8;
-  --inline-code-border: #ffffff1f;
-  --docs-nav: #999da9;
 }
 
 .dark-surface {
@@ -71,91 +58,6 @@
   --input: #ffffff1f;
   --ring: #9585ff;
   color: var(--foreground);
-}
-
-.docs-prose h2 {
-  font-size: 1.5rem;
-  font-weight: 800;
-  margin-top: 2.5rem;
-  margin-bottom: 0.5rem;
-  color: var(--foreground);
-}
-.docs-prose h3 {
-  font-size: 1.125rem;
-  font-weight: 700;
-  margin-top: 2rem;
-  margin-bottom: 0.5rem;
-  color: var(--foreground);
-}
-.docs-prose h2 + *,
-.docs-prose h3 + * {
-  margin-top: 0;
-}
-
-/* Keep anchored headings clear of the sticky header. */
-.docs-prose h2,
-.docs-prose h3 {
-  scroll-margin-top: 4.5rem;
-}
-
-.docs-prose p {
-  margin-block: 0.6rem;
-}
-.docs-prose ul,
-.docs-prose ol,
-.docs-prose blockquote,
-.docs-prose pre {
-  margin-block: 1rem;
-}
-.docs-prose li {
-  margin-block: 0.35rem;
-}
-.docs-prose hr {
-  margin-block: 2.5rem;
-}
-
-.docs-prose img {
-  max-width: 30rem;
-}
-
-.docs-prose table {
-  display: block;
-  max-width: 100%;
-  overflow-x: auto;
-  margin-block: 1.25rem;
-  font-size: 0.875rem;
-}
-.docs-prose pre code {
-  font-size: 0.875rem;
-}
-
-.docs-prose pre {
-  background-color: var(--code);
-  border-color: var(--code-border);
-  color: var(--code-foreground);
-}
-
-.docs-prose [aria-label="Copy code"] {
-  background-color: #ffffff14;
-  border-color: var(--code-border);
-  color: #e6e8eeb3;
-}
-.docs-prose [aria-label="Copy code"]:hover,
-.docs-prose [aria-label="Copy code"][data-copied] {
-  color: var(--code-foreground);
-  opacity: 1;
-}
-.docs-prose [aria-label="Copy code"][data-copied]::after {
-  content: "Copied";
-}
-.docs-prose code[data-copied] {
-  border-color: var(--primary);
-}
-
-.docs-prose :not(pre) > code {
-  background-color: var(--inline-code);
-  border-color: var(--inline-code-border);
-  color: var(--inline-code-foreground);
 }
 
 @layer base {

@@ -14,6 +14,7 @@ function prerenderDev(): Plugin {
         server.middlewares.use(async (req, res, next) => {
           if (!req.headers.accept?.includes("text/html")) return next()
           const url = (req.url ?? "/").split("?")[0]
+          if (url !== "/") return next()
           try {
             const { render } = await server.ssrLoadModule(
               "/src/entry-server.tsx"
@@ -26,7 +27,7 @@ function prerenderDev(): Plugin {
               )
             )
             res.setHeader("Content-Type", "text/html")
-            res.end(template.replace("<!--app-html-->", render(url)))
+            res.end(template.replace("<!--app-html-->", render()))
           } catch (error) {
             server.ssrFixStacktrace(error as Error)
             next(error)
@@ -51,9 +52,6 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "./src"),
-      // The docs markdown lives in @doska/docs; import.meta.glob can only walk
-      // a directory it can resolve at build time, so point it at the package.
-      "@docs": path.resolve(import.meta.dirname, "../../packages/docs/content"),
     },
   },
 })

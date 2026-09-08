@@ -6,7 +6,7 @@ order: 4
 updated: "2026-08-07"
 ---
 
-Attachments are currently supported only with the [self-hosting setup](/docs/self-hosting): they require a sync server.
+Attachments are currently supported only with the [self-hosting setup](/self-hosting): they require a sync server.
 
 Having attachments with the local setup is on the roadmap.
 

@@ -43,4 +43,4 @@ you make shows up on the public link a few seconds later rather than instantly.
 
 Publishing is for people outside your server. To give someone edit access, they
 need an account on it and a place on the board's roster. See
-[Accounts](/docs/accounts).
+[Accounts](/accounts).

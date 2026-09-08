@@ -3,6 +3,9 @@ packages:
   - "packages/*"
 
 minimumReleaseAgeStrict: true
+# Our own package, released from this machine.
+minimumReleaseAgeExclude:
+  - bakemd
 
 allowBuilds:
   esbuild: true

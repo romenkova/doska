@@ -26,10 +26,10 @@ an access token from there on.
 
 The agent gets the boards of whichever account you signed in as, and nothing
 else. To point it at a different account, connect again and sign in as that one.
-See [Accounts](/docs/accounts).
+See [Accounts](/accounts).
 
 > MCP OAuth advertises absolute URLs, so your server needs `BASE_URL` set to its
-> public origin. See [Self-hosting](/docs/self-hosting).
+> public origin. See [Self-hosting](/self-hosting).
 
 ## Tools
 

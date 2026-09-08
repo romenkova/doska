@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build && vite build --ssr src/entry-server.tsx --outDir dist/server && node prerender/index.js",
+    "build": "tsc -b && vite build && vite build --ssr src/entry-server.tsx --outDir dist/server && node prerender/index.js && bakemd build ../../packages/docs/content --out dist/docs",
     "lint": "eslint .",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
     "typecheck": "tsc -b --noEmit",
@@ -18,14 +18,13 @@
   },
   "devDependencies": {
     "@doska/configs": "workspace:*",
-    "@doska/docs": "workspace:*",
-    "@doska/markdown": "workspace:*",
     "@doska/ui-kit": "workspace:*",
     "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^22",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.5",
     "@vitejs/plugin-react": "^6.1.1",
+    "bakemd": "^0.2.1",
     "eslint": "^10.9.1",
     "lucide-react": "1.39.0",
     "prettier": "^3.9.6",
@@ -35,8 +34,6 @@
     "react-icons": "^5.7.0",
     "tailwindcss": "^4",
     "typescript": "~6",
-    "vfile": "^6.0.3",
-    "vfile-matter": "^5.0.1",
     "vite": "^8.2.2"
   }
 }
