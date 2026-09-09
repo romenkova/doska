@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://doska.sh/sitemap.xml
+Sitemap: https://doska.sh/docs/sitemap.xml

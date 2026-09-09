@@ -8,7 +8,7 @@ updated: "2026-09-02"
 
 Your server can hold more than one account. Everyone signs in with their own
 login and password, or through your identity provider if you set up
-[single sign-on](/docs/user-guides/sso).
+[single sign-on](/user-guides/sso).
 
 ## Add someone
 
@@ -18,7 +18,7 @@ sign themselves up. Single sign-on is the exception: the first sign-in through
 the provider creates the account, and Accounts tags it **SSO**.
 
 The admin is the account from `AUTH_LOGIN` / `AUTH_PASSWORD`, see
-[Environment](/docs/self-hosting/environment).
+[Environment](/self-hosting/environment).
 
 ## What they get
 
@@ -40,7 +40,7 @@ Sharing is the one part of the app that needs the server there and then: with
 the server unreachable, the roster won't open and nothing changes.
 
 A board can also be opened up to people with no account at all. See
-[Public sharing](/docs/public-sharing).
+[Public sharing](/public-sharing).
 
 ## Passwords
 

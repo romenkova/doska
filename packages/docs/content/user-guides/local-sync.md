@@ -6,7 +6,7 @@ order: 2
 updated: "2026-08-07"
 ---
 
-Syncing to a local folder is currently available only with the [desktop app](/docs/desktop).
+Syncing to a local folder is currently available only with the [desktop app](/desktop).
 
 ## How to sync a board to a folder on a device?
 
@@ -29,4 +29,4 @@ After the folder is selected, it will hold the columns as folders, and the cards
 There will also be special folders: `_trash` and `_files`.
 
 - **Trash folder** holds recently deleted cards, and even cards deleted locally land there first, so they can later be restored via the app, or manually by dragging the file back.
-- **Files folder** holds the board's [attachments](/docs/user-guides/attachments).
+- **Files folder** holds the board's [attachments](/user-guides/attachments).

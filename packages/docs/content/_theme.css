@@ -1,0 +1,28 @@
+/* Every weight one step up. Mulish goes to 1000. */
+:root {
+  --font-weight-medium: 600;
+  --font-weight-semibold: 700;
+  --font-weight-bold: 800;
+  --font-weight-black: 1000;
+}
+
+body {
+  font-weight: 500;
+}
+
+.docs-prose h1 {
+  font-weight: 900;
+}
+.docs-prose h2 {
+  font-weight: 800;
+}
+.docs-prose :is(h3, h4, strong, dt, thead th) {
+  font-weight: 700;
+}
+.docs-prose :is(a, blockquote, kbd, pre) {
+  font-weight: 600;
+}
+.docs-prose :not(pre) > code,
+.docs-prose ol > li::marker {
+  font-weight: 500;
+}

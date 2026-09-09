@@ -42,31 +42,3 @@ if (dmg) {
     })
     .catch(() => {})
 }
-
-const drawer = document.querySelector<HTMLDialogElement>("dialog[data-drawer]")
-if (drawer) {
-  document
-    .querySelector("[data-drawer-open]")
-    ?.addEventListener("click", () => drawer.showModal())
-  // Children fill the dialog, so a click landing on the dialog itself is on
-  // the backdrop.
-  drawer.addEventListener("click", (e) => {
-    if (e.target === drawer) drawer.close()
-  })
-}
-
-function flash(el: HTMLElement) {
-  el.dataset.copied = ""
-  setTimeout(() => delete el.dataset.copied, 1000)
-}
-
-document.addEventListener("click", (e) => {
-  const target = e.target as HTMLElement
-  const button = target.closest<HTMLElement>('[aria-label="Copy code"]')
-  const code = button
-    ? button.parentElement?.querySelector("code")
-    : target.closest<HTMLElement>('code[role="button"]')
-  if (!code) return
-  navigator.clipboard?.writeText(code.textContent ?? "")
-  flash(button ?? code)
-})

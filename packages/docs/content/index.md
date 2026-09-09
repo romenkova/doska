@@ -21,11 +21,11 @@ You can even point it at your own sync server.
 
 Download the app (currently only macOS is supported) from the [latest release](https://github.com/romenkova/doska/releases/latest), or grab the `.dmg` straight from [doska.sh](https://doska.sh).
 
-Local folder sync is fairly new, so please [submit an issue](https://github.com/romenkova/doska/issues/new) if you find anything buggy. More on it in the [folder sync guide](/docs/user-guides/local-sync).
+Local folder sync is fairly new, so please [submit an issue](https://github.com/romenkova/doska/issues/new) if you find anything buggy. More on it in the [folder sync guide](/user-guides/local-sync).
 
 ### Self-hosting
 
-More on self-hosting here: [Self-hosting guide](/docs/self-hosting).
+More on self-hosting here: [Self-hosting guide](/self-hosting).
 
 You will need Docker and Docker Compose. The self-hosting setup spins up the web server and the sync server. It also sets up the database and S3 (or local storage).
 
@@ -43,9 +43,9 @@ Cards also have deadlines and priorities. Boards support search and sort, as wel
 
 ## Where to go next
 
-- [User guides](/docs/user-guides).
-- [Self-hosting](/docs/self-hosting),  one-line installer, HTTPS, backups.
-- [Accounts](/docs/accounts),  more than one person on your server.
-- [MCP](/docs/mcp),  let an agent read and edit your boards.
-- [Desktop and mobile](/docs/desktop),  the macOS app and the PWA.
-- [Development](/docs/development),  run the monorepo locally.
+- [User guides](/user-guides).
+- [Self-hosting](/self-hosting),  one-line installer, HTTPS, backups.
+- [Accounts](/accounts),  more than one person on your server.
+- [MCP](/mcp),  let an agent read and edit your boards.
+- [Desktop and mobile](/desktop),  the macOS app and the PWA.
+- [Development](/development),  run the monorepo locally.

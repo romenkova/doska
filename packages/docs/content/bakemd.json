@@ -1,0 +1,14 @@
+{
+  "name": "Doska",
+  "site": "https://doska.sh/docs",
+  "home": "https://doska.sh",
+  "description": "An open-source, local-first Kanban board where every card is Markdown.",
+  "author": { "name": "Rita Romenkova", "url": "https://github.com/romenkova" },
+  "repo": "https://github.com/romenkova/doska",
+  "image": "/og.png",
+  "logo": "/favicon.svg",
+  "footer": "Doska. MIT licensed. 2026",
+  "theme": "_theme.css",
+  "themeColor": { "light": "#f7f7fa", "dark": "#232939" },
+  "codeTheme": "github-dark-dimmed"
+}
