@@ -25,7 +25,7 @@ export function CardPaneLayout({
       <CardContentLayout>
         {attachments}
         <CardContent
-          className="flex min-h-0 flex-1 flex-col border-t-0 px-4 pt-2"
+          className="flex flex-1 flex-col border-t-0 px-4 pt-2"
           onClick={onClickBody}
         >
           {title}

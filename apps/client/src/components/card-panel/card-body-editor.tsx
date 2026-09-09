@@ -8,7 +8,7 @@ import { isRenderableImage } from "../card/attachments/renderable-image"
 import { useUploads } from "@/providers/attachment-upload/attachment-upload-context"
 import { CardMarkdown } from "../card/card-markdown"
 import { Markdown } from "@doska/ui-kit"
-import { MarkdownTextarea } from "../markdown"
+import { MarkdownEditor } from "../markdown"
 
 const PREVIEW_MARKERS = [cut]
 
@@ -52,15 +52,14 @@ export function CardBodyEditor({
 
   return (
     <CardMarkdown cardId={cardId}>
-      <MarkdownTextarea
+      <MarkdownEditor
         renderPreview={Markdown}
         value={body}
         autoFocus={autoFocus}
-        onChange={(e) => onChangeBody(e.target.value)}
         onChangeValue={onChangeBody}
         onToggleTask={onChangeBody}
         slashMenu
-        highlight
+        markdown
         slashCommands={slashCommands}
         overlayContainer={overlayContainer}
         wikilinks={cardRefs}
@@ -68,7 +67,7 @@ export function CardBodyEditor({
         placeholder="Notes"
         isPreview={isPreview}
         markers={PREVIEW_MARKERS}
-        className="min-h-[50vh] shrink-0 resize-none text-foreground/90"
+        className="min-h-[50vh] shrink-0 text-foreground/90"
         containerClassName="flex-1"
       />
     </CardMarkdown>

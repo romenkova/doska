@@ -1,6 +1,6 @@
 import { Markdown, cn } from "@doska/ui-kit"
 import { useState } from "react"
-import { MarkdownTextarea } from "../markdown"
+import { MarkdownEditor } from "../markdown"
 import { CardPaneLayout } from "./card-pane-layout"
 import { CardPanelHeader } from "./card-panel-header"
 import { CardPanelMenu } from "./card-panel-menu"
@@ -104,11 +104,11 @@ export function CardEditor({
                   : undefined
               }
               title={
-                <MarkdownTextarea
+                <MarkdownEditor
                   renderPreview={Markdown}
                   autoFocus={!focusBody}
                   value={title}
-                  onChange={(e) => onChangeTitle(e.target.value)}
+                  onChangeValue={onChangeTitle}
                   placeholder="Title"
                   isPreview={isPreview}
                   className={cn(
