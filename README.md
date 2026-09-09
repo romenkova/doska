@@ -23,7 +23,7 @@
 <p align="center">
   <strong><a href="https://app.doska.sh/d/welcome">Open demo</a></strong> ·
   <a href="https://doska.sh/docs">Documentation</a> ·
-  <a href="https://github.com/romenkova/doska/releases/latest">Download for macOS</a> ·
+  <a href="https://github.com/romenkova/doska/releases/latest">Download the app</a> ·
   <a href="https://doska.sh/docs/mcp">MCP</a>
 </p>
 
@@ -98,12 +98,17 @@ The desktop app follows whatever version its server runs, so update the server
 first. The app's settings modal then has a button to check for updates and
 install them.
 
-## Desktop app (macOS-only for now)
+## Desktop app
 
-Download the latest macOS build from
-[Releases](https://github.com/romenkova/doska/releases/latest). It wraps the same
-client (with Tauri), is signed and notarized, and auto-updates.
+Builds for macOS, Windows and Linux are on
+[Releases](https://github.com/romenkova/doska/releases/latest). All three wrap the
+same client with Tauri and auto-update.
 [doska.sh/docs/desktop](https://doska.sh/docs/desktop).
+
+- **macOS**: universal build, signed and notarized.
+- **Windows** (beta): an NSIS installer. It is not signed, so SmartScreen will
+  warn on first launch; click "More info", then "Run anyway".
+- **Linux** (beta): AppImage, deb and rpm.
 
 ## MCP
 
