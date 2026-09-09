@@ -1,6 +1,6 @@
 import { Button } from "@doska/ui-kit"
 import { SiGithub } from "react-icons/si"
-import { repo } from "./links"
+import { docs, repo } from "./links"
 import { ThemeToggle } from "./theme-toggle"
 import { BookOpenText } from "lucide-react"
 
@@ -17,7 +17,7 @@ export function SiteHeader() {
             variant="ghost"
             nativeButton={false}
             className="plausible-event-name=Nav+Docs h-9 gap-2 px-3 sm:px-4"
-            render={<a href="/docs" target="_blank" rel="noreferrer" />}
+            render={<a href={docs} target="_blank" rel="noreferrer" />}
           >
             <BookOpenText className="size-4" />
             Docs

@@ -1,15 +1,8 @@
 /**
  * https://llmstxt.org an index of the site in Markdown, for models that are
- * fetching it rather than crawling it.
+ * fetching it rather than crawling it. The docs keep their own under /docs.
  */
-export function llms(site, { outline, links }) {
-  const labelFor = (page) => {
-    const parent = page.path.slice(0, page.path.lastIndexOf("/"))
-    if (parent === "/docs") return page.nav // a section, not a page under one
-    const section = outline.find((other) => other.path === parent)
-    return section ? `${section.nav} / ${page.nav}` : page.nav
-  }
-
+export function llms(site, links) {
   const lines = [
     "# Doska",
     "",
@@ -24,10 +17,7 @@ export function llms(site, { outline, links }) {
     "",
     "## Docs",
     "",
-    ...outline.map(
-      (page) =>
-        `- [${labelFor(page)}](${site}${page.path}): ${page.description}`
-    ),
+    `- [Docs index](${site}/docs/llms.txt): every page, one line each.`,
     "",
     "## Optional",
     "",

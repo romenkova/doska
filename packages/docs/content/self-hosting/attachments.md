@@ -9,7 +9,7 @@ updated: "2026-08-07"
 Doska has two ways to store data: a **local volume**, or an **S3 bucket**.
 When no S3 env variables are set, it uses a local volume by default.
 
-The local volume is included in the [backup script](/docs/self-hosting/backups).
+The local volume is included in the [backup script](/self-hosting/backups).
 
 ## S3
 
@@ -34,7 +34,7 @@ FILE_MAX_BYTES=26214400
 ## Which backend do I want?
 
 The local volume needs no configuration, and
-[`backup.sh`](/docs/self-hosting/backups) archives it alongside the database
+[`backup.sh`](/self-hosting/backups) archives it alongside the database
 dump. Reach for S3 when you'd rather not size the host's disk around
 attachments, or when you're running the server somewhere with ephemeral storage.
 Note that `backup.sh` doesn't touch a bucket.

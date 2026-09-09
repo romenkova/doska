@@ -6,13 +6,13 @@ order: 3
 updated: "2026-08-07"
 ---
 
-Syncing to a server is available only with the [self-hosted setup](/docs/self-hosting).
+Syncing to a server is available only with the [self-hosted setup](/self-hosting).
 
-Once the setup is up and running, you will be able to access the app via the web or the [desktop app](/docs/desktop).
+Once the setup is up and running, you will be able to access the app via the web or the [desktop app](/desktop).
 
 ## Web page
 
-The web app syncs to the server it belongs to automatically. The only thing needed is to log in with the credentials given to the install script (or specified in the [environment](/docs/self-hosting/environment)).
+The web app syncs to the server it belongs to automatically. The only thing needed is to log in with the credentials given to the install script (or specified in the [environment](/self-hosting/environment)).
 
 To sign in, click the button at the bottom of the sidebar.
 

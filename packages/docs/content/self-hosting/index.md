@@ -43,11 +43,11 @@ Open the web UI at `http://<your-host>:8080` and sign in with the `AUTH_LOGIN` /
 
 Those credentials create the **first admin** account on first boot. The admin
 can add more accounts from the app, and a board's owner can share it with them
-or publish it as a read-only link. See [Accounts](/docs/accounts).
+or publish it as a read-only link. See [Accounts](/accounts).
 
 ## Configuration
 
-See [Environment](/docs/self-hosting/environment) for every variable the server
+See [Environment](/self-hosting/environment) for every variable the server
 reads from `.env`.
 
 ## Connecting your devices
@@ -55,7 +55,7 @@ reads from `.env`.
 - **Browser:** open the server's own web UI and sign in.
 - **Desktop app:** open its sync settings and set the server URL to the same
   address.
-- **Agents:** see [MCP](/docs/mcp).
+- **Agents:** see [MCP](/mcp).
 
 ## Dokploy
 
@@ -64,9 +64,9 @@ instead of the self-host compose file.
 
 ## Next
 
-- [Environment](/docs/self-hosting/environment): every variable in `.env`.
-- [Accounts](/docs/accounts): add more people to this server.
-- [HTTPS](/docs/self-hosting/https): a certificate for a public deployment.
-- [Attachments](/docs/self-hosting/attachments): keep files in S3 instead of a
+- [Environment](/self-hosting/environment): every variable in `.env`.
+- [Accounts](/accounts): add more people to this server.
+- [HTTPS](/self-hosting/https): a certificate for a public deployment.
+- [Attachments](/self-hosting/attachments): keep files in S3 instead of a
   local volume.
-- [Backups](/docs/self-hosting/backups): dump the database and files, and restore.
+- [Backups](/self-hosting/backups): dump the database and files, and restore.

@@ -3,7 +3,10 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
-  "exports": {
-    "./content/*": "./content/*"
+  "scripts": {
+    "dev": "bakemd dev content --port 5175"
+  },
+  "devDependencies": {
+    "bakemd": "^0.2.1"
   }
 }

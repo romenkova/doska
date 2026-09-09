@@ -28,7 +28,7 @@ defaults and won't start without them. Everything else is optional.
 ## AUTH_LOGIN and AUTH_PASSWORD
 
 These create one account, once, on the server's first boot. It's the admin, so
-it can add everyone else from the app's [Accounts](/docs/accounts) screen.
+it can add everyone else from the app's [Accounts](/accounts) screen.
 
 After that they do nothing. Editing `AUTH_PASSWORD` and restarting won't change
 the password. Use Accounts, where the admin can set anyone's, its own
