@@ -3,7 +3,7 @@ packages:
   - "packages/*"
 
 minimumReleaseAgeStrict: true
-# Our own package, released from this machine.
+# My own package
 minimumReleaseAgeExclude:
   - bakemd
 
