@@ -1,5 +1,5 @@
 import { SidebarMenuButton, cn } from "@doska/ui-kit"
-import { Folder } from "lucide-react"
+import { Folder, FolderOpen } from "lucide-react"
 import type { SidebarFolderNode } from "@doska/core/operations"
 import {
   useDeleteFolder,
@@ -8,6 +8,7 @@ import {
 } from "@doska/core/mutations"
 import { FolderMenu } from "./folder-menu"
 import { FolderTitleInput } from "./folder-title-input"
+import { useMemo } from "react"
 
 interface IProps {
   node: SidebarFolderNode
@@ -28,6 +29,11 @@ export function FolderItem({
   const { mutate: rename } = useRenameFolder()
   const { mutate: remove } = useDeleteFolder()
 
+  const FolderIcon = useMemo(() => {
+    if (node.collapsed || isDropTarget) return Folder
+    return FolderOpen
+  }, [node.collapsed, isDropTarget])
+
   return (
     <>
       {renaming ? (
@@ -46,7 +52,7 @@ export function FolderItem({
             }
             className="pr-8"
           >
-            <Folder
+            <FolderIcon
               className={cn(
                 "size-3.5 text-muted-foreground",
                 isDropTarget && "fill-current"
