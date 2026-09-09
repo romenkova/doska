@@ -1,10 +1,14 @@
 import { Button } from "@doska/ui-kit"
 import { ChevronDown } from "lucide-react"
+import { FaLinux, FaWindows } from "react-icons/fa6"
 import { SiApple, SiGithub } from "react-icons/si"
 import { releasesLatest } from "./links"
 
 const item =
   "flex cursor-pointer items-center gap-2 px-3 py-1.5 outline-none hover:bg-muted hover:text-foreground focus-visible:bg-muted [&_svg]:size-4 [&_svg]:shrink-0"
+
+const beta =
+  "rounded bg-muted px-1.5 py-0.5 text-xs font-medium text-foreground/70"
 
 export function DownloadMenu() {
   return (
@@ -17,8 +21,20 @@ export function DownloadMenu() {
         aria-expanded="false"
         data-menu-trigger
       >
-        <SiApple className="size-4" />
-        Download for macOS
+        <span className="flex items-center gap-2" data-os="mac">
+          <SiApple className="size-4" />
+          Download for macOS
+        </span>
+        <span className="flex items-center gap-2" data-os="win" hidden>
+          <FaWindows className="size-4" />
+          Download for Windows
+          <span className={beta}>beta</span>
+        </span>
+        <span className="flex items-center gap-2" data-os="linux" hidden>
+          <FaLinux className="size-4" />
+          Download for Linux
+          <span className={beta}>beta</span>
+        </span>
         <ChevronDown className="size-4 text-muted-foreground" />
       </Button>
       <div
@@ -43,10 +59,34 @@ export function DownloadMenu() {
           href={releasesLatest}
           target="_blank"
           rel="noreferrer"
+          className={`plausible-event-name=CTA+Download+Windows ${item}`}
+          data-exe
+        >
+          <FaWindows />
+          Download for Windows
+          <span className={beta}>beta</span>
+        </a>
+        <a
+          role="menuitem"
+          href={releasesLatest}
+          target="_blank"
+          rel="noreferrer"
+          className={`plausible-event-name=CTA+Download+Linux ${item}`}
+          data-appimage
+        >
+          <FaLinux />
+          Download for Linux
+          <span className={beta}>beta</span>
+        </a>
+        <a
+          role="menuitem"
+          href={releasesLatest}
+          target="_blank"
+          rel="noreferrer"
           className={`plausible-event-name=CTA+Download+GitHub ${item}`}
         >
           <SiGithub />
-          Download from GitHub Releases
+          Download from GH Releases
         </a>
       </div>
     </div>

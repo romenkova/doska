@@ -29,16 +29,37 @@ if (menu && menuTrigger && menuPopup) {
   })
 }
 
-const dmg = document.querySelector<HTMLAnchorElement>("a[data-dmg]")
-if (dmg) {
+const ua = navigator.userAgent
+const os = ua.includes("Windows")
+  ? "win"
+  : ua.includes("Linux") && !ua.includes("Android")
+    ? "linux"
+    : null
+if (os) {
+  for (const label of document.querySelectorAll<HTMLElement>("[data-os]"))
+    label.hidden = label.dataset.os !== os
+}
+
+const downloads = [
+  ["a[data-dmg]", ".dmg"],
+  ["a[data-exe]", "-setup.exe"],
+  ["a[data-appimage]", ".AppImage"],
+].map(([selector, suffix]) => ({
+  link: document.querySelector<HTMLAnchorElement>(selector),
+  suffix,
+}))
+if (downloads.some((d) => d.link)) {
   type Release = { assets?: { name: string; browser_download_url: string }[] }
   fetch(`${repoApi}/releases/latest`, {
     headers: { Accept: "application/vnd.github+json" },
   })
     .then((res) => (res.ok ? (res.json() as Promise<Release>) : null))
     .then((release) => {
-      const asset = release?.assets?.find((a) => a.name.endsWith(".dmg"))
-      if (asset) dmg.href = asset.browser_download_url
+      const assets = release?.assets ?? []
+      for (const { link, suffix } of downloads) {
+        const asset = assets.find((a) => a.name.endsWith(suffix))
+        if (link && asset) link.href = asset.browser_download_url
+      }
     })
     .catch(() => {})
 }
