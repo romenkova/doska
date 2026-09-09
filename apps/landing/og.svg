@@ -1,23 +1,26 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1200" height="630" viewBox="0 0 1200 630">
+  <!-- Render: rsvg-convert -w 2400 -h 1260 og.svg -o public/og.png -->
+  <defs>
+    <clipPath id="shot"><rect x="60" y="296" width="1080" height="678" rx="14" /></clipPath>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="-6" stdDeviation="26" flood-color="#000" flood-opacity="0.5" />
+    </filter>
+  </defs>
   <rect width="1200" height="630" fill="#232939" />
 
-  <!-- The header's mark, without favicon.svg's tile: on this ground the tile is
-       invisible anyway, and dropping it lets the anchor set the lockup's left
-       edge rather than sitting inset from it. The lockup has no text-anchor to
-       centre it, so its x values come from a measured wordmark width of 104.6. -->
-  <g transform="translate(522.5 98.8) scale(1.6)" fill="none" stroke="#f7f7f8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+  <g transform="translate(537.5 46) scale(1.45)" fill="none" stroke="#f7f7f8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M12 22V8" />
     <path d="M5 12H2a10 10 0 0 0 20 0h-3" />
     <circle cx="12" cy="5" r="3" />
   </g>
-  <text x="571.5" y="131" font-family="Avenir Next, Helvetica, sans-serif" font-weight="600" font-size="36" fill="#f7f7f8">Doska</text>
+  <text x="582" y="76" font-family="Avenir Next, Helvetica, sans-serif" font-weight="600" font-size="32" fill="#f7f7f8">Doska</text>
 
-  <g text-anchor="middle" font-family="Avenir Next, Helvetica, sans-serif" font-weight="800" font-size="88" letter-spacing="-2">
-    <text x="600" y="292" fill="#f7f7f8">Kanban for</text>
-    <text x="600" y="390" fill="#9585ff">your own projects</text>
-  </g>
+  <text x="600" y="174" text-anchor="middle" font-family="Avenir Next, Helvetica, sans-serif" font-weight="800" font-size="60" letter-spacing="-1.5" fill="#f7f7f8">Kanban for <tspan fill="#9585ff">your own projects</tspan></text>
 
-  <text x="600" y="458" text-anchor="middle" font-family="Avenir Next, Helvetica, sans-serif" font-weight="600" font-size="30" fill="#a2a7b5">Local-first. Works offline. Self-host the sync.</text>
+  <text x="600" y="224" text-anchor="middle" font-family="Avenir Next, Helvetica, sans-serif" font-weight="600" font-size="22" fill="#a2a7b5">Local-first. Works offline. Self-host the sync.</text>
+  <text x="600" y="262" text-anchor="middle" font-family="Geist Mono, Menlo, monospace" font-size="15" fill="#676d7f">Open source · self-hosted · Markdown cards</text>
 
-  <text x="600" y="524" text-anchor="middle" font-family="Geist Mono, Menlo, monospace" font-size="22" fill="#676d7f">Open source · self-hosted · Markdown cards</text>
+  <rect x="60" y="296" width="1080" height="678" rx="14" fill="#1b2030" filter="url(#shadow)" />
+  <image x="60" y="296" width="1080" height="678" xlink:href="og-shot.png" clip-path="url(#shot)" preserveAspectRatio="none" />
+  <rect x="60.5" y="296.5" width="1079" height="677" rx="14" fill="none" stroke="#ffffff" stroke-opacity="0.16" />
 </svg>
