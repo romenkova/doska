@@ -29,11 +29,10 @@ jobs:
         include:
           - platform: macos-latest
             args: "--target universal-apple-darwin"
-          # Windows and Linux are disabled for now, macOS only.
-          # - platform: ubuntu-latest
-          #   args: ""
-          # - platform: windows-latest
-          #   args: ""
+          - platform: windows-latest
+            args: "--bundles nsis"
+          - platform: ubuntu-latest
+            args: ""
 
     runs-on: ${{ matrix.platform }}
     steps:
