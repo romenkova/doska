@@ -10,6 +10,6 @@ export function MdParagraph({
   muted?: boolean
 }) {
   return (
-    <p className={cn("my-2", muted && "text-muted-foreground")}>{children}</p>
+    <p className={cn("my-3", muted && "text-muted-foreground")}>{children}</p>
   )
 }

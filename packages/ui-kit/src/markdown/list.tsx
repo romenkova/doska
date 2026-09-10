@@ -10,7 +10,7 @@ export function MdList({
   start?: number
   children: ReactNode
 }) {
-  const className = "my-2 pl-5 marker:text-muted-foreground"
+  const className = "my-3 pl-5 marker:text-muted-foreground"
   if (ordered)
     return (
       <ol

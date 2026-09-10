@@ -22,7 +22,7 @@ export function MdTaskItem({
   return (
     <li
       className={cn(
-        "relative my-[0.2rem] pl-1 list-none [&>p]:m-0",
+        "relative my-1 pl-1 list-none [&>p]:m-0",
         checked && "text-muted-foreground/70 dark:text-muted-foreground"
       )}
     >
