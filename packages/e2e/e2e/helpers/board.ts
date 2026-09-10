@@ -116,10 +116,17 @@ export async function toggleSort(page: Page, label: string): Promise<void> {
  */
 export function syncIndicator(page: Page) {
   // Anchored: the sidebar's account row is a button too, and its name ends in
-  // the same words ("e2e Offline") once the connection drops.
+  // the same words ("e2e Offline") once the connection drops. "Syncing" is in
+  // so the pill is found mid-reconcile and an assertion waits on its name
+  // instead of reporting it missing.
   return page.getByRole("button", {
-    name: /^(Synced|\d+ changes?|Sync failed|Offline)$/,
+    name: /^(Synced|Syncing|\d+ changes?|Sync failed|Offline)$/,
   })
+}
+
+/** The app-wide "Not syncing" notice, shown while the connection is dropped. */
+export function connectionBanner(page: Page) {
+  return page.getByRole("status").filter({ hasText: "Not syncing" })
 }
 
 /* -------------------------------------------------------------------------- */

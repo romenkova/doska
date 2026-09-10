@@ -1,4 +1,9 @@
-import { expect, type APIRequestContext, type Page } from "@playwright/test"
+import {
+  expect,
+  type APIRequestContext,
+  type Locator,
+  type Page,
+} from "@playwright/test"
 import type { Change } from "@doska/contract"
 import { newerThan, sync, waitForChange } from "./rpc"
 import { column } from "./column"
@@ -11,8 +16,8 @@ import { menu } from "./menu"
 
 /**
  * A card on the board, located by its visible title. Scoped to the draggable so
- * it never collides with the modal editor's title field, which is a `<textarea>`
- * holding the same text — a bare `getByText(title)` matches both while the modal
+ * it never collides with the modal editor's title field, which holds the same
+ * text — a bare `getByText(title)` matches both while the modal
  * is open (or mid-close), so always reach for the board card through this.
  *
  * Matches anything the card renders, body included — several specs locate a
@@ -26,11 +31,9 @@ export function card(page: Page, title: string) {
 
 /** A card matched on its title alone, ignoring whatever its body renders. */
 export function cardTitled(page: Page, title: string) {
-  return page
-    .locator("[data-rfd-draggable-id]")
-    .filter({
-      has: page.locator('[data-slot="card-title"]', { hasText: title }),
-    })
+  return page.locator("[data-rfd-draggable-id]").filter({
+    has: page.locator('[data-slot="card-title"]', { hasText: title }),
+  })
 }
 
 /**
@@ -71,6 +74,38 @@ export function cardPanel(page: Page) {
 }
 
 /**
+ * The panel's Title or Notes field. Both are CodeMirror editors: a
+ * contenteditable named after its placeholder, not an input, so `fill`, `press`
+ * and `pressSequentially` work on it but `toHaveValue` doesn't — read it back
+ * through `fieldText`.
+ */
+export function panelField(page: Page, name: "Title" | "Notes") {
+  return page.getByRole("textbox", { name, exact: true })
+}
+
+// Runs in the page; Node has no DOM lib, so only the members used are typed.
+// `cmTile` is the handle CodeMirror leaves on its content element — the same
+// one `EditorView.findFromDOM` walks.
+interface CmContent {
+  cmTile: {
+    root: {
+      view: { state: { doc: { toString(): string } } }
+    }
+  }
+}
+
+/**
+ * The markdown a panel field holds, newlines included. Read off the editor
+ * rather than the DOM: the DOM splits lines into blocks and shows the
+ * placeholder as text when the field is empty.
+ */
+export function fieldText(field: Locator): Promise<string> {
+  return field.evaluate((el: CmContent) =>
+    el.cmTile.root.view.state.doc.toString()
+  )
+}
+
+/**
  * Adds a card to the named column via the column's "add card" control, which now
  * lives as a full-width button at the top of the column body (it used to sit in
  * the column header). New cards have an empty title and render the "Untitled
@@ -89,7 +124,7 @@ export async function addCard(page: Page, name: string): Promise<void> {
 // Reopening before the panel unmounts reuses the stale instance, so wait it fully out, not just off the route.
 async function waitForPanelToClose(page: Page): Promise<void> {
   await page.waitForURL((url) => !url.pathname.includes("/c/"))
-  await expect(page.getByPlaceholder("Title")).toHaveCount(0)
+  await expect(panelField(page, "Title")).toHaveCount(0)
 }
 
 /**
@@ -112,8 +147,7 @@ export async function retitleCard(
   toTitle: string
 ): Promise<void> {
   await openCard(page, fromTitle)
-  const title = page.getByPlaceholder("Title")
-  await title.fill(toTitle)
+  await panelField(page, "Title").fill(toTitle)
   await closeCard(page)
   await expect(card(page, toTitle)).toBeVisible()
 }
@@ -132,7 +166,7 @@ export async function openCard(page: Page, title: string): Promise<void> {
     await page.getByRole("button", { name: "Edit" }).click()
   }
   // Click to focus: a panel reused mid-close-animation won't refire the field's autoFocus.
-  const titleField = page.getByPlaceholder("Title")
+  const titleField = panelField(page, "Title")
   await titleField.click()
   await expect(titleField).toBeFocused()
 }
@@ -147,7 +181,7 @@ export async function editCardBody(
   body: string
 ): Promise<void> {
   await openCard(page, title)
-  await page.getByPlaceholder("Notes").fill(body)
+  await panelField(page, "Notes").fill(body)
   await closeCard(page)
 }
 

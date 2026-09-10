@@ -4,7 +4,9 @@ import {
   card,
   cardPanel,
   createBoard,
+  fieldText,
   openCard,
+  panelField,
   retitleCard,
 } from "../helpers"
 
@@ -29,7 +31,9 @@ test.describe("card deep link", () => {
 
     await page.goto(cardUrl)
     await expect(cardPanel(page)).toBeVisible()
-    await expect(page.getByPlaceholder("Title")).toHaveValue("Plan launch")
+    await expect
+      .poll(() => fieldText(panelField(page, "Title")))
+      .toBe("Plan launch")
   })
 
   test("reloading with a card open reopens the same card", async ({ page }) => {
@@ -41,7 +45,9 @@ test.describe("card deep link", () => {
     await page.reload()
 
     await expect(cardPanel(page)).toBeVisible()
-    await expect(page.getByPlaceholder("Title")).toHaveValue("Still here")
+    await expect
+      .poll(() => fieldText(panelField(page, "Title")))
+      .toBe("Still here")
   })
 
   test("Escape closes the panel and returns to the board's URL", async ({
@@ -55,7 +61,7 @@ test.describe("card deep link", () => {
     await page.keyboard.press("Escape")
 
     await expect(page).toHaveURL(new RegExp(`/d/${deckId}$`))
-    await expect(page.getByPlaceholder("Title")).toHaveCount(0)
+    await expect(panelField(page, "Title")).toHaveCount(0)
     await expect(card(page, "Close me")).toBeVisible()
   })
 
@@ -68,7 +74,7 @@ test.describe("card deep link", () => {
     await cardPanel(page).getByRole("button", { name: "Close card" }).click()
 
     await expect(page).toHaveURL(new RegExp(`/d/${deckId}$`))
-    await expect(page.getByPlaceholder("Title")).toHaveCount(0)
+    await expect(panelField(page, "Title")).toHaveCount(0)
   })
 
   test("a link to a card that no longer exists leaves the board usable", async ({
@@ -90,7 +96,7 @@ test.describe("card deep link", () => {
 
     // The stale link still lands on the board, with nothing to edit in the panel.
     await page.goto(cardUrl)
-    await expect(page.getByPlaceholder("Title")).toHaveCount(0)
+    await expect(panelField(page, "Title")).toHaveCount(0)
     await expect(
       page.getByRole("button", { name: "Add card to To Do" })
     ).toBeVisible()

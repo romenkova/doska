@@ -1,2 +1,2 @@
 export * from "./markdown-card-preview"
-export * from "./markdown-textarea"
+export * from "./markdown-editor"

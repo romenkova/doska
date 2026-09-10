@@ -1,9 +1,0 @@
-{
-  "extends": "@doska/configs/tsconfig/base.json",
-  "compilerOptions": {
-    // No DOM and no React: this package produces data, and each platform
-    // decides what a token looks like.
-    "lib": ["ES2023"]
-  },
-  "include": ["src", "tests"]
-}

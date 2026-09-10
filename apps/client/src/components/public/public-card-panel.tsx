@@ -8,7 +8,7 @@ import { CardPaneLayout } from "../card-panel/card-pane-layout"
 import { CardPanelHeader } from "../card-panel/card-panel-header"
 import { CardPanelShell } from "../card-panel/card-panel-shell"
 import { ColumnTag } from "../column/column-tag"
-import { MarkdownTextarea } from "../markdown"
+import { MarkdownEditor } from "../markdown"
 import { PublicAttachments } from "./public-attachments"
 import { PublicMarkdown } from "./public-markdown"
 
@@ -75,7 +75,7 @@ export function PublicCardPanel({ token, snapshot, closeHref }: IProps) {
                 />
               }
               title={
-                <MarkdownTextarea
+                <MarkdownEditor
                   renderPreview={Markdown}
                   isPreview
                   value={card.title}
@@ -83,7 +83,7 @@ export function PublicCardPanel({ token, snapshot, closeHref }: IProps) {
                 />
               }
               body={
-                <MarkdownTextarea
+                <MarkdownEditor
                   renderPreview={Markdown}
                   isPreview
                   value={card.body}

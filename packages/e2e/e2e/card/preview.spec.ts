@@ -5,6 +5,8 @@ import {
   cardPanel,
   createBoard,
   editCardBody,
+  fieldText,
+  panelField,
   retitleCard,
 } from "../helpers"
 
@@ -21,8 +23,8 @@ test.describe("card preview & edit", () => {
 
     // No body yet — opens straight in the editor, not preview.
     await card(page, "Untitled card").click()
-    await expect(page.getByPlaceholder("Title")).toBeFocused()
-    await expect(page.getByPlaceholder("Notes")).toBeVisible()
+    await expect(panelField(page, "Title")).toBeFocused()
+    await expect(panelField(page, "Notes")).toBeVisible()
   })
 
   test("a card with a body opens in read-only preview", async ({ page }) => {
@@ -35,7 +37,7 @@ test.describe("card preview & edit", () => {
     // field is gone and the note renders read-only instead.
     await card(page, "Final notes").click()
     await expect(page.getByRole("button", { name: "Edit" })).toBeVisible()
-    await expect(page.getByPlaceholder("Notes")).toHaveCount(0)
+    await expect(panelField(page, "Notes")).toHaveCount(0)
     await expect(cardPanel(page).getByText("Decision: ship it")).toBeVisible()
   })
 
@@ -46,14 +48,14 @@ test.describe("card preview & edit", () => {
     await editCardBody(page, "Edit me", "Some content")
 
     await card(page, "Edit me").click()
-    await expect(page.getByPlaceholder("Notes")).toHaveCount(0)
+    await expect(panelField(page, "Notes")).toHaveCount(0)
 
     // Double-clicking the rendered note drops into the editor with the caret
     // where you clicked — the Notes field, back and holding the same content.
     await cardPanel(page).getByText("Some content").dblclick()
-    const notes = page.getByPlaceholder("Notes")
+    const notes = panelField(page, "Notes")
     await expect(notes).toBeFocused()
-    await expect(notes).toHaveValue("Some content")
+    await expect.poll(() => fieldText(notes)).toBe("Some content")
   })
 
   test("preview can be toggled to edit and back", async ({ page }) => {
@@ -64,12 +66,14 @@ test.describe("card preview & edit", () => {
 
     // Opens in preview; "Edit" returns to the field, "Preview" renders it again.
     await card(page, "Toggle me").click()
-    await expect(page.getByPlaceholder("Notes")).toHaveCount(0)
+    await expect(panelField(page, "Notes")).toHaveCount(0)
 
     await page.getByRole("button", { name: "Edit" }).click()
-    await expect(page.getByPlaceholder("Notes")).toHaveValue("Some content")
+    await expect
+      .poll(() => fieldText(panelField(page, "Notes")))
+      .toBe("Some content")
 
     await page.getByRole("button", { name: "Preview" }).click()
-    await expect(page.getByPlaceholder("Notes")).toHaveCount(0)
+    await expect(panelField(page, "Notes")).toHaveCount(0)
   })
 })

@@ -5,6 +5,8 @@ import {
   card,
   cardPanel,
   createBoard,
+  fieldText,
+  panelField,
   pasteInto,
   pngDataTransfer,
   signIn,
@@ -23,7 +25,7 @@ test.describe("dropping and pasting files", { tag: "@container" }, () => {
     await addCard(page, "To Do")
     await card(page, "Untitled card").click()
 
-    const notes = page.getByPlaceholder("Notes")
+    const notes = panelField(page, "Notes")
     const transfer = await pngDataTransfer(page, "dropped.png")
 
     await notes.dispatchEvent("dragenter", { dataTransfer: transfer })
@@ -33,9 +35,7 @@ test.describe("dropping and pasting files", { tag: "@container" }, () => {
 
     await expect(page.getByText("Drop files to attach")).toHaveCount(0)
     await expect(cardPanel(page).getByText("dropped")).toBeVisible()
-    await expect(
-      attachmentRow(page, "dropped.png")
-    ).toBeVisible()
+    await expect(attachmentRow(page, "dropped.png")).toBeVisible()
   })
 
   test("a drop while signed out says so instead of failing silently", async ({
@@ -45,7 +45,7 @@ test.describe("dropping and pasting files", { tag: "@container" }, () => {
     await addCard(page, "To Do")
     await card(page, "Untitled card").click()
 
-    const notes = page.getByPlaceholder("Notes")
+    const notes = panelField(page, "Notes")
     const transfer = await pngDataTransfer(page, "nope.png")
 
     await notes.dispatchEvent("dragenter", { dataTransfer: transfer })
@@ -74,7 +74,7 @@ test.describe("dropping and pasting files", { tag: "@container" }, () => {
       await addCard(page, "To Do")
       await card(page, "Untitled card").click()
 
-      const notes = page.getByPlaceholder("Notes")
+      const notes = panelField(page, "Notes")
       await notes.click()
       await notes.pressSequentially("before")
 
@@ -82,12 +82,12 @@ test.describe("dropping and pasting files", { tag: "@container" }, () => {
       await pasteInto(notes, transfer)
 
       // The upload lands as an image reference spliced in where the caret was...
-      await expect(notes).toHaveValue(/^before!\[pasted\.png\]\(.+\)$/)
+      await expect
+        .poll(() => fieldText(notes))
+        .toMatch(/^before!\[pasted\.png\]\(.+\)$/)
       // ...and as an attachment on the card. (Matched on the tile: the notes now
       // carry the same name, so plain text would be ambiguous.)
-      await expect(
-        attachmentRow(page, "pasted.png")
-      ).toBeVisible()
+      await expect(attachmentRow(page, "pasted.png")).toBeVisible()
     })
   })
 
@@ -97,22 +97,20 @@ test.describe("dropping and pasting files", { tag: "@container" }, () => {
     await addCard(page, "To Do")
     await card(page, "Untitled card").click()
 
-    const notes = page.getByPlaceholder("Notes")
+    const notes = panelField(page, "Notes")
     const transfer = await pngDataTransfer(page, "chart.png")
     await notes.dispatchEvent("drop", { dataTransfer: transfer })
-    await expect(
-      attachmentRow(page, "chart.png")
-    ).toBeVisible()
+    await expect(attachmentRow(page, "chart.png")).toBeVisible()
 
     await notes.click()
     await notes.pressSequentially("/chart")
 
-    const command = page.getByRole("button", {
+    const command = page.getByRole("option", {
       name: "chart.png Insert image",
     })
     await expect(command).toBeVisible()
     await command.click()
 
-    await expect(notes).toHaveValue(/!\[chart\.png\]\(.+\)/)
+    await expect.poll(() => fieldText(notes)).toMatch(/!\[chart\.png\]\(.+\)/)
   })
 })

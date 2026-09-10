@@ -7,7 +7,9 @@ import {
   closeCard,
   createBoard,
   editCardBody,
+  fieldText,
   openCard,
+  panelField,
   pngDataTransfer,
   retitleCard,
   signIn,
@@ -28,7 +30,7 @@ function imageCard(page: Page, alt: string) {
  */
 async function bodyOfOneImage(page: Page, base: string): Promise<void> {
   const name = `${base}.png`
-  const notes = page.getByPlaceholder("Notes")
+  const notes = panelField(page, "Notes")
   const transfer = await pngDataTransfer(page, name)
 
   await notes.dispatchEvent("drop", { dataTransfer: transfer })
@@ -36,11 +38,13 @@ async function bodyOfOneImage(page: Page, base: string): Promise<void> {
 
   await notes.click()
   await notes.pressSequentially(`/${base}`)
-  await page.getByRole("button", { name: `${name} Insert image` }).click()
-  await expect(notes).toHaveValue(new RegExp(`^!\\[${name}\\]\\(.+\\)$`))
+  await page.getByRole("option", { name: `${name} Insert image` }).click()
+  await expect
+    .poll(() => fieldText(notes))
+    .toMatch(new RegExp(`^!\\[${name}\\]\\(.+\\)$`))
 
   await closeCard(page)
-  await expect(page.getByPlaceholder("Notes")).toHaveCount(0)
+  await expect(panelField(page, "Notes")).toHaveCount(0)
 }
 
 /**
@@ -77,12 +81,12 @@ test.describe("image-only cards", { tag: "@container" }, () => {
     await card(page, "Untitled card").click()
 
     const transfer = await pngDataTransfer(page, "scan.png")
-    await page
-      .getByPlaceholder("Notes")
-      .dispatchEvent("drop", { dataTransfer: transfer })
+    await panelField(page, "Notes").dispatchEvent("drop", {
+      dataTransfer: transfer,
+    })
     await expect(cardPanel(page).getByText("scan")).toBeVisible()
     await closeCard(page)
-    await expect(page.getByPlaceholder("Notes")).toHaveCount(0)
+    await expect(panelField(page, "Notes")).toHaveCount(0)
 
     // Nothing was written into the body, so the attachment itself is the card.
     const shown = imageCard(page, "scan.png")
@@ -118,7 +122,9 @@ test.describe("image-only cards", { tag: "@container" }, () => {
     await expect(shown.getByText("Launch poster")).toBeVisible()
   })
 
-  test("hiding a column's bodies leaves the image showing", async ({ page }) => {
+  test("hiding a column's bodies leaves the image showing", async ({
+    page,
+  }) => {
     await signIn(page)
     await createBoard(page)
     await addCard(page, "To Do")

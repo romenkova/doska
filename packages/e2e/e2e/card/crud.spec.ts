@@ -1,5 +1,12 @@
 import { test, expect } from "@playwright/test"
-import { addCard, card, closeCard, column, createBoard } from "../helpers"
+import {
+  addCard,
+  card,
+  closeCard,
+  column,
+  createBoard,
+  panelField,
+} from "../helpers"
 
 test.describe("card lifecycle", { tag: "@container" }, () => {
   test("create, edit, persist, then delete a card", async ({ page }) => {
@@ -17,7 +24,7 @@ test.describe("card lifecycle", { tag: "@container" }, () => {
 
     // Open it and give it a distinct title via the modal editor.
     await card(page, "Untitled card").click()
-    const title = page.getByPlaceholder("Title")
+    const title = panelField(page, "Title")
     await expect(title).toBeFocused()
     await title.fill("My E2E Card")
     await closeCard(page)
