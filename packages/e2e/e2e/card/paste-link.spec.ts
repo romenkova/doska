@@ -2,18 +2,13 @@ import { test, expect, type Locator, type Page } from "@playwright/test"
 import {
   addCard,
   card,
+  copyText,
   createBoard,
   fieldText,
   panelField,
-  pasteInto,
-  textDataTransfer,
 } from "../helpers"
 
-/**
- * Pasting a URL over selected text turns the selection into a Markdown link.
- * The paste is dispatched by hand (see `pasteInto`): the OS clipboard is out of
- * reach without extra permissions, and a synthetic event hits the same handler.
- */
+/** Pasting a URL over selected text turns the selection into a Markdown link. */
 async function openNotesWith(page: Page, text: string) {
   await createBoard(page)
   await addCard(page, "To Do")
@@ -34,12 +29,10 @@ async function selectTheDocs(notes: Locator): Promise<void> {
 test.describe("paste link", () => {
   test("a URL pasted over a selection wraps it in a link", async ({ page }) => {
     const notes = await openNotesWith(page, "see the docs today")
+    await copyText(page, "https://example.com/docs")
 
     await selectTheDocs(notes)
-    await pasteInto(
-      notes,
-      await textDataTransfer(page, "https://example.com/docs")
-    )
+    await notes.press("ControlOrMeta+v")
 
     await expect
       .poll(() => fieldText(notes))
@@ -48,9 +41,10 @@ test.describe("paste link", () => {
 
   test("non-URL text over a selection is pasted as it is", async ({ page }) => {
     const notes = await openNotesWith(page, "see the docs today")
+    await copyText(page, "plain words")
 
     await selectTheDocs(notes)
-    await pasteInto(notes, await textDataTransfer(page, "plain words"))
+    await notes.press("ControlOrMeta+v")
 
     await expect.poll(() => fieldText(notes)).toBe("see plain words today")
   })

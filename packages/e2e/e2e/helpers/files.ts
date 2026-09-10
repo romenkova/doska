@@ -35,6 +35,11 @@ declare const ClipboardEvent: {
     init: { clipboardData: unknown; bubbles: boolean; cancelable: boolean }
   ): Event
 }
+declare const document: {
+  body: { append(node: unknown): void }
+  createElement(tag: string): { id: string }
+  getElementById(id: string): { remove(): void } | null
+}
 
 /**
  * A `DataTransfer` carrying one PNG, for driving drags and pastes
@@ -54,16 +59,23 @@ export function pngDataTransfer(
   )
 }
 
-/** A `DataTransfer` carrying plain text, for driving a text paste. */
-export function textDataTransfer(
-  page: Page,
-  text: string
-): Promise<JSHandle<FileTransfer>> {
-  return page.evaluateHandle((text) => {
-    const transfer = new DataTransfer()
-    transfer.setData("text/plain", text)
-    return transfer
-  }, text)
+/**
+ * Puts `text` on the clipboard as a user would: typed into a scratch field,
+ * selected, copied. Firefox hands a paste listener an empty DataTransfer when
+ * the event was built in the page, so the real clipboard is the only route
+ * that works in every browser.
+ */
+export async function copyText(page: Page, text: string): Promise<void> {
+  await page.evaluate(() => {
+    const field = document.createElement("textarea")
+    field.id = "e2e-clipboard"
+    document.body.append(field)
+  })
+  const field = page.locator("#e2e-clipboard")
+  await field.fill(text)
+  await field.press("ControlOrMeta+a")
+  await field.press("ControlOrMeta+c")
+  await page.evaluate(() => document.getElementById("e2e-clipboard")?.remove())
 }
 
 /**

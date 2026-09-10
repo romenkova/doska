@@ -78,6 +78,21 @@ describe("SyncEngine", () => {
     expect(engine.getState().pending).toBe(0)
   })
 
+  it("reports syncing for a push, not for a pull with nothing to send", async () => {
+    const driver = new FakeDriver()
+    const engine = new SyncEngine(driver, { kv, storageKey: freshKey() })
+    const seen: string[] = []
+    engine.subscribe(() => seen.push(engine.getState().status))
+
+    engine.setActiveScope("b1")
+    await engine.reconcile()
+    expect(seen).not.toContain("syncing")
+
+    engine.mark("b1/c1")
+    await engine.reconcile()
+    expect(seen).toContain("syncing")
+  })
+
   it("forgets dirty refs on clearDirty, in memory and on disk", async () => {
     const driver = new FakeDriver()
     const key = freshKey()

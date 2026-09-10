@@ -273,11 +273,14 @@ export class SyncEngine<Scope, Change> {
   private async run(scope: Scope | null): Promise<boolean> {
     if (scope === null || !this.canSync()) return false
     this.attempt.attempted += 1
-    this.setState({
-      ...this.state,
-      status: "syncing",
-      pending: this.dirty.size,
-    })
+    // A pull with nothing to push stays quiet: every background tick would
+    // otherwise read as "syncing".
+    if (this.dirty.size > 0)
+      this.setState({
+        ...this.state,
+        status: "syncing",
+        pending: this.dirty.size,
+      })
     try {
       const since = await this.driver.loadCursor(scope)
       const { changes, refs } = await this.driver.collectChanges(

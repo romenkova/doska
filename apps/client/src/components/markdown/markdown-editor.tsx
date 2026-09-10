@@ -1,5 +1,5 @@
 import { cn } from "@doska/ui-kit"
-import { lazy, Suspense, type ComponentType } from "react"
+import type { ComponentType } from "react"
 import {
   toggleTaskByIndex,
   useMarkers,
@@ -7,10 +7,7 @@ import {
   type SlashCommand,
   type WikilinkOption,
 } from "@doska/markdown"
-
-const Editor = lazy(() =>
-  import("./editor/editor").then((m) => ({ default: m.Editor }))
-)
+import { Editor } from "./editor/editor"
 
 interface PreviewProps {
   children: string
@@ -83,21 +80,19 @@ export function MarkdownEditor({
     )
 
   return (
-    <Suspense>
-      <Editor
-        value={value}
-        onChangeValue={onChangeValue ?? NOOP}
-        autoFocus={autoFocus}
-        placeholder={placeholder}
-        className={className}
-        slashMenu={slashMenu}
-        markdown={markdown}
-        slashCommands={slashCommands}
-        wikilinks={wikilinks}
-        onPasteFiles={onPasteFiles}
-        containerClassName={containerClassName}
-        overlayContainer={overlayContainer}
-      />
-    </Suspense>
+    <Editor
+      value={value}
+      onChangeValue={onChangeValue ?? NOOP}
+      autoFocus={autoFocus}
+      placeholder={placeholder}
+      className={className}
+      slashMenu={slashMenu}
+      markdown={markdown}
+      slashCommands={slashCommands}
+      wikilinks={wikilinks}
+      onPasteFiles={onPasteFiles}
+      containerClassName={containerClassName}
+      overlayContainer={overlayContainer}
+    />
   )
 }

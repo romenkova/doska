@@ -124,6 +124,11 @@ export function syncIndicator(page: Page) {
   })
 }
 
+/** The app-wide "Not syncing" notice, shown while the connection is dropped. */
+export function connectionBanner(page: Page) {
+  return page.getByRole("status").filter({ hasText: "Not syncing" })
+}
+
 /* -------------------------------------------------------------------------- */
 /*  Second-client board ops — drive the board list channel from a teammate.    */
 /* -------------------------------------------------------------------------- */
