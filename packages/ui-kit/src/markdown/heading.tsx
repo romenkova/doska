@@ -18,8 +18,7 @@ export function MdHeading({
         "mt-6 mb-2 font-heading leading-tight tracking-heading",
         depth === 1 && "text-xl font-bold",
         depth === 2 && "text-lg font-bold",
-        depth >= 3 && "text-base font-semibold",
-        depth >= 3 && "text-muted-foreground"
+        depth >= 3 && "text-base font-semibold"
       ),
     },
     children

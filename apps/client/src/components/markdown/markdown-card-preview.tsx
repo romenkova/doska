@@ -38,7 +38,7 @@ export function MarkdownCardPreview({
         </Markdown>
       )}
       {hasMore && (
-        <span className="text-muted-foreground select-none">
+        <span className="text-sm text-muted-foreground select-none">
           Open to see more
         </span>
       )}
