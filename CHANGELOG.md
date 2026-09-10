@@ -1,5 +1,31 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Quick note on desktop: a global shortcut (`Ctrl+Alt+D` by default, changeable
+  in settings) opens a small popup from anywhere
+- Windows and Linux desktop builds.
+- The markdown editor now runs on CodeMirror.
+
+### Changed
+
+- Docs and landing prerender moved to [bakemd](https://github.com/romenkova/bakemd). The landing bundle change from ~685 kB
+  to ~2 kB.
+- The custom `@doska/highlight` package is gone, replaced by the CodeMirror
+  markdown language.
+
+### Fixed
+
+- A card edited from another device or the MCP server now updates in the open
+  card panel.
+- Desktop settings explain that connecting an SSO provider happens in the web
+  app.
+- Deadline label on small screens, open folder icon, list indent, preview
+  colors and spacing, panel font size.
+- Desktop allows sync server URLs with a port.
+
 ## [0.22.0] - 2026-09-06
 
 ### Added
