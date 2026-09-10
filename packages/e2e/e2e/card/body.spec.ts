@@ -4,7 +4,9 @@ import {
   card,
   createBoard,
   editCardBody,
+  fieldText,
   openCard,
+  panelField,
   retitleCard,
 } from "../helpers"
 
@@ -30,9 +32,9 @@ test.describe("card body", () => {
 
     // Reopening the card shows the saved note back in the editor.
     await openCard(page, "Has notes")
-    await expect(page.getByPlaceholder("Notes")).toHaveValue(
-      "Ship the release on Friday"
-    )
+    await expect
+      .poll(() => fieldText(panelField(page, "Notes")))
+      .toBe("Ship the release on Friday")
   })
 
   test("a card with only a body (no extra title) still shows its note", async ({
@@ -67,9 +69,9 @@ test.describe("card body", () => {
 
     // Opening the card reveals the full note in the editor.
     await openCard(page, "Long note")
-    await expect(page.getByPlaceholder("Notes")).toHaveValue(
-      "Summary up top\n\n-cut-\n\nLots of detail below"
-    )
+    await expect
+      .poll(() => fieldText(panelField(page, "Notes")))
+      .toBe("Summary up top\n\n-cut-\n\nLots of detail below")
   })
 
   test("a column's hide-body toggle flips between hiding and showing", async ({

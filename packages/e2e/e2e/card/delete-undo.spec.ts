@@ -4,7 +4,9 @@ import {
   card,
   cardPanel,
   createBoard,
+  fieldText,
   openCard,
+  panelField,
   retitleCard,
 } from "../helpers"
 
@@ -20,9 +22,7 @@ function undoToast(page: Page, title: string) {
 }
 
 async function deleteFromMenu(page: Page, title: string): Promise<void> {
-  await card(page, title)
-    .getByRole("button", { name: "Card actions" })
-    .click()
+  await card(page, title).getByRole("button", { name: "Card actions" }).click()
   await page.getByRole("menuitem", { name: "Delete" }).click()
 }
 
@@ -46,7 +46,7 @@ test.describe("deleting a card with undo", () => {
 
     await expect(card(page, "Throw me out")).toBeVisible()
     // Restored from the board, so it stays on the board — no panel opens.
-    await expect(page.getByPlaceholder("Title")).toHaveCount(0)
+    await expect(panelField(page, "Title")).toHaveCount(0)
   })
 
   test("the restored card survives a reload", async ({ page }) => {
@@ -86,7 +86,7 @@ test.describe("deleting a card with undo", () => {
 
     // The open card is gone, so the panel cannot stay open on it.
     await page.waitForURL((url) => !url.pathname.includes("/c/"))
-    await expect(page.getByPlaceholder("Title")).toHaveCount(0)
+    await expect(panelField(page, "Title")).toHaveCount(0)
     await expect(card(page, "Panel delete")).toHaveCount(0)
 
     await expect(undoToast(page, "Panel delete")).toBeVisible()
@@ -94,7 +94,9 @@ test.describe("deleting a card with undo", () => {
 
     // Deleted from the panel, so undo hands the card back the way it was open.
     await expect(cardPanel(page)).toBeVisible()
-    await expect(page.getByPlaceholder("Title")).toHaveValue("Panel delete")
+    await expect
+      .poll(() => fieldText(panelField(page, "Title")))
+      .toBe("Panel delete")
     await expect(page).toHaveURL(/\/c\//)
     await expect(card(page, "Panel delete")).toBeVisible()
   })

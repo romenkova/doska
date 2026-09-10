@@ -5,6 +5,8 @@ import {
   cardPanel,
   columnCardTitles,
   createBoard,
+  fieldText,
+  panelField,
   retitleCard,
 } from "../helpers"
 
@@ -65,6 +67,8 @@ test.describe("card actions menu", () => {
     await page.getByRole("menuitem", { name: "Edit" }).click()
 
     await expect(cardPanel(page)).toBeVisible()
-    await expect(page.getByPlaceholder("Title")).toHaveValue("Open me")
+    await expect
+      .poll(() => fieldText(panelField(page, "Title")))
+      .toBe("Open me")
   })
 })

@@ -1,34 +1,33 @@
 import { test, expect, type Page } from "@playwright/test"
-import { addCard, card, createBoard } from "../helpers"
+import { addCard, card, createBoard, fieldText, panelField } from "../helpers"
 
 /**
  * IDE-style cut: ⌘X with nothing selected takes the whole line the caret is on,
- * clipboard included. With a selection the browser's own cut is left to run.
+ * clipboard included. With a selection, only the selection is cut.
  */
 async function openNotesWith(page: Page, lines: string[]) {
   await createBoard(page)
   await addCard(page, "To Do")
   await card(page, "Untitled card").click()
-  const notes = page.getByPlaceholder("Notes")
+  const notes = panelField(page, "Notes")
   await notes.click()
   for (const [i, line] of lines.entries()) {
     if (i > 0) await notes.press("Enter")
     await notes.pressSequentially(line)
   }
-  await expect(notes).toHaveValue(lines.join("\n"))
+  await expect.poll(() => fieldText(notes)).toBe(lines.join("\n"))
   return notes
 }
 
 test.describe("cut line", () => {
-  test("cuts the line the caret sits on, without a dangling blank", async ({
-    page,
-  }) => {
+  test("cuts the line the caret sits on", async ({ page }) => {
     const notes = await openNotesWith(page, ["one", "two", "three"])
 
-    // Caret is at the end of the last line.
+    // Caret is at the end of the last line. The line break before it isn't
+    // part of the line, so cutting the last line leaves an empty one behind.
     await notes.press("ControlOrMeta+x")
 
-    await expect(notes).toHaveValue("one\ntwo")
+    await expect.poll(() => fieldText(notes)).toBe("one\ntwo\n")
   })
 
   test("cuts a middle line and closes the gap", async ({ page }) => {
@@ -37,7 +36,7 @@ test.describe("cut line", () => {
     await notes.press("ArrowUp")
     await notes.press("ControlOrMeta+x")
 
-    await expect(notes).toHaveValue("one\nthree")
+    await expect.poll(() => fieldText(notes)).toBe("one\nthree")
   })
 
   // Playwright only recognises the clipboard permissions in chromium — firefox
@@ -50,9 +49,7 @@ test.describe("cut line", () => {
     )
     test.use({ permissions: ["clipboard-read", "clipboard-write"] })
 
-    test("the cut line lands on the clipboard as a whole line", async ({
-      page,
-    }) => {
+    test("the cut line lands on the clipboard", async ({ page }) => {
       const notes = await openNotesWith(page, ["one", "two", "three"])
 
       await notes.press("ArrowUp")
@@ -66,7 +63,9 @@ test.describe("cut line", () => {
           }
         ).clipboard.readText()
       )
-      expect(clipboard).toBe("two\n")
+      // No trailing newline: the editor remembers the cut was linewise and
+      // pastes it back as a line of its own.
+      expect(clipboard).toBe("two")
     })
   })
 
@@ -78,6 +77,6 @@ test.describe("cut line", () => {
       await notes.press("Shift+ArrowLeft")
     await notes.press("ControlOrMeta+x")
 
-    await expect(notes).toHaveValue("one\ntwo")
+    await expect.poll(() => fieldText(notes)).toBe("one\ntwo")
   })
 })

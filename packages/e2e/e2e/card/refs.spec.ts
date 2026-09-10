@@ -9,7 +9,9 @@ import {
   closeCard,
   createBoard,
   editCardBody,
+  fieldText,
   openCard,
+  panelField,
   retitleCard,
   setColumnColor,
   signIn,
@@ -18,8 +20,7 @@ import {
 /**
  * References store the target's display id, which the server only stamps on
  * sync — so every test here needs a signed-in board. Type with
- * `pressSequentially`, not `fill`: the `[[` menu is driven by the textarea's own
- * input/keyup events.
+ * `pressSequentially`, not `fill`: the `[[` menu opens on typed input.
  */
 async function boardWithCards(
   page: Page,
@@ -42,13 +43,9 @@ async function boardWithTwoCards(page: Page) {
   return { targetId: ids["Target card"], sourceId: ids["Source card"] }
 }
 
-/**
- * A row in the `[[` menu. Matched on title *and* display id — both of which the
- * row shows — because the board card behind the menu is also a `button` carrying
- * the same title.
- */
+/** A row in the `[[` menu, matched on the title and display id it shows. */
 function refMenuItem(page: Page, title: string, displayId: string) {
-  return page.getByRole("button", { name: `${title} #${displayId}` })
+  return page.getByRole("option", { name: `${title} #${displayId}` })
 }
 
 /**
@@ -57,7 +54,15 @@ function refMenuItem(page: Page, title: string, displayId: string) {
  * tests that care about position read it off these rows rather than assuming it.
  */
 function refMenuRows(page: Page): Locator {
-  return cardPanel(page).getByRole("button", { name: /#\d+$/ })
+  return cardPanel(page).getByRole("option", { name: /#\d+$/ })
+}
+
+/**
+ * The menu ignores keys for its first 75ms, so a keystroke already in flight
+ * can't pick a row by accident. Take the beat a person would before pressing.
+ */
+function letMenuSettle(page: Page): Promise<void> {
+  return page.waitForTimeout(100)
 }
 
 /** The display id a menu row offers, read out of the row's text. */
@@ -88,7 +93,7 @@ test.describe("card references", () => {
     const { targetId } = await boardWithTwoCards(page)
 
     await openCard(page, "Source card")
-    const notes = page.getByPlaceholder("Notes")
+    const notes = panelField(page, "Notes")
     await notes.click()
     await notes.pressSequentially("[[Target")
 
@@ -97,7 +102,9 @@ test.describe("card references", () => {
     await item.click()
 
     // The title goes in as an alias so the body reads as prose while editing.
-    await expect(notes).toHaveValue(`[[${targetId}|Target card]]`)
+    await expect
+      .poll(() => fieldText(notes))
+      .toBe(`[[${targetId}|Target card]]`)
   })
 
   test("the menu filters by title and leaves out the card being edited", async ({
@@ -106,7 +113,7 @@ test.describe("card references", () => {
     const { targetId, sourceId } = await boardWithTwoCards(page)
 
     await openCard(page, "Source card")
-    const notes = page.getByPlaceholder("Notes")
+    const notes = panelField(page, "Notes")
     await notes.click()
     await notes.pressSequentially("[[")
 
@@ -135,7 +142,7 @@ test.describe("card references", () => {
     // too, so a plain `card()` would match both.
     await cardTitled(page, "Target card").click()
     await expect(cardPanel(page)).toBeVisible()
-    await page.getByPlaceholder("Title").fill("Renamed target")
+    await panelField(page, "Title").fill("Renamed target")
     await closeCard(page)
 
     await expect(cardRef(page, "Renamed target")).toBeVisible()
@@ -156,7 +163,7 @@ test.describe("card references", () => {
 
     await cardTitled(page, "Target card").click()
     await expect(cardPanel(page)).toBeVisible()
-    await page.getByPlaceholder("Title").fill("Renamed target")
+    await panelField(page, "Title").fill("Renamed target")
     await closeCard(page)
 
     // The alias is a snapshot the writer chose; nothing rewrites it.
@@ -204,7 +211,9 @@ test.describe("card references", () => {
 
     // The target opens, not the card whose body was clicked.
     await expect(cardPanel(page)).toBeVisible()
-    await expect(page.getByPlaceholder("Title")).toHaveValue("Target card")
+    await expect
+      .poll(() => fieldText(panelField(page, "Title")))
+      .toBe("Target card")
   })
 
   test("a reference to a card that no longer exists stays visible", async ({
@@ -223,7 +232,7 @@ test.describe("card references", () => {
     const ids = await boardWithCards(page, ["Alpha", "Beta", "Source card"])
 
     await openCard(page, "Source card")
-    const notes = page.getByPlaceholder("Notes")
+    const notes = panelField(page, "Notes")
     await notes.click()
     await notes.pressSequentially(`[[${ids["Beta"]}`)
 
@@ -238,7 +247,7 @@ test.describe("card references", () => {
     await boardWithCards(page, ["Alpha", "Beta", "Source card"])
 
     await openCard(page, "Source card")
-    const notes = page.getByPlaceholder("Notes")
+    const notes = panelField(page, "Notes")
     await notes.click()
     await notes.pressSequentially("[[")
 
@@ -246,10 +255,11 @@ test.describe("card references", () => {
     await expect(rows).toHaveCount(2)
     const second = rowInsertion((await rows.allInnerTexts())[1])
 
+    await letMenuSettle(page)
     await notes.press("ArrowDown")
     await notes.press("Enter")
 
-    await expect(notes).toHaveValue(second)
+    await expect.poll(() => fieldText(notes)).toBe(second)
   })
 
   test("the highlight wraps around the ends and Tab picks the row", async ({
@@ -258,7 +268,7 @@ test.describe("card references", () => {
     await boardWithCards(page, ["Alpha", "Beta", "Source card"])
 
     await openCard(page, "Source card")
-    const notes = page.getByPlaceholder("Notes")
+    const notes = panelField(page, "Notes")
     await notes.click()
     await notes.pressSequentially("[[")
 
@@ -267,11 +277,12 @@ test.describe("card references", () => {
     const first = rowInsertion((await rows.allInnerTexts())[0])
 
     // Two rows, so a second ArrowDown wraps back to the first.
+    await letMenuSettle(page)
     await notes.press("ArrowDown")
     await notes.press("ArrowDown")
     await notes.press("Tab")
 
-    await expect(notes).toHaveValue(first)
+    await expect.poll(() => fieldText(notes)).toBe(first)
   })
 
   test("Enter picks the row inside a list item, without continuing the list", async ({
@@ -280,14 +291,17 @@ test.describe("card references", () => {
     const ids = await boardWithCards(page, ["Alpha", "Source card"])
 
     await openCard(page, "Source card")
-    const notes = page.getByPlaceholder("Notes")
+    const notes = panelField(page, "Notes")
     await notes.click()
     await notes.pressSequentially("- todo [[Alph")
     await expect(refMenuItem(page, "Alpha", ids["Alpha"])).toBeVisible()
 
+    await letMenuSettle(page)
     await notes.press("Enter")
 
-    await expect(notes).toHaveValue(`- todo [[${ids["Alpha"]}|Alpha]]`)
+    await expect
+      .poll(() => fieldText(notes))
+      .toBe(`- todo [[${ids["Alpha"]}|Alpha]]`)
   })
 
   test("Escape closes the menu, leaves the panel open, and keeps it shut until the text changes", async ({
@@ -296,7 +310,7 @@ test.describe("card references", () => {
     const { targetId } = await boardWithTwoCards(page)
 
     await openCard(page, "Source card")
-    const notes = page.getByPlaceholder("Notes")
+    const notes = panelField(page, "Notes")
     await notes.click()
     await notes.pressSequentially("[[")
     await expect(refMenuItem(page, "Target card", targetId)).toBeVisible()
@@ -311,7 +325,10 @@ test.describe("card references", () => {
     await notes.click()
     await expect(refMenuRows(page)).toHaveCount(0)
 
-    // ...but typing does.
+    // ...but typing does. The click parked the caret at the end of the text,
+    // so step back inside the auto-closed `]]` first.
+    await notes.press("ArrowLeft")
+    await notes.press("ArrowLeft")
     await notes.pressSequentially("Target")
     await expect(refMenuItem(page, "Target card", targetId)).toBeVisible()
   })
@@ -322,7 +339,7 @@ test.describe("card references", () => {
     const { targetId } = await boardWithTwoCards(page)
 
     await openCard(page, "Source card")
-    const notes = page.getByPlaceholder("Notes")
+    const notes = panelField(page, "Notes")
     await notes.click()
     await notes.pressSequentially("Blocked by  soon")
     // Back to just after "by ", leaving " soon" to the right of the caret.
@@ -331,10 +348,10 @@ test.describe("card references", () => {
 
     const ref = `[[${targetId}|Target card]]`
     await refMenuItem(page, "Target card", targetId).click()
-    await expect(notes).toHaveValue(`Blocked by ${ref} soon`)
+    await expect.poll(() => fieldText(notes)).toBe(`Blocked by ${ref} soon`)
 
     await notes.pressSequentially("!")
-    await expect(notes).toHaveValue(`Blocked by ${ref}! soon`)
+    await expect.poll(() => fieldText(notes)).toBe(`Blocked by ${ref}! soon`)
   })
 
   test("deleting the target leaves the reference behind as a broken one", async ({
@@ -390,14 +407,18 @@ test.describe("card references", () => {
 
     await cardRef(page, "Target card").focus()
     await page.keyboard.press("Enter")
-    await expect(page.getByPlaceholder("Title")).toHaveValue("Target card")
+    await expect
+      .poll(() => fieldText(panelField(page, "Title")))
+      .toBe("Target card")
 
     await page.keyboard.press("Escape")
-    await expect(page.getByPlaceholder("Title")).toHaveCount(0)
+    await expect(panelField(page, "Title")).toHaveCount(0)
 
     await cardRef(page, "Target card").focus()
     await page.keyboard.press(" ")
-    await expect(page.getByPlaceholder("Title")).toHaveValue("Target card")
+    await expect
+      .poll(() => fieldText(panelField(page, "Title")))
+      .toBe("Target card")
   })
 
   test("a target with no title is offered and renders as Untitled card", async ({
@@ -414,7 +435,7 @@ test.describe("card references", () => {
     const targetId = await cardDisplayId(page, "needle")
 
     await openCard(page, "Source card")
-    const notes = page.getByPlaceholder("Notes")
+    const notes = panelField(page, "Notes")
     await notes.click()
     await notes.pressSequentially("[[")
     await refMenuItem(page, "Untitled card", targetId).click()
@@ -434,7 +455,7 @@ test.describe("card references", () => {
     await retitleCard(page, "Untitled card", "Source card")
 
     await openCard(page, "Source card")
-    const notes = page.getByPlaceholder("Notes")
+    const notes = panelField(page, "Notes")
     await notes.click()
     await notes.pressSequentially("[[")
 

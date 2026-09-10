@@ -5,6 +5,7 @@ import {
   card,
   createBoard,
   openCard,
+  panelField,
   remoteAddCard,
   signIn,
   syncIndicator,
@@ -18,7 +19,7 @@ async function retitleCardOffline(
   toTitle: string
 ): Promise<void> {
   await openCard(page, fromTitle)
-  await page.getByPlaceholder("Title").fill(toTitle)
+  await panelField(page, "Title").fill(toTitle)
   await page.keyboard.press("Escape")
   await page.waitForURL((url) => !url.pathname.includes("/c/"))
 }

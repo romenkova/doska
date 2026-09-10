@@ -45,9 +45,7 @@ test.describe("card attachments", { tag: "@container" }, () => {
     await attachFile(page, "diagram.png")
 
     await expect(cardPanel(page).getByText("diagram")).toBeVisible()
-    await expect(
-      attachmentRow(page, "diagram.png")
-    ).toBeVisible()
+    await expect(attachmentRow(page, "diagram.png")).toBeVisible()
   })
 
   test("clicking an image attachment in readonly view opens the viewer", async ({
@@ -63,9 +61,9 @@ test.describe("card attachments", { tag: "@container" }, () => {
     await expect(cardPanel(page)).toBeVisible()
 
     await attachFile(page, "photo.png")
-    await expect(cardPanel(page).getByText("photo")).toBeVisible()
+    await expect(attachmentRow(page, "photo.png")).toBeVisible()
 
-    await cardPanel(page).getByText("photo").click()
+    await attachmentRow(page, "photo.png").getByText("photo.png").click()
 
     const viewer = page.getByRole("dialog")
     await expect(viewer.getByRole("img", { name: "photo.png" })).toBeVisible()
@@ -117,9 +115,9 @@ test.describe("card attachments", { tag: "@container" }, () => {
     await card(page, "Untitled card").click()
 
     await attachFile(page, "notes.png")
-    await expect(cardPanel(page).getByText("notes")).toBeVisible()
+    await expect(attachmentRow(page, "notes.png")).toBeVisible()
 
     await page.getByRole("button", { name: "Remove attachment" }).click()
-    await expect(cardPanel(page).getByText("notes")).toHaveCount(0)
+    await expect(attachmentRow(page, "notes.png")).toHaveCount(0)
   })
 })

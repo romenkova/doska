@@ -5,6 +5,8 @@ import {
   cardDisplayId,
   createBoard,
   editCardBody,
+  fieldText,
+  panelField,
   retitleCard,
   setColumnDone,
   signIn,
@@ -122,7 +124,7 @@ test.describe("card search", () => {
     await searchInput(page).press("Enter")
 
     await expect(page).toHaveURL(/\/c\/card-/)
-    await expect(page.getByPlaceholder("Title")).toHaveValue(second)
+    await expect.poll(() => fieldText(panelField(page, "Title"))).toBe(second)
   })
 
   test("Escape closes search and leaves the board as it was", async ({
@@ -141,7 +143,7 @@ test.describe("card search", () => {
     // No open card: the panel's shell stays mounted after a card has been
     // opened once, so read it off the URL and the editor it would render.
     await expect(page).not.toHaveURL(/\/c\//)
-    await expect(page.getByPlaceholder("Title")).toHaveCount(0)
+    await expect(panelField(page, "Title")).toHaveCount(0)
     await expect(card(page, "Ship the redesign")).toBeVisible()
   })
 
