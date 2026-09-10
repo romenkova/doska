@@ -22,8 +22,7 @@ export function MdTaskItem({
   return (
     <li
       className={cn(
-        "my-[0.2rem] -ml-4 list-none",
-        "[&>p]:m-0 [&>p:first-of-type]:inline",
+        "relative my-[0.2rem] pl-1 list-none [&>p]:m-0",
         checked && "text-muted-foreground/70 dark:text-muted-foreground"
       )}
     >
@@ -34,7 +33,7 @@ export function MdTaskItem({
           checked={checked}
           readOnly={!onToggle}
           className={cn(
-            "-mt-0.5 mr-1.5 inline-flex align-middle",
+            "absolute top-[0.3em] -left-5 flex",
             onToggle && "cursor-pointer"
           )}
           onCheckedChange={onToggle}
