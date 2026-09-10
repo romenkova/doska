@@ -3,11 +3,11 @@ title: Desktop and mobile
 nav: Desktop & mobile
 description: "The signed, auto-updating macOS app, and installing the same client as a PWA on a phone or a dock."
 order: 6
-updated: "2026-09-02"
+updated: "2026-09-11"
 ---
 
 The same client runs in three places: a browser tab, a phone home screen, and a
-Tauri macOS app.
+Tauri desktop app.
 
 ## macOS app
 
@@ -22,6 +22,16 @@ address, the same one you open the web UI at, and press **Sign in in browser**.
 Sign in there however you like, then come back and press **I've signed in**.
 
 The desktop app follows whatever version its server runs, and downloads the same version of the app on updates.
+
+## Windows and Linux apps (beta)
+
+Windows ships as an NSIS installer. It is not signed, so SmartScreen warns on
+first launch: click **More info**, then **Run anyway**.
+
+Linux ships as an AppImage, deb and rpm.
+
+Both are on the same [Releases](https://github.com/romenkova/doska/releases/latest)
+page and sync the same way as the macOS app.
 
 ## Install as a PWA
 

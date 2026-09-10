@@ -23,63 +23,68 @@
 <p align="center">
   <strong><a href="https://app.doska.sh/d/welcome">Open demo</a></strong> ·
   <a href="https://doska.sh/docs">Documentation</a> ·
-  <a href="https://github.com/romenkova/doska/releases/latest">Download the app</a> ·
-  <a href="https://doska.sh/docs/mcp">MCP</a>
+  <a href="https://github.com/romenkova/doska/releases/latest">Download the app</a>
 </p>
 
-![A Doska board with a card open in the editor](.github/assets/board-demo-dark-3.png)
+![A Doska board with a card open in the editor](.github/assets/board-demo-dark-5.png)
 
 </div>
 
-## Why?
+## Why
 
-I wanted a Kanban board that works natively with Markdown and fits my way of working:
+I wanted a kanban app that is quick, Markdown-first, minimal, and still feature-rich. I couldn't find all of that in one app, so I made Doska.
 
-- **Personal projects**: sync a board to a folder inside the project, so the cards are Markdown files.
-- **Editing on the go**: spin up a sync server with Docker Compose, and have my data on my phone, or just in the browser.
-- **Sharing with other people**: account management, SSO support, and public links for boards.
-- **MCP**: let agents sort my cards and point out what I am missing.
+Doska keeps everything in IndexedDB first, because it's fast and persistent. Then it syncs to a destination of your choice, a folder or a server, shortly after every change.
 
-## Where the data lives
+When the destination is a server, you also get multiple users with live updates, public boards, SSO, and MCP.
 
-Any of these, simultaneously, or not: local folder on the disk, sync server, browser persisted memory.
+Doska never makes you wait on the server, doesn't keep features behind a paywall, and aims to have everything necessary without looking bloated.
 
-Browser persisted memory (it's IndexedDB) is quick, and makes Doska fast. It also survives reloads, and feels ok offline.
+## Features
 
-But I do recommend using local file storage (desktop app only) or a sync server for permanent storage. Doska will still hit browser storage first, and keep being quick, but on top of that it will sync to a destination too.
+- [x] **Offline-first**, local-first
+- [x] **Markdown editor**: syntax highlighting, tasks with a counter, slash menu
+- [x] Server to **sync** boards across devices
+- [x] **Accounts:** members, shared boards, public boards
+- [x] **Local folder sync:** boards and columns as folders, cards as Markdown files
+- [x] **Attachments:** files, images
+- [x] **SSO:** OIDC-compatible auth provider
+- [x] **Deadlines, priorities** and sorting for cards on the board
+- [x] **MCP** server
+- [x] Cross-board deadlines view
+- [x] **Quick note window** (beta): always on top, opened with a keyboard shortcut
+- [ ] Activity/history view
+- [ ] User mentions with `@`
+- [ ] Tags
 
-A sync server makes it possible to have other users, public boards, and sync across devices.
+## Apps
 
-Local folder sync lets you sync to a folder and then back it up manually with the tool of your choice.
-
-Both can be used simultaneously.
-
-## On making it comfortable to use
-
-- **Markdown editor**: syntax highlighting, a slash menu, attachments, and cards that cross-reference each other.
-- **List view**: a to-do list of every card sorted by date, where ticking the checkbox marks the card done.
-- **Deadlines and priorities**: both sortable, and deadlines are what make the list view more useful.
-- **Search**: not much to tell, it just searches.
+- **Web**: PWA, mobile-friendly layout.
+- **macOS**: universal build, signed and notarized.
+- **Windows** (beta): NSIS installer, unsigned. See [desktop docs](https://doska.sh/docs/desktop).
+- **Linux** (beta): AppImage, deb and rpm.
 
 ## Self-hosting guide
 
-A script that sets up the environment: it asks for the variables it needs, backs up an existing setup if it finds one, and starts an instance.
+The easiest way to self-host is to use the script:
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/romenkova/doska/main/install.sh -o install.sh && sh install.sh
 ```
 
-Then open `http://<your-host>:8080` and sign in with the credentials you gave it.
+For manual setup:
 
-Or manually: grab [docker-compose.selfhost.yml](docker-compose.selfhost.yml),
-copy [.env.selfhost.example](.env.selfhost.example) to `.env` next to it and fill in
-`AUTH_LOGIN`, `AUTH_PASSWORD`, `AUTH_SECRET` and `BASE_URL`, then run
-`docker compose -f docker-compose.selfhost.yml up -d`
+1. Copy [docker-compose.selfhost.yml](docker-compose.selfhost.yml)
+2. Copy [.env.selfhost.example](.env.selfhost.example) to `.env` next to it
+3. Fill in `AUTH_LOGIN`, `AUTH_PASSWORD`, `AUTH_SECRET` and `BASE_URL`
+4. Run `docker compose -f docker-compose.selfhost.yml up -d`
+
+Then open `http://<your-host>:8080` and sign in with the credentials you gave it.
 
 Environment variables, HTTPS, attachments and
 backups: [doska.sh/docs/self-hosting](https://doska.sh/docs/self-hosting).
 
-Parts:
+What the compose file contains:
 
 - Sync server
 - Web interface server
@@ -88,32 +93,21 @@ Parts:
 
 ## Updating
 
-The same script updates an existing install, and the useful part is that it takes a backup first. You can also do it by hand, by re-running the images from the latest tag.
+The same script updates an existing install, and the useful part is that it takes a backup first.
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/romenkova/doska/main/install.sh -o install.sh && sh install.sh
 ```
 
+Or, for a manual update, back up your instance and then rerun compose.
+
 The desktop app follows whatever version its server runs, so update the server
 first. The app's settings modal then has a button to check for updates and
 install them.
 
-## Desktop app
-
-Builds for macOS, Windows and Linux are on
-[Releases](https://github.com/romenkova/doska/releases/latest). All three wrap the
-same client with Tauri and auto-update.
-[doska.sh/docs/desktop](https://doska.sh/docs/desktop).
-
-- **macOS**: universal build, signed and notarized.
-- **Windows** (beta): an NSIS installer. It is not signed, so SmartScreen will
-  warn on first launch; click "More info", then "Run anyway".
-- **Linux** (beta): AppImage, deb and rpm.
-
 ## MCP
 
-The server exposes your boards to an MCP client at `/mcp`, so an agent can create cards, tick off task lists and move
-things between columns:
+The server exposes your boards to an MCP client at `/mcp`:
 
 ```sh
 claude mcp add --transport http doska https://your-server/mcp
@@ -135,4 +129,4 @@ Requirements, the full command list and the repository layout:
 
 ## License
 
-See [LICENSE](LICENSE).
+MIT, see [LICENSE](LICENSE).
