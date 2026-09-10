@@ -7,9 +7,7 @@ import { isDesktop } from "@/lib/platform"
 import { SettingsSection } from "../section"
 
 /**
- * Connects the signed-in account to an identity provider, so that provider's
- * sign-in opens this account rather than making a new one. Web only: the
- * round trip through the provider needs a real browser.
+ * Connects the signed-in account to an identity provider
  */
 export function SignInSection() {
   const { userId } = useAuth()
@@ -17,7 +15,7 @@ export function SignInSection() {
   const { data: linked } = useLinkedProviders(userId)
   const [error, setError] = useState<string | null>(null)
 
-  if (isDesktop() || !userId || !providers?.length) return null
+  if (!userId || !providers?.length) return null
 
   async function connect(providerId: string) {
     setError(null)
@@ -30,7 +28,15 @@ export function SignInSection() {
     }
   }
 
-  if (!providers.length) return null
+  if (isDesktop())
+    return (
+      <SettingsSection>
+        <p className="text-xs text-muted-foreground">
+          Connecting {providers.map((p) => p.name).join(", ")} sign-in is
+          available in the web app.
+        </p>
+      </SettingsSection>
+    )
 
   return (
     <SettingsSection>
