@@ -22,7 +22,7 @@ import { UpdateToast } from "@/components/toasts/update/update-toast"
 import { OfflineToast } from "@/components/toasts/offline/offline-toast"
 import { UndoToaster } from "@/components/toasts/card-delete/undo-toaster"
 import { WindowDragRegion } from "@/components/window-drag-region"
-import { QuickNoteListener } from "@/components/quick-note/quick-note-listener"
+import { WindowSyncListener } from "@/components/card-window/window-sync-listener"
 import "./index.css"
 
 const root = createRoot(document.getElementById("root")!)
@@ -72,7 +72,7 @@ if (isPublicLink) {
               <UpdateToast />
               <OfflineToast />
               <WindowDragRegion />
-              <QuickNoteListener />
+              <WindowSyncListener />
             </LoginPromptProvider>
           </ThemeProvider>
         </QueryClientProvider>
