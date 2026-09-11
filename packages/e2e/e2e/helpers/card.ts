@@ -74,10 +74,10 @@ export function cardPanel(page: Page) {
 }
 
 /**
- * The panel's Title or Notes field. Both are CodeMirror editors: a
- * contenteditable named after its placeholder, not an input, so `fill`, `press`
- * and `pressSequentially` work on it but `toHaveValue` doesn't — read it back
- * through `fieldText`.
+ * The panel's Title or Notes field. Title is a textarea; Notes is a CodeMirror
+ * contenteditable named after its placeholder, so `fill`, `press` and
+ * `pressSequentially` work on both but `toHaveValue` only on Title — read
+ * either back through `fieldText`.
  */
 export function panelField(page: Page, name: "Title" | "Notes") {
   return page.getByRole("textbox", { name, exact: true })
@@ -93,6 +93,9 @@ interface CmContent {
     }
   }
 }
+interface TextField {
+  value: string
+}
 
 /**
  * The markdown a panel field holds, newlines included. Read off the editor
@@ -100,8 +103,8 @@ interface CmContent {
  * placeholder as text when the field is empty.
  */
 export function fieldText(field: Locator): Promise<string> {
-  return field.evaluate((el: CmContent) =>
-    el.cmTile.root.view.state.doc.toString()
+  return field.evaluate((el: CmContent | TextField) =>
+    "value" in el ? el.value : el.cmTile.root.view.state.doc.toString()
   )
 }
 
