@@ -9,6 +9,7 @@ import { CardAttachments } from "../card/attachments/card-attachments"
 import { AddAttachmentButton } from "../card/attachments/add-attachment-button"
 import { AttachmentDropZone } from "../card/attachments/attachment-drop-zone"
 import { AttachmentUploadProvider } from "@/providers/attachment-upload/attachment-upload-provider"
+import { isIOS } from "@/lib/platform"
 
 interface IProps {
   cardId: string
@@ -55,9 +56,13 @@ export function CardEditor({
   onPopOut,
   inWindow,
 }: IProps) {
-  // State, not a ref: the slash button renders into this node once it mounts.
   const [overlay, setOverlay] = useState<HTMLDivElement | null>(null)
-  const [focusBody] = useState(() => Boolean(title.trim() || body.trim()))
+
+  const [focus] = useState(() => {
+    if (!title.trim() && !body.trim()) return "title"
+    // no auto focus on ios because of the scroll-jump bug
+    return isIOS() ? "none" : "body"
+  })
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
@@ -113,14 +118,14 @@ export function CardEditor({
                   value={title}
                   onChangeValue={onChangeTitle}
                   isPreview={isPreview}
-                  autoFocus={!focusBody}
+                  autoFocus={focus === "title"}
                 />
               }
               body={
                 <CardBodyEditor
                   cardId={cardId}
                   body={body}
-                  autoFocus={focusBody}
+                  autoFocus={focus === "body"}
                   isPreview={isPreview}
                   onChangeBody={onChangeBody}
                   overlayContainer={overlay}

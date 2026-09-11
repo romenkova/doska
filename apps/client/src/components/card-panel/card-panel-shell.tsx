@@ -41,9 +41,8 @@ export function CardPanelShell({
       style={{ "--card-panel-width": `${width}px` } as CSSProperties}
       className={cn(
         "relative shrink-0 overflow-hidden",
-        // Pinned to the *visual* viewport, not the layout one
         "max-md:fixed max-md:inset-x-0 max-md:z-50 max-md:w-full max-md:bg-card",
-        "max-md:top-(--app-offset,0px) max-md:h-(--app-height,100svh)",
+        "max-md:top-0 max-md:h-(--app-height,100svh)",
         "md:box-border",
         // Resizing must track the pointer, so only the open/close sweep animates.
         !isResizing &&
