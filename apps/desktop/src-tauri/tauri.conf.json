@@ -35,6 +35,23 @@
         "skipTaskbar": true,
         "center": true,
         "dragDropEnabled": false
+      },
+      {
+        "label": "tear-ghost",
+        "title": "Doska",
+        "url": "/tear-ghost.html",
+        "width": 128,
+        "height": 128,
+        "visible": false,
+        "decorations": false,
+        "transparent": true,
+        "shadow": false,
+        "alwaysOnTop": true,
+        "resizable": false,
+        "focus": false,
+        "focusable": false,
+        "skipTaskbar": true,
+        "dragDropEnabled": false
       }
     ],
     "security": {

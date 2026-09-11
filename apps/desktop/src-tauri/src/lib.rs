@@ -1,5 +1,6 @@
 mod quick_note;
 mod shortcuts;
+mod tear_off;
 mod vault;
 
 use tauri::{Manager, RunEvent, WindowEvent};
@@ -10,14 +11,15 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             vault::ignore_vault,
             quick_note::hide_quick_note,
+            tear_off::start_tear_off,
+            tear_off::end_tear_off,
             shortcuts::get_shortcut,
             shortcuts::suspend_shortcut,
             shortcuts::set_shortcut
         ])
         .plugin(
             tauri_plugin_window_state::Builder::default()
-                // The popup is placed by code and must never be restored visible.
-                .with_denylist(&[quick_note::WINDOW])
+                .with_filter(|label| label == "main")
                 .build(),
         )
         .plugin(tauri_plugin_http::init())
@@ -34,6 +36,7 @@ pub fn run() {
                 app.handle().plugin(tauri_plugin_process::init())?;
             }
             quick_note::init(app.handle());
+            tear_off::init(app.handle());
             shortcuts::init(app.handle())?;
             Ok(())
         })

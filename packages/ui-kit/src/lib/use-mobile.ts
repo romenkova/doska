@@ -1,8 +1,14 @@
-import { useEffect, useState } from "react"
+import { createContext, useContext, useEffect, useState } from "react"
 
 const MOBILE_BREAKPOINT = 768
 
+const MobileOverrideCtx = createContext<boolean | null>(null)
+
+/** popout window. */
+export const MobileOverride = MobileOverrideCtx.Provider
+
 export function useIsMobile() {
+  const override = useContext(MobileOverrideCtx)
   const [isMobile, setIsMobile] = useState(
     () => window.innerWidth < MOBILE_BREAKPOINT
   )
@@ -16,5 +22,5 @@ export function useIsMobile() {
     return () => mql.removeEventListener("change", onChange)
   }, [])
 
-  return isMobile
+  return override ?? isMobile
 }
