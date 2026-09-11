@@ -15,7 +15,12 @@ export const theme = EditorView.theme({
     lineHeight: "inherit",
     overflow: "visible",
   },
-  ".cm-content": { padding: "0", caretColor: "var(--foreground)" },
+  ".cm-content": {
+    flexGrow: "0",
+    minHeight: "0",
+    padding: "0",
+    caretColor: "var(--foreground)",
+  },
   ".cm-line": { padding: "0" },
   ".cm-placeholder": { color: "var(--muted-foreground)", opacity: "0.5" },
   ".cm-cut": { color: MUTED },

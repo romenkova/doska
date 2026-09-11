@@ -2,7 +2,6 @@ import { Compartment, EditorState } from "@codemirror/state"
 import { EditorView } from "@codemirror/view"
 import { useRef, useState } from "react"
 import { editorExtensions, type EditorOptions } from "../extensions"
-import { useCaretAboveKeyboard } from "./use-caret-above-keyboard"
 import { useLatest } from "./use-latest"
 import { useMountedView } from "./use-mounted-view"
 import { useSyncedValue } from "./use-synced-value"
@@ -37,7 +36,6 @@ export function useEditorView(options: EditorOptions) {
     targets,
     options.markdown ? options.wikilinks : undefined
   )
-  useCaretAboveKeyboard(view)
 
   return { containerRef, view }
 }

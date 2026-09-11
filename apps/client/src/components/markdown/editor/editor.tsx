@@ -18,10 +18,17 @@ export function Editor({
   const isMobile = useIsMobile()
   const { containerRef, view } = useEditorView(options)
 
+  function focusEnd(e: React.MouseEvent) {
+    if (!view || view.contentDOM.contains(e.target as Node)) return
+    view.dispatch({ selection: { anchor: view.state.doc.length } })
+    view.focus()
+  }
+
   return (
     <div className={cn("relative flex w-full flex-col", containerClassName)}>
       <div
         ref={containerRef}
+        onClick={focusEnd}
         className={cn(
           "flex w-full flex-col py-2 font-mono",
           "text-base leading-relaxed [font-variant-ligatures:none]",
