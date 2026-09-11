@@ -16,7 +16,7 @@ export const theme = EditorView.theme({
     overflow: "visible",
   },
   ".cm-content": {
-    flexGrow: "0",
+    flexGrow: "2",
     minHeight: "0",
     padding: "0",
     caretColor: "var(--foreground)",
