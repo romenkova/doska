@@ -1,6 +1,5 @@
-import { Markdown, cn } from "@doska/ui-kit"
+import { TitleEditor } from "@doska/ui-kit"
 import { useState } from "react"
-import { MarkdownEditor } from "../markdown"
 import { CardPaneLayout } from "./card-pane-layout"
 import { CardPanelHeader } from "./card-panel-header"
 import { CardPanelMenu } from "./card-panel-menu"
@@ -104,17 +103,11 @@ export function CardEditor({
                   : undefined
               }
               title={
-                <MarkdownEditor
-                  renderPreview={Markdown}
-                  autoFocus={!focusBody}
+                <TitleEditor
                   value={title}
                   onChangeValue={onChangeTitle}
-                  placeholder="Title"
                   isPreview={isPreview}
-                  className={cn(
-                    "py-1.5 text-xl font-semibold",
-                    isPreview ? "text-2xl font-bold" : "font-mono"
-                  )}
+                  autoFocus={!focusBody}
                 />
               }
               body={
