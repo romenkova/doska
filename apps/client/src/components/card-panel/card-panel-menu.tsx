@@ -7,7 +7,13 @@ import {
   MenuTrigger,
   type MenuActions,
 } from "@doska/ui-kit"
-import { LocateFixed, MoreHorizontal, Pencil, Trash2 } from "lucide-react"
+import {
+  LocateFixed,
+  MoreHorizontal,
+  Pencil,
+  PictureInPicture2,
+  Trash2,
+} from "lucide-react"
 import { useRef } from "react"
 import { CopyIdItem } from "../card/menu/copy-id-item"
 import { DeadlineSub } from "../card/menu/deadline-sub"
@@ -20,6 +26,8 @@ interface IProps {
   onEdit: () => void
   onReveal: () => void
   onDelete: () => void
+  /** Desktop only, and never inside a popout: it is already its own window. */
+  onPopOut?: () => void
 }
 
 /**
@@ -33,6 +41,7 @@ export function CardPanelMenu({
   onEdit,
   onReveal,
   onDelete,
+  onPopOut,
 }: IProps) {
   const actionsRef = useRef<MenuActions>(null)
 
@@ -61,6 +70,12 @@ export function CardPanelMenu({
           <LocateFixed />
           Reveal on board
         </MenuItem>
+        {onPopOut && (
+          <MenuItem onClick={onPopOut}>
+            <PictureInPicture2 />
+            Open in new window
+          </MenuItem>
+        )}
         <MoveToColumnSub cardId={cardId} />
         <PrioritySub cardId={cardId} />
         <DeadlineSub

@@ -23,6 +23,8 @@ interface IProps {
   onClose: () => void
   onDelete?: () => void
   onReveal?: () => void
+  onPopOut?: () => void
+  inWindow?: boolean
 }
 
 /** Ignore the click that ends a text selection — treat it as selecting, not editing. */
@@ -50,6 +52,8 @@ export function CardEditor({
   onClose,
   onDelete,
   onReveal,
+  onPopOut,
+  inWindow,
 }: IProps) {
   // State, not a ref: the slash button renders into this node once it mounts.
   const [overlay, setOverlay] = useState<HTMLDivElement | null>(null)
@@ -70,6 +74,7 @@ export function CardEditor({
                     isPreview={isPreview}
                     onClose={onClose}
                     onTogglePreivew={onTogglePreview}
+                    inWindow={inWindow}
                     actions={<AddAttachmentButton />}
                     menu={
                       onDelete &&
@@ -80,6 +85,7 @@ export function CardEditor({
                           onEdit={onEdit}
                           onReveal={onReveal}
                           onDelete={onDelete}
+                          onPopOut={onPopOut}
                         />
                       )
                     }
