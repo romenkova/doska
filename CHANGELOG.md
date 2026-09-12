@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## [0.23.0] - 2026-09-13
 
 ### Added
 
@@ -8,6 +8,7 @@
   in settings) opens a small popup from anywhere
 - Windows and Linux desktop builds.
 - The markdown editor now runs on CodeMirror.
+- Drag card to open it in new window, open in new window button.
 
 ### Changed
 
