@@ -2,12 +2,16 @@ import { cn, useOptionalSidebar } from "@doska/ui-kit"
 import { useEffect, type CSSProperties, type ReactNode } from "react"
 import { PanelResizeHandle } from "./panel-resize-handle"
 import { usePanelResize } from "./use-panel-resize"
+import { useTearOff } from "./use-tear-off"
+import type { DropPoint } from "@/components/card-window/open-card-window"
 
 interface IProps {
   isOpen: boolean
   onClose: () => void
   /** Clears the card once the closing sweep has finished. */
   onClosed: () => void
+  /** Desktop only: the panel was dragged out past the window's edge and dropped. */
+  onTearOff?: (at: DropPoint) => void
   children: ReactNode
 }
 
@@ -16,9 +20,11 @@ export function CardPanelShell({
   isOpen,
   onClose,
   onClosed,
+  onTearOff,
   children,
 }: IProps) {
   const { width, isResizing, startResizing, resetWidth } = usePanelResize()
+  const tearOff = useTearOff(onTearOff)
   const sidebarOpen = useOptionalSidebar()?.open ?? true
 
   useEffect(() => {
@@ -65,9 +71,12 @@ export function CardPanelShell({
       <div
         role="region"
         aria-label="Card"
+        onMouseDown={tearOff.onMouseDown}
         className={cn(
           "flex h-full w-full flex-col overflow-hidden bg-card text-sm text-card-foreground md:w-(--card-panel-width)",
-          "md:transition-[border-radius] md:duration-200 md:ease-linear",
+          "md:transition-[border-radius,opacity] md:duration-200 md:ease-linear",
+          onTearOff && "[&_[data-tear-handle]]:cursor-grab",
+          tearOff.isOutside && "opacity-40",
           sidebarOpen
             ? "md:rounded-xl md:ring-1 md:ring-foreground/10 md:ring-inset"
             : "md:border-l md:border-foreground/10"

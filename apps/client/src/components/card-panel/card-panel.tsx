@@ -9,6 +9,11 @@ import { CardPane } from "./card-pane"
 import { CardPanelShell } from "./card-panel-shell"
 import { useCardSave, useDeleteCard } from "@doska/core/mutations"
 import { useCard } from "@doska/core/queries"
+import { isDesktop } from "@/lib/platform"
+import {
+  openCardWindow,
+  type DropPoint,
+} from "@/components/card-window/open-card-window"
 
 interface IProps {
   /** Where to navigate when the panel closes (its deck root). */
@@ -44,11 +49,20 @@ export function CardPanel({ closeHref }: IProps) {
     if (isOpen && content?.deletedAt) close()
   }, [isOpen, content?.deletedAt, close])
 
+  const popOut = isDesktop()
+    ? (at?: DropPoint) => {
+        if (!card) return
+        close()
+        void openCardWindow(card, at)
+      }
+    : undefined
+
   return (
     <CardPanelShell
       isOpen={isOpen}
       onClose={close}
       onClosed={() => setLastCard(null)}
+      onTearOff={popOut}
     >
       {card && content && (
         <CardPane
@@ -68,6 +82,7 @@ export function CardPanel({ closeHref }: IProps) {
             if (isMobile) close()
             reveal(card)
           }}
+          onPopOut={popOut && (() => popOut())}
         />
       )}
     </CardPanelShell>

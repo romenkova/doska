@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.deck.desktop</id>
+  <launchable type="desktop-id">Doska.desktop</launchable>
+
+  <name>Doska</name>
+  <summary>Offline-first kanban board with Markdown cards</summary>
+
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+
+  <developer id="sh.doska">
+    <name>Margarita Romenkova</name>
+  </developer>
+
+  <description>
+    <p>
+     Doska is a kanban board that is quick, Markdown-first, minimal,
+     and still feature-rich.
+    </p>
+    <p>
+     Boards are stored locally first and sync shortly after
+     every change to a folder on disk or to your own server.
+    </p>
+
+    <p>Features:</p>
+    <ul>
+      <li>Offline-first: the board works with no network at all</li>
+      <li>Markdown editor with syntax highlighting, tasks and a slash menu</li>
+      <li>Two way folder sync, boards as folders and cards as Markdown files</li>
+      <li>Self-hosted sync server for boards across devices</li>
+      <li>Members, shared boards and public boards</li>
+      <li>Attachments: files and images</li>
+      <li>Deadlines, priorities and a deadline view across every board</li>
+      <li>Quick note window, always on top, opened with a global shortcut</li>
+    </ul>
+  </description>
+
+  <categories>
+    <category>Office</category>
+    <category>ProjectManagement</category>
+  </categories>
+
+  <keywords>
+    <keyword>kanban</keyword>
+    <keyword>board</keyword>
+    <keyword>markdown</keyword>
+    <keyword>notes</keyword>
+    <keyword>tasks</keyword>
+    <keyword>todo</keyword>
+    <keyword>self-hosted</keyword>
+  </keywords>
+
+  <url type="homepage">https://doska.sh</url>
+  <url type="help">https://doska.sh/docs</url>
+  <url type="bugtracker">https://github.com/romenkova/doska/issues</url>
+  <url type="vcs-browser">https://github.com/romenkova/doska</url>
+
+  <screenshots>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/romenkova/doska/main/.github/assets/board-demo-dark-5.png</image>
+      <caption>A board with a card open in the Markdown editor</caption>
+    </screenshot>
+  </screenshots>
+
+  <provides>
+    <binary>doska</binary>
+  </provides>
+
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+    <control>touch</control>
+  </supports>
+
+  <content_rating type="oars-1.1" />
+</component>

@@ -14,6 +14,8 @@ interface IProps {
   onClose: () => void
   onDelete?: () => void
   onReveal?: () => void
+  onPopOut?: () => void
+  inWindow?: boolean
 }
 
 /** One card's editing session. Mount it keyed by `cardId`. */
@@ -25,6 +27,8 @@ export function CardPane({
   onClose,
   onDelete,
   onReveal,
+  onPopOut,
+  inWindow,
 }: IProps) {
   const [draft, setDraft] = useState<Draft>({})
 
@@ -55,6 +59,8 @@ export function CardPane({
       onClose={onClose}
       onDelete={onDelete}
       onReveal={onReveal}
+      onPopOut={onPopOut}
+      inWindow={inWindow}
     />
   )
 }
