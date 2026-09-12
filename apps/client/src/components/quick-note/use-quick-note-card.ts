@@ -79,7 +79,7 @@ export function useQuickNoteCard(target: Target) {
   function refresh() {
     flush()
     const id = localStorage.getItem(LAST_CARD_KEY)
-    if (!id) {
+    if (!id || (id === keptCard && !cardId)) {
       void create()
       return
     }
