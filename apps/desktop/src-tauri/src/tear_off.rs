@@ -13,12 +13,6 @@ const MAX_DRAG: Duration = Duration::from_secs(30);
 
 static FOLLOWING: AtomicBool = AtomicBool::new(false);
 
-pub fn init(app: &AppHandle) {
-    if let Some(win) = app.get_webview_window(WINDOW) {
-        let _ = win.set_ignore_cursor_events(true);
-    }
-}
-
 fn follow(app: &AppHandle) {
     let (Some(win), Ok(cursor)) = (app.get_webview_window(WINDOW), app.cursor_position()) else {
         return;
@@ -51,6 +45,7 @@ pub fn start_tear_off(app: AppHandle, theme: String) {
         if let Some(win) = handle.get_webview_window(WINDOW) {
             let _ = win.eval(apply_theme);
             let _ = win.show();
+            let _ = win.set_ignore_cursor_events(true);
         }
     });
     thread::spawn(move || {

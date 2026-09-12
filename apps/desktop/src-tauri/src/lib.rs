@@ -36,7 +36,6 @@ pub fn run() {
                 app.handle().plugin(tauri_plugin_process::init())?;
             }
             quick_note::init(app.handle());
-            tear_off::init(app.handle());
             shortcuts::init(app.handle())?;
             Ok(())
         })
