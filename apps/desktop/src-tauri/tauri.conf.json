@@ -65,8 +65,10 @@
     "createUpdaterArtifacts": true,
     "icon": [
       "icons/32x32.png",
+      "icons/64x64.png",
       "icons/128x128.png",
       "icons/128x128@2x.png",
+      "icons/icon.png",
       "icons/icon.icns",
       "icons/icon.ico"
     ],
@@ -74,6 +76,27 @@
       "nsis": {
         "sidebarImage": "nsis/sidebar.bmp",
         "headerImage": "nsis/header.bmp"
+      }
+    },
+    "publisher": "Margarita Romenkova",
+    "homepage": "https://doska.sh",
+    "shortDescription": "Offline-first kanban board with Markdown cards",
+    "longDescription": "Doska is a kanban board that is quick, Markdown-first, minimal, and still feature-rich. Boards are stored locally first and sync shortly after every change to a folder on disk or to your own server.",
+    "linux": {
+      "appimage": {
+        "files": {
+          "/usr/share/metainfo/com.deck.desktop.metainfo.xml": "linux/com.deck.desktop.metainfo.xml"
+        }
+      },
+      "deb": {
+        "files": {
+          "/usr/share/metainfo/com.deck.desktop.metainfo.xml": "linux/com.deck.desktop.metainfo.xml"
+        }
+      },
+      "rpm": {
+        "files": {
+          "/usr/share/metainfo/com.deck.desktop.metainfo.xml": "linux/com.deck.desktop.metainfo.xml"
+        }
       }
     }
   },
