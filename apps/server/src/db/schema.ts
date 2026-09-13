@@ -1,4 +1,10 @@
-import type { Attachment, MemberRole, SidebarItem } from "@doska/contract"
+import type {
+  Attachment,
+  Card,
+  Column,
+  MemberRole,
+  SidebarItem,
+} from "@doska/contract"
 import {
   bigint,
   boolean,
@@ -36,7 +42,9 @@ export const counters = pgTable("counters", {
  * The three entity tables mirror `@doska/contract` (= the client's `types.ts`),
  * each augmented with sync metadata:
  *
- *  - `updatedAt`: client clock, the last-writer-wins tiebreaker.
+ *  - `updatedAt`: client clock, the last-writer-wins tiebreaker. On cards and
+ *    columns it is the newest of `stamps`, the per-group clocks the merge
+ *    actually compares (empty on rows written before stamps existed).
  *  - `deletedAt`: tombstone (null = live).
  *  - `seq`: stamped from the owning board's counter on every write, so a client
  *    can pull everything past its cursor with `board_id = ? AND seq > since`.
@@ -79,6 +87,7 @@ export const columns = pgTable(
     done: boolean("done").notNull().default(false),
     updatedAt: bigint("updated_at", { mode: "number" }).notNull(),
     deletedAt: bigint("deleted_at", { mode: "number" }),
+    stamps: jsonb("stamps").$type<Column["stamps"]>().notNull().default({}),
     seq: integer("seq").notNull(),
   },
   (t) => [index("columns_board_seq").on(t.boardId, t.seq)]
@@ -102,6 +111,8 @@ export const cards = pgTable(
       .default([]),
     updatedAt: bigint("updated_at", { mode: "number" }).notNull(),
     deletedAt: bigint("deleted_at", { mode: "number" }),
+    stamps: jsonb("stamps").$type<Card["stamps"]>().notNull().default({}),
+    bodyConflict: jsonb("body_conflict").$type<Card["bodyConflict"]>(),
     seq: integer("seq").notNull(),
   },
   (t) => [index("cards_board_seq").on(t.boardId, t.seq)]

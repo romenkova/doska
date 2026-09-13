@@ -39,7 +39,7 @@ export async function readSince(
         done: r.done,
         updatedAt: r.updatedAt,
         deletedAt: r.deletedAt,
-        stamps: {},
+        stamps: r.stamps,
       },
     })
   }
@@ -62,8 +62,8 @@ export async function readSince(
         attachments: r.attachments,
         updatedAt: r.updatedAt,
         deletedAt: r.deletedAt,
-        stamps: {},
-        bodyConflict: null,
+        stamps: r.stamps,
+        bodyConflict: r.bodyConflict ?? null,
       },
     })
   }
