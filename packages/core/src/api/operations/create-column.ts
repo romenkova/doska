@@ -1,9 +1,10 @@
+import { COLUMN_GROUPS } from "@doska/contract"
 import { generateKeyBetween } from "fractional-indexing"
 import { db } from "../db/db"
 import { newId } from "./new-id"
 import { live } from "./live"
 import { sync } from "../sync"
-import { stamp } from "../sync/hlc"
+import { touchColumn } from "../sync/touch"
 
 /** Appends an empty column to a board and returns its new id. */
 export async function createColumn(
@@ -19,7 +20,7 @@ export async function createColumn(
     null
   )
   const position = generateKeyBetween(last, null)
-  await db.setColumn({
+  const column = {
     id,
     title,
     position,
@@ -27,10 +28,11 @@ export async function createColumn(
     collapsed: false,
     color: "",
     done: false,
-    updatedAt: stamp(),
+    updatedAt: 0,
     deletedAt: null,
     stamps: {},
-  })
+  }
+  await db.setColumn(touchColumn(column, COLUMN_GROUPS))
   sync.markDirty("columns", id)
   return id
 }

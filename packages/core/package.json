@@ -46,6 +46,7 @@
     "@doska/client-db": "workspace:*",
     "@doska/contract": "workspace:*",
     "@doska/file-storage": "workspace:*",
+    "@doska/merge": "workspace:*",
     "@doska/ports": "workspace:*",
     "@doska/sync": "workspace:*",
     "@doska/tokens": "workspace:*",

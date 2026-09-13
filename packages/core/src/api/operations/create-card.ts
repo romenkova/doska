@@ -1,10 +1,11 @@
+import { CARD_GROUPS } from "@doska/contract"
 import { generateKeyBetween } from "fractional-indexing"
 import { fallbackCard } from "../../seed"
 import { db } from "../db/db"
 import { newId } from "./new-id"
 import { live } from "./live"
 import { sync } from "../sync"
-import { stamp } from "../sync/hlc"
+import { touchCard } from "../sync/touch"
 
 /** Creates an empty card at the top of a column and returns its new id. */
 export async function createCard(columnId: string): Promise<string> {
@@ -17,15 +18,15 @@ export async function createCard(columnId: string): Promise<string> {
       null
     )
   const position = generateKeyBetween(null, first)
-  await db.setCard({
+  const card = {
     ...fallbackCard,
     id,
     columnId,
     position,
     title: "",
-    updatedAt: stamp(),
     deletedAt: null,
-  })
+  }
+  await db.setCard(touchCard(card, CARD_GROUPS))
   sync.markDirty("cards", id)
   return id
 }

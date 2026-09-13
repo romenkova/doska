@@ -11,6 +11,7 @@ import {
   DASHBOARDS,
   SIDEBAR,
 } from "../../constants"
+import { db } from "../../db/db"
 import { clock, persistClock } from "../hlc"
 
 /** Account-level dashboard-list steps, shared server ⇄ filesystem. */
@@ -62,8 +63,8 @@ export async function purgeBoard(boardId: string): Promise<void> {
       index: CARDS_BY_COLUMN,
       range: { lower: column.id, upper: column.id },
     })
-    for (const card of cards) await runtime().db.delete(CARDS, card.id)
-    await runtime().db.delete(COLUMNS, column.id)
+    for (const card of cards) await db.hardDelete(CARDS, card.id)
+    await db.hardDelete(COLUMNS, column.id)
   }
   queryClient.invalidateQueries({ queryKey: keys.board(boardId) })
 }

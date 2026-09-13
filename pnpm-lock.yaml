@@ -435,6 +435,9 @@ importers:
       '@doska/mcp':
         specifier: workspace:*
         version: link:../../packages/mcp
+      '@doska/merge':
+        specifier: workspace:*
+        version: link:../../packages/merge
       '@doska/sync':
         specifier: workspace:*
         version: link:../../packages/sync
@@ -566,6 +569,9 @@ importers:
       '@doska/file-storage':
         specifier: workspace:*
         version: link:../file-storage
+      '@doska/merge':
+        specifier: workspace:*
+        version: link:../merge
       '@doska/ports':
         specifier: workspace:*
         version: link:../ports

@@ -13,6 +13,8 @@ import {
   type StoreName,
 } from "../constants"
 import { stamp } from "../sync/hlc"
+import { deleteSyncedBody } from "../sync/synced-body"
+import { touchCard, touchColumn } from "../sync/touch"
 
 /**
  * Populates the stores from the fixtures on an empty DB. Called once at page
@@ -86,10 +88,13 @@ export const db = {
     return runtime().db.set(CARDS, card.id, card)
   },
   softDeleteCard(card: Card): Promise<void> {
-    return runtime().db.set(CARDS, card.id, tombstone(card))
+    const now = stamp()
+    const dead = touchCard({ ...card, deletedAt: now }, ["deleted"], now)
+    return runtime().db.set(CARDS, card.id, dead)
   },
   restoreCard(card: Card): Promise<void> {
-    return runtime().db.set(CARDS, card.id, revive(card))
+    const alive = touchCard({ ...card, deletedAt: null }, ["deleted"])
+    return runtime().db.set(CARDS, card.id, alive)
   },
   getColumn(id: string): Promise<Column | undefined> {
     return runtime().db.get<Column>(COLUMNS, id)
@@ -101,10 +106,13 @@ export const db = {
     return runtime().db.set(COLUMNS, column.id, column)
   },
   softDeleteColumn(column: Column): Promise<void> {
-    return runtime().db.set(COLUMNS, column.id, tombstone(column))
+    const now = stamp()
+    const dead = touchColumn({ ...column, deletedAt: now }, ["deleted"], now)
+    return runtime().db.set(COLUMNS, column.id, dead)
   },
   restoreColumn(column: Column): Promise<void> {
-    return runtime().db.set(COLUMNS, column.id, revive(column))
+    const alive = touchColumn({ ...column, deletedAt: null }, ["deleted"])
+    return runtime().db.set(COLUMNS, column.id, alive)
   },
   getDashboard(id: string): Promise<Dashboard | undefined> {
     return runtime().db.get<Dashboard>(DASHBOARDS, id)
@@ -139,8 +147,8 @@ export const db = {
   setSidebarLayout(layout: SidebarLayout): Promise<void> {
     return runtime().db.set(SIDEBAR, SIDEBAR_LAYOUT_ID, layout)
   },
-  /** Removes a record outright. Only for tombstones past retention. */
-  hardDelete(store: StoreName, id: string): Promise<void> {
-    return runtime().db.delete(store, id)
+  async hardDelete(store: StoreName, id: string): Promise<void> {
+    await runtime().db.delete(store, id)
+    if (store === CARDS) await deleteSyncedBody(id)
   },
 }

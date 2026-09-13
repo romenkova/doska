@@ -5,7 +5,8 @@ import {
 } from "@doska/contract"
 import type { DirtyStore } from "@doska/sync"
 import { runtime } from "../../../runtime"
-import { META_STORE } from "../../constants"
+import { META_STORE, type StoreName } from "../../constants"
+import { db } from "../../db/db"
 
 /** Cursor IO, ref identity, and compaction — shared by every driver. */
 
@@ -56,7 +57,7 @@ export async function compact(
         id
       )
       if (record?.deletedAt != null && record.deletedAt < cutoff)
-        await runtime().db.delete(store, id)
+        await db.hardDelete(store as StoreName, id)
     } catch (err) {
       console.warn("[sync] compaction failed for", store, id, err)
     }

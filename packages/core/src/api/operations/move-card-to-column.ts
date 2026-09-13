@@ -2,7 +2,7 @@ import { generateKeyBetween } from "fractional-indexing"
 import { byPosition } from "../../utils"
 import { db } from "../db/db"
 import { sync } from "../sync"
-import { stamp } from "../sync/hlc"
+import { touchCard } from "../sync/touch"
 import { live } from "./live"
 
 /**
@@ -20,6 +20,6 @@ export async function moveCardToColumn(
   const cards = (await db.getCards(columnId)).filter(live).sort(byPosition)
   const position = generateKeyBetween(null, cards[0]?.position ?? null)
 
-  await db.setCard({ ...card, columnId, position, updatedAt: stamp() })
+  await db.setCard(touchCard({ ...card, columnId, position }, ["place"]))
   sync.markDirty("cards", id)
 }

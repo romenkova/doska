@@ -2,6 +2,7 @@ import type { Column } from "../../types"
 import { db } from "../db/db"
 import { sync } from "../sync"
 import { stamp } from "../sync/hlc"
+import { touchColumn } from "../sync/touch"
 
 /**
  * Persists columns whose position changed during a reorder. Only the position
@@ -15,11 +16,8 @@ export async function moveColumn(changed: Column[]): Promise<void> {
     changed.map(async (column) => {
       const existing = byId.get(column.id)
       if (!existing) return
-      await db.setColumn({
-        ...existing,
-        position: column.position,
-        updatedAt: now,
-      })
+      const moved = { ...existing, position: column.position }
+      await db.setColumn(touchColumn(moved, ["position"], now))
     })
   )
   for (const column of changed) sync.markDirty("columns", column.id)

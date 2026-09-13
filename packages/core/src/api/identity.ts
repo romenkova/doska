@@ -4,6 +4,7 @@ import { DASHBOARDS, META_STORE, STORES } from "./constants"
 import { live } from "./operations/live"
 import { getServerUrl } from "./server"
 import { sync } from "./sync"
+import { SYNCED_BODY_RANGE } from "./sync/synced-body"
 import type { Dashboard } from "../types"
 
 /** Whose data the local store currently holds, per sync server */
@@ -75,6 +76,8 @@ async function wipe(): Promise<void> {
 
   const cursors = await runtime().db.keys(META_STORE, CURSOR_RANGE)
   for (const key of cursors) await runtime().db.delete(META_STORE, key)
+  const syncedBodies = await runtime().db.keys(META_STORE, SYNCED_BODY_RANGE)
+  for (const key of syncedBodies) await runtime().db.delete(META_STORE, key)
 
   clearLastBoard()
 

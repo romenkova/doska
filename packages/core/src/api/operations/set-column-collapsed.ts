@@ -1,6 +1,6 @@
 import { db } from "../db/db"
 import { sync } from "../sync"
-import { stamp } from "../sync/hlc"
+import { touchColumn } from "../sync/touch"
 
 /** Persists a column's collapse state (card bodies hidden down to titles). */
 export async function setColumnCollapsed(
@@ -9,6 +9,6 @@ export async function setColumnCollapsed(
 ): Promise<void> {
   const column = await db.getColumn(id)
   if (!column) return
-  await db.setColumn({ ...column, collapsed, updatedAt: stamp() })
+  await db.setColumn(touchColumn({ ...column, collapsed }, ["collapsed"]))
   sync.markDirty("columns", id)
 }
