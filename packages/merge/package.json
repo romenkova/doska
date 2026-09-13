@@ -1,0 +1,24 @@
+{
+  "name": "@doska/merge",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "diff": "^8.0.4"
+  },
+  "devDependencies": {
+    "@doska/configs": "workspace:*",
+    "@types/node": "^22",
+    "tsx": "^4.23.13",
+    "vitest": "^4.1.11"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "playground": "tsx playground/run.ts"
+  }
+}
