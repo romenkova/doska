@@ -127,6 +127,13 @@
       "when": 1788560337942,
       "tag": "0017_sidebar_layouts",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1789316507345,
+      "tag": "0018_field_stamps",
+      "breakpoints": true
     }
   ]
 }
