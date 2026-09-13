@@ -5,11 +5,19 @@ import { db } from "../db/db"
 import { sync } from "../sync"
 import { touchCard } from "../sync/touch"
 
-/** Updates a card's title/body/deadline/priority/attachments, preserving column and position. */
+/** Updates a card's own fields, preserving column and position. */
 export async function updateCard(
   id: string,
   patch: Partial<
-    Pick<Card, "title" | "body" | "deadline" | "priority" | "attachments">
+    Pick<
+      Card,
+      | "title"
+      | "body"
+      | "deadline"
+      | "priority"
+      | "attachments"
+      | "bodyConflict"
+    >
   >
 ): Promise<void> {
   const existing = (await db.getCard(id)) ?? { ...fallbackCard, id }

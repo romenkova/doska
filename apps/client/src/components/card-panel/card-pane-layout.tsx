@@ -5,6 +5,7 @@ import { CardContentLayout } from "./card-content-layout"
 interface IProps {
   header: ReactNode
   attachments: ReactNode
+  notice?: ReactNode
   title: ReactNode
   body: ReactNode
   /** Fired by clicking the body, where clicking it starts an edit. */
@@ -15,6 +16,7 @@ interface IProps {
 export function CardPaneLayout({
   header,
   attachments,
+  notice,
   title,
   body,
   onClickBody,
@@ -24,6 +26,7 @@ export function CardPaneLayout({
       {header}
       <CardContentLayout>
         {attachments}
+        {notice}
         <CardContent
           className="flex flex-1 flex-col border-t-0 px-4 pt-2"
           onClick={onClickBody}

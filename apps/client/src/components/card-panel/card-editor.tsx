@@ -1,5 +1,5 @@
 import { TitleEditor } from "@doska/ui-kit"
-import { useState } from "react"
+import { useState, type ReactNode } from "react"
 import { CardPaneLayout } from "./card-pane-layout"
 import { CardPanelHeader } from "./card-panel-header"
 import { CardPanelMenu } from "./card-panel-menu"
@@ -16,6 +16,7 @@ interface IProps {
   title: string
   body: string
   isPreview: boolean
+  notice?: ReactNode
   onChangeTitle: (value: string) => void
   onChangeBody: (value: string) => void
   onTogglePreview?: () => void
@@ -45,6 +46,7 @@ export function CardEditor({
   title,
   body,
   isPreview,
+  notice,
   onChangeTitle,
   onChangeBody,
   onTogglePreview,
@@ -105,6 +107,7 @@ export function CardEditor({
                   isReadonly={isPreview}
                 />
               }
+              notice={notice}
               onClickBody={
                 isPreview
                   ? (e) => {

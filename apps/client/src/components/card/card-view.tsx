@@ -101,7 +101,11 @@ export function CardView({
 
   const tasks = taskProgress(body)
   const hasMeta =
-    !!metaLead || tasks.total > 0 || !!card.deadline || !!card.priority
+    !!metaLead ||
+    tasks.total > 0 ||
+    !!card.deadline ||
+    !!card.priority ||
+    !!card.bodyConflict
 
   return (
     <div

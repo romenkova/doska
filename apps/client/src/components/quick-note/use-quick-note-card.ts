@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useQueryClient } from "@tanstack/react-query"
 import { getCurrentWindow } from "@tauri-apps/api/window"
 import { CARDS } from "@doska/core/constants"
@@ -13,7 +13,8 @@ import {
 import { useCard, useCardCol } from "@doska/core/queries"
 import { sync } from "@doska/core/sync"
 import type { Column } from "@doska/core/types"
-import type { Draft } from "@/components/card-panel/card-pane"
+import type { Draft } from "@/components/card-panel/draft"
+import type { CardPatch } from "@doska/core/mutations"
 import { isDesktop } from "@/lib/platform"
 
 interface Target {
@@ -90,10 +91,13 @@ export function useQuickNoteCard(target: Target) {
     else setKeptCard(id)
   }
 
-  function queue(id: string, patch: Draft) {
-    draft.current = { ...draft.current, ...patch }
-    save(id, patch)
-  }
+  const queue = useCallback(
+    (id: string, patch: CardPatch) => {
+      draft.current = { ...draft.current, ...patch }
+      save(id, patch)
+    },
+    [save]
+  )
 
   function isEmpty() {
     const title = draft.current.title ?? content?.title ?? ""

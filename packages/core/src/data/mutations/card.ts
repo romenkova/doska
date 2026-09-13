@@ -28,7 +28,10 @@ export function useDeleteCard(deckId: string) {
 }
 
 export type CardPatch = Partial<
-  Pick<Card, "title" | "body" | "deadline" | "priority" | "attachments">
+  Pick<
+    Card,
+    "title" | "body" | "deadline" | "priority" | "attachments" | "bodyConflict"
+  >
 >
 
 function useCardWrite<V>(

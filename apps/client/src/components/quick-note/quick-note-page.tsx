@@ -73,6 +73,7 @@ export function QuickNotePage() {
               cardId={note.cardId}
               content={note.content}
               onQueue={note.queue}
+              onFlush={note.flush}
               bare
               onClose={() => void close()}
             />

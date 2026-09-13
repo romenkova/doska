@@ -62,6 +62,9 @@ importers:
       '@doska/markdown':
         specifier: workspace:*
         version: link:../../packages/markdown
+      '@doska/merge':
+        specifier: workspace:*
+        version: link:../../packages/merge
       '@doska/ports':
         specifier: workspace:*
         version: link:../../packages/ports

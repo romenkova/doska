@@ -2,6 +2,7 @@ import { TaskIndicator, cn } from "@doska/ui-kit"
 import { taskProgress, type TaskProgress } from "@doska/markdown"
 import type { ReactNode } from "react"
 import type { Card, Column } from "@doska/core/types"
+import { ConflictMarker } from "./conflict-marker"
 import { CardDeadline } from "./deadline/card-deadline"
 import { CardPriority } from "./priority/card-priority"
 
@@ -50,6 +51,7 @@ export function CardMeta({
       {(showEmpty || !!card.priority) && (
         <CardPriority value={card.priority} onChange={onChangePriority} />
       )}
+      {card.bodyConflict && <ConflictMarker />}
     </div>
   )
 }

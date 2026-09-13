@@ -23,6 +23,7 @@
     "@doska/contract": "workspace:*",
     "@doska/core": "workspace:*",
     "@doska/markdown": "workspace:*",
+    "@doska/merge": "workspace:*",
     "@doska/ports": "workspace:*",
     "@doska/sync": "workspace:*",
     "@doska/tokens": "workspace:*",

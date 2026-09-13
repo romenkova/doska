@@ -70,6 +70,7 @@ export function CardPanel({ closeHref }: IProps) {
           cardId={card}
           content={content}
           onQueue={queue}
+          onFlush={flush}
           onClose={close}
           onDelete={() => {
             deleteCard(card)
