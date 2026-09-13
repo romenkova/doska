@@ -25,7 +25,7 @@ function touch<G extends string, T extends Stamped<G>>(
 ): T {
   const stamps: Partial<Record<G, number>> = {}
   for (const group of all)
-    stamps[group] = record.stamps[group] ?? record.updatedAt
+    stamps[group] = record.stamps?.[group] ?? record.updatedAt
   for (const group of groups) stamps[group] = at
   return { ...record, stamps, updatedAt: Math.max(record.updatedAt, at) }
 }

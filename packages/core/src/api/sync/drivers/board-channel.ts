@@ -118,7 +118,7 @@ async function applyCard(remote: Card): Promise<boolean> {
 
   let incoming = remote
   if (unpushedEdit) {
-    const bodyStamp = local.stamps.body ?? local.updatedAt
+    const bodyStamp = local.stamps?.body ?? local.updatedAt
     const stamps = { ...remote.stamps, body: bodyStamp }
     incoming = { ...remote, body: local.body, stamps }
   } else if (syncedBody !== remote.body) {

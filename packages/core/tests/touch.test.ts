@@ -57,6 +57,14 @@ describe("touchCard", () => {
     })
   })
 
+  it("stamps a record stored before stamps existed", () => {
+    const legacy = { ...card, stamps: undefined as unknown as Card["stamps"] }
+    const touched = touchCard(legacy, ["place"], 20)
+
+    expect(touched.stamps.place).toBe(20)
+    expect(touched.stamps.title).toBe(10)
+  })
+
   it("leaves the record it was given alone", () => {
     touchCard(card, ["body"], 20)
 
