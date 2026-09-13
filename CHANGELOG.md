@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+
+- Sync merges cards and columns field by field, and card text line by line, so
+  edits made on two devices to the same card keep both. Conflict resolution banner.
+
 ## [0.23.0] - 2026-09-13
 
 ### Added

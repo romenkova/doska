@@ -1,9 +1,9 @@
 ---
 title: Sync
 nav: Sync
-description: "How Doska keeps devices in sync: two channels, one reconcile pass per board, and last-writer-wins on a hybrid logical clock."
+description: "How Doska keeps devices in sync: two channels, one reconcile pass per board, and a per-field merge on a hybrid logical clock."
 order: 7
-updated: "2026-08-09"
+updated: "2026-09-13"
 ---
 
 Doska is local-first. Every device holds a full copy of your boards and reads
@@ -42,14 +42,11 @@ higher than what you last saw".
 
 ## Conflicts
 
-Records are merged last-writer-wins on `updatedAt`, one record at a time, on
-both ends, two people editing different cards never conflict, and two people
-editing the same card end up with the later edit.
+Card body: line by line. A push carries the body the device last synced, and
+the server merges the pushed and stored bodies against it. When merge fails, a banner appears with Keep mine
+and Use theirs buttons to clear it.
 
-Local timestamps come from a hybrid logical clock: `updatedAt` is ordinary
-wall-clock milliseconds, but always ahead of every timestamp the device has seen,
-local or pulled. An edit you make after seeing someone else's change therefore
-outranks it even if your machine's clock is behind theirs.
+Everything else: last-writer-wins per field on a hybrid logical clock.
 
 ## Cadence
 

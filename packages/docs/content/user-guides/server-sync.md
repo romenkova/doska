@@ -3,7 +3,7 @@ title: Sync to server
 nav: Sync to server
 description: "Sign the web or desktop app into your self-hosted server so a board syncs across your devices."
 order: 3
-updated: "2026-08-07"
+updated: "2026-09-13"
 ---
 
 Syncing to a server is available only with the [self-hosted setup](/self-hosting).
@@ -19,3 +19,9 @@ To sign in, click the button at the bottom of the sidebar.
 ## Desktop app
 
 The desktop app needs a sync server address to set up the connection. Put in the server address (IP and port, or a domain), as well as the same login and password as in the web setup.
+
+## Conflicts
+
+Card body: line by line conflict resolution.
+
+Everything else: LWW + HLC sync.
