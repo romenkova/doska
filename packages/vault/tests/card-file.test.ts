@@ -151,6 +151,32 @@ describe("CardFile", () => {
     expect(CardFile.parse(text).patchFor(card)).toBeNull()
   })
 
+  it("leaves sync state out of the file", () => {
+    const card = makeCard({
+      columnId: "col-1",
+      title: "Ship it",
+      body: "mine",
+      stamps: { body: 5, title: 3 },
+      bodyConflict: { body: "theirs", at: 4 },
+    })
+    const text = CardFile.fromCard(card).text
+
+    expect(text).not.toContain("stamps")
+    expect(text).not.toContain("bodyConflict")
+    expect(text).not.toContain("theirs")
+    expect(CardFile.parse(text).patchFor(card)).toBeNull()
+  })
+
+  it("drops sync state a copied file carries in its frontmatter", () => {
+    const card = makeCard({ columnId: "col-1", title: "Ship it" })
+    const parsed = CardFile.parse(
+      `---\nid: ${card.id}\ntitle: Ship it\nstamps:\n  body: 5\nbodyConflict:\n  body: theirs\n  at: 4\nsyncedBody: old\ntags: [ops]\n---\n`
+    )
+
+    expect(parsed.extra).toEqual({ tags: ["ops"] })
+    expect(CardFile.fromCard(card, parsed.extra).text).not.toContain("stamps")
+  })
+
   it("keeps frontmatter keys the user added", () => {
     const card = makeCard({ columnId: "col-1", title: "Ship it" })
     const parsed = CardFile.parse(

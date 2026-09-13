@@ -11,7 +11,17 @@ import {
 } from "./card-format"
 
 /** Keys the vault owns */
-const KNOWN = ["id", "number", "title", "deadline", "priority", "attachments"]
+const KNOWN = [
+  "id",
+  "number",
+  "title",
+  "deadline",
+  "priority",
+  "attachments",
+  "stamps",
+  "bodyConflict",
+  "syncedBody",
+]
 
 export type CardPatch = Partial<
   Pick<Card, "title" | "body" | "deadline" | "priority">

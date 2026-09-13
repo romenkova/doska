@@ -165,9 +165,9 @@ export async function retitleCard(
 export async function openCard(page: Page, title: string): Promise<void> {
   await card(page, title).click()
   await expect(cardPanel(page)).toBeVisible()
-  if (await page.getByRole("button", { name: "Edit" }).isVisible()) {
-    await page.getByRole("button", { name: "Edit" }).click()
-  }
+  // Exact: a board card with a conflict marker is named "... Edit conflict".
+  const edit = page.getByRole("button", { name: "Edit", exact: true })
+  if (await edit.isVisible()) await edit.click()
   // Click to focus: a panel reused mid-close-animation won't refire the field's autoFocus.
   const titleField = panelField(page, "Title")
   await titleField.click()
@@ -309,6 +309,7 @@ export async function remoteEditCard(
   toTitle: string
 ): Promise<void> {
   const target = await waitForChange(request, boardId, "cards", fromTitle)
+  const at = newerThan(target.record)
   await sync(request, {
     boardId,
     since: 0,
@@ -318,7 +319,8 @@ export async function remoteEditCard(
         record: {
           ...target.record,
           title: toTitle,
-          updatedAt: newerThan(target.record),
+          updatedAt: at,
+          stamps: { ...target.record.stamps, title: at },
         },
       },
     ],
@@ -339,7 +341,12 @@ export async function remoteDeleteCard(
     changes: [
       {
         store: "cards",
-        record: { ...target.record, deletedAt: at, updatedAt: at },
+        record: {
+          ...target.record,
+          deletedAt: at,
+          updatedAt: at,
+          stamps: { ...target.record.stamps, deleted: at },
+        },
       },
     ],
   })
