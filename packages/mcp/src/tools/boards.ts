@@ -1,9 +1,23 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
-import type { Change, Column, Dashboard } from "@doska/contract"
+import {
+  COLUMN_GROUPS,
+  type Change,
+  type Column,
+  type Dashboard,
+} from "@doska/contract"
 import { z } from "zod"
-import { type Board, newId, positionAt, tombstone, touch } from "../board"
+import {
+  type Board,
+  newId,
+  positionAt,
+  tombstone,
+  tombstoneCard,
+  tombstoneColumn,
+  touch,
+  touchColumn,
+} from "../board"
 import { reply } from "./reply"
-import { shapeCard } from "./shape"
+import { shapeCard, shapeColumn } from "./shape"
 
 /** What a new board starts with, matching the app's own default columns. */
 const DEFAULT_COLUMNS = ["To Do", "In Progress", "Done"]
@@ -43,11 +57,7 @@ export function registerBoardTools(server: McpServer, board: Board): void {
         boardId,
         title,
         columns: columns.map((column) => ({
-          id: column.id,
-          title: column.title,
-          done: column.done,
-          color: column.color || null,
-          collapsed: column.collapsed,
+          ...shapeColumn(column),
           cards: cards
             .filter((card) => card.columnId === column.id)
             .map((card) => {
@@ -104,25 +114,32 @@ export function registerBoardTools(server: McpServer, board: Board): void {
       // Columns live on the board's own sync channel, so they go in a second push.
       const columns: Column[] = []
       for (const columnTitle of DEFAULT_COLUMNS) {
-        columns.push({
-          id: newId("col"),
-          title: columnTitle,
-          position: positionAt(columns, "bottom"),
-          dashboardId: dashboard.id,
-          collapsed: false,
-          done: false,
-          color: "",
-          updatedAt: board.now(),
-          deletedAt: null,
-          stamps: {},
-        })
+        const now = board.now()
+        columns.push(
+          touchColumn(
+            {
+              id: newId("col"),
+              title: columnTitle,
+              position: positionAt(columns, "bottom"),
+              dashboardId: dashboard.id,
+              collapsed: false,
+              done: false,
+              color: "",
+              updatedAt: now,
+              deletedAt: null,
+              stamps: {},
+            },
+            COLUMN_GROUPS,
+            now
+          )
+        )
       }
       await board.pushBoard(
         dashboard.id,
         columns.map((record) => ({ store: "columns", record }))
       )
 
-      return reply({ board: dashboard, columns })
+      return reply({ board: dashboard, columns: columns.map(shapeColumn) })
     }
   )
 
@@ -160,11 +177,11 @@ export function registerBoardTools(server: McpServer, board: Board): void {
       const changes: Change[] = [
         ...columns.map((record): Change => ({
           store: "columns",
-          record: tombstone(record, now),
+          record: tombstoneColumn(record, now),
         })),
         ...cards.map((record): Change => ({
           store: "cards",
-          record: tombstone(record, now),
+          record: tombstoneCard(record, now),
         })),
       ]
       await board.pushBoard(boardId, changes)

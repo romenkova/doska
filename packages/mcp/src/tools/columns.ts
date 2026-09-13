@@ -1,5 +1,10 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
-import type { Change, Column } from "@doska/contract"
+import {
+  COLUMN_GROUPS,
+  type Change,
+  type Column,
+  type ColumnGroup,
+} from "@doska/contract"
 import { COLUMN_COLORS } from "@doska/tokens/columns"
 import { z } from "zod"
 import {
@@ -7,10 +12,12 @@ import {
   newId,
   positionAt,
   positionNextTo,
-  tombstone,
-  touch,
+  tombstoneCard,
+  tombstoneColumn,
+  touchColumn,
 } from "../board"
 import { reply } from "./reply"
+import { shapeColumn } from "./shape"
 
 const COLOR_IDS = COLUMN_COLORS.map((c) => c.id) as [string, ...string[]]
 
@@ -38,23 +45,27 @@ export function registerColumnTools(server: McpServer, board: Board): void {
     async ({ boardId, title, color, done }) => {
       const { columns } = await board.board(boardId)
       const now = board.now()
-      const column: Column = {
-        id: newId("col"),
-        title,
-        position: positionAt(columns, "bottom"),
-        dashboardId: boardId,
-        collapsed: false,
-        done,
-        color: color ?? "",
-        updatedAt: now,
-        deletedAt: null,
-        stamps: {},
-      }
+      const column: Column = touchColumn(
+        {
+          id: newId("col"),
+          title,
+          position: positionAt(columns, "bottom"),
+          dashboardId: boardId,
+          collapsed: false,
+          done,
+          color: color ?? "",
+          updatedAt: now,
+          deletedAt: null,
+          stamps: {},
+        },
+        COLUMN_GROUPS,
+        now
+      )
       const changes: Change[] = [{ store: "columns", record: column }]
       if (done) changes.push(...clearOtherDone(columns, column.id, now))
 
       await board.pushBoard(boardId, changes)
-      return reply(column)
+      return reply(shapeColumn(column))
     }
   )
 
@@ -83,22 +94,26 @@ export function registerColumnTools(server: McpServer, board: Board): void {
       const { columns } = await board.board(boardId)
       const existing = await board.column(boardId, columnId)
 
+      const next: Column = {
+        ...existing,
+        title: title ?? existing.title,
+        color: color === undefined ? existing.color : (color ?? ""),
+        collapsed: collapsed ?? existing.collapsed,
+        done: done ?? existing.done,
+      }
+      const groups: ColumnGroup[] = []
+      if (next.title !== existing.title) groups.push("title")
+      if (next.color !== existing.color) groups.push("color")
+      if (next.collapsed !== existing.collapsed) groups.push("collapsed")
+      if (next.done !== existing.done) groups.push("done")
+
       const now = board.now()
-      const column = touch(
-        {
-          ...existing,
-          title: title ?? existing.title,
-          color: color === undefined ? existing.color : (color ?? ""),
-          collapsed: collapsed ?? existing.collapsed,
-          done: done ?? existing.done,
-        },
-        now
-      )
+      const column = touchColumn(next, groups, now)
       const changes: Change[] = [{ store: "columns", record: column }]
       if (column.done) changes.push(...clearOtherDone(columns, column.id, now))
 
       await board.pushBoard(boardId, changes)
-      return reply(column)
+      return reply(shapeColumn(column))
     }
   )
 
@@ -134,9 +149,13 @@ export function registerColumnTools(server: McpServer, board: Board): void {
         position = positionNextTo(siblings, anchorColumnId, place)
       }
 
-      const column = touch({ ...existing, position }, board.now())
+      const column = touchColumn(
+        { ...existing, position },
+        ["position"],
+        board.now()
+      )
       await board.pushBoard(boardId, [{ store: "columns", record: column }])
-      return reply(column)
+      return reply(shapeColumn(column))
     }
   )
 
@@ -156,10 +175,10 @@ export function registerColumnTools(server: McpServer, board: Board): void {
 
       const now = board.now()
       const changes: Change[] = [
-        { store: "columns", record: tombstone(column, now) },
+        { store: "columns", record: tombstoneColumn(column, now) },
         ...inColumn.map((record): Change => ({
           store: "cards",
-          record: tombstone(record, now),
+          record: tombstoneCard(record, now),
         })),
       ]
       await board.pushBoard(boardId, changes)
@@ -180,6 +199,6 @@ function clearOtherDone(
     .filter((c) => c.done && c.id !== keepId)
     .map((c) => ({
       store: "columns",
-      record: touch({ ...c, done: false }, now),
+      record: touchColumn({ ...c, done: false }, ["done"], now),
     }))
 }

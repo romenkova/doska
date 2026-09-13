@@ -1,9 +1,13 @@
-import type {
-  Card,
-  Change,
-  Column,
-  Dashboard,
-  DashboardChange,
+import {
+  CARD_GROUPS,
+  COLUMN_GROUPS,
+  type Card,
+  type CardGroup,
+  type Change,
+  type Column,
+  type ColumnGroup,
+  type Dashboard,
+  type DashboardChange,
 } from "@doska/contract"
 import { generateKeyBetween } from "fractional-indexing"
 import type { BoardStore } from "./store"
@@ -54,8 +58,8 @@ export function positionNextTo<T extends Ordered & { id: string }>(
 }
 
 /**
- * Stamps a record as written at `now`. Its `updatedAt` is what settles a
- * conflict, so the timestamp comes from the store's clock
+ * Stamps a whole record as written at `now`. For dashboards, which merge as
+ * one unit; cards and columns merge per field group, see `touchCard`.
  */
 export const touch = <T extends Record_>(record: T, now: number): T => ({
   ...record,
@@ -68,6 +72,46 @@ export const tombstone = <T extends Record_>(record: T, now: number): T => ({
   updatedAt: now,
   deletedAt: now,
 })
+
+type Stamped<G extends string> = {
+  updatedAt: number
+  stamps: Partial<Record<G, number>>
+}
+
+// Untouched groups are pinned at the old updatedAt first: a missing stamp reads
+// as updatedAt, so left missing they would ride up with the touched ones.
+function touchGroups<G extends string, T extends Stamped<G>>(
+  record: T,
+  all: readonly G[],
+  groups: readonly G[],
+  at: number
+): T {
+  const stamps: Partial<Record<G, number>> = {}
+  for (const group of all)
+    stamps[group] = record.stamps[group] ?? record.updatedAt
+  for (const group of groups) stamps[group] = at
+  return { ...record, stamps, updatedAt: Math.max(record.updatedAt, at) }
+}
+
+/** Stamps only the groups a write changed, so it merges with concurrent
+ * edits to the card's other fields instead of overwriting them. */
+export const touchCard = (
+  card: Card,
+  groups: readonly CardGroup[],
+  at: number
+): Card => touchGroups(card, CARD_GROUPS, groups, at)
+
+export const touchColumn = (
+  column: Column,
+  groups: readonly ColumnGroup[],
+  at: number
+): Column => touchGroups(column, COLUMN_GROUPS, groups, at)
+
+export const tombstoneCard = (card: Card, at: number): Card =>
+  touchCard({ ...card, deletedAt: at }, ["deleted"], at)
+
+export const tombstoneColumn = (column: Column, at: number): Column =>
+  touchColumn({ ...column, deletedAt: at }, ["deleted"], at)
 
 /** The column whose cards count as finished, if the board has one. */
 export const doneColumn = (columns: Column[]): Column | undefined =>

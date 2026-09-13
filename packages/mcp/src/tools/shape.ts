@@ -1,4 +1,4 @@
-import type { Card } from "@doska/contract"
+import type { Card, Column } from "@doska/contract"
 import { cardDisplayId } from "@doska/contract/card-id"
 import { taskProgress } from "@doska/markdown/core"
 
@@ -25,5 +25,16 @@ export function shapeCard(card: Card) {
       mime,
       size,
     })),
+  }
+}
+
+/** A column as the tools report it: what an agent can act on, no sync state. */
+export function shapeColumn(column: Column) {
+  return {
+    id: column.id,
+    title: column.title,
+    done: column.done,
+    color: column.color || null,
+    collapsed: column.collapsed,
   }
 }
