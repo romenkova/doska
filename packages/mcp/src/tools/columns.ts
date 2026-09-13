@@ -48,6 +48,7 @@ export function registerColumnTools(server: McpServer, board: Board): void {
         color: color ?? "",
         updatedAt: now,
         deletedAt: null,
+        stamps: {},
       }
       const changes: Change[] = [{ store: "columns", record: column }]
       if (done) changes.push(...clearOtherDone(columns, column.id, now))

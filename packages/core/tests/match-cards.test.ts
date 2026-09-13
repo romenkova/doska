@@ -13,6 +13,7 @@ function column(id: string, position: string): Column {
     done: false,
     updatedAt: 0,
     deletedAt: null,
+    stamps: {},
   }
 }
 
@@ -28,6 +29,8 @@ function card(fields: Partial<Card> & { id: string }): Card {
     attachments: [],
     updatedAt: 0,
     deletedAt: null,
+    stamps: {},
+    bodyConflict: null,
     ...fields,
   }
 }

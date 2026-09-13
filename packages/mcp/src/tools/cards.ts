@@ -78,6 +78,8 @@ export function registerCardTools(server: McpServer, board: Board): void {
         attachments: [],
         updatedAt: board.now(),
         deletedAt: null,
+        stamps: {},
+        bodyConflict: null,
       }
       await board.pushBoard(boardId, [{ store: "cards", record: card }])
 

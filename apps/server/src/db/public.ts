@@ -199,10 +199,11 @@ export async function readPublicBoard(
 
   const board: PublicBoard = {
     dashboard,
-    columns: boardColumns.sort(byPosition),
+    columns: boardColumns.sort(byPosition).map((c) => ({ ...c, stamps: {} })),
     cards: boardCards
       .filter((c) => liveColumns.has(c.columnId))
-      .sort(byPosition),
+      .sort(byPosition)
+      .map((c) => ({ ...c, stamps: {}, bodyConflict: null })),
   }
   remember(token, board, now)
   return board

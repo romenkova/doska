@@ -3,10 +3,39 @@ import { z } from "zod"
 /**
  * Entity schemas shared by client and server
  *
- *  - `updatedAt`: client clock (ms). The last-writer-wins tiebreaker.
+ *  - `updatedAt`: client clock (ms). The last-writer-wins tiebreaker. On cards
+ *    and columns it equals the newest of `stamps`.
  *  - `deletedAt`: tombstone. `null` while live; set to a timestamp on delete so
  *    the deletion propagates to other clients instead of vanishing silently.
  */
+
+/**
+ * Field groups: the unit of last-writer-wins on cards and columns.
+ * `updatedAt` equals `max(stamps)`; a group with no stamp reads as `updatedAt`.
+ * A tie on a group keeps what is stored.
+ */
+export const CARD_GROUPS = [
+  "title",
+  "body",
+  "place",
+  "deadline",
+  "priority",
+  "attachments",
+  "deleted",
+  "conflict",
+] as const
+
+export const COLUMN_GROUPS = [
+  "title",
+  "position",
+  "collapsed",
+  "color",
+  "done",
+  "deleted",
+] as const
+
+export type CardGroup = (typeof CARD_GROUPS)[number]
+export type ColumnGroup = (typeof COLUMN_GROUPS)[number]
 
 /**
  * A file attached to a card.
@@ -47,7 +76,32 @@ export const CardSchema = z.object({
   attachments: z.array(AttachmentSchema).default([]),
   updatedAt: z.number(),
   deletedAt: z.number().nullable(),
+  stamps: z.partialRecord(z.enum(CARD_GROUPS), z.number()).default({}),
+  /** The body that lost a 3-way merge; `null` while nothing is pending. */
+  bodyConflict: z
+    .object({ body: z.string(), at: z.number() })
+    .nullable()
+    .default(null),
 })
+
+/** Exhaustive on purpose: a field without a group is a type error. */
+export const CARD_FIELD_GROUP: Record<
+  Exclude<
+    keyof z.infer<typeof CardSchema>,
+    "id" | "number" | "updatedAt" | "stamps"
+  >,
+  CardGroup
+> = {
+  title: "title",
+  body: "body",
+  columnId: "place",
+  position: "place",
+  deadline: "deadline",
+  priority: "priority",
+  attachments: "attachments",
+  deletedAt: "deleted",
+  bodyConflict: "conflict",
+}
 
 export const ColumnSchema = z.object({
   id: z.string(),
@@ -65,7 +119,23 @@ export const ColumnSchema = z.object({
   done: z.boolean().default(false),
   updatedAt: z.number(),
   deletedAt: z.number().nullable(),
+  stamps: z.partialRecord(z.enum(COLUMN_GROUPS), z.number()).default({}),
 })
+
+export const COLUMN_FIELD_GROUP: Record<
+  Exclude<
+    keyof z.infer<typeof ColumnSchema>,
+    "id" | "dashboardId" | "updatedAt" | "stamps"
+  >,
+  ColumnGroup
+> = {
+  title: "title",
+  position: "position",
+  collapsed: "collapsed",
+  color: "color",
+  done: "done",
+  deletedAt: "deleted",
+}
 
 export const DashboardSchema = z.object({
   id: z.string(),
@@ -150,7 +220,12 @@ export const DashboardChangeSchema = z.discriminatedUnion("store", [
 
 /** One board-channel record change, tagged by the store it belongs to. */
 export const ChangeSchema = z.discriminatedUnion("store", [
-  z.object({ store: z.literal("cards"), record: CardSchema }),
+  z.object({
+    store: z.literal("cards"),
+    record: CardSchema,
+    /** The synced body the local edit started from; the server merges against it. */
+    baseBody: z.string().optional(),
+  }),
   z.object({ store: z.literal("columns"), record: ColumnSchema }),
   DashboardRecordChangeSchema,
 ])

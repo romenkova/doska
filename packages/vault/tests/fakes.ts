@@ -115,6 +115,8 @@ export function makeCard(fields: Partial<Card> & { columnId: string }): Card {
     attachments: [],
     updatedAt: 0,
     deletedAt: null,
+    stamps: {},
+    bodyConflict: null,
     ...fields,
   }
 }
@@ -130,6 +132,7 @@ export function makeColumn(id: string, title: string): Column {
     done: false,
     updatedAt: 0,
     deletedAt: null,
+    stamps: {},
   }
 }
 

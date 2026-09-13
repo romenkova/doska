@@ -114,6 +114,7 @@ export function registerBoardTools(server: McpServer, board: Board): void {
           color: "",
           updatedAt: board.now(),
           deletedAt: null,
+          stamps: {},
         })
       }
       await board.pushBoard(

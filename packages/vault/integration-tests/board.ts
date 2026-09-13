@@ -130,5 +130,6 @@ export function makeColumn(
     done: false,
     updatedAt: 1,
     deletedAt: null,
+    stamps: {},
   }
 }

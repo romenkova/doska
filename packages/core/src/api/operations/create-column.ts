@@ -29,6 +29,7 @@ export async function createColumn(
     done: false,
     updatedAt: stamp(),
     deletedAt: null,
+    stamps: {},
   })
   sync.markDirty("columns", id)
   return id
