@@ -19,9 +19,11 @@ export function CardWindowPage({ cardId }: IProps) {
   const { queue, flush } = useCardSave()
   const { mutate: deleteCard } = useDeleteCard(deckId ?? "")
 
+  // Hidden, not closed: tearing down the webview races WebKit's display
+  // link on macOS and segfaults. The window is reused on the next open.
   const close = useCallback(() => {
     flush()
-    if (isDesktop()) void getCurrentWindow().close()
+    if (isDesktop()) void getCurrentWindow().hide()
   }, [flush])
 
   useEffect(() => {

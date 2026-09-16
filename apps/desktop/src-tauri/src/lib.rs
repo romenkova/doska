@@ -43,10 +43,14 @@ pub fn run() {
         .on_window_event(|window, event| {
             quick_note::on_window_event(window, event);
             // Closing the main window only hides it, so the shortcut keeps
-            // working; Cmd+Q still quits.
-            if let ("main", WindowEvent::CloseRequested { api, .. }) = (window.label(), event) {
-                api.prevent_close();
-                let _ = window.hide();
+            // working; Cmd+Q still quits. Popouts hide too: destroying a
+            // webview races WebKit's display link on macOS and segfaults.
+            if let WindowEvent::CloseRequested { api, .. } = event {
+                let label = window.label();
+                if label == "main" || label.starts_with("popout-") {
+                    api.prevent_close();
+                    let _ = window.hide();
+                }
             }
         })
         .build(tauri::generate_context!())
