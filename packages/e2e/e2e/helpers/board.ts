@@ -105,6 +105,9 @@ export async function toggleSort(page: Page, label: string): Promise<void> {
       .click({ timeout: 2000 })
   }).toPass({ timeout: 15_000 })
   await page.keyboard.press("Escape")
+  await expect(menu(page, "Sort cards")).toBeHidden()
+  await page.keyboard.press("Escape")
+  await expect(menu(page, "Board actions")).toBeHidden()
 }
 
 /**

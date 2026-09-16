@@ -1,7 +1,8 @@
-import { useLocation } from "wouter"
+import { useLocation, useRoute } from "wouter"
 import { useCardRef } from "@doska/core/card-refs"
 import { columnHue, MdWikilink } from "@doska/ui-kit"
 import { routes } from "@/lib/routes"
+import { revealInMain } from "@/components/card-window/card-window-event"
 import { useDeck } from "@/providers/deck/deck-context"
 
 /**
@@ -17,6 +18,7 @@ export function CardRefLink({
   alias?: string
 }) {
   const [, navigate] = useLocation()
+  const [inWindow] = useRoute(routes.cardWindow.pattern)
   const { id: deckId } = useDeck()
   const ref = useCardRef(deckId, displayId)
 
@@ -41,7 +43,11 @@ export function CardRefLink({
       hue={columnHue(columnColor)}
       done={columnDone}
       title={columnTitle ? `${title} — ${columnTitle}` : title}
-      onOpen={() => navigate(routes.card.to(card.id))}
+      onOpen={() =>
+        inWindow
+          ? revealInMain({ cardId: card.id, deckId })
+          : navigate(routes.card.to(card.id))
+      }
     />
   )
 }

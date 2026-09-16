@@ -11,7 +11,6 @@ import { useDeck } from "@/providers/deck/deck-context"
 
 const TOAST_ID = "card-move"
 
-/** Moves the card to the end of another column. */
 export function MoveToColumnSub({ cardId }: { cardId: string }) {
   const { id: deckId } = useDeck()
   const { data: board } = useBoard(deckId)
@@ -27,8 +26,8 @@ export function MoveToColumnSub({ cardId }: { cardId: string }) {
     const destCards = board.cards
       .filter((c) => c.columnId === columnId && c.id !== cardId)
       .sort(byPosition)
-    const last = destCards[destCards.length - 1]
-    const position = generateKeyBetween(last?.position ?? null, null)
+    const first = destCards[0]
+    const position = generateKeyBetween(null, first?.position ?? null)
 
     moveCard([{ ...moved, columnId, position }])
     toast.custom(

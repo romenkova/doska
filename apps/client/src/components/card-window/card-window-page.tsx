@@ -1,13 +1,12 @@
 import { MobileOverride } from "@doska/ui-kit"
 import { useCallback, useEffect } from "react"
-import { emitTo } from "@tauri-apps/api/event"
 import { getCurrentWindow } from "@tauri-apps/api/window"
 import { useCardSave, useDeleteCard } from "@doska/core/mutations"
 import { useCard, useCardDeckId } from "@doska/core/queries"
 import { CardPane } from "@/components/card-panel/card-pane"
 import { isDesktop } from "@/lib/platform"
 import { DeckProvider } from "@/providers/deck/deck-context"
-import { REVEAL_EVENT, type RevealPayload } from "./card-window-event"
+import { revealInMain } from "./card-window-event"
 
 interface IProps {
   cardId: string
@@ -60,10 +59,7 @@ export function CardWindowPage({ cardId }: IProps) {
                   deleteCard(cardId)
                   close()
                 }}
-                onReveal={() => {
-                  const payload: RevealPayload = { cardId, deckId }
-                  void emitTo("main", REVEAL_EVENT, payload)
-                }}
+                onReveal={() => revealInMain({ cardId, deckId })}
                 inWindow
               />
             </MobileOverride>
