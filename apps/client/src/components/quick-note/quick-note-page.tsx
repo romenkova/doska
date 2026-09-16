@@ -69,7 +69,7 @@ export function QuickNotePage() {
         <DeckProvider value={{ id: boardId ?? "", sort: [] }}>
           {note.cardId && note.content && (
             <CardPane
-              key={`${note.cardId}:${note.shows}`}
+              key={note.cardId}
               cardId={note.cardId}
               content={note.content}
               onQueue={note.queue}

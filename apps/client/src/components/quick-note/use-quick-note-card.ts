@@ -37,7 +37,6 @@ export function useQuickNoteCard(target: Target) {
 
   const draft = useRef<Draft>({})
   const creating = useRef(false)
-  const [shows, setShows] = useState(0)
 
   function keep(id: string | null) {
     if (id) localStorage.setItem(LAST_CARD_KEY, id)
@@ -87,8 +86,7 @@ export function useQuickNoteCard(target: Target) {
     draft.current = {}
     qc.invalidateQueries({ queryKey: keys.card(id) })
     qc.invalidateQueries({ queryKey: keys.cardCol(id) })
-    if (id === keptCard) setShows((n) => n + 1)
-    else setKeptCard(id)
+    setKeptCard(id)
   }
 
   const queue = useCallback(
@@ -131,7 +129,6 @@ export function useQuickNoteCard(target: Target) {
     cardId,
     content,
     column,
-    shows,
     queue,
     flush,
     refresh,
