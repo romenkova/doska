@@ -40,7 +40,7 @@ OIDC_NAME=Authentik
 docker compose -f docker-compose.selfhost.yml up -d
 ```
 
-**Important:** the admin should sign in with env credentials and connect the seeded account to the provider, see [How to connect an existing account?](#how-to-connect-an-existing-account) below. Members can use SSO without any limits.
+**Important:** the admin should sign in with env credentials and connect the seeded account to the provider, see [How to connect an existing account?](#how-to-connect-an-existing-account) below. Members can sign in through SSO directly.
 
 The sign-in dialog now has a **Continue with SSO** button. 
 

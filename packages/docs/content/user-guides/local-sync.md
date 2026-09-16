@@ -10,9 +10,9 @@ Syncing to a local folder is currently available only with the [desktop app](/de
 
 ## How to sync a board to a folder on a device?
 
-### 1. Create a board, or go to an existing one
+1. Create a board, or go to an existing one
 
-### 2. Select a folder
+2. Select a folder
 
 Click the button with the folder icon on the board header.
 
@@ -22,11 +22,11 @@ Then choose the folder:
 
 ![Sync modal](/sync-modal.png)
 
-### 3. Folder is synced
+3. Folder is synced
 
 After the folder is selected, it will hold the columns as folders, and the cards as Markdown files. They sync both ways.
 
 There will also be special folders: `_trash` and `_files`.
 
-- **Trash folder** holds recently deleted cards, and even cards deleted locally land there first, so they can later be restored via the app, or manually by dragging the file back.
+- **Trash folder** holds recently deleted cards. Cards deleted in the app land there first, so they can be restored via the app, or manually by dragging the file back.
 - **Files folder** holds the board's [attachments](/user-guides/attachments).

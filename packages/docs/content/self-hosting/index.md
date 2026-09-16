@@ -1,7 +1,7 @@
 ---
 title: Self-hosting
 nav: Self-hosting
-description: "Run the Doska with Docker: the one-line installer, the environment variables, and connecting your devices to it."
+description: "Run Doska with Docker: the one-line installer, the environment variables, and connecting your devices to it."
 order: 2
 updated: "2026-08-11"
 ---
@@ -27,7 +27,7 @@ takes a database and files volume backup first if it's redeploying over an exist
 ```sh
 curl -O https://raw.githubusercontent.com/romenkova/doska/main/docker-compose.selfhost.yml
 curl -o .env https://raw.githubusercontent.com/romenkova/doska/main/.env.selfhost.example
-# edit .env,  set AUTH_PASSWORD, AUTH_SECRET (e.g. `openssl rand -hex 32`),
+# edit .env: set AUTH_PASSWORD, AUTH_SECRET (e.g. `openssl rand -hex 32`),
 # and BASE_URL (this server's public origin, e.g. http://<your-host>:8080)
 docker compose -f docker-compose.selfhost.yml up -d
 ```

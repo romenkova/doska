@@ -12,10 +12,10 @@ no account, and stores nothing in the visitor's browser.
 ## Publish one
 
 Open **Share** in the board menu and press **Create link**. Only the board's
-owner sees that button. Copy the link and hand it to whoever you like.
+owner sees that button. Copy the link and share it.
 
-Pressing publish again while a board is published hands back the same link, so
-you can not break a link you have already sent by pressing the button twice.
+Pressing publish again while a board is published returns the same link, so
+pressing it twice doesn't break a link you already sent.
 
 ## What a visitor sees
 
@@ -28,8 +28,8 @@ Nothing is editable, there is no session, and no local database is created.
 ## Turn it back off
 
 **Share** again, then **Turn off**. Every link handed out so far stops working
-on its next load. Publishing later mints a different token, so the old link
-never comes back to life.
+on its next load. Publishing again generates a different token, so the old
+link stays dead.
 
 A board also stops being readable if you delete it, or if the server's admin
 deactivates the account that owns it.

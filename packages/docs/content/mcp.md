@@ -8,7 +8,7 @@ updated: "2026-08-09"
 
 Your server exposes the board as MCP tools, so an agent can read and edit it.
 
-Edits go through the same sync tables the apps use,  they land in Postgres and
+Edits go through the same sync tables the apps use: they land in Postgres and
 reach your other devices on their next sync.
 
 ## Connecting
@@ -43,7 +43,7 @@ See [Accounts](/accounts).
 | `create_column`, `delete_column` | Delete takes the column's cards with it                                                |
 | `update_column`                  | Title, color, collapsed, or which column counts as done                                |
 | `move_column`                    | Reorder: to either end, or next to another column                                      |
-| `create_card`                    | Add a card to a column,  title, Markdown body, optional `YYYY-MM-DD` deadline          |
+| `create_card`                    | Add a card to a column: title, Markdown body, optional `YYYY-MM-DD` deadline           |
 | `update_card`                    | Edit title, body, or deadline; or `append` to the body without rewriting it            |
 | `move_card`                      | To another column, to an end of one, or directly above a named card                    |
 | `set_card_done`                  | Into the board's done column, or back out to the leftmost open one                     |
@@ -55,7 +55,7 @@ See [Accounts](/accounts).
 ## What the agent is told
 
 The server ships `instructions` alongside the tools: the board's own concepts, 
-the done column, deadlines,  and the Markdown dialect card bodies are written
+the done column, deadlines, and the Markdown dialect card bodies are written
 in. 
 
 ## Limits

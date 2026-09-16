@@ -6,7 +6,7 @@ order: 4
 updated: "2026-08-07"
 ---
 
-Backup works with database and files in the local folder, if you have s3 setup and/or managed separate database, this guide **doesn't apply**.
+The backup script covers the bundled database and the local files volume. If you use S3 or a managed database, this guide **doesn't apply**.
 
 Run `backup.sh` from your Doska directory any time:
 
@@ -36,7 +36,7 @@ It writes two files to `./backups/`, both stamped with the same timestamp:
 
 ### Database
 
-Restore the database into an _empty_ one, with only `db` running. A booted
+Restore the database into an **empty** one, with only `db` running. A booted
 server has already migrated the schema and seeded the admin account, and the
 dump would land on tables and rows that already exist:
 
@@ -47,10 +47,6 @@ gunzip -c backups/doska-XXXX.sql.gz | \
   docker compose -f docker-compose.selfhost.yml exec -T db \
     psql -v ON_ERROR_STOP=1 -U doska doska
 ```
-
-> **Keep `ON_ERROR_STOP=1`.** Without it `psql` exits 0 even when every
-> statement failed. Restoring onto a database that isn't empty prints a wall of
-> errors and still looks like it succeeded.
 
 ### Attachments
 
@@ -69,18 +65,18 @@ directory you run from (with anything outside `a-z0-9_-` dropped, and any
 leading `-` or `_` stripped), or `COMPOSE_PROJECT_NAME` if you set one.
 `docker compose config | head -1` prints the one in effect.
 
-> **Restore both halves from the same timestamp.** The database holds the rows
-> that name the files, so a mismatched pair leaves cards pointing at blobs that
-> aren't there.
+**Restore both halves from the same timestamp.** The database holds the rows
+that name the files, so a mismatched pair leaves cards pointing at blobs that
+aren't there.
 
 ## What the script does
 
 1. Checks that `docker` and either `docker compose` or `docker-compose` are
    available, and that `docker-compose.selfhost.yml` sits in the current
-   directory,  otherwise you are not in your Doska directory and it stops.
+   directory, otherwise you are not in your Doska directory and it stops.
 2. Works out the compose project name (`COMPOSE_PROJECT_NAME`, or the lowercased
-   name of the directory, normalised the way compose normalises it),  that is
-   the prefix on the volumes. 
+   name of the directory, normalised the way compose normalises it), that is
+   the prefix on the volumes.
 3. Creates `./backups/` and takes one timestamp, shared by both files.
 4. **Database.** Skipped if `.env` sets `DATABASE_URL` (yours to back up through
    your provider), or if the `doska-pgdata` volume doesn't exist yet. Otherwise

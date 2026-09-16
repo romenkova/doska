@@ -6,12 +6,12 @@ order: 7
 updated: "2026-09-13"
 ---
 
-Doska is local-first. Every device holds a full copy of your boards and reads
-and writes it directly, so the UI never waits on the network.
+Every device holds a full copy of your boards and reads and writes it
+directly. The UI doesn't wait on the network.
 
 Sync runs behind
 that copy, reconciling it with the server. With no server configured, or while
-signed out, sync simply doesn't run and the app stays local.
+signed out, sync doesn't run.
 
 ## Two channels
 
@@ -32,7 +32,7 @@ Each pass, per board:
 3. Push changes with cursor.
 4. The server applies each change, then answers with everything changed past the
    cursor plus a new cursor.
-5. Once that answer arrives are the pushed records dropped from the dirty
+5. Only once that answer arrives are the pushed records dropped from the dirty
    queue.
 6. Apply the returned changes locally and store the new cursor.
 

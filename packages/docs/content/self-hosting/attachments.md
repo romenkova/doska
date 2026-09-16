@@ -18,7 +18,7 @@ The local volume is included in the [backup script](/self-hosting/backups).
 | `S3_BUCKET`                                   | Bucket name                                          |
 | `S3_REGION`                                   | Bucket region, e.g. `us-east-1`.                                                       |
 | `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` | Credentials for a user or role with `s3:PutObject`, `s3:GetObject`, `s3:DeleteObject`. |
-| `S3_ENDPOINT`                                 | For S3-compatible stores,  MinIO, Cloudflare R2, etc.                           |
+| `S3_ENDPOINT`                                 | For S3-compatible stores: MinIO, Cloudflare R2, etc.                                   |
 
 Uploads and downloads are proxied through the server,
 so credentials never reach the browser.
@@ -35,6 +35,5 @@ FILE_MAX_BYTES=26214400
 
 The local volume needs no configuration, and
 [`backup.sh`](/self-hosting/backups) archives it alongside the database
-dump. Reach for S3 when you'd rather not size the host's disk around
-attachments, or when you're running the server somewhere with ephemeral storage.
-Note that `backup.sh` doesn't touch a bucket.
+dump. Use S3 when you don't want attachments on the host's disk, or when the
+host has ephemeral storage. `backup.sh` doesn't touch a bucket.

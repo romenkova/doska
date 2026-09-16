@@ -12,7 +12,7 @@ Having attachments with the local setup is on the roadmap.
 
 ## How to attach files to a card?
 
-### 1. Attachments button on the card
+1. Attachments button on the card
 
 The paperclip in the card header opens the attachments panel.
 
@@ -22,11 +22,11 @@ Attached images can then be referenced via the slash menu:
 
 ![Attached file at the bottom of the slash menu](/card-slash-menu-attachment.png)
 
-### 2. CMD+V with the attachment in the buffer
+2. CMD+V or Ctrl+V with the attachment in the buffer
 
 Focus the card's body, and paste an image.
 
-### 3. Drag and drop the file to the card
+3. Drag and drop the file to the card
 
 ## Deleting files
 

@@ -34,22 +34,22 @@ end to end with no extra setup.
 
 | Path           | What's in it                                          |
 | -------------- | ----------------------------------------------------- |
-| `apps/client`  | The web client,  the board UI itself.                 |
+| `apps/client`  | The web client, the board UI itself.                  |
 | `apps/server`  | Sync API, auth, file endpoints, and the MCP endpoint. |
 | `apps/desktop` | Tauri shell around the same client.                   |
 | `apps/mobile`  | Expo app.                                             |
 | `apps/landing` | This site.                                            |
 
-The shared code lives in `packages/`. The shape worth knowing:
+The shared code lives in `packages/`:
 
-- `core`,  the domain and data layers, platform agnostic.
-- `ports`,  the interfaces between shared code and a platform.
-- `markdown`,  parses a card body to mdast and walks it with a per-platform
+- `core`: the domain and data layers, platform agnostic.
+- `ports`: the interfaces between shared code and a platform.
+- `markdown`: parses a card body to mdast and walks it with a per-platform
   adapter, platform agnostic.
-- `highlight`,  the editor's syntax highlighting, platform agnostic.
-- `sync`,  the sync engine, platform agnostic.
-- `ui-kit` / `ui-kit-mobile`,  components, per platform.
-- `mcp`,  the board as MCP tools, transport-agnostic.
+- `highlight`: the editor's syntax highlighting, platform agnostic.
+- `sync`: the sync engine, platform agnostic.
+- `ui-kit` / `ui-kit-mobile`: components, per platform.
+- `mcp`: the board as MCP tools, transport-agnostic.
 
 ## Self-host smoke tests
 

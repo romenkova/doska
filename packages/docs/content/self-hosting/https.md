@@ -33,5 +33,5 @@ Let's Encrypt certificate for `DOMAIN` and renews it automatically.
 - The certificate is issued on demand, so the domain must resolve to this host
   before you start the profile; otherwise the challenge fails and Caddy retries.
 - Already behind your own reverse proxy or a tunnel? Skip the profile entirely,
-  leave the app on `WEB_PORT`, and just set `BASE_URL` to the public origin your
+  leave the app on `WEB_PORT`, and set `BASE_URL` to the public origin your
   proxy serves.

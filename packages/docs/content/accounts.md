@@ -29,15 +29,13 @@ to.
 ## Sharing a board
 
 **Share** in the board menu opens its roster. The owner adds anyone who has an
-account on this server, and takes them off again. There are no invites to send,
-because everyone is already on the server.
+account on this server, and takes them off again. There are no invites.
 
 A shared board syncs to everyone on it and is marked as shared in the sidebar.
 Leaving a board, or being taken off one, drops it and its cards from your
 devices.
 
-Sharing is the one part of the app that needs the server there and then: with
-the server unreachable, the roster won't open and nothing changes.
+Sharing needs the server reachable: with it down, the roster won't open.
 
 A board can also be opened up to people with no account at all. See
 [Public sharing](/public-sharing).
@@ -49,5 +47,5 @@ Changing `AUTH_PASSWORD` in `.env` does nothing once the server is running.
 
 ## Turning someone off
 
-Deactivate them: they can't sign in, and their boards stay exactly where they
-are. Reactivate any time and everything is back.
+Deactivate them: they can't sign in, and their boards are kept. Reactivate to
+restore access.

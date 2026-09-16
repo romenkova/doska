@@ -9,7 +9,7 @@ updated: "2026-09-02"
 - [Sync to a local folder](/user-guides/local-sync): keep a board as
   folders and Markdown files on your own disk, with the desktop app. No server.
 - [Sync to server](/user-guides/server-sync): sign the web or desktop app
-  into your own server so a board follows you across devices.
+  into your own server so boards sync across devices.
 - [Attachments](/user-guides/attachments): put files and images on a card.
   Needs a server.
 - [Single sign-on](/user-guides/sso): let people sign in through your

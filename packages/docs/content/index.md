@@ -1,7 +1,7 @@
 ---
 title: Documentation
 nav: Overview
-description: "Doska is a local-first Kanban board with first-class Markdown support."
+description: "Doska is a Kanban board where the cards are Markdown."
 order: 1
 updated: "2026-08-09"
 ---
@@ -15,13 +15,15 @@ Doska uses IndexedDB as the intermediate data source, and every few seconds (3 b
 ### Demo
 
 The demo doesn't require any setup, and is available here: [app.doska.sh](https://app.doska.sh/d/welcome).
-You can even point it at your own sync server.
+You can point it at your own sync server.
 
 ### Fully local setup: folder sync
 
-Download the app (currently only macOS is supported) from the [latest release](https://github.com/romenkova/doska/releases/latest), or grab the `.dmg` straight from [doska.sh](https://doska.sh).
+Download the app from the [latest release](https://github.com/romenkova/doska/releases/latest). macOS, Linux (beta) and Windows (beta) are available.
 
-Local folder sync is fairly new, so please [submit an issue](https://github.com/romenkova/doska/issues/new) if you find anything buggy. More on it in the [folder sync guide](/user-guides/local-sync).
+Then, from the board page, select a folder to sync your data to. Columns are folders, and cards are Markdown files in that folder. Editing works both ways: edited files show up in the app, and vice versa.
+
+More on how to sync to a folder in the [folder sync guide](/user-guides/local-sync).
 
 ### Self-hosting
 
@@ -33,8 +35,8 @@ You will need Docker and Docker Compose. The self-hosting setup spins up the web
 
 A card body is GitHub-flavored Markdown, with a few additions to the syntax:
 
-- `- [ ]` task lists are first class,  the card header carries a live done/total
-  count and the boxes are clickable.
+- `- [ ]` task lists: the card header shows a done/total count and the boxes
+  are clickable.
 - `[[12|Card title]]` links to another card and picks up its column's color.
 - A line containing only `-cut-` ends the card's preview: the board shows what's
   above it, the full body opens in the card view.
@@ -44,8 +46,8 @@ Cards also have deadlines and priorities. Boards support search and sort, as wel
 ## Where to go next
 
 - [User guides](/user-guides).
-- [Self-hosting](/self-hosting),  one-line installer, HTTPS, backups.
-- [Accounts](/accounts),  more than one person on your server.
-- [MCP](/mcp),  let an agent read and edit your boards.
-- [Desktop and mobile](/desktop),  the macOS app and the PWA.
-- [Development](/development),  run the monorepo locally.
+- [Self-hosting](/self-hosting): installer, HTTPS, backups.
+- [Accounts](/accounts): more than one person on your server.
+- [MCP](/mcp): let an agent read and edit your boards.
+- [Desktop and mobile](/desktop): the desktop apps and the PWA.
+- [Development](/development): run the monorepo locally.
