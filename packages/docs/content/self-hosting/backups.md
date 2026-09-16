@@ -63,7 +63,7 @@ docker compose -f docker-compose.selfhost.yml up -d
 `<project>` is the compose project name, by default the lowercased name of the
 directory you run from (with anything outside `a-z0-9_-` dropped, and any
 leading `-` or `_` stripped), or `COMPOSE_PROJECT_NAME` if you set one.
-`docker compose config | head -1` prints the one in effect.
+`docker compose -f docker-compose.selfhost.yml config | head -1` prints the one in effect.
 
 **Restore both halves from the same timestamp.** The database holds the rows
 that name the files, so a mismatched pair leaves cards pointing at blobs that
