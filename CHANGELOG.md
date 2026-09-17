@@ -6,6 +6,7 @@
 
 - Sync merges cards and columns field by field, and card text line by line, so
   edits made on two devices to the same card keep both. Conflict resolution banner.
+- Ability to move card into the other board
 
 ## [0.23.2] - 2026-09-14
 
