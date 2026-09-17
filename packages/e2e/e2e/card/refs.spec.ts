@@ -379,7 +379,7 @@ test.describe("card references", () => {
     await cardTitled(page, "Target card").click()
     await expect(cardPanel(page)).toBeVisible()
     await cardPanel(page).getByRole("button", { name: "Card actions" }).click()
-    await page.getByRole("menuitem", { name: "Move to" }).click()
+    await page.getByRole("menuitem", { name: "Move to", exact: true }).click()
     await page.getByRole("menuitem", { name: "In Progress" }).click()
     await closeCard(page)
 
