@@ -3,7 +3,7 @@ import type { ReactNode } from "react"
 import { useRoute } from "wouter"
 import { AppSidebar } from "@/components"
 import { CardRevealProvider } from "@/providers/card-reveal/card-reveal-provider"
-import { CardDropStateProvider } from "@/providers/card-drop/card-drop-provider"
+import { CardDropProvider } from "@/providers/card-drop/card-drop-provider"
 import { CardPanel } from "@/components/card-panel/card-panel"
 import { DeckProvider } from "@/providers/deck/deck-context"
 import { useUndoShortcut } from "@/lib/hooks"
@@ -24,7 +24,7 @@ export function AppShell({ deck, cardCloseHref, children }: IProps) {
   return (
     <DeckProvider value={deck}>
       <CardRevealProvider>
-        <CardDropStateProvider>
+        <CardDropProvider>
           {/* `--app-height` tracks the keyboard on touch devices; `svh` elsewhere. */}
           <SidebarProvider className="h-(--app-height,100svh)">
             <AppSidebar />
@@ -40,7 +40,7 @@ export function AppShell({ deck, cardCloseHref, children }: IProps) {
             </SidebarInset>
             {cardCloseHref && <CardPanel closeHref={cardCloseHref} />}
           </SidebarProvider>
-        </CardDropStateProvider>
+        </CardDropProvider>
       </CardRevealProvider>
     </DeckProvider>
   )

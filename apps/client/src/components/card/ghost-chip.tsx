@@ -4,6 +4,7 @@ import { motion } from "motion/react"
 
 const WIDTH = 220
 const HEIGHT = 40
+const POINTER_INSET = 16
 const TRANSITION = { duration: 0.15, ease: "easeOut" } as const
 
 interface IProps {
@@ -27,7 +28,7 @@ export function GhostChip({ box, compact, grab, title }: IProps) {
             ? {
                 width: WIDTH,
                 height: HEIGHT,
-                x: grab.x - 16,
+                x: grab.x - POINTER_INSET,
                 y: grab.y - HEIGHT / 2,
                 opacity: 1,
               }
