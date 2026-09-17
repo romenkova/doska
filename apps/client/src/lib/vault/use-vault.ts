@@ -58,7 +58,9 @@ function boardOps(boardId: string): VaultBoard {
     createCard,
     createColumn: (title) => createColumn(boardId, title),
     updateCard,
-    moveCardToColumn,
+    moveCardToColumn: async (id, columnId) => {
+      await moveCardToColumn(id, columnId)
+    },
     renameColumn,
     deleteCard: (id) => deleteCard(boardId, id),
     restoreCard: (id) => restore("cards", id),

@@ -81,6 +81,7 @@ export function useMoveCardToColumn() {
       for (const key of cardWriteKeys(id))
         qc.invalidateQueries({ queryKey: key })
       qc.invalidateQueries({ queryKey: keys.cardCol(id) })
+      qc.invalidateQueries({ queryKey: keys.trash })
     },
   })
 }
@@ -129,6 +130,7 @@ export function useMoveCardToBoard(deckId: string) {
         keys.cardCol(id),
         keys.cardDeck(id),
         keys.board(boardId),
+        keys.trash,
       ],
     }
   )
