@@ -40,18 +40,17 @@ export const DraggableCard = memo(function DraggableCard({
     <OrderAnimator>
       <Draggable draggableId={id} index={index}>
         {(provided, snapshot) => {
+          // Not `0s`: that never fires `transitionend`
+          const dropMs = vanishOnDrop ? 1 : DROP_ANIMATION_MS
           const box = {
             ...provided.draggableProps.style,
             ...(snapshot.isDropAnimating && {
-              transitionDuration: `${DROP_ANIMATION_MS}ms`,
+              transitionDuration: `${dropMs}ms`,
             }),
-            ...(vanishOnDrop &&
-              snapshot.isDropAnimating && {
-                transitionDuration: "0.001s",
-                opacity: 0,
-              }),
             // The library opens a gap for the card to fly back into
             ...(vanishOnDrop && !snapshot.isDragging && { transform: "none" }),
+            // The chip shares the box, so it goes before it can fly home too.
+            ...(vanishOnDrop && snapshot.isDropAnimating && { opacity: 0 }),
           }
           return (
             <>
@@ -59,8 +58,6 @@ export const DraggableCard = memo(function DraggableCard({
                 ref={provided.innerRef}
                 {...provided.draggableProps}
                 {...provided.dragHandleProps}
-                // The library already transitions opacity, so the card fades out
-                // under the chip on its own.
                 style={{
                   ...box,
                   ...(compact && snapshot.isDragging && { opacity: 0 }),

@@ -7,7 +7,7 @@ import {
 
 export type CardDropTarget = { kind: "board" | "folder"; id: string }
 
-interface CardDropContextValue {
+interface CardDropValue {
   target: CardDropTarget | null
   setTarget: Dispatch<SetStateAction<CardDropTarget | null>>
 }
@@ -15,13 +15,11 @@ interface CardDropContextValue {
 /**
  * Lets the board tell the sidebar which row a dragged card hovers
  */
-const CardDropContext = createContext<CardDropContextValue>({
+export const CardDropCtx = createContext<CardDropValue>({
   target: null,
   setTarget: () => {},
 })
 
-export const CardDropProvider = CardDropContext.Provider
-
 export function useCardDrop() {
-  return useContext(CardDropContext)
+  return useContext(CardDropCtx)
 }
