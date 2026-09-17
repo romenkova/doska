@@ -111,3 +111,24 @@ export function useMoveCard(deckId: string) {
     }
   )
 }
+
+/** Moves a card off the open board onto another one */
+export function useMoveCardToBoard(deckId: string) {
+  return useBoardPatch(
+    deckId,
+    ({ id, boardId }: { id: string; boardId: string }) =>
+      api.moveCardToBoard(id, boardId),
+    {
+      apply: (board, { id }) => ({
+        ...board,
+        cards: board.cards.filter((card) => card.id !== id),
+      }),
+      flush: true,
+      also: ({ id }) => [
+        ...cardWriteKeys(id),
+        keys.cardCol(id),
+        keys.cardDeck(id),
+      ],
+    }
+  )
+}
