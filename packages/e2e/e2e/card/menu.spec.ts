@@ -6,7 +6,9 @@ import {
   columnCardTitles,
   createBoard,
   fieldText,
+  openBoardInSidebar,
   panelField,
+  renameBoard,
   retitleCard,
 } from "../helpers"
 
@@ -24,7 +26,7 @@ test.describe("card actions menu", () => {
     await card(page, "Plan launch")
       .getByRole("button", { name: "Card actions" })
       .click()
-    await page.getByRole("menuitem", { name: "Move to" }).click()
+    await page.getByRole("menuitem", { name: "Move to", exact: true }).click()
     await page.getByRole("menuitem", { name: "In Progress" }).click()
 
     await expect
@@ -48,12 +50,34 @@ test.describe("card actions menu", () => {
     await card(page, "Stay put")
       .getByRole("button", { name: "Card actions" })
       .click()
-    await page.getByRole("menuitem", { name: "Move to" }).click()
+    await page.getByRole("menuitem", { name: "Move to", exact: true }).click()
 
     await expect(page.getByRole("menuitem", { name: "To Do" })).toBeDisabled()
     await expect(
       page.getByRole("menuitem", { name: "In Progress" })
     ).toBeEnabled()
+  })
+
+  test("Move to board puts the card on the chosen board", async ({ page }) => {
+    await createBoard(page)
+    await renameBoard(page, "Untitled board", "Alpha")
+    await createBoard(page)
+    await addCard(page, "To Do")
+    await retitleCard(page, "Untitled card", "Roamer")
+
+    await card(page, "Roamer")
+      .getByRole("button", { name: "Card actions" })
+      .click()
+    await page.getByRole("menuitem", { name: "Move to board" }).click()
+    await page.getByRole("menuitem", { name: "Alpha" }).click()
+
+    await expect.poll(() => columnCardTitles(page, "To Do")).toEqual([])
+
+    await openBoardInSidebar(page, "Alpha")
+    await expect.poll(() => columnCardTitles(page, "To Do")).toEqual(["Roamer"])
+
+    await page.reload()
+    await expect.poll(() => columnCardTitles(page, "To Do")).toEqual(["Roamer"])
   })
 
   test("Edit opens the card in the panel", async ({ page }) => {
