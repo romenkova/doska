@@ -1,6 +1,7 @@
 mod quick_note;
 mod shortcuts;
 mod tear_off;
+mod updates;
 mod vault;
 
 use tauri::{Manager, RunEvent, WindowEvent};
@@ -16,7 +17,9 @@ pub fn run() {
             shortcuts::get_shortcut,
             shortcuts::suspend_shortcut,
             shortcuts::set_shortcut,
-            shortcuts::clear_shortcut
+            shortcuts::clear_shortcut,
+            updates::check_update,
+            updates::install_update
         ])
         .plugin(
             tauri_plugin_window_state::Builder::default()

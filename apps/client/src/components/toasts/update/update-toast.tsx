@@ -11,7 +11,7 @@ export function UpdateToast() {
   const [installing, setInstalling] = useState(false)
 
   useEffect(() => {
-    if (state.status !== "available") {
+    if (state.status === "none") {
       toast.dismiss(TOAST_ID)
       return
     }

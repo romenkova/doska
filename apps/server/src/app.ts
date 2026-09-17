@@ -8,7 +8,7 @@ import { registerFileRoutes, type ServerStorage } from "./routes/files"
 import { registerMcpRoutes } from "./routes/mcp"
 import { registerPublicRoutes } from "./routes/public"
 import { registerRpcRoutes } from "./routes/rpc"
-import { registerUpdateRoutes } from "./routes/updates"
+import { registerVersionRoutes } from "./routes/version"
 
 interface BuildOptions {
   storage?: ServerStorage | null
@@ -35,10 +35,10 @@ export function buildApp(opts: BuildOptions = {}): FastifyInstance {
     })
   }
 
-  // Public: login, OAuth discovery, version, desktop updates, shared boards.
+  // Public: login, OAuth discovery, version, shared boards.
   registerAuthRoutes(app)
   registerDesktopLoginRoutes(app)
-  registerUpdateRoutes(app)
+  registerVersionRoutes(app)
   // Must stay out here. Inside either scope below it inherits that scope's
   // session check, and the one feature whose visitors have no session breaks.
   registerPublicRoutes(app, opts.storage)

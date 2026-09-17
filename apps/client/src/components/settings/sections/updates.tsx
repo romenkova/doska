@@ -73,7 +73,12 @@ export function UpdatesSection() {
             You're up to date.
           </span>
         )}
-        {update.status === "available" && (
+        {update.status === "mismatch" && (
+          <span className="text-xs text-muted-foreground">
+            Your server runs v{update.version}. Use the matching app version.
+          </span>
+        )}
+        {update.status !== "none" && (
           <Button
             type="button"
             size="sm"
@@ -83,9 +88,9 @@ export function UpdatesSection() {
               void update.install().catch(() => setCheck(CheckState.checked))
             }}
           >
-            {update.kind === "desktop"
-              ? `Install v${update.version}`
-              : "Reload to update"}
+            {update.status === "available" && update.kind === "web"
+              ? "Reload to update"
+              : `Install v${update.version}`}
           </Button>
         )}
         {check === CheckState.installing && (

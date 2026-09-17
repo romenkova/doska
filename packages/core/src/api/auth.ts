@@ -1,6 +1,6 @@
 import { runtime } from "../runtime"
 import { authClient } from "./auth-client"
-import { isSyncConfigured } from "./server"
+import { isSyncConfigured, setServerUrl } from "./server"
 
 export type Session = {
   authed: boolean
@@ -79,8 +79,8 @@ export async function loginWithToken(token: string): Promise<Session> {
   return session
 }
 
-/** Drops this client's session: the cookie, and any token that was stored. */
 export async function logout(): Promise<void> {
   await authClient().signOut()
   runtime().auth.clear()
+  setServerUrl("")
 }

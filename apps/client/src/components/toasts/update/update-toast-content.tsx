@@ -1,15 +1,22 @@
 import { Button, cn, Toast } from "@doska/ui-kit"
 import { Download } from "lucide-react"
 import type { UpdateState } from "@/lib/updates"
-import { useMemo } from "react"
 
-type AvailableUpdate = Extract<UpdateState, { status: "available" }>
+type ShownUpdate = Exclude<UpdateState, { status: "none" }>
 
 interface IProps {
-  state: AvailableUpdate
+  state: ShownUpdate
   installing: boolean
   visible: boolean
   onInstall: () => void
+}
+
+function message(state: ShownUpdate) {
+  if (state.status === "mismatch") {
+    return `Your server runs v${state.version}. Use the matching app version.`
+  }
+  if (state.kind === "desktop") return `Update to v${state.version} available`
+  return "An update is available"
 }
 
 export function UpdateToastContent({
@@ -18,12 +25,7 @@ export function UpdateToastContent({
   visible,
   onInstall,
 }: IProps) {
-  const desktop = state.kind === "desktop"
-
-  const installLabel = useMemo(() => {
-    if (desktop) return installing ? "Installing…" : "Install"
-    return installing ? "Loading…" : "Reload"
-  }, [desktop, installing])
+  const web = state.status === "available" && state.kind === "web"
 
   return (
     <Toast visible={visible}>
@@ -35,11 +37,7 @@ export function UpdateToastContent({
           "border bg-popover px-4 py-2 text-sm text-popover-foreground"
         )}
       >
-        <span className="min-w-0">
-          {desktop
-            ? `Update to v${state.version} available`
-            : "An update is available"}
-        </span>
+        <span className="min-w-0">{message(state)}</span>
         <Button
           size="sm"
           className="shrink-0"
@@ -47,7 +45,13 @@ export function UpdateToastContent({
           onClick={onInstall}
         >
           <Download className="size-4" />
-          {installLabel}
+          {web
+            ? installing
+              ? "Loading…"
+              : "Reload"
+            : installing
+              ? "Installing…"
+              : "Install"}
         </Button>
       </div>
     </Toast>

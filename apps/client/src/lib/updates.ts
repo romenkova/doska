@@ -1,3 +1,4 @@
+import { invoke } from "@tauri-apps/api/core"
 import { getServerUrl, getServerVersion } from "@doska/core/server"
 import { getAutoUpdate } from "./auto-update"
 import { isDesktop } from "./platform"
@@ -5,7 +6,8 @@ import { isDesktop } from "./platform"
 /**
  * Result of an update check, shaped for the UI to act on. Desktop updates come
  * from the Tauri updater and name a version; web updates come from a waiting
- * service worker, which only signals that a newer build exists.
+ * service worker, which only signals that a newer build exists. `mismatch` is
+ * desktop on a sync server that runs an older version than this app.
  */
 export type UpdateState =
   | { status: "none" }
@@ -16,6 +18,7 @@ export type UpdateState =
       install: () => Promise<void>
     }
   | { status: "available"; kind: "web"; install: () => Promise<void> }
+  | { status: "mismatch"; version: string; install: () => Promise<void> }
 
 /** What {@link checkForUpdates} can return — never the web variant. */
 export type DesktopUpdateState = Exclude<UpdateState, { kind: "web" }>
@@ -23,23 +26,30 @@ export type DesktopUpdateState = Exclude<UpdateState, { kind: "web" }>
 const NONE: DesktopUpdateState = { status: "none" }
 
 export async function checkForUpdates(): Promise<DesktopUpdateState> {
-  if (!isDesktop() || !getServerUrl()) return NONE
+  if (!isDesktop()) return NONE
   try {
-    // Desktop pins to whatever version the server runs. We send it to the
-    // update proxy, which serves that exact build.
-    const serverVersion = await getServerVersion()
-    if (!serverVersion) return NONE
+    // With a sync server, desktop installs the version that server runs;
+    // without one it takes the latest release.
+    let serverVersion: string | null = null
+    if (getServerUrl()) {
+      serverVersion = await getServerVersion()
+      if (!serverVersion) return NONE
+    }
 
-    const { check } = await import("@tauri-apps/plugin-updater")
-    const update = await check({
-      headers: { "x-deck-server-version": serverVersion },
-    })
-    if (!update || update.version !== serverVersion) return NONE
+    const found = await invoke<{ version: string; newer: boolean } | null>(
+      "check_update",
+      { serverVersion }
+    )
+    if (!found) return NONE
 
     const install = async () => {
-      await update.downloadAndInstall()
+      await invoke("install_update", { serverVersion })
       const { relaunch } = await import("@tauri-apps/plugin-process")
       await relaunch()
+    }
+
+    if (!found.newer) {
+      return { status: "mismatch", version: found.version, install }
     }
 
     if (getAutoUpdate()) {
@@ -50,7 +60,7 @@ export async function checkForUpdates(): Promise<DesktopUpdateState> {
     return {
       status: "available",
       kind: "desktop",
-      version: update.version,
+      version: found.version,
       install,
     }
   } catch (err) {

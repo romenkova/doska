@@ -21,7 +21,7 @@ To sync, open the app's sync settings, set the server URL to your server's
 address, the same one you open the web UI at, and press **Sign in in browser**.
 Sign in there, then come back and press **I've signed in**.
 
-The desktop app follows whatever version its server runs, and downloads the same version of the app on updates.
+The desktop app follows whatever version its server runs, and downloads the same version of the app on updates. If the server is behind the app, it tells you which version to install instead. Without a server it updates to the latest release.
 
 ## Windows and Linux apps (beta)
 
