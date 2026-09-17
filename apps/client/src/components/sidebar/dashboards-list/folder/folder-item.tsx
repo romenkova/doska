@@ -34,7 +34,8 @@ export function FolderItem({
 
   // A dragged card hovers a collapsed folder: it opens to offer its boards.
   const { target } = useCardDrop()
-  const opensOnHover = target?.id === node.id && node.collapsed
+  const opensOnHover =
+    target?.kind === "folder" && target.id === node.id && node.collapsed
   useEffect(() => {
     if (!opensOnHover) return
     const timer = setTimeout(

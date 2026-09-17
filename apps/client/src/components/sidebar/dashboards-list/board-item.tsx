@@ -20,7 +20,7 @@ export function BoardItem({
 }: IProps) {
   const { selectDashboard } = useDashboardNav()
   const { target } = useCardDrop()
-  const isCardTarget = target?.id === dashboard.id
+  const isCardTarget = target?.kind === "board" && target.id === dashboard.id
   const marker = useMemo(() => {
     if (isPublished) return { Icon: Globe, label: "Public" }
     if (isShared) return { Icon: Users, label: "Shared" }

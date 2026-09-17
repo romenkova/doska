@@ -27,17 +27,15 @@ export function useSidebarCardDrop(dragging: boolean) {
       setTarget((current) => (sameTarget(next, current) ? current : next))
     }
     window.addEventListener("pointermove", onPointerMove)
-    return () => {
-      window.removeEventListener("pointermove", onPointerMove)
-      setTarget(null)
-      setOverSidebar(false)
-    }
+    return () => window.removeEventListener("pointermove", onPointerMove)
   }, [dragging, setTarget])
 
   return {
     overSidebar,
     landing: target?.kind === "board",
     takeDrop: () => {
+      setTarget(null)
+      setOverSidebar(false)
       if (target?.kind !== "board") return null
       document
         .querySelector(`[data-drop-board="${target.id}"]`)
