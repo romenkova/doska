@@ -34,7 +34,7 @@ export function MoveToColumnSub({ cardId }: { cardId: string }) {
       (toastInstance) =>
         createElement(CardMoveToast, {
           visible: toastInstance.visible,
-          columnTitle: column.title,
+          title: column.title,
         }),
       { id: TOAST_ID, duration: 2500 }
     )
