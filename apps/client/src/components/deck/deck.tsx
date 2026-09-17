@@ -12,6 +12,7 @@ import { DragStateProvider } from "./drag-state"
 import { DeckHeader } from "./deck-header/deck-header"
 import { DeckRowsView } from "./deck-rows-view"
 import { SyncIndicator } from "./sync-indicator"
+import { useSidebarCardDrop } from "./use-sidebar-card-drop"
 
 interface IProps {
   dashboard: Dashboard
@@ -33,6 +34,7 @@ interface IProps {
   view: DashboardView
   onChangeView: (view: DashboardView) => void
   onDragEnd: (result: DropResult) => void
+  onMoveCardToBoard: (move: { id: string; boardId: string }) => void
   onPatchCard: (id: string, patch: CardPatch) => void
 }
 
@@ -55,9 +57,11 @@ export function Deck({
   view,
   onChangeView,
   onDragEnd,
+  onMoveCardToBoard,
   onPatchCard,
 }: IProps) {
   const [isDragging, setIsDragging] = useState(false)
+  const sidebarDrop = useSidebarCardDrop(isDragging)
 
   const grouped = groupCardsByColumn(board)
   const orderedColumns = [...board.columns].sort(byPosition)
@@ -70,6 +74,11 @@ export function Deck({
         onDragStart={() => setIsDragging(true)}
         onDragEnd={(result) => {
           setIsDragging(false)
+          const boardId = sidebarDrop.takeDrop()
+          if (boardId) {
+            onMoveCardToBoard({ id: result.draggableId, boardId })
+            return
+          }
           hold(result)
           onDragEnd(result)
         }}
@@ -129,6 +138,8 @@ export function Deck({
                         column={column}
                         index={index}
                         showBody={showBody}
+                        compact={sidebarDrop.overSidebar}
+                        vanishOnDrop={sidebarDrop.landing}
                         onPatch={onPatchCard}
                         onDropSettled={release}
                       />
