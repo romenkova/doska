@@ -3,11 +3,11 @@ import { ArrowRightLeft } from "lucide-react"
 
 interface IProps {
   visible: boolean
-  columnTitle: string
+  title: string
 }
 
 /** Shown after moving a card through the menu, where nothing else confirms it. */
-export function CardMoveToast({ visible, columnTitle }: IProps) {
+export function CardMoveToast({ visible, title }: IProps) {
   return (
     <Toast visible={visible}>
       <div
@@ -15,7 +15,7 @@ export function CardMoveToast({ visible, columnTitle }: IProps) {
         className="flex items-center gap-2 px-4 py-2.5 text-sm"
       >
         <ArrowRightLeft className="size-4 shrink-0 text-muted-foreground" />
-        Moved to {columnTitle}
+        Moved to {title}
       </div>
     </Toast>
   )
