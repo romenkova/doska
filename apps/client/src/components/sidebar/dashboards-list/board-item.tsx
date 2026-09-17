@@ -19,10 +19,8 @@ export function BoardItem({
   isShared,
 }: IProps) {
   const { selectDashboard } = useDashboardNav()
-  const { target, droppedOn, setDroppedOn } = useCardDrop()
+  const { target } = useCardDrop()
   const isCardTarget = target?.id === dashboard.id
-  // The row bounces once when a card is dropped on it.
-  const justDroppedOn = droppedOn === dashboard.id
   const marker = useMemo(() => {
     if (isPublished) return { Icon: Globe, label: "Public" }
     if (isShared) return { Icon: Users, label: "Shared" }
@@ -36,10 +34,8 @@ export function BoardItem({
       onClick={() => selectDashboard(dashboard.id)}
       data-drop-board={isActive ? undefined : dashboard.id}
       className={cn(
-        isCardTarget && "bg-sidebar-accent ring-2 ring-primary/60 ring-inset",
-        justDroppedOn && "animate-drop-bounce"
+        isCardTarget && "bg-sidebar-accent ring-2 ring-primary/60 ring-inset"
       )}
-      onAnimationEnd={justDroppedOn ? () => setDroppedOn(null) : undefined}
     >
       <span className="truncate">{dashboard.title}</span>
       {marker && (

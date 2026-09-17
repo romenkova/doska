@@ -4,11 +4,18 @@ import {
   type CardDropTarget,
 } from "@/providers/card-drop/card-drop-context"
 
+const BOUNCE: Keyframe[] = [
+  { scale: 1 },
+  { scale: 1.05, offset: 0.3 },
+  { scale: 0.98, offset: 0.6 },
+  { scale: 1 },
+]
+
 /**
  * Follows the pointer while a card is dragged
  */
 export function useSidebarCardDrop(dragging: boolean) {
-  const { target, setTarget, setDroppedOn } = useCardDrop()
+  const { target, setTarget } = useCardDrop()
   const [overSidebar, setOverSidebar] = useState(false)
 
   useEffect(() => {
@@ -32,7 +39,9 @@ export function useSidebarCardDrop(dragging: boolean) {
     landing: target?.kind === "board",
     takeDrop: () => {
       if (target?.kind !== "board") return null
-      setDroppedOn(target.id)
+      document
+        .querySelector(`[data-drop-board="${target.id}"]`)
+        ?.animate(BOUNCE, { duration: 350, easing: "ease-out" })
       return target.id
     },
   }

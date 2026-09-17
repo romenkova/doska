@@ -10,9 +10,6 @@ export type CardDropTarget = { kind: "board" | "folder"; id: string }
 interface CardDropContextValue {
   target: CardDropTarget | null
   setTarget: Dispatch<SetStateAction<CardDropTarget | null>>
-  /** The board a card was just dropped on */
-  droppedOn: string | null
-  setDroppedOn: (boardId: string | null) => void
 }
 
 /**
@@ -21,8 +18,6 @@ interface CardDropContextValue {
 const CardDropContext = createContext<CardDropContextValue>({
   target: null,
   setTarget: () => {},
-  droppedOn: null,
-  setDroppedOn: () => {},
 })
 
 export const CardDropProvider = CardDropContext.Provider
