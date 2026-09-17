@@ -6,9 +6,12 @@ import {
   useRenameFolder,
   useSetFolderCollapsed,
 } from "@doska/core/mutations"
+import { useCardDrop } from "@/providers/card-drop/card-drop-context"
 import { FolderMenu } from "./folder-menu"
 import { FolderTitleInput } from "./folder-title-input"
-import { useMemo } from "react"
+import { useEffect, useMemo } from "react"
+
+const OPEN_ON_HOVER_MS = 500
 
 interface IProps {
   node: SidebarFolderNode
@@ -28,6 +31,18 @@ export function FolderItem({
   const { mutate: setCollapsed } = useSetFolderCollapsed()
   const { mutate: rename } = useRenameFolder()
   const { mutate: remove } = useDeleteFolder()
+
+  // A dragged card hovers a collapsed folder: it opens to offer its boards.
+  const { target } = useCardDrop()
+  const opensOnHover = target?.id === node.id && node.collapsed
+  useEffect(() => {
+    if (!opensOnHover) return
+    const timer = setTimeout(
+      () => setCollapsed({ id: node.id, collapsed: false }),
+      OPEN_ON_HOVER_MS
+    )
+    return () => clearTimeout(timer)
+  }, [opensOnHover, node.id, setCollapsed])
 
   const FolderIcon = useMemo(() => {
     if (node.collapsed || isDropTarget) return Folder
@@ -50,7 +65,12 @@ export function FolderItem({
             onClick={() =>
               setCollapsed({ id: node.id, collapsed: !node.collapsed })
             }
-            className="pr-8"
+            data-drop-folder={node.id}
+            className={cn(
+              "pr-8",
+              opensOnHover &&
+                "bg-sidebar-accent ring-2 ring-primary/60 ring-inset"
+            )}
           >
             <FolderIcon
               className={cn(

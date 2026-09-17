@@ -14,6 +14,19 @@
 
 @theme {
   --breakpoint-xs: 430px;
+  --animate-drop-bounce: drop-bounce 350ms ease-out;
+
+  @keyframes drop-bounce {
+    30% {
+      scale: 1.05;
+    }
+    60% {
+      scale: 0.98;
+    }
+    100% {
+      scale: 1;
+    }
+  }
 }
 
 @theme inline {
