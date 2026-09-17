@@ -124,10 +124,11 @@ export function useMoveCardToBoard(deckId: string) {
         cards: board.cards.filter((card) => card.id !== id),
       }),
       flush: true,
-      also: ({ id }) => [
+      also: ({ id, boardId }) => [
         ...cardWriteKeys(id),
         keys.cardCol(id),
         keys.cardDeck(id),
+        keys.board(boardId),
       ],
     }
   )
