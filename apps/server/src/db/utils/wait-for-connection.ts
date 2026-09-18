@@ -1,14 +1,12 @@
-import type { Pool } from "pg"
-
-/** Waits until `pool` answers a trivial query, retrying on connection refusal. */
+/** Waits until `query` succeeds, retrying on connection refusal. */
 export async function waitForConnection(
-  pool: Pool,
+  query: () => Promise<unknown>,
   attempts = 30,
   delayMs = 250
 ): Promise<void> {
   for (let i = 0; ; i++) {
     try {
-      await pool.query("select 1")
+      await query()
       return
     } catch (err) {
       if (i >= attempts) throw err
