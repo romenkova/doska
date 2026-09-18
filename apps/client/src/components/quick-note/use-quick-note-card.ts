@@ -52,6 +52,8 @@ export function useQuickNoteCard(target: Target) {
       const id = await createCard(target.column.id)
       qc.invalidateQueries({ queryKey: keys.board(target.boardId) })
       keep(id)
+    } catch {
+      qc.invalidateQueries({ queryKey: keys.boards })
     } finally {
       creating.current = false
     }
