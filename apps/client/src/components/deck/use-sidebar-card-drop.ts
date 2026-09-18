@@ -20,7 +20,12 @@ export function useSidebarCardDrop(dragging: boolean) {
 
   useEffect(() => {
     if (!dragging) return
+    let frame = 0
     const onPointerMove = (event: PointerEvent) => {
+      if (frame !== 0) return
+      frame = requestAnimationFrame(() => {
+        frame = 0
+      })
       const element = document.elementFromPoint(event.clientX, event.clientY)
       setOverSidebar(element?.closest('[data-slot="sidebar"]') !== null)
       const next = targetUnder(element)
