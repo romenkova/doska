@@ -406,3 +406,42 @@ describe("a removed scope", () => {
     expect(driver.pushedScopes).toEqual(["b2"])
   })
 })
+
+/** Scope discovery itself failing — an IDB read rejecting under `pendingScopes`. */
+describe("a failed pass", () => {
+  const broken = new Error("idb gone")
+
+  it("reports an error instead of rejecting the caller", async () => {
+    const driver = new FakeDriver()
+    const engine = new SyncEngine(driver, {
+      kv,
+      storageKey: freshKey(),
+      classify: () => "server",
+    })
+    driver.pendingScopes = () => Promise.reject(broken)
+    vi.spyOn(console, "warn").mockImplementation(() => {})
+
+    await expect(engine.reconcile()).resolves.toBeUndefined()
+
+    expect(engine.getState().status).toBe("error")
+    expect(engine.getState().failures).toBe(1)
+    expect(engine.getState().failure).toBe("server")
+  })
+
+  it("recovers on the next pass", async () => {
+    const driver = new FakeDriver()
+    const engine = new SyncEngine(driver, { kv, storageKey: freshKey() })
+    const ok = driver.pendingScopes.bind(driver)
+    driver.pendingScopes = () => Promise.reject(broken)
+    vi.spyOn(console, "warn").mockImplementation(() => {})
+
+    engine.setActiveScope("b1")
+    await engine.reconcile()
+    driver.pendingScopes = ok
+
+    await engine.reconcile()
+    expect(engine.getState().status).toBe("idle")
+    expect(engine.getState().failures).toBe(0)
+    expect(driver.pushedScopes).toEqual(["b1"])
+  })
+})
