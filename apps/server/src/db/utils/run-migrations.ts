@@ -1,9 +1,9 @@
 import path from "node:path"
 import { fileURLToPath } from "node:url"
+import { sql } from "drizzle-orm"
 import { migrate as migrateNodePg } from "drizzle-orm/node-postgres/migrator"
 import type { PgliteDatabase } from "drizzle-orm/pglite"
 import { migrate as migratePglite } from "drizzle-orm/pglite/migrator"
-import { Pool } from "pg"
 import { waitForConnection } from "./wait-for-connection"
 import { env } from "../../env"
 import { getDB } from "../get-db"
@@ -20,7 +20,7 @@ export async function runMigrations(): Promise<void> {
   // PGlite runs in-process, so it needs no connection wait; only the real
   // Postgres path waits for the server to accept connections before migrating.
   if (databaseUrl) {
-    await waitForConnection(new Pool({ connectionString: databaseUrl }))
+    await waitForConnection(() => db.execute(sql`select 1`))
     return migrateNodePg(db, { migrationsFolder })
   }
 

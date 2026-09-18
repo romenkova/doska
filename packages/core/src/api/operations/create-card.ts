@@ -9,6 +9,10 @@ import { touchCard } from "../sync/touch"
 
 /** Creates an empty card at the top of a column and returns its new id. */
 export async function createCard(columnId: string): Promise<string> {
+  const column = await db.getColumn(columnId)
+  if (!column || !live(column))
+    throw new Error(`createCard: no live column ${columnId}`)
+
   const id = newId("card")
   const cards = await db.getCards(columnId)
   const first = cards

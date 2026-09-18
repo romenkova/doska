@@ -54,19 +54,20 @@ export async function restore(kind: TrashKind, id: string): Promise<void> {
   } else if (kind === COLUMNS) {
     const column = columns.find((c) => c.id === id)
     if (!column?.deletedAt) return
+    const dashboard = dashboards.find((d) => d.id === column.dashboardId)
+    if (!dashboard) return
     revivedColumns.push(column)
     cards.push(...cascadedFrom(await db.getCards(id), column.deletedAt))
-    revivedDashboard = dashboards.find(
-      (d) => d.id === column.dashboardId && !live(d)
-    )
+    if (!live(dashboard)) revivedDashboard = dashboard
   } else {
     const card = await db.getCard(id)
     if (!card?.deletedAt) return
-    cards.push(card)
     const column = columns.find((c) => c.id === card.columnId)
-    if (column && !live(column)) revivedColumns.push(column)
     const dashboard = dashboards.find((d) => d.id === column?.dashboardId)
-    if (dashboard && !live(dashboard)) revivedDashboard = dashboard
+    if (!column || !dashboard) return
+    cards.push(card)
+    if (!live(column)) revivedColumns.push(column)
+    if (!live(dashboard)) revivedDashboard = dashboard
   }
 
   // Top down: the server cascades a board's tombstone onto anything pushed for

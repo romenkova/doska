@@ -6,7 +6,7 @@ import { useUpdateCard } from "@doska/core/mutations"
 import { activeStorage } from "@doska/core/attachments"
 import { isSyncConfigured } from "@doska/core/server"
 import { useAuth } from "@/lib/hooks"
-import { AttachmentErrorToast } from "@/components/toasts/attachment/attachment-error-toast"
+import { ErrorToast } from "@/components/toasts/error/error-toast"
 
 /**
  * Uploading files to a card: shared by the header's Attach button and the
@@ -26,7 +26,7 @@ const TOAST_ID = "attachment-error"
 function showError(message: string) {
   toast.custom(
     (toastInstance) =>
-      createElement(AttachmentErrorToast, {
+      createElement(ErrorToast, {
         visible: toastInstance.visible,
         message,
       }),

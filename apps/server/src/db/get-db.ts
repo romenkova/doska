@@ -4,6 +4,7 @@ import type { NodePgDatabase } from "drizzle-orm/node-postgres"
 import { drizzle as drizzlePglite } from "drizzle-orm/pglite"
 import { Pool } from "pg"
 import { env } from "../env"
+import { getLogger } from "../logger"
 import * as schema from "./schema"
 
 /**
@@ -25,6 +26,11 @@ export function getDB() {
 
   if (databaseUrl) {
     const pool = new Pool({ connectionString: databaseUrl })
+
+    pool.on("error", (err) => {
+      getLogger()?.error({ err }, "db: idle client error")
+    })
+
     database = drizzleNodePg(pool, { schema })
   } else {
     const client = new PGlite(env.dbFile)
