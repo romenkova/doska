@@ -47,7 +47,21 @@ if (isPublicLink) {
     </StrictMode>
   )
 } else {
-  await bootstrapClient(Number(import.meta.env.VITE_SYNC_INTERVAL_MS))
+  try {
+    await bootstrapClient(Number(import.meta.env.VITE_SYNC_INTERVAL_MS))
+  } catch (error) {
+    console.error("Bootstrap failed", error)
+    root.render(
+      <StrictMode>
+        <ErrorBoundary
+          error={error instanceof Error ? error : new Error(String(error))}
+        >
+          {null}
+        </ErrorBoundary>
+      </StrictMode>
+    )
+    throw error
+  }
 
   blockEdgeSwipeNavigation()
 

@@ -9,6 +9,7 @@ const STACK_BUDGET = 4000
 
 interface IProps {
   children: ReactNode
+  error?: Error
 }
 
 interface IState {
@@ -23,7 +24,7 @@ interface IState {
  * has to be reportable without one.
  */
 export class ErrorBoundary extends Component<IProps, IState> {
-  state: IState = { error: null, version: __APP_VERSION__ }
+  state: IState = { error: this.props.error ?? null, version: __APP_VERSION__ }
 
   static getDerivedStateFromError(error: Error): Partial<IState> {
     return { error }
@@ -67,9 +68,11 @@ export class ErrorBoundary extends Component<IProps, IState> {
             {error.message || String(error)}
           </p>
         </div>
-        <pre className="max-h-64 max-w-full overflow-auto rounded-lg bg-muted p-3 text-left font-mono text-xs text-muted-foreground">
-          {error.stack}
-        </pre>
+        {error.stack && (
+          <pre className="max-h-64 max-w-full overflow-auto rounded-lg bg-muted p-3 text-left font-mono text-xs text-muted-foreground">
+            {error.stack}
+          </pre>
+        )}
         <div className="flex items-center gap-2">
           <Button onClick={() => window.location.reload()}>Reload</Button>
           {/* `target="_blank"` is what `initExternalLinks` hands to the system
