@@ -6,8 +6,7 @@ interface IProps {
   message: string
 }
 
-/** Why a drop or paste did not attach anything. */
-export function AttachmentErrorToast({ visible, message }: IProps) {
+export function ErrorToast({ visible, message }: IProps) {
   return (
     <Toast visible={visible}>
       <div

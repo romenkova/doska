@@ -10,6 +10,7 @@ import { isDesktop } from "@/lib/platform"
 import { bootstrapClient } from "@doska/core/bootstrap"
 import { trackAppHeight } from "@/lib/app-height"
 import { blockEdgeSwipeNavigation } from "@/lib/edge-swipe"
+import { initErrorReporting } from "@/lib/error-reporting"
 import { initExternalLinks } from "@/lib/external-links"
 import { initZoom } from "@/lib/zoom"
 import { requestPersistentStorage } from "@/lib/persist"
@@ -30,6 +31,8 @@ const root = createRoot(document.getElementById("root")!)
 const isPublicLink = routes.public.matches(window.location.pathname)
 
 trackAppHeight()
+
+initErrorReporting()
 
 if (isPublicLink) {
   root.render(

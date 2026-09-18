@@ -25,6 +25,7 @@
     "./public": "./src/api/public.ts",
     "./queries": "./src/data/queries.ts",
     "./query-client": "./src/query-client.ts",
+    "./report-error": "./src/report-error.ts",
     "./runtime": "./src/runtime.ts",
     "./search": "./src/search/index.ts",
     "./seed": "./src/seed.ts",
