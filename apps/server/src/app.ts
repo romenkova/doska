@@ -1,7 +1,7 @@
 import Fastify from "fastify"
 import type { FastifyInstance } from "fastify"
 import { requireMCPSession, requireSession } from "./auth/guard"
-import { loggerOptions } from "./logger"
+import { loggerOptions, setLogger } from "./logger"
 import { registerAuthRoutes } from "./routes/auth"
 import { registerDesktopLoginRoutes } from "./routes/desktop-login"
 import { registerFileRoutes, type ServerStorage } from "./routes/files"
@@ -19,6 +19,8 @@ export function buildApp(opts: BuildOptions = {}): FastifyInstance {
     logger: loggerOptions,
     trustProxy: true,
   })
+
+  setLogger(app.log)
 
   app.decorateRequest("userId", "")
 
