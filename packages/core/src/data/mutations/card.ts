@@ -81,6 +81,7 @@ export function useMoveCardToColumn() {
       for (const key of cardWriteKeys(id))
         qc.invalidateQueries({ queryKey: key })
       qc.invalidateQueries({ queryKey: keys.cardCol(id) })
+      qc.invalidateQueries({ queryKey: keys.trash })
     },
   })
 }
@@ -107,6 +108,29 @@ export function useMoveCard(deckId: string) {
       also: (changed) => [
         keys.digest,
         ...changed.map((card) => keys.card(card.id)),
+      ],
+    }
+  )
+}
+
+/** Moves a card off the open board onto another one */
+export function useMoveCardToBoard(deckId: string) {
+  return useBoardPatch(
+    deckId,
+    ({ id, boardId }: { id: string; boardId: string }) =>
+      api.moveCardToBoard(id, boardId),
+    {
+      apply: (board, { id }) => ({
+        ...board,
+        cards: board.cards.filter((card) => card.id !== id),
+      }),
+      flush: true,
+      also: ({ id, boardId }) => [
+        ...cardWriteKeys(id),
+        keys.cardCol(id),
+        keys.cardDeck(id),
+        keys.board(boardId),
+        keys.trash,
       ],
     }
   )

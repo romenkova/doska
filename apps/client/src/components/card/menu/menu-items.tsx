@@ -3,6 +3,7 @@ import { Pencil } from "lucide-react"
 import { CopyIdItem } from "./copy-id-item"
 import { DeadlineSub } from "./deadline-sub"
 import { DeleteItem } from "./delete-item"
+import { MoveToBoardSub } from "./move-to-board-sub"
 import { MoveToColumnSub } from "./move-to-column-sub"
 import { PrioritySub } from "./priority-sub"
 
@@ -27,6 +28,7 @@ export function CardMenuItems({
         Edit
       </MenuItem>
       <MoveToColumnSub cardId={cardId} />
+      <MoveToBoardSub cardId={cardId} />
       <PrioritySub cardId={cardId} />
       <DeadlineSub cardId={cardId} closeMenu={closeMenu} />
       <CopyIdItem cardId={cardId} />

@@ -18,7 +18,7 @@ import {
  */
 async function moveOpenCard(page: Page, columnName: string) {
   await cardPanel(page).getByRole("button", { name: "Card actions" }).click()
-  await page.getByRole("menuitem", { name: "Move to" }).click()
+  await page.getByRole("menuitem", { name: "Move to", exact: true }).click()
   await page.getByRole("menuitem", { name: columnName }).click()
 }
 
@@ -33,7 +33,7 @@ test.describe("moving a card from its panel", () => {
 
     // The menu re-reads the card, so the column it now sits in is unpickable.
     await cardPanel(page).getByRole("button", { name: "Card actions" }).click()
-    await page.getByRole("menuitem", { name: "Move to" }).click()
+    await page.getByRole("menuitem", { name: "Move to", exact: true }).click()
     await expect(
       page.getByRole("menuitem", { name: "In Progress" })
     ).toBeDisabled()

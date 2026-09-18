@@ -116,10 +116,11 @@ export function useQuickNoteCard(target: Target) {
     }
   }
 
-  /** To the top of that column. */
+  /** To the top of that column. Across boards the note follows the copy. */
   async function moveTo(columnId: string) {
     if (!cardId || column?.id === columnId) return
-    await moveCardToColumn(cardId, columnId)
+    const moved = await moveCardToColumn(cardId, columnId)
+    if (moved !== cardId) keep(moved)
     qc.invalidateQueries({ queryKey: keys.boards })
     qc.invalidateQueries({ queryKey: keys.card(cardId) })
     qc.invalidateQueries({ queryKey: keys.cardCol(cardId) })
