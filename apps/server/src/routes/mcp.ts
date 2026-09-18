@@ -12,7 +12,13 @@ export function registerMcpRoutes(app: FastifyInstance): void {
   app.all("/mcp", async (req, reply) => {
     // Stateless: a server and transport per request, so nothing is pinned to a
     // session and a restart or a second replica costs a client nothing.
-    const server = createBoardServer(new DbStore(req.userId), pkg.version)
+    const server = createBoardServer(
+      new DbStore(req.userId),
+      pkg.version,
+      (tool, error) => {
+        req.log.error({ err: error, tool, userId: req.userId }, "mcp: failed")
+      }
+    )
     const transport = new StreamableHTTPServerTransport({
       sessionIdGenerator: undefined,
       enableJsonResponse: true,
