@@ -78,7 +78,9 @@ test.describe("account management", () => {
     await page.getByPlaceholder("Password").fill("another-pass")
     await page.getByRole("button", { name: "Add", exact: true }).click()
 
-    await expect(page.getByText("That login is already taken.")).toBeVisible()
+    await expect(
+      page.getByRole("dialog").getByText("That login is already taken.")
+    ).toBeVisible()
     await expect(accountRow(page, login)).toHaveCount(1)
   })
 
