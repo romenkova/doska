@@ -62,8 +62,15 @@ export function SignInPage() {
       // fall through to the session check
     }
 
-    const { data } = await authClient().getSession()
-    if (!data) {
+    let session = null
+    try {
+      const { data } = await authClient().getSession()
+      session = data
+    } catch {
+      // session failed, treat like no session
+    }
+
+    if (!session) {
       setPending(false)
       setFailed(true)
       return
