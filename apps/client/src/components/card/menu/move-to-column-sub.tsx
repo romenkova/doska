@@ -29,15 +29,17 @@ export function MoveToColumnSub({ cardId }: { cardId: string }) {
     const first = destCards[0]
     const position = generateKeyBetween(null, first?.position ?? null)
 
-    moveCard([{ ...moved, columnId, position }])
-    toast.custom(
-      (toastInstance) =>
-        createElement(CardMoveToast, {
-          visible: toastInstance.visible,
-          title: column.title,
-        }),
-      { id: TOAST_ID, duration: 2500 }
-    )
+    moveCard([{ ...moved, columnId, position }], {
+      onSuccess: () =>
+        toast.custom(
+          (toastInstance) =>
+            createElement(CardMoveToast, {
+              visible: toastInstance.visible,
+              title: column.title,
+            }),
+          { id: TOAST_ID, duration: 2500 }
+        ),
+    })
   }
 
   return (

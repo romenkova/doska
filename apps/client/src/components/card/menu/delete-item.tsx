@@ -15,8 +15,12 @@ export function DeleteItem({ cardId }: { cardId: string }) {
   return (
     <MenuItem
       onClick={() => {
-        deleteCard(cardId)
-        showCardDeleteToast(cardId, { title: card?.title?.trim() || "Card" })
+        deleteCard(cardId, {
+          onSuccess: () =>
+            showCardDeleteToast(cardId, {
+              title: card?.title?.trim() || "Card",
+            }),
+        })
       }}
       className="ml-auto data-highlighted:text-destructive"
     >
