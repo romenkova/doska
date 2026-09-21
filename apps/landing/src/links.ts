@@ -9,6 +9,7 @@ export const docs = import.meta.env.DEV
   : "/docs/"
 export const author = "https://github.com/romenkova"
 export const repo = `${author}/doska`
+export const issues = `${repo}/issues`
 export const releases = `${repo}/releases`
 export const releasesLatest = `${releases}/latest`
 export const repoApi = "https://api.github.com/repos/romenkova/doska"
