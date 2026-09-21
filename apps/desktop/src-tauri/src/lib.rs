@@ -1,3 +1,4 @@
+mod hide_window;
 mod quick_note;
 mod shortcuts;
 mod tear_off;
@@ -52,7 +53,7 @@ pub fn run() {
                 let label = window.label();
                 if label == "main" || label.starts_with("popout-") {
                     api.prevent_close();
-                    let _ = window.hide();
+                    hide_window::hide(window);
                 }
             }
         })
