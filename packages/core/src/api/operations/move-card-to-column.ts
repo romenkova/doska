@@ -24,14 +24,14 @@ export async function moveCardToColumn(
   const card = await db.getCard(id)
   if (!card) return id
 
+  const to = await db.getColumn(columnId)
+  if (!to || !live(to)) return id
+
   const cards = (await db.getCards(columnId)).filter(live).sort(byPosition)
   const position = generateKeyBetween(null, cards[0]?.position ?? null)
 
-  const [from, to] = await Promise.all([
-    db.getColumn(card.columnId),
-    db.getColumn(columnId),
-  ])
-  if (!from || !to || from.dashboardId === to.dashboardId) {
+  const from = await db.getColumn(card.columnId)
+  if (!from || from.dashboardId === to.dashboardId) {
     await db.setCard(touchCard({ ...card, columnId, position }, ["place"]))
     sync.markDirty("cards", id)
     return id

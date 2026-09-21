@@ -199,7 +199,14 @@ export class SyncEngine<Scope, Change> {
     do {
       this.rerun = false
       this.attempt = { attempted: 0, failed: false, failure: null }
-      await this.pass()
+      try {
+        await this.pass()
+      } catch (err) {
+        const failure = this.classify(err)
+        this.attempt.failed = true
+        this.attempt.failure = failure === "forbidden" ? "server" : failure
+        console.warn("[sync] sync pass failed; will retry next tick", err)
+      }
       this.settle()
     } while (this.rerun)
   }
@@ -212,6 +219,17 @@ export class SyncEngine<Scope, Change> {
       return
     }
 
+    if (this.attempt.failed) {
+      this.setState({
+        status: "error",
+        pending,
+        failures: this.state.failures + 1,
+        lastSyncedAt: this.state.lastSyncedAt,
+        failure: this.attempt.failure,
+      })
+      return
+    }
+
     // Nothing to sync: no news either way, so claim no fresh success but drop
     // any stale failure — this engine isn't the one that's broken.
     if (this.attempt.attempted === 0) {
@@ -221,17 +239,6 @@ export class SyncEngine<Scope, Change> {
         pending,
         failures: 0,
         failure: null,
-      })
-      return
-    }
-
-    if (this.attempt.failed) {
-      this.setState({
-        status: "error",
-        pending,
-        failures: this.state.failures + 1,
-        lastSyncedAt: this.state.lastSyncedAt,
-        failure: this.attempt.failure,
       })
       return
     }

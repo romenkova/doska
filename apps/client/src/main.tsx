@@ -10,6 +10,7 @@ import { isDesktop } from "@/lib/platform"
 import { bootstrapClient } from "@doska/core/bootstrap"
 import { trackAppHeight } from "@/lib/app-height"
 import { blockEdgeSwipeNavigation } from "@/lib/edge-swipe"
+import { initErrorReporting } from "@/lib/error-reporting"
 import { initExternalLinks } from "@/lib/external-links"
 import { initZoom } from "@/lib/zoom"
 import { requestPersistentStorage } from "@/lib/persist"
@@ -31,6 +32,8 @@ const isPublicLink = routes.public.matches(window.location.pathname)
 
 trackAppHeight()
 
+initErrorReporting()
+
 if (isPublicLink) {
   root.render(
     <StrictMode>
@@ -44,7 +47,21 @@ if (isPublicLink) {
     </StrictMode>
   )
 } else {
-  await bootstrapClient(Number(import.meta.env.VITE_SYNC_INTERVAL_MS))
+  try {
+    await bootstrapClient(Number(import.meta.env.VITE_SYNC_INTERVAL_MS))
+  } catch (error) {
+    console.error("Bootstrap failed", error)
+    root.render(
+      <StrictMode>
+        <ErrorBoundary
+          error={error instanceof Error ? error : new Error(String(error))}
+        >
+          {null}
+        </ErrorBoundary>
+      </StrictMode>
+    )
+    throw error
+  }
 
   blockEdgeSwipeNavigation()
 

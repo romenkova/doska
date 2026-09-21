@@ -1,5 +1,4 @@
 import { CARD_FIELD_GROUP } from "@doska/contract"
-import { fallbackCard } from "../../seed"
 import type { Card } from "../../types"
 import { db } from "../db/db"
 import { sync } from "../sync"
@@ -20,7 +19,8 @@ export async function updateCard(
     >
   >
 ): Promise<void> {
-  const existing = (await db.getCard(id)) ?? { ...fallbackCard, id }
+  const existing = await db.getCard(id)
+  if (!existing) return
   const fields = Object.keys(patch) as (keyof typeof patch)[]
   const groups = fields.map((field) => CARD_FIELD_GROUP[field])
   await db.setCard(touchCard({ ...existing, ...patch, id }, groups))

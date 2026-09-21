@@ -12,6 +12,12 @@ function toIDBRange(range: KeyRange | undefined): IDBKeyRange | null {
 }
 
 /**
+ * A blocked upgrade normally clears itself: the other tab's `onversionchange`
+ * closes its connection.
+ */
+const BLOCKED_GRACE_MS = 3000
+
+/**
  * A tiny promise-based wrapper over IndexedDB
  */
 export class IDB implements ClientDB {
@@ -27,7 +33,13 @@ export class IDB implements ClientDB {
   upgrade(_db: IDBDatabase, _tx: IDBTransaction) {}
 
   open(): Promise<IDBDatabase> {
-    if (!this.connection) this.connection = this.connect(this.version)
+    if (!this.connection) {
+      const opening = this.connect(this.version)
+      opening.catch(() => {
+        if (this.connection === opening) this.connection = undefined
+      })
+      this.connection = opening
+    }
     return this.connection
   }
 
@@ -39,10 +51,12 @@ export class IDB implements ClientDB {
   private connect(version?: number): Promise<IDBDatabase> {
     return new Promise((resolve, reject) => {
       const req = indexedDB.open(this.name, version)
+      let blockedTimer: ReturnType<typeof setTimeout> | undefined
       // `req.transaction` is the versionchange tx — the only handle to stores
       // that already exist, e.g. for adding an index on an upgrade.
       req.onupgradeneeded = () => this.upgrade(req.result, req.transaction!)
       req.onsuccess = () => {
+        clearTimeout(blockedTimer)
         const db = req.result
         db.onversionchange = () => {
           db.close()
@@ -51,6 +65,7 @@ export class IDB implements ClientDB {
         resolve(db)
       }
       req.onerror = () => {
+        clearTimeout(blockedTimer)
         // The stored version is newer than ours — reopen without a version to
         // attach to it rather than fail the whole app with a blank page.
         if (req.error?.name === "VersionError" && version !== undefined) {
@@ -59,10 +74,20 @@ export class IDB implements ClientDB {
           reject(req.error)
         }
       }
-      req.onblocked = () =>
+      req.onblocked = () => {
         console.warn(
           `IndexedDB "${this.name}" upgrade to v${this.version} is blocked by another open connection`
         )
+        blockedTimer = setTimeout(
+          () =>
+            reject(
+              new Error(
+                "Another tab is still using an older version of this app. Close it and reload."
+              )
+            ),
+          BLOCKED_GRACE_MS
+        )
+      }
     })
   }
 

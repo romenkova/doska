@@ -8,6 +8,15 @@ const app = buildApp()
 
 const { port, host } = env
 
+process.on("uncaughtException", (err) => {
+  app.log.fatal({ err }, "uncaught exception")
+  process.exit(1)
+})
+process.on("unhandledRejection", (err) => {
+  app.log.fatal({ err }, "unhandled rejection")
+  process.exit(1)
+})
+
 runMigrations()
   .then(seedAccount)
   .then(() => app.listen({ port, host }))

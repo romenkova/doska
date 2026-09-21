@@ -51,6 +51,8 @@ export async function listSsoUserIds(): Promise<string[]> {
 
 /** Sessions and credentials go with the row — both cascade on delete. */
 export async function deleteAccount(userId: string): Promise<void> {
-  await db.delete(sidebarLayouts).where(eq(sidebarLayouts.userId, userId))
-  await db.delete(user).where(eq(user.id, userId))
+  await db.transaction(async (tx) => {
+    await tx.delete(sidebarLayouts).where(eq(sidebarLayouts.userId, userId))
+    await tx.delete(user).where(eq(user.id, userId))
+  })
 }
