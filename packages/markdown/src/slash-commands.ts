@@ -62,6 +62,14 @@ export const DEFAULT_SLASH_COMMANDS: SlashCommand[] = [
   },
   { id: "cut", title: "Cut", hint: "End of card preview", insert: "-cut-\n$" },
   {
+    id: "tag",
+    title: "Tag",
+    hint: "Label the card",
+    keywords: ["label", "hash", "#"],
+    scope: "inline",
+    insert: "#$",
+  },
+  {
     id: "link",
     title: "Link",
     hint: "URL",

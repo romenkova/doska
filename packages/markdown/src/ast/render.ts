@@ -115,6 +115,7 @@ function renderInline(node: MdNode, ctx: Ctx, key: string): ReactNode {
       const extra = markdownExtra(node)
       if (extra?.kind === "wikilink")
         return adapter.wikilink(extra.target, extra.alias, key)
+      if (extra?.kind === "tag") return adapter.tag(extra.name, key)
       if (extra?.kind === "cut") return adapter.cut(key)
       return adapter.emphasis(renderInlines(node.children, ctx), key)
     }
