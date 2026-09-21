@@ -30,6 +30,10 @@
 
 </div>
 
+> [!NOTE]
+> Doska is in active development.
+> [Report bugs and request features](https://github.com/romenkova/doska/issues).
+
 ## Why
 
 I wanted a kanban app that is quick, Markdown-first, minimal, and still feature-rich. I couldn't find all of that in one app, so I made Doska.

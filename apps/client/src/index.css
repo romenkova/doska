@@ -47,6 +47,9 @@
     @apply font-sans;
     font-size: 16px;
   }
+  ::selection {
+    background-color: color-mix(in oklab, var(--primary) 25%, transparent);
+  }
   /* The quick-note popup is a transparent window; the page draws its own card. */
   html.quick-note,
   html.quick-note body {

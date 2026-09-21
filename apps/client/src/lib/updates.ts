@@ -1,6 +1,5 @@
 import { invoke } from "@tauri-apps/api/core"
 import { getServerUrl, getServerVersion } from "@doska/core/server"
-import { getAutoUpdate } from "./auto-update"
 import { isDesktop } from "./platform"
 
 /**
@@ -50,11 +49,6 @@ export async function checkForUpdates(): Promise<DesktopUpdateState> {
 
     if (!found.newer) {
       return { status: "mismatch", version: found.version, install }
-    }
-
-    if (getAutoUpdate()) {
-      await install()
-      return NONE
     }
 
     return {

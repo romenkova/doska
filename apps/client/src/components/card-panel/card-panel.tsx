@@ -73,10 +73,12 @@ export function CardPanel({ closeHref }: IProps) {
           onFlush={flush}
           onClose={close}
           onDelete={() => {
-            deleteCard(card)
-            showCardDeleteToast(card, {
-              reopenPanel: true,
-              title: content.title.trim() || "Untitled card",
+            deleteCard(card, {
+              onSuccess: () =>
+                showCardDeleteToast(card, {
+                  reopenPanel: true,
+                  title: content.title.trim() || "Untitled card",
+                }),
             })
           }}
           onReveal={() => {

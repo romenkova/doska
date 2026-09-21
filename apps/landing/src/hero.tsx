@@ -1,6 +1,7 @@
 import { Button } from "@doska/ui-kit"
 import { ExternalLink } from "lucide-react"
 import { SiGithub } from "react-icons/si"
+import { DevNotice } from "./dev-notice"
 import { DownloadMenu } from "./download-menu"
 import { app, repo } from "./links"
 
@@ -39,6 +40,7 @@ export function Hero() {
           </Button>
           <DownloadMenu />
         </div>
+        <DevNotice />
       </section>
     </div>
   )

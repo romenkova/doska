@@ -63,6 +63,9 @@ export class S3FileStorage implements FileStorage {
   }
 
   async remove(_scope: string, key: string): Promise<void> {
-    await this.deps.fetch(this.fileUrl(key), { method: "DELETE" })
+    const res = await this.deps.fetch(this.fileUrl(key), { method: "DELETE" })
+    if (!res.ok && res.status !== 404) {
+      throw new Error(`delete failed: ${res.status}`)
+    }
   }
 }

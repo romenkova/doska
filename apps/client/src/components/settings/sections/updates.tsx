@@ -1,11 +1,5 @@
-import { Button, Checkbox } from "@doska/ui-kit"
-import { useState, useSyncExternalStore } from "react"
-import {
-  getAutoUpdate,
-  setAutoUpdate,
-  subscribeAutoUpdate,
-} from "@/lib/auto-update"
-import { isDesktop } from "@/lib/platform"
+import { Button } from "@doska/ui-kit"
+import { useState } from "react"
 import { runUpdateCheck, useUpdateState } from "@/lib/update-store"
 import { useAppVersion } from "@/lib/version"
 import { SettingsSection } from "../section"
@@ -24,10 +18,8 @@ type CheckState = (typeof CheckState)[keyof typeof CheckState]
  * a waiting service worker in the PWA.
  */
 export function UpdatesSection() {
-  const desktop = isDesktop()
   const version = useAppVersion()
   const update = useUpdateState()
-  const auto = useSyncExternalStore(subscribeAutoUpdate, getAutoUpdate)
   const [check, setCheck] = useState<CheckState>(CheckState.idle)
 
   async function runCheck() {
@@ -41,21 +33,6 @@ export function UpdatesSection() {
       <div className="text-sm">
         Doska version: <span className="text-muted-foreground">{version}</span>
       </div>
-      {desktop && (
-        <label className="flex items-start gap-2">
-          <Checkbox
-            className="mt-0.5"
-            checked={auto}
-            onCheckedChange={setAutoUpdate}
-          />
-          <span className="flex flex-col gap-1">
-            <span className="text-sm font-medium">Automatic updates</span>
-            <span className="text-xs text-muted-foreground">
-              Install matching updates on launch without asking.
-            </span>
-          </span>
-        </label>
-      )}
       <div className="flex items-center gap-2">
         <Button
           type="button"
