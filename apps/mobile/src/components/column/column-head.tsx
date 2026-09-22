@@ -57,7 +57,7 @@ export function ColumnHead({ deckId, column, onAddCard }: IProps) {
           returnKeyType="done"
           accessibilityLabel={`Rename ${column.title}`}
           placeholder="Untitled column"
-          className="shrink text-base font-sans-medium uppercase text-muted-foreground"
+          className="shrink text-[16px] font-sans-medium text-muted-foreground"
         />
         {/* The only place the flag shows — its toggle lives in the sheet. */}
         {column.done ? (
