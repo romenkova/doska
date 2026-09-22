@@ -9,7 +9,7 @@ import { isRenderableImage } from "../card/attachments/renderable-image"
 import { useUploads } from "@/providers/attachment-upload/attachment-upload-context"
 import { CardMarkdown } from "../card/card-markdown"
 import { cn, Markdown } from "@doska/ui-kit"
-import { MarkdownEditor } from "../markdown"
+import { MarkdownEditor } from "@doska/editor"
 
 const PREVIEW_MARKERS = [cut]
 
