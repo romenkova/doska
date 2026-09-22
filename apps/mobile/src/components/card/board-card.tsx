@@ -3,21 +3,17 @@ import { IconButton } from "@doska/ui-kit-mobile"
 import { router } from "expo-router"
 import MoreHorizontal from "lucide-react-native/icons/ellipsis"
 import { Pressable, Text, View } from "react-native"
-import { CardPreview } from "@/components/card/card-preview"
 import { ROUTES } from "@/lib/routes"
 import { CardMeta } from "./card-meta"
 
 interface IProps {
   card: Card
-  deckId: string
-  /** The card's column is collapsed, so only the title and meta show. */
-  showBody: boolean
   /** The card sits in the board's done column. */
   done: boolean
 }
 
-/** A board card: title, meta row, then the cut-truncated body preview. */
-export function BoardCard({ card, deckId, showBody, done }: IProps) {
+/** A board row: title and meta. The body lives in the card sheet. */
+export function BoardCard({ card, done }: IProps) {
   return (
     <Pressable
       onPress={() => router.push(ROUTES.card(card.id))}
@@ -44,8 +40,6 @@ export function BoardCard({ card, deckId, showBody, done }: IProps) {
           done={done}
         />
       </View>
-
-      {showBody && <CardPreview card={card} deckId={deckId} />}
     </Pressable>
   )
 }

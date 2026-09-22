@@ -1,4 +1,4 @@
-import type { SlashCommand } from "@doska/markdown"
+import { DEFAULT_SLASH_COMMANDS, type SlashCommand } from "@doska/markdown"
 import type { Card } from "@doska/core/types"
 import { useCardDeckId } from "@doska/core/queries"
 import { TextField } from "@doska/ui-kit-mobile"
@@ -6,10 +6,12 @@ import { useEffect, useRef, useState } from "react"
 import { ScrollView, View } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { useKeyboardHeight } from "@/lib/use-keyboard-height"
-import { CardBody } from "./card-body"
+import {
+  CardBodyWebview,
+  type CardBodyWebviewHandle,
+} from "./card-body-webview"
 import { CardPaneHeader } from "./card-pane-header"
 import { EditorToolbar, TOOLBAR_HEIGHT } from "./editor-toolbar"
-import { useSlashMenu } from "./use-slash-menu"
 
 /** Backs the inputs only: round-tripping each keystroke would lag the caret. */
 export type Draft = Partial<Pick<Card, "title" | "body">>
@@ -39,35 +41,19 @@ export function CardPane({ cardId, content, onQueue }: IProps) {
     onQueue(cardId, patch)
   }
 
-  const slash = useSlashMenu({
-    value: body,
-    onChangeValue: (value) => edit({ body: value }),
-  })
-
+  const webview = useRef<CardBodyWebviewHandle>(null)
+  const webviewTop = useRef(0)
+  const scrollY = useRef(0)
+  const viewportHeight = useRef(0)
+  const [caretBottom, setCaretBottom] = useState<number | null>(null)
   const scroller = useRef<ScrollView>(null)
-  // Only the caret at the very end can be pushed out of view by something other
-  // than the user: the note growing under it, or the keyboard rising over it.
-  // Anywhere else the caret keeps its place on screen, and chasing it there
-  // would yank the note out from under someone deleting a line mid-body.
-  const isAtEnd = slash.caret >= body.length
-
-  // The keyboard does not change the content height, so `onContentSizeChange`
-  // never fires for it — but it does change how much of the note is visible.
-  useEffect(() => {
-    if (isAtEnd && keyboard) scroller.current?.scrollToEnd({ animated: true })
-  }, [isAtEnd, keyboard])
 
   const toolbar = {
-    // The full list stands open while editing, so a typed `/` only narrows it.
-    // Inserting needs somewhere to insert into, and a typed `/` survives into
-    // preview, where the caret it was measured against is gone.
-    items: isPreview ? [] : slash.hasTrigger ? slash.items : slash.commands,
+    items: isPreview ? [] : DEFAULT_SLASH_COMMANDS,
     isPreview,
     onTogglePreview: () => setPreview(!isPreview),
-    onSelect: (command: SlashCommand) => {
-      if (slash.hasTrigger) slash.select(command)
-      else slash.insertCommand(command)
-    },
+    onSelect: (command: SlashCommand) =>
+      webview.current?.insert(command.insert),
   }
 
   // Everything the bar covers: its own height, a gap, and the keyboard or the
@@ -76,19 +62,41 @@ export function CardPane({ cardId, content, onQueue }: IProps) {
   // fail to lift the bar.
   const bottomInset = keyboard || insets.bottom
 
+  // The webview is sized to its content, so only native scrolling can bring
+  // its caret out from under the keyboard.
+  const revealCaret = () => {
+    if (caretBottom === null) return
+    const visible = viewportHeight.current - (TOOLBAR_HEIGHT + 16 + bottomInset)
+    const overflow =
+      webviewTop.current + caretBottom - (scrollY.current + visible)
+    if (overflow > 0) {
+      scroller.current?.scrollTo({
+        y: scrollY.current + overflow,
+        animated: true,
+      })
+    }
+  }
+
+  useEffect(revealCaret, [caretBottom, bottomInset])
+
   return (
     <View collapsable={false} className="flex-1 bg-card">
       <ScrollView
         ref={scroller}
         className="flex-1"
         keyboardShouldPersistTaps="handled"
+        scrollEventThrottle={16}
+        onScroll={(e) => {
+          scrollY.current = e.nativeEvent.contentOffset.y
+        }}
+        onLayout={(e) => {
+          viewportHeight.current = e.nativeEvent.layout.height
+        }}
         contentContainerStyle={{
           flexGrow: 1,
           paddingBottom: TOOLBAR_HEIGHT + 16 + bottomInset,
         }}
-        onContentSizeChange={() => {
-          if (isAtEnd) scroller.current?.scrollToEnd({ animated: false })
-        }}
+        onContentSizeChange={revealCaret}
       >
         <CardPaneHeader
           cardId={cardId}
@@ -106,15 +114,22 @@ export function CardPane({ cardId, content, onQueue }: IProps) {
               : "px-4 py-1.5 font-mono text-xl text-card-foreground"
           }
         />
-        <CardBody
-          body={body}
-          deckId={deckId ?? ""}
-          isPreview={isPreview}
-          onChangeBody={(value) => edit({ body: value })}
-          onEdit={() => setPreview(false)}
-          onSelectionChange={slash.onSelectionChange}
-          selection={slash.selection}
-        />
+        <View
+          onLayout={(e) => {
+            webviewTop.current = e.nativeEvent.layout.y
+          }}
+        >
+          <CardBodyWebview
+            ref={webview}
+            cardId={cardId}
+            deckId={deckId ?? ""}
+            body={content.body}
+            isPreview={isPreview}
+            onChangeBody={(value) => edit({ body: value })}
+            onEdit={() => setPreview(false)}
+            onCaret={setCaretBottom}
+          />
+        </View>
       </ScrollView>
 
       {/* Floats over the note, so the blur has something to blur.

@@ -38,6 +38,8 @@ export interface MarkdownEditorProps {
    * the button scrolls away with the text.
    */
   overlayContainer?: HTMLElement | null
+  /** Keeps typed `/` but drops the mobile button, for hosts with their own toolbar. */
+  hideSlashFab?: boolean
 }
 
 const NO_MARKERS: Marker[] = []
@@ -61,6 +63,7 @@ export function MarkdownEditor({
   onPasteFiles,
   containerClassName,
   overlayContainer,
+  hideSlashFab,
 }: MarkdownEditorProps) {
   const { body } = useMarkers(value, markers, "preview")
 
@@ -97,6 +100,7 @@ export function MarkdownEditor({
       onPasteFiles={onPasteFiles}
       containerClassName={containerClassName}
       overlayContainer={overlayContainer}
+      hideSlashFab={hideSlashFab}
     />
   )
 }

@@ -1,6 +1,6 @@
 import { useMemo } from "react"
-import { tagsIn, type PrefixOption } from "@doska/markdown"
-import { useBoard } from "@doska/core/queries"
+import { tagsIn, type PrefixOption } from "@doska/markdown/core"
+import { useBoard } from "./queries"
 
 /**
  * Every tag on the board, most used first, for the `#` menu

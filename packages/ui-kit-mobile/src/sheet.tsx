@@ -86,28 +86,6 @@ function BarButton({
   )
 }
 
-/** A grouped list's footer: the explanatory line iOS sets below a form, not
- * above it. */
-export function SheetFootnote({
-  text,
-  error,
-}: {
-  text: string
-  error?: boolean
-}) {
-  return (
-    <Text
-      className={
-        error
-          ? "px-1 pt-2 text-[13px] leading-[18px] text-destructive"
-          : "px-1 pt-2 text-[13px] leading-[18px] text-muted-foreground"
-      }
-    >
-      {text}
-    </Text>
-  )
-}
-
 interface IItemProps {
   icon: LucideIcon
   label: string
