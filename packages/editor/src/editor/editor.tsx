@@ -7,12 +7,15 @@ interface IProps extends EditorOptions {
   className?: string
   containerClassName?: string
   overlayContainer?: HTMLElement | null
+  /** Keeps typed `/` but drops the button, for hosts with their own toolbar. */
+  hideSlashFab?: boolean
 }
 
 export function Editor({
   className,
   containerClassName,
   overlayContainer,
+  hideSlashFab,
   ...options
 }: IProps) {
   const isMobile = useIsMobile()
@@ -35,7 +38,7 @@ export function Editor({
           className
         )}
       />
-      {options.slashMenu && isMobile && (
+      {options.slashMenu && isMobile && !hideSlashFab && (
         <SlashMenuFab
           view={view}
           commands={options.slashCommands}
