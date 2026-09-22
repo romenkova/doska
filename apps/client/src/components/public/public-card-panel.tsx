@@ -8,7 +8,7 @@ import { CardPaneLayout } from "../card-panel/card-pane-layout"
 import { CardPanelHeader } from "../card-panel/card-panel-header"
 import { CardPanelShell } from "../card-panel/card-panel-shell"
 import { ColumnTag } from "../column/column-tag"
-import { MarkdownEditor } from "../markdown"
+import { MarkdownEditor } from "@doska/editor"
 import { PublicAttachments } from "./public-attachments"
 import { PublicMarkdown } from "./public-markdown"
 
