@@ -6,6 +6,7 @@ import Folder from "lucide-react-native/icons/folder"
 import FolderOpen from "lucide-react-native/icons/folder-open"
 import MoreHorizontal from "lucide-react-native/icons/ellipsis"
 import { View } from "react-native"
+import Sortable from "react-native-sortables"
 import { ROUTES } from "@/lib/routes"
 import { SidebarButton } from "./sidebar-button"
 
@@ -19,13 +20,18 @@ export function FolderRow({ folder }: IProps) {
   return (
     <View className="flex-row items-center">
       <View className="flex-1">
-        <SidebarButton
-          icon={folder.collapsed ? Folder : FolderOpen}
-          label={folder.title || "Untitled folder"}
-          onPress={() =>
-            setCollapsed({ id: folder.id, collapsed: !folder.collapsed })
-          }
-        />
+        <Sortable.Handle>
+          <Sortable.Touchable
+            onTap={() =>
+              setCollapsed({ id: folder.id, collapsed: !folder.collapsed })
+            }
+          >
+            <SidebarButton
+              icon={folder.collapsed ? Folder : FolderOpen}
+              label={folder.title || "Untitled folder"}
+            />
+          </Sortable.Touchable>
+        </Sortable.Handle>
       </View>
       <IconButton
         icon={MoreHorizontal}
