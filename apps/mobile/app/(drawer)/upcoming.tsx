@@ -1,3 +1,4 @@
+import type { DigestFilter } from "@doska/core/operations"
 import { useDashboards, useDigest } from "@doska/core/queries"
 import { sync } from "@doska/core/sync"
 import { Spinner } from "@doska/ui-kit-mobile"
@@ -5,10 +6,12 @@ import { useFocusEffect } from "expo-router"
 import { useCallback, useState } from "react"
 import { Pressable, Text, View } from "react-native"
 import { ScreenHeader, ScreenTitle } from "@/components/shell/screen-header"
+import { UpcomingFilter } from "@/components/upcoming/upcoming-filter"
 import { UpcomingList } from "@/components/upcoming/upcoming-list"
 
 export default function UpcomingScreen() {
-  const { data } = useDigest("week")
+  const [filter, setFilter] = useState<DigestFilter>("week")
+  const { data } = useDigest(filter)
   const { data: dashboards = [] } = useDashboards()
   const [hideDone, setHideDone] = useState(false)
 
@@ -49,7 +52,17 @@ export default function UpcomingScreen() {
         </Pressable>
       </ScreenHeader>
 
-      {!data ? <Spinner /> : <UpcomingList cards={data} hideDone={hideDone} />}
+      <UpcomingFilter value={filter} onChange={setFilter} />
+
+      {!data ? (
+        <Spinner />
+      ) : (
+        <UpcomingList
+          cards={data}
+          hideDone={hideDone}
+          boardIds={boardIds ? boardIds.split(",") : []}
+        />
+      )}
     </View>
   )
 }

@@ -3,6 +3,7 @@ import type { Dashboard } from "@doska/core/types"
 import { IconButton, TextField } from "@doska/ui-kit-mobile"
 import { router } from "expo-router"
 import MoreHorizontal from "lucide-react-native/icons/ellipsis"
+import Search from "lucide-react-native/icons/search"
 import { useState } from "react"
 import { ScreenHeader } from "@/components/shell/screen-header"
 import { ROUTES } from "@/lib/routes"
@@ -45,6 +46,11 @@ export function BoardHeader({ board }: IProps) {
         accessibilityLabel="Board name"
         placeholder="Untitled board"
         className="flex-1 px-1 text-base font-sans-semibold text-sidebar-foreground"
+      />
+      <IconButton
+        icon={Search}
+        label="Search cards"
+        onPress={() => router.push(ROUTES.search)}
       />
       <IconButton
         icon={MoreHorizontal}

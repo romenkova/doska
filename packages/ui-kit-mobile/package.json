@@ -12,6 +12,10 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },
+  "dependencies": {
+    "clsx": "2.1.1",
+    "tailwind-merge": "3.6.0"
+  },
   "peerDependencies": {
     "@doska/tokens": "workspace:*",
     "expo-blur": "*",

@@ -4,7 +4,11 @@ import { EmptyState, Spinner } from "@doska/ui-kit-mobile"
 import { useEffect } from "react"
 import { TrashList } from "@/components/trash/trash-list"
 
-export function TrashBody() {
+interface IProps {
+  boardIds: string[]
+}
+
+export function TrashBody({ boardIds }: IProps) {
   const { data: entries = [], isPending, error, refetch } = useTrash()
 
   // Opening the trash is the moment stale entries would be visible, so sweep
@@ -27,5 +31,5 @@ export function TrashBody() {
     return <EmptyState message="The trash is empty." />
   }
 
-  return <TrashList entries={entries} />
+  return <TrashList entries={entries} boardIds={boardIds} />
 }
