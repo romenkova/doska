@@ -1,0 +1,40 @@
+{
+  "name": "webview",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    "./bridge": "./src/bridge.ts",
+    "./html": "./dist/html.js"
+  },
+  "scripts": {
+    "dev": "vite --host",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "typecheck": "tsc -b --noEmit"
+  },
+  "dependencies": {
+    "@codemirror/view": "^6.43.11",
+    "@doska/editor": "workspace:*",
+    "@doska/markdown": "workspace:*",
+    "@doska/tokens": "workspace:*",
+    "@doska/ui-kit": "workspace:*",
+    "@fontsource-variable/geist-mono": "5.3.0",
+    "@fontsource-variable/mulish": "5.3.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "tailwindcss": "^4"
+  },
+  "devDependencies": {
+    "@doska/configs": "workspace:*",
+    "@types/node": "^22",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.5",
+    "@vitejs/plugin-react": "^6.1.1",
+    "eslint": "^10.9.1",
+    "typescript": "~6",
+    "vite": "^8.2.2",
+    "vite-plugin-singlefile": "^2.3.3"
+  }
+}
