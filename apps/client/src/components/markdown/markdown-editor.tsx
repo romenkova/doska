@@ -4,6 +4,7 @@ import {
   toggleTaskByIndex,
   useMarkers,
   type Marker,
+  type PrefixOption,
   type SlashCommand,
   type WikilinkOption,
 } from "@doska/markdown"
@@ -29,6 +30,7 @@ export interface MarkdownEditorProps {
   markdown?: boolean
   slashCommands?: SlashCommand[]
   wikilinks?: WikilinkOption[]
+  suggestions?: Record<string, PrefixOption[]>
   onPasteFiles?: (files: File[]) => Promise<string | null>
   containerClassName?: string
   /**
@@ -55,6 +57,7 @@ export function MarkdownEditor({
   markdown,
   slashCommands,
   wikilinks,
+  suggestions,
   onPasteFiles,
   containerClassName,
   overlayContainer,
@@ -90,6 +93,7 @@ export function MarkdownEditor({
       markdown={markdown}
       slashCommands={slashCommands}
       wikilinks={wikilinks}
+      suggestions={suggestions}
       onPasteFiles={onPasteFiles}
       containerClassName={containerClassName}
       overlayContainer={overlayContainer}

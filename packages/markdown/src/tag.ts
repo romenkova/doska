@@ -1,7 +1,9 @@
+import { PREFIXED_NAME } from "./prefix"
+
 /**
  * A `#tag` written in a card body
  */
-export const TAG_RE = /(^|\s)#(\p{L}[\p{L}\p{N}_-]*)/gu
+export const TAG_RE = new RegExp(`(^|\\s)#(${PREFIXED_NAME})`, "gu")
 
 const FENCED_CODE_RE =
   /^(`{3,}|~{3,})[^\n]*\n[\s\S]*?(?:^\1[^\n]*$|(?![\s\S]))/gm
