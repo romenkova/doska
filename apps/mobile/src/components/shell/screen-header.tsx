@@ -5,6 +5,7 @@ import Menu from "lucide-react-native/icons/menu"
 import type { ReactNode } from "react"
 import { Text, View } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
+import { OfflineBanner } from "./offline-banner"
 
 interface IProps {
   children?: ReactNode
@@ -29,6 +30,7 @@ export function ScreenHeader({ children }: IProps) {
         />
         {children}
       </View>
+      <OfflineBanner />
     </View>
   )
 }

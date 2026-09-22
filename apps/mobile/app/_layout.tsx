@@ -56,18 +56,28 @@ export default function RootLayout() {
             />
             <Stack.Screen name={SCREENS.cardActions} options={sheetOptions} />
             <Stack.Screen name={SCREENS.cardDeadline} options={sheetOptions} />
+            <Stack.Screen name={SCREENS.cardPriority} options={sheetOptions} />
             <Stack.Screen name={SCREENS.cardMove} options={sheetOptions} />
             <Stack.Screen name={SCREENS.cardDelete} options={sheetOptions} />
             <Stack.Screen name={SCREENS.boardActions} options={sheetOptions} />
             <Stack.Screen name={SCREENS.boardReorder} options={sheetOptions} />
             <Stack.Screen name={SCREENS.boardDelete} options={sheetOptions} />
             <Stack.Screen name={SCREENS.boardFolder} options={sheetOptions} />
+            <Stack.Screen name={SCREENS.boardSort} options={sheetOptions} />
+            <Stack.Screen
+              name={SCREENS.boardDoneColumn}
+              options={sheetOptions}
+            />
             <Stack.Screen name={SCREENS.folderNew} options={sheetOptions} />
             <Stack.Screen name={SCREENS.folderActions} options={sheetOptions} />
             <Stack.Screen name={SCREENS.folderRename} options={sheetOptions} />
             <Stack.Screen name={SCREENS.columnNew} options={sheetOptions} />
             <Stack.Screen name={SCREENS.columnActions} options={sheetOptions} />
             <Stack.Screen name={SCREENS.columnDelete} options={sheetOptions} />
+            <Stack.Screen
+              name={SCREENS.search}
+              options={{ headerShown: false, presentation: "modal" }}
+            />
             <Stack.Screen
               name={SCREENS.signIn}
               options={{ title: "Sync", presentation: "modal" }}

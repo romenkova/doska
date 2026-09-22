@@ -1,4 +1,5 @@
 import { taskProgress } from "@doska/markdown"
+import { PriorityChip } from "@doska/ui-kit-mobile"
 import { router } from "expo-router"
 import { Pressable, View } from "react-native"
 import { DeadlineChip } from "@/components/card/deadline-chip"
@@ -9,11 +10,12 @@ interface IProps {
   cardId: string
   body: string
   deadline: string | null
+  priority: string
   /** The card sits in the board's done column. */
   done: boolean
 }
 
-export function CardMeta({ cardId, body, deadline, done }: IProps) {
+export function CardMeta({ cardId, body, deadline, priority, done }: IProps) {
   const tasks = taskProgress(body)
 
   return (
@@ -29,6 +31,16 @@ export function CardMeta({ cardId, body, deadline, done }: IProps) {
       >
         <DeadlineChip value={deadline} done={done} />
       </Pressable>
+      {priority ? (
+        <Pressable
+          onPress={() => router.push(ROUTES.cardPriority(cardId))}
+          accessibilityRole="button"
+          accessibilityLabel="Priority"
+          hitSlop={6}
+        >
+          <PriorityChip value={priority} />
+        </Pressable>
+      ) : null}
     </View>
   )
 }

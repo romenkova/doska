@@ -1,9 +1,11 @@
 import { useCard, useCardCol } from "@doska/core/queries"
 import { Separator, SheetItem } from "@doska/ui-kit-mobile"
 import { formatDeadline } from "@doska/core/utils"
+import { PRIORITIES } from "@doska/tokens/priority"
 import { router } from "expo-router"
 import ArrowRightLeft from "lucide-react-native/icons/arrow-right-left"
 import CalendarClock from "lucide-react-native/icons/calendar-clock"
+import Flag from "lucide-react-native/icons/flag"
 import Trash2 from "lucide-react-native/icons/trash-2"
 import { View } from "react-native"
 import { ROUTES } from "@/lib/routes"
@@ -22,6 +24,14 @@ export function CardActions({ cardId }: { cardId: string }) {
         label="Due date"
         trailing={card.deadline ? formatDeadline(card.deadline) : "None"}
         onPress={() => router.push(ROUTES.cardDeadline(cardId))}
+      />
+      <SheetItem
+        icon={Flag}
+        label="Priority"
+        trailing={
+          PRIORITIES.find((p) => p.id === card.priority)?.label ?? "None"
+        }
+        onPress={() => router.push(ROUTES.cardPriority(cardId))}
       />
       <SheetItem
         icon={ArrowRightLeft}

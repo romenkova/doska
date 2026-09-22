@@ -10,7 +10,8 @@
     "icon": "./assets/icon.png",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.doska.app"
+      "bundleIdentifier": "com.doska.app",
+      "config": { "usesNonExemptEncryption": false }
     },
     "android": {
       "package": "com.doska.app",
