@@ -1,10 +1,12 @@
 import { createContext, useContext } from "react"
 
-interface DeckContextValue {
+export interface DeckContextValue {
   /** The open board's id. */
   id: string
   /** The board's active sort keys — empty when its cards sit where they were dropped. */
   sort: string[]
+  tagFilters?: string[]
+  toggleTagFilter?: (tag: string) => void
 }
 
 /**

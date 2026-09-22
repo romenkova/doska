@@ -12,6 +12,8 @@ export interface MarkdownRenderers {
   renderImage?: (attachmentKey: string, alt: string) => ReactNode
   /** Renders a `[[target]]` wikilink; `alias` is the label its text carried. */
   renderWikilink?: (target: string, alias?: string) => ReactNode
+  /** Makes `#tag` chips clickable. */
+  onTagClick?: (name: string) => void
 }
 
 const NONE: MarkdownRenderers = {}

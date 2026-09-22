@@ -11,7 +11,7 @@ interface IProps {
   color: string
   showBody: boolean
   onToggleBody: () => void
-  onAddCard: () => void
+  onAddCard?: () => void
   onRename: (title: string) => void
   onChangeColor: (color: string) => void
   /** Cards in this column count as finished. */

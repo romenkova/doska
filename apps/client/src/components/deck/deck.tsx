@@ -4,12 +4,15 @@ import type { Board, Dashboard, DashboardView } from "@doska/core/types"
 import { byPosition, groupCardsByColumn, sortCards } from "@doska/core/utils"
 import type { CardPatch } from "@doska/core/mutations"
 import { useLandingSlot } from "@/lib/hooks"
+import { filterByTags } from "@/lib/tag-filter"
+import { useDeck } from "@/providers/deck/deck-context"
 import { Column } from "../column/column"
 import { AddColumn } from "../column/add-column"
 import { DraggableCard } from "../card/draggable-card"
 import { BoardView } from "./board-view"
 import { DragStateProvider } from "./drag-state"
 import { DeckHeader } from "./deck-header/deck-header"
+import { TagFilterPills } from "./deck-header/tag-filter-pills"
 import { DeckRowsView } from "./deck-rows-view"
 import { SyncIndicator } from "./sync-indicator"
 import { useSidebarCardDrop } from "./use-sidebar-card-drop"
@@ -63,7 +66,10 @@ export function Deck({
   const [isDragging, setIsDragging] = useState(false)
   const sidebarDrop = useSidebarCardDrop(isDragging)
 
-  const grouped = groupCardsByColumn(board)
+  const { tagFilters = [] } = useDeck()
+  const isFiltered = tagFilters.length > 0
+  const visible = { ...board, cards: filterByTags(board.cards, tagFilters) }
+  const grouped = groupCardsByColumn(visible)
   const orderedColumns = [...board.columns].sort(byPosition)
   const sort = dashboard.sort ?? []
   const { hold, release, place } = useLandingSlot(sort.length > 0)
@@ -88,27 +94,30 @@ export function Deck({
           isDragging={isDragging}
           footer={<SyncIndicator />}
           header={
-            <DeckHeader
-              boardId={dashboard.id}
-              title={dashboard.title}
-              onRename={onRenameDashboard}
-              onDelete={onDeleteDashboard}
-              columns={orderedColumns}
-              onReorderColumns={onReorderColumns}
-              sort={sort}
-              onChangeSort={onChangeSort}
-              view={view}
-              onChangeView={onChangeView}
-              onAddCard={
-                orderedColumns[0]
-                  ? () => onAddAndOpenCard(orderedColumns[0].id)
-                  : undefined
-              }
-            />
+            <>
+              <DeckHeader
+                boardId={dashboard.id}
+                title={dashboard.title}
+                onRename={onRenameDashboard}
+                onDelete={onDeleteDashboard}
+                columns={orderedColumns}
+                onReorderColumns={onReorderColumns}
+                sort={sort}
+                onChangeSort={onChangeSort}
+                view={view}
+                onChangeView={onChangeView}
+                onAddCard={
+                  orderedColumns[0] && !isFiltered
+                    ? () => onAddAndOpenCard(orderedColumns[0].id)
+                    : undefined
+                }
+              />
+              <TagFilterPills />
+            </>
           }
         >
           {view === "rows" ? (
-            <DeckRowsView board={board} title={dashboard.title} />
+            <DeckRowsView board={visible} title={dashboard.title} />
           ) : (
             <>
               {grouped.map(({ column, cards }) => {
@@ -122,7 +131,9 @@ export function Deck({
                     color={column.color}
                     showBody={showBody}
                     onToggleBody={() => onToggleBody(column.id, showBody)}
-                    onAddCard={() => onAddCard(column.id)}
+                    onAddCard={
+                      isFiltered ? undefined : () => onAddCard(column.id)
+                    }
                     onRename={(title) => onRenameColumn(column.id, title)}
                     onChangeColor={(color) =>
                       onChangeColumnColor(column.id, color)

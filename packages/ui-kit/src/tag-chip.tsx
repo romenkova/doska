@@ -1,12 +1,14 @@
 import { Hash } from "lucide-react"
+import type { ReactNode } from "react"
 import { cn } from "./lib/cn"
 
 interface IProps {
   label: string
   className?: string
+  children?: ReactNode
 }
 
-export function TagChip({ label, className }: IProps) {
+export function TagChip({ label, className, children }: IProps) {
   return (
     <span
       className={cn(
@@ -17,6 +19,7 @@ export function TagChip({ label, className }: IProps) {
     >
       <Hash className="size-3.5 shrink-0 stroke-[2.5] text-primary mt-[1px]" />
       <span className="truncate leading-4.5">{label}</span>
+      {children}
     </span>
   )
 }

@@ -6,6 +6,7 @@ import {
   keyBetween,
   sortCards,
 } from "@doska/core/utils"
+import { filterByTags } from "../tag-filter"
 
 /**
  * Builds the drop handler for the board: translates a drag result into the
@@ -14,7 +15,8 @@ import {
 export function useDragEnd(
   board: Board | undefined,
   moveCard: (changed: Card[]) => void,
-  sort: string[]
+  sort: string[],
+  tagFilters: string[] = []
 ) {
   return function handleDragEnd({
     source,
@@ -31,23 +33,22 @@ export function useDragEnd(
     const moved = board.cards.find((c) => c.id === draggableId)
     if (!moved) return
 
+    const column = board.cards
+      .filter(
+        (c) => c.columnId === destination.droppableId && c.id !== moved.id
+      )
+      .sort(byPosition)
+
     // The destination column as rendered, minus the card being dropped, so the
     // insertion index lines up with the neighbors at the drop site.
-    const destCards = sortCards(
-      board.cards
-        .filter(
-          (c) => c.columnId === destination.droppableId && c.id !== moved.id
-        )
-        .sort(byPosition),
-      sort
-    )
+    const destCards = sortCards(filterByTags(column, tagFilters), sort)
 
-    const [prev, next] = dropNeighbours(
-      destCards,
-      destination.index,
-      moved,
-      sort
-    )
+    let [prev, next] = dropNeighbours(destCards, destination.index, moved, sort)
+
+    if (tagFilters.length > 0) {
+      if (prev) next = column[column.indexOf(prev) + 1]
+      else if (next) prev = column[column.indexOf(next) - 1]
+    }
 
     const position = keyBetween(prev, next)
     if (position === null) return

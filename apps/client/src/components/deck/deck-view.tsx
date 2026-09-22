@@ -21,6 +21,7 @@ import { useCallback } from "react"
 import { useLocation } from "wouter"
 import { useDragEnd, useSyncShortcut } from "@/lib/hooks"
 import { routes } from "@/lib/routes"
+import { useDeck } from "@/providers/deck/deck-context"
 import type { Dashboard } from "@doska/core/types"
 import { Deck } from "./deck"
 
@@ -61,7 +62,13 @@ export function DeckView({ dashboard }: { dashboard: Dashboard }) {
     [saveCard]
   )
 
-  const handleDragEnd = useDragEnd(board, moveCard, dashboard.sort ?? [])
+  const { tagFilters } = useDeck()
+  const handleDragEnd = useDragEnd(
+    board,
+    moveCard,
+    dashboard.sort ?? [],
+    tagFilters
+  )
 
   return (
     <Deck

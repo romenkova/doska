@@ -28,6 +28,7 @@ import type { MarkdownAdapter, MarkdownRenderers } from "@doska/markdown"
 export function createWebAdapter({
   renderImage,
   renderWikilink,
+  onTagClick,
 }: MarkdownRenderers): MarkdownAdapter {
   return {
     // ----------------------------------------------------------- blocks
@@ -172,7 +173,13 @@ export function createWebAdapter({
     },
 
     tag(name, key) {
-      return <MdTag key={key} name={name} />
+      return (
+        <MdTag
+          key={key}
+          name={name}
+          onSelect={onTagClick && (() => onTagClick(name))}
+        />
+      )
     },
 
     cut(key) {
