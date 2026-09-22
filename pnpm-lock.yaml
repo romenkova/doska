@@ -32,24 +32,6 @@ importers:
 
   apps/client:
     dependencies:
-      '@codemirror/autocomplete':
-        specifier: ^6.20.3
-        version: 6.20.3
-      '@codemirror/commands':
-        specifier: ^6.11.0
-        version: 6.11.0
-      '@codemirror/lang-markdown':
-        specifier: ^6.5.2
-        version: 6.5.2
-      '@codemirror/language':
-        specifier: ^6.12.4
-        version: 6.12.4
-      '@codemirror/state':
-        specifier: ^6.7.4
-        version: 6.7.4
-      '@codemirror/view':
-        specifier: ^6.43.11
-        version: 6.43.11
       '@doska/client-db':
         specifier: workspace:*
         version: link:../../packages/client-db
@@ -59,6 +41,9 @@ importers:
       '@doska/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@doska/editor':
+        specifier: workspace:*
+        version: link:../../packages/editor
       '@doska/markdown':
         specifier: workspace:*
         version: link:../../packages/markdown
@@ -89,15 +74,6 @@ importers:
       '@hello-pangea/dnd':
         specifier: 18.0.1
         version: 18.0.1(@types/react@19.2.18)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      '@lezer/common':
-        specifier: ^1.5.2
-        version: 1.5.2
-      '@lezer/highlight':
-        specifier: ^1.2.3
-        version: 1.2.3
-      '@lezer/markdown':
-        specifier: ^1.7.2
-        version: 1.7.2
       '@tailwindcss/vite':
         specifier: ^4.3.3
         version: 4.3.3(vite@8.2.2(@types/node@22.20.1)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.0))
@@ -645,6 +621,67 @@ importers:
       '@types/node':
         specifier: ^22
         version: 22.20.1
+      typescript:
+        specifier: ~6
+        version: 6.0.3
+
+  packages/editor:
+    dependencies:
+      '@codemirror/autocomplete':
+        specifier: ^6.20.3
+        version: 6.20.3
+      '@codemirror/commands':
+        specifier: ^6.11.0
+        version: 6.11.0
+      '@codemirror/lang-markdown':
+        specifier: ^6.5.2
+        version: 6.5.2
+      '@codemirror/language':
+        specifier: ^6.12.4
+        version: 6.12.4
+      '@codemirror/state':
+        specifier: ^6.7.4
+        version: 6.7.4
+      '@codemirror/view':
+        specifier: ^6.43.11
+        version: 6.43.11
+      '@doska/core':
+        specifier: workspace:*
+        version: link:../core
+      '@doska/markdown':
+        specifier: workspace:*
+        version: link:../markdown
+      '@doska/ui-kit':
+        specifier: workspace:*
+        version: link:../ui-kit
+      '@lezer/common':
+        specifier: ^1.5.2
+        version: 1.5.2
+      '@lezer/highlight':
+        specifier: ^1.2.3
+        version: 1.2.3
+      '@lezer/markdown':
+        specifier: ^1.7.2
+        version: 1.7.2
+    devDependencies:
+      '@doska/configs':
+        specifier: workspace:*
+        version: link:../configs
+      '@types/react':
+        specifier: ^19.2.18
+        version: 19.2.18
+      '@types/react-dom':
+        specifier: ^19.2.5
+        version: 19.2.5(@types/react@19.2.18)
+      eslint:
+        specifier: ^10.9.1
+        version: 10.9.1(jiti@2.7.0)(supports-color@10.2.2)
+      react:
+        specifier: 19.2.3
+        version: 19.2.3
+      react-dom:
+        specifier: 19.2.3
+        version: 19.2.3(react@19.2.3)
       typescript:
         specifier: ~6
         version: 6.0.3
