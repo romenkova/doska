@@ -57,7 +57,7 @@ export function AppSidebar({
         <Text className="text-base font-sans-semibold text-sidebar-foreground">
           Doska
         </Text>
-        <Text className="text-[13px] text-muted-foreground/50">
+        <Text className="text-[13px] text-muted-foreground opacity-50">
           {Constants.expoConfig?.version ?? ""}
         </Text>
       </View>

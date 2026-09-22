@@ -24,7 +24,7 @@ export default function RootLayout() {
     sheetGrabberVisible: true,
     sheetCornerRadius: 24,
     sheetExpandsWhenScrolledToEdge: false,
-    contentStyle: { backgroundColor: tokens.card },
+    contentStyle: { backgroundColor: tokens.background },
   } as const
 
   const headerOptions = {
@@ -48,7 +48,11 @@ export default function RootLayout() {
             />
             <Stack.Screen
               name={SCREENS.card}
-              options={{ ...sheetOptions, sheetAllowedDetents: [1] }}
+              options={{
+                ...sheetOptions,
+                sheetAllowedDetents: [1],
+                contentStyle: { backgroundColor: tokens.card },
+              }}
             />
             <Stack.Screen name={SCREENS.cardActions} options={sheetOptions} />
             <Stack.Screen name={SCREENS.cardDeadline} options={sheetOptions} />
