@@ -17,7 +17,6 @@
     "@doska/markdown": "workspace:*",
     "@doska/ports": "workspace:*",
     "@doska/tokens": "workspace:*",
-    "@doska/ui-kit": "workspace:*",
     "@doska/ui-kit-mobile": "workspace:*",
     "@expo-google-fonts/geist-mono": "^0.4.3",
     "@expo-google-fonts/mulish": "^0.4.2",
@@ -51,9 +50,10 @@
     "react-native-screens": "~4.26.0",
     "react-native-sortables": "^1.10.0",
     "react-native-svg": "15.15.5",
+    "react-native-webview": "13.16.1",
     "react-native-worklets": "0.10.1",
     "tailwindcss": "^3.4.19",
-    "uuid": "^14.0.2"
+    "webview": "workspace:*"
   },
   "devDependencies": {
     "@babel/core": "^7.28.0",
