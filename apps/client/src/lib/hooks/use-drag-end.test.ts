@@ -81,6 +81,31 @@ describe("useDragEnd", () => {
     })
   })
 
+  describe("tag filter on", () => {
+    it("a drop lands between the visible neighbours, not the hidden ones", () => {
+      const cards = [
+        card("a", "todo", { position: "a0", body: "#bug" }),
+        card("hidden", "todo", { position: "a1" }),
+        card("c", "todo", { position: "a2", body: "#bug" }),
+        card("moved", "todo", { position: "a3", body: "#bug" }),
+      ]
+      const moveCard = vi.fn()
+      const handleDragEnd = useDragEnd(board(cards), moveCard, [], ["bug"])
+
+      handleDragEnd(
+        drop({
+          source: { droppableId: "todo", index: 2 },
+          destination: { droppableId: "todo", index: 1 },
+        })
+      )
+
+      // Right after "a", ahead of the hidden card: a key between "a" and "c"
+      // would be "a1", tying with it.
+      const position = moved(moveCard)?.position ?? ""
+      expect(position > "a0" && position < "a1").toBe(true)
+    })
+  })
+
   describe("sort on", () => {
     it("a same-column drop still writes a fresh position (current behavior — see conversation)", () => {
       // Task 06's spec calls for a no-op here, but the shipped code has no
