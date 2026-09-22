@@ -17,7 +17,7 @@ export function SheetScreen({ children }: { children: ReactNode }) {
   return (
     <View
       style={{ paddingBottom: insets.bottom + 12 }}
-      className="bg-card px-4 pt-4"
+      className="bg-background px-4 pt-4"
     >
       {children}
     </View>

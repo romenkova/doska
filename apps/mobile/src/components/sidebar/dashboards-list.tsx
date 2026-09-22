@@ -56,13 +56,14 @@ export function DashboardsList({
       }
       return (
         <Sortable.Handle>
-          <View className={item.folderId ? "pl-4" : undefined}>
-            <SidebarButton
-              label={item.dashboard.title || "Untitled board"}
-              isActive={item.dashboard.id === activeDashboardId}
-              onPress={() => onSelectDashboard(item.dashboard)}
-            />
-          </View>
+          <Sortable.Touchable onTap={() => onSelectDashboard(item.dashboard)}>
+            <View className={item.folderId ? "pl-4" : undefined}>
+              <SidebarButton
+                label={item.dashboard.title || "Untitled board"}
+                isActive={item.dashboard.id === activeDashboardId}
+              />
+            </View>
+          </Sortable.Touchable>
         </Sortable.Handle>
       )
     },
