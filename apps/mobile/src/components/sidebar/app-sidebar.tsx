@@ -32,7 +32,7 @@ export function AppSidebar({
   const insets = useSafeAreaInsets()
   const pathname = usePathname()
   const tokens = useTokens()
-  const { dashboards, deckId } = useActiveBoard()
+  const { deckId } = useActiveBoard()
   const { mutate: createDashboard } = useCreateDashboard()
 
   // Navigating from inside the drawer does not dismiss it; the drawer is its own
@@ -92,7 +92,6 @@ export function AppSidebar({
         </View>
 
         <DashboardsList
-          dashboards={dashboards}
           activeDashboardId={pathname === ROUTES.board ? deckId : null}
           onSelectDashboard={(dashboard) => openBoard(dashboard.id)}
         />
