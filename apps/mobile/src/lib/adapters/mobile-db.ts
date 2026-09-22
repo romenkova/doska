@@ -5,6 +5,7 @@ import {
   COLUMNS,
   DASHBOARDS,
   META_STORE,
+  SIDEBAR,
 } from "@doska/core/constants"
 import { SQLiteDB } from "./sqlite-db"
 
@@ -18,4 +19,5 @@ export const mobileDb = new SQLiteDB(DB_NAME, VERSION, {
   [COLUMNS]: [],
   [DASHBOARDS]: [],
   [META_STORE]: [],
+  [SIDEBAR]: [],
 })

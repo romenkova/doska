@@ -26,8 +26,11 @@ export interface CardBodyWebviewHandle {
   insert: (snippet: string) => void
 }
 
-// The page's Vite server, on the machine Metro runs on.
-const devHost = __DEV__ ? Constants.expoConfig?.hostUri?.split(":")[0] : null
+// Opt-in: the Vite dev server serves modules unbundled, slow to open every sheet.
+const devHost =
+  __DEV__ && process.env.EXPO_PUBLIC_WEBVIEW_DEV === "1"
+    ? Constants.expoConfig?.hostUri?.split(":")[0]
+    : null
 
 interface IProps {
   ref: Ref<CardBodyWebviewHandle>
@@ -153,7 +156,11 @@ export function CardBodyWebview({
       scrollEnabled={false}
       hideKeyboardAccessoryView
       keyboardDisplayRequiresUserAction={false}
-      style={{ height, backgroundColor: "transparent" }}
+      style={{
+        height,
+        opacity: isReady ? 1 : 0,
+        backgroundColor: "transparent",
+      }}
     />
   )
 }
