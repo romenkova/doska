@@ -1,8 +1,10 @@
-import { useRenameColumn } from "@doska/core/mutations"
+import { useRenameColumn, useSetColumnCollapsed } from "@doska/core/mutations"
 import type { Column } from "@doska/core/types"
 import { IconButton, TextField } from "@doska/ui-kit-mobile"
 import { useTokens } from "@doska/ui-kit-mobile/tokens"
 import { router } from "expo-router"
+import ChevronDown from "lucide-react-native/icons/chevron-down"
+import ChevronRight from "lucide-react-native/icons/chevron-right"
 import CircleCheck from "lucide-react-native/icons/circle-check"
 import MoreHorizontal from "lucide-react-native/icons/ellipsis"
 import Plus from "lucide-react-native/icons/plus"
@@ -26,6 +28,7 @@ interface IProps {
 export function ColumnHead({ deckId, column, onAddCard }: IProps) {
   const { dark } = useTokens()
   const { mutate: rename } = useRenameColumn(deckId)
+  const { mutate: setCollapsed } = useSetColumnCollapsed(deckId)
 
   // The field is a draft until it commits, but a rename arriving from sync has
   // to replace what is sitting in it.
@@ -48,6 +51,15 @@ export function ColumnHead({ deckId, column, onAddCard }: IProps) {
   return (
     <View className="flex-row items-center justify-between gap-2 px-1 pt-4">
       <View className="flex-1 flex-row items-center gap-1.5">
+        <IconButton
+          icon={column.collapsed ? ChevronRight : ChevronDown}
+          label={`${column.collapsed ? "Expand" : "Collapse"} ${column.title}`}
+          variant="plain"
+          size={16}
+          onPress={() =>
+            setCollapsed({ id: column.id, collapsed: !column.collapsed })
+          }
+        />
         <ColumnSwatch color={column.color} />
         <TextField
           value={draft}

@@ -58,10 +58,17 @@ export function sidebarTarget(
     }
   }
 
-  const rootAbove = rows
+  return { kind: "root", index: rootAbove(rows, index) }
+}
+
+export function folderTarget(rows: SidebarRow[], index: number): SidebarTarget {
+  return { kind: "root", index: rootAbove(rows, index) }
+}
+
+function rootAbove(rows: SidebarRow[], index: number): number {
+  return rows
     .slice(0, index)
     .filter(
       (row) => row.kind === "folder" || (row.kind === "board" && !row.folderId)
     ).length
-  return { kind: "root", index: rootAbove }
 }

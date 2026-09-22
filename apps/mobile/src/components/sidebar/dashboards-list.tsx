@@ -1,4 +1,7 @@
-import { useMoveSidebarItem } from "@doska/core/mutations"
+import {
+  useMoveSidebarItem,
+  useSetFolderCollapsed,
+} from "@doska/core/mutations"
 import { useSidebarTree } from "@doska/core/queries"
 import type { Dashboard } from "@doska/core/types"
 import { IconButton } from "@doska/ui-kit-mobile"
@@ -7,13 +10,19 @@ import FolderPlus from "lucide-react-native/icons/folder-plus"
 import { useCallback, useMemo } from "react"
 import { Text, View } from "react-native"
 import Sortable, {
+  type DragStartParams,
   type SortableGridDragEndParams,
   type SortableGridRenderItem,
 } from "react-native-sortables"
 import { ROUTES } from "@/lib/routes"
 import { FolderRow } from "./folder-row"
 import { SidebarButton } from "./sidebar-button"
-import { sidebarRows, sidebarTarget, type SidebarRow } from "./sidebar-rows"
+import {
+  folderTarget,
+  sidebarRows,
+  sidebarTarget,
+  type SidebarRow,
+} from "./sidebar-rows"
 
 /** Held this long without moving, a board lifts instead of the list scrolling. */
 const PICKUP_MS = 250
@@ -29,16 +38,13 @@ export function DashboardsList({
 }: IProps) {
   const { data: nodes = [] } = useSidebarTree()
   const { mutate: move } = useMoveSidebarItem()
+  const { mutate: setCollapsed } = useSetFolderCollapsed()
   const rows = useMemo(() => sidebarRows(nodes), [nodes])
 
   const renderRow = useCallback<SortableGridRenderItem<SidebarRow>>(
     ({ item }) => {
       if (item.kind === "folder") {
-        return (
-          <Sortable.Handle mode="non-draggable">
-            <FolderRow folder={item.folder} />
-          </Sortable.Handle>
-        )
+        return <FolderRow folder={item.folder} />
       }
       if (item.kind === "end") {
         const isEmpty = !item.folder.collapsed && !item.folder.boards.length
@@ -70,12 +76,27 @@ export function DashboardsList({
     [activeDashboardId, onSelectDashboard]
   )
 
+  // A folder's boards can't ride along with it, so it folds up as it lifts.
+  const handleDragStart = useCallback(
+    ({ key }: DragStartParams) => {
+      const row = rows.find((r) => r.key === key)
+      if (row?.kind === "folder" && !row.folder.collapsed) {
+        setCollapsed({ id: row.folder.id, collapsed: true })
+      }
+    },
+    [rows, setCollapsed]
+  )
+
   const handleDragEnd = useCallback(
     ({ data, fromIndex, toIndex }: SortableGridDragEndParams<SidebarRow>) => {
       if (fromIndex === toIndex) return
       const moved = data[toIndex]
-      if (moved?.kind !== "board") return
-      move({ id: moved.key, target: sidebarTarget(data, toIndex) })
+      if (moved?.kind === "board") {
+        move({ id: moved.key, target: sidebarTarget(data, toIndex) })
+      }
+      if (moved?.kind === "folder") {
+        move({ id: moved.key, target: folderTarget(data, toIndex) })
+      }
     },
     [move]
   )
@@ -106,6 +127,7 @@ export function DashboardsList({
         enableActiveItemSnap={false}
         hapticsEnabled
         showDropIndicator
+        onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       />
     </View>
