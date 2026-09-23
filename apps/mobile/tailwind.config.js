@@ -32,11 +32,6 @@ module.exports = {
         "quote-bar": color("quote-bar"),
         "card-ring": color("card-ring"),
         "button-muted": color("button-muted"),
-        deadline: {
-          overdue: color("deadline-overdue"),
-          soon: color("deadline-soon"),
-          "soon-foreground": color("deadline-soon-foreground"),
-        },
       },
       borderRadius: {
         sm: RADIUS * 0.6,

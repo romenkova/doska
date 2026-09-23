@@ -12,10 +12,6 @@
   --mark: #9687fe4d;
   --quote-bar: #c2b9fb;
 
-  --deadline-overdue: #ff56561a;
-  --deadline-soon: #f59e0b26;
-  --deadline-soon-foreground: #d97706;
-
   --card-ring: #343c541a;
   --button-muted: #676d7f0d;
 }
@@ -23,10 +19,6 @@
 .dark:root {
   --mark: #9687fe4d;
   --quote-bar: #5b5998;
-
-  --deadline-overdue: #ff56561a;
-  --deadline-soon: #f59e0b26;
-  --deadline-soon-foreground: #fbbf24;
 
   --card-ring: #f7f7f81a;
   --button-muted: #ffffff0a;
