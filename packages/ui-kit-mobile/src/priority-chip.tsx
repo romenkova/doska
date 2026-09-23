@@ -12,7 +12,7 @@ interface IProps {
 
 /** The priority badge: a filled flag, coloured by level. Unset shows an
  * outline, for pickers that list "No priority". */
-export function PriorityChip({ value, size = 14 }: IProps) {
+export function PriorityChip({ value, size = 16 }: IProps) {
   const { destructive, mutedForeground, dark } = useTokens()
   const priority = PRIORITIES.find((p) => p.id === value)
 

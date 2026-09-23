@@ -13,9 +13,18 @@ interface IProps {
   priority: string
   /** The card sits in the board's done column. */
   done: boolean
+  /** Shows the bare calendar when there's no deadline, as the way to set one. */
+  showEmpty?: boolean
 }
 
-export function CardMeta({ cardId, body, deadline, priority, done }: IProps) {
+export function CardMeta({
+  cardId,
+  body,
+  deadline,
+  priority,
+  done,
+  showEmpty,
+}: IProps) {
   const tasks = taskProgress(body)
 
   return (
@@ -23,14 +32,16 @@ export function CardMeta({ cardId, body, deadline, priority, done }: IProps) {
       {tasks.total > 0 && <TaskCount {...tasks} />}
       {/* Nested in the board card's Pressable, which it shadows: the chip is
           the deadline control on the card as well as in its sheet. */}
-      <Pressable
-        onPress={() => router.push(ROUTES.cardDeadline(cardId))}
-        accessibilityRole="button"
-        accessibilityLabel="Due date"
-        hitSlop={6}
-      >
-        <DeadlineChip value={deadline} done={done} />
-      </Pressable>
+      {(showEmpty || !!deadline) && (
+        <Pressable
+          onPress={() => router.push(ROUTES.cardDeadline(cardId))}
+          accessibilityRole="button"
+          accessibilityLabel="Due date"
+          hitSlop={6}
+        >
+          <DeadlineChip value={deadline} done={done} />
+        </Pressable>
+      )}
       {priority ? (
         <Pressable
           onPress={() => router.push(ROUTES.cardPriority(cardId))}

@@ -27,7 +27,7 @@ import { useSyncRefresh } from "@/lib/use-sync-refresh"
 
 /** Held this long without moving, a card lifts instead of the list scrolling. */
 const PICKUP_MS = 250
-const ROW_GAP = 8
+const ROW_GAP = 12
 // Stable, so the rows aren't rebuilt every render for an unsorted board.
 const NO_SORT: string[] = []
 
