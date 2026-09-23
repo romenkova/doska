@@ -27,6 +27,7 @@ export function CardPaneHeader({ cardId, body, deadline, priority }: IProps) {
         deadline={deadline}
         priority={priority}
         done={column?.done ?? false}
+        showEmpty
       />
       {column ? (
         <Pressable

@@ -1,4 +1,5 @@
 import type { Card } from "@doska/core/types"
+import { taskProgress } from "@doska/markdown"
 import { IconButton } from "@doska/ui-kit-mobile"
 import { router } from "expo-router"
 import MoreHorizontal from "lucide-react-native/icons/ellipsis"
@@ -14,6 +15,9 @@ interface IProps {
 
 /** A board row: title and meta. The body lives in the card sheet. */
 export function BoardCard({ card, done }: IProps) {
+  const hasMeta =
+    taskProgress(card.body).total > 0 || !!card.deadline || !!card.priority
+
   return (
     <Pressable
       onPress={() => router.push(ROUTES.card(card.id))}
@@ -23,24 +27,30 @@ export function BoardCard({ card, done }: IProps) {
         <Text className="flex-1 text-base font-sans-semibold leading-snug text-card-foreground">
           {card.title || "Untitled card"}
         </Text>
-        <IconButton
-          icon={MoreHorizontal}
-          label={`${card.title || "Untitled card"} actions`}
-          variant="plain"
-          size={18}
-          onPress={() => router.push(ROUTES.cardActions(card.id))}
-        />
+        {/* The button's padding stays out of the row's height, so a lone
+            title isn't pushed off-center; the icon sits on the first line. */}
+        <View className="-mb-2 -mt-1">
+          <IconButton
+            icon={MoreHorizontal}
+            label={`${card.title || "Untitled card"} actions`}
+            variant="plain"
+            size={18}
+            onPress={() => router.push(ROUTES.cardActions(card.id))}
+          />
+        </View>
       </View>
 
-      <View className="border-t border-muted px-3 pt-2">
-        <CardMeta
-          cardId={card.id}
-          body={card.body}
-          deadline={card.deadline}
-          priority={card.priority}
-          done={done}
-        />
-      </View>
+      {hasMeta && (
+        <View className="border-t border-muted px-3 pt-2">
+          <CardMeta
+            cardId={card.id}
+            body={card.body}
+            deadline={card.deadline}
+            priority={card.priority}
+            done={done}
+          />
+        </View>
+      )}
     </Pressable>
   )
 }

@@ -1,20 +1,15 @@
 import {
   deadlineRelative,
   deadlineStatus,
-  formatDeadline,
+  formatDeadlineShort,
 } from "@doska/core/utils"
 import { DEADLINE } from "@doska/tokens/deadline"
-import { Chip } from "@doska/ui-kit-mobile"
 import { useTokens } from "@doska/ui-kit-mobile/tokens"
 import Calendar from "lucide-react-native/icons/calendar"
-import { Text } from "react-native"
+import { Text, View } from "react-native"
 
-/** Matches the web's `CHIP_BY_STATUS`, minus the hover state. */
-const CHIP = {
-  overdue: { box: "bg-deadline-overdue", text: "text-destructive" },
-  soon: { box: "bg-deadline-soon", text: "text-deadline-soon-foreground" },
-  upcoming: { box: "", text: "text-muted-foreground" },
-}
+/** The web's `/80` on the overdue and soon colours. */
+const DIMMED = "cc"
 
 interface IProps {
   /** No deadline still renders: the bare calendar is how one gets set. */
@@ -32,24 +27,26 @@ export function DeadlineChip({ value, done }: IProps) {
     value === null
       ? null
       : status === "upcoming"
-        ? formatDeadline(value)
+        ? formatDeadlineShort(value)
         : deadlineRelative(value)
-  const chip = CHIP[status]
-  const tint =
+  const color =
     status === "overdue"
-      ? destructive
+      ? destructive + DIMMED
       : status === "soon"
-        ? DEADLINE[dark ? "dark" : "light"].soonForeground
+        ? DEADLINE[dark ? "dark" : "light"].soonForeground + DIMMED
         : mutedForeground
 
   return (
-    <Chip className={chip.box}>
-      <Calendar size={14} color={tint} />
+    <View className="flex-row items-center gap-1">
+      <Calendar size={16} color={color} />
       {label !== null && (
-        <Text className={`text-xs font-sans-semibold ${chip.text}`}>
+        <Text
+          className="text-sm font-sans-semibold tabular-nums"
+          style={{ color }}
+        >
           {label}
         </Text>
       )}
-    </Chip>
+    </View>
   )
 }
