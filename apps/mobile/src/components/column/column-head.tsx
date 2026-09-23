@@ -20,7 +20,8 @@ const DONE_TINT = { light: "#05966980", dark: "#34d39980" }
 interface IProps {
   deckId: string
   column: Column
-  onAddCard: () => void
+  /** Omit to hide the add button, as while a tag filter would hide the new card. */
+  onAddCard?: () => void
 }
 
 /** A column's section in the board list: swatch, editable title, add card,
@@ -82,11 +83,13 @@ export function ColumnHead({ deckId, column, onAddCard }: IProps) {
       </View>
 
       <View className="flex-row items-center gap-1">
-        <IconButton
-          icon={Plus}
-          label={`Add card to ${column.title}`}
-          onPress={onAddCard}
-        />
+        {onAddCard ? (
+          <IconButton
+            icon={Plus}
+            label={`Add card to ${column.title}`}
+            onPress={onAddCard}
+          />
+        ) : null}
         <IconButton
           icon={MoreHorizontal}
           label={`${column.title} actions`}

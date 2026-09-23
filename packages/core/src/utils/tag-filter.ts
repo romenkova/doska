@@ -1,5 +1,5 @@
 import { tagsIn } from "@doska/markdown"
-import type { Card } from "@doska/core/types"
+import type { Card } from "../types"
 
 const sameTag = (a: string, b: string) => a.toLowerCase() === b.toLowerCase()
 

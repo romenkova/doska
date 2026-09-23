@@ -4,6 +4,7 @@ import type { Card, Column, Dashboard } from "@doska/core/types"
 import {
   byPosition,
   dropNeighbours,
+  filterByTags,
   keyBetween,
   sortCards,
 } from "@doska/core/utils"
@@ -53,6 +54,8 @@ function landing(rows: Row[], index: number) {
 
 interface IProps {
   board: Dashboard
+  tagFilters: string[]
+  onPressTag: (tag: string) => void
 }
 
 /**
@@ -60,7 +63,11 @@ interface IProps {
  * can't be picked up but shift with the order, so a card's column is simply
  * the header above wherever it was dropped.
  */
-export function BoardList({ board: dashboard }: IProps) {
+export function BoardList({
+  board: dashboard,
+  tagFilters,
+  onPressTag,
+}: IProps) {
   const deckId = dashboard.id
   const { data: board } = useBoard(deckId)
   const { mutate: createCard } = useCreateCard(deckId)
@@ -72,15 +79,21 @@ export function BoardList({ board: dashboard }: IProps) {
 
   const sort = dashboard.sort ?? NO_SORT
 
+  const cardsByPosition = useCallback(
+    (columnId: string, except?: string) =>
+      (board?.cards ?? [])
+        .filter((card) => card.columnId === columnId && card.id !== except)
+        .sort(byPosition),
+    [board]
+  )
+
   const cardsIn = useCallback(
     (columnId: string, except?: string) =>
       sortCards(
-        (board?.cards ?? [])
-          .filter((card) => card.columnId === columnId && card.id !== except)
-          .sort(byPosition),
+        filterByTags(cardsByPosition(columnId, except), tagFilters),
         sort
       ),
-    [board, sort]
+    [cardsByPosition, tagFilters, sort]
   )
 
   const rows = useMemo(() => {
@@ -108,17 +121,25 @@ export function BoardList({ board: dashboard }: IProps) {
             <ColumnHead
               deckId={deckId}
               column={item.column}
-              onAddCard={() => createCard(item.column.id)}
+              onAddCard={
+                tagFilters.length > 0
+                  ? undefined
+                  : () => createCard(item.column.id)
+              }
             />
           </Sortable.Handle>
         ) : (
           <Sortable.Handle>
-            <BoardCard card={item.card} done={item.done} />
+            <BoardCard
+              card={item.card}
+              done={item.done}
+              onPressTag={onPressTag}
+            />
           </Sortable.Handle>
         )}
       </View>
     ),
-    [deckId, createCard]
+    [deckId, createCard, tagFilters, onPressTag]
   )
 
   // Sortables lays rows out absolutely, so the ScrollView can't stick them;
@@ -149,13 +170,22 @@ export function BoardList({ board: dashboard }: IProps) {
 
       // A collapsed column shows no cards, so its slot is always 0: the top.
       const order = cardsIn(column.id, moved.card.id)
-      const [prev, next] = dropNeighbours(order, slot, moved.card, sort)
+      let [prev, next] = dropNeighbours(order, slot, moved.card, sort)
+
+      // Filtered-out cards sit between the visible ones: land next to the
+      // visible neighbour rather than somewhere in the hidden gap.
+      if (tagFilters.length > 0) {
+        const all = cardsByPosition(column.id, moved.card.id)
+        if (prev) next = all[all.indexOf(prev) + 1]
+        else if (next) prev = all[all.indexOf(next) - 1]
+      }
+
       const position = keyBetween(prev, next)
       if (!position) return
 
       moveCard([{ ...moved.card, columnId: column.id, position }])
     },
-    [moveCard, cardsIn, sort]
+    [moveCard, cardsIn, cardsByPosition, tagFilters, sort]
   )
 
   const stuck = board?.columns.find((column) => column.id === stuckId)
@@ -200,7 +230,9 @@ export function BoardList({ board: dashboard }: IProps) {
           <ColumnHead
             deckId={deckId}
             column={stuck}
-            onAddCard={() => createCard(stuck.id)}
+            onAddCard={
+              tagFilters.length > 0 ? undefined : () => createCard(stuck.id)
+            }
           />
         </View>
       ) : null}
