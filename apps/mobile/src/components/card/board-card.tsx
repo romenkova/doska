@@ -1,11 +1,12 @@
 import type { Card } from "@doska/core/types"
-import { taskProgress } from "@doska/markdown"
+import { tagsIn, taskProgress } from "@doska/markdown"
 import { IconButton } from "@doska/ui-kit-mobile"
 import { router } from "expo-router"
 import MoreHorizontal from "lucide-react-native/icons/ellipsis"
 import { Pressable, Text, View } from "react-native"
 import { ROUTES } from "@/lib/routes"
 import { CardMeta } from "./card-meta"
+import { CardTags } from "./card-tags"
 
 interface IProps {
   card: Card
@@ -13,10 +14,14 @@ interface IProps {
   done: boolean
 }
 
-/** A board row: title and meta. The body lives in the card sheet. */
+/** A board row: title, meta and tags. The body lives in the card sheet. */
 export function BoardCard({ card, done }: IProps) {
+  const tags = tagsIn(card.body)
   const hasMeta =
-    taskProgress(card.body).total > 0 || !!card.deadline || !!card.priority
+    taskProgress(card.body).total > 0 ||
+    !!card.deadline ||
+    !!card.priority ||
+    !!card.bodyConflict
 
   return (
     <Pressable
@@ -48,7 +53,13 @@ export function BoardCard({ card, done }: IProps) {
             deadline={card.deadline}
             priority={card.priority}
             done={done}
+            conflict={!!card.bodyConflict}
           />
+        </View>
+      )}
+      {tags.length > 0 && (
+        <View className="border-t border-muted px-3 pt-2">
+          <CardTags tags={tags} />
         </View>
       )}
     </Pressable>

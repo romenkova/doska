@@ -2,6 +2,7 @@ import { taskProgress } from "@doska/markdown"
 import { PriorityChip } from "@doska/ui-kit-mobile"
 import { router } from "expo-router"
 import { Pressable, View } from "react-native"
+import { ConflictMarker } from "@/components/card/conflict-marker"
 import { DeadlineChip } from "@/components/card/deadline-chip"
 import { TaskCount } from "@/components/card/task-count"
 import { ROUTES } from "@/lib/routes"
@@ -13,6 +14,7 @@ interface IProps {
   priority: string
   /** The card sits in the board's done column. */
   done: boolean
+  conflict: boolean
   /** Shows the bare calendar when there's no deadline, as the way to set one. */
   showEmpty?: boolean
 }
@@ -23,6 +25,7 @@ export function CardMeta({
   deadline,
   priority,
   done,
+  conflict,
   showEmpty,
 }: IProps) {
   const tasks = taskProgress(body)
@@ -52,6 +55,7 @@ export function CardMeta({
           <PriorityChip value={priority} />
         </Pressable>
       ) : null}
+      {conflict && <ConflictMarker />}
     </View>
   )
 }

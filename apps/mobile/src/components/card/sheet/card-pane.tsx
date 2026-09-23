@@ -103,6 +103,7 @@ export function CardPane({ cardId, content, onQueue }: IProps) {
           body={body}
           deadline={content.deadline}
           priority={content.priority}
+          conflict={!!content.bodyConflict}
         />
         <TextField
           multiline
