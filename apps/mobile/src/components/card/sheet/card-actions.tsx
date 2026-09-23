@@ -6,6 +6,7 @@ import { router } from "expo-router"
 import ArrowRightLeft from "lucide-react-native/icons/arrow-right-left"
 import CalendarClock from "lucide-react-native/icons/calendar-clock"
 import Flag from "lucide-react-native/icons/flag"
+import SquareKanban from "lucide-react-native/icons/square-kanban"
 import Trash2 from "lucide-react-native/icons/trash-2"
 import { View } from "react-native"
 import { ROUTES } from "@/lib/routes"
@@ -38,6 +39,11 @@ export function CardActions({ cardId }: { cardId: string }) {
         label="Move to column"
         trailing={column?.title ?? ""}
         onPress={() => router.push(ROUTES.cardMove(cardId))}
+      />
+      <SheetItem
+        icon={SquareKanban}
+        label="Move to board"
+        onPress={() => router.push(ROUTES.cardBoard(cardId))}
       />
       <Separator className="my-1" />
       <SheetItem
