@@ -17,6 +17,8 @@ export interface WebviewState {
   isDark: boolean
   tags: PrefixOption[]
   refs: CardRef[]
+  /** Data URLs by attachment key. */
+  images: Record<string, string>
 }
 
 export type ToWebview =

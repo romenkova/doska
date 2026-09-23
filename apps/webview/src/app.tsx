@@ -1,7 +1,7 @@
 import { EditorView } from "@codemirror/view"
 import { MarkdownEditor } from "@doska/editor"
 import { applyInsert, cut, MarkdownRenderersProvider } from "@doska/markdown"
-import { Markdown } from "@doska/ui-kit"
+import { Markdown, MdImage } from "@doska/ui-kit"
 import { useEffect, useLayoutEffect, useMemo, useState } from "react"
 import type { ToWebview, WebviewState } from "./bridge"
 import { CardRefLink } from "./card-ref-link"
@@ -83,13 +83,16 @@ export function App() {
   }, [])
 
   const refs = state?.refs
+  const images = state?.images
   const renderers = useMemo(
     () => ({
+      renderImage: (key: string, alt: string) =>
+        images?.[key] ? <MdImage src={images[key]} alt={alt} /> : <></>,
       renderWikilink: (target: string, alias?: string) => (
         <CardRefLink target={target} alias={alias} refs={refs ?? []} />
       ),
     }),
-    [refs]
+    [refs, images]
   )
   const wikilinks = useMemo(
     () =>
