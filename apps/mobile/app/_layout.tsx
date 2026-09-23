@@ -58,6 +58,7 @@ export default function RootLayout() {
             <Stack.Screen name={SCREENS.cardDeadline} options={sheetOptions} />
             <Stack.Screen name={SCREENS.cardPriority} options={sheetOptions} />
             <Stack.Screen name={SCREENS.cardMove} options={sheetOptions} />
+            <Stack.Screen name={SCREENS.cardBoard} options={sheetOptions} />
             <Stack.Screen name={SCREENS.cardDelete} options={sheetOptions} />
             <Stack.Screen name={SCREENS.boardActions} options={sheetOptions} />
             <Stack.Screen name={SCREENS.boardReorder} options={sheetOptions} />
