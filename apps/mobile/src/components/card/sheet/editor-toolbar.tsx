@@ -47,22 +47,19 @@ interface IProps {
   /** Commands to offer: the matches for a typed `/`, or the full list. */
   items: SlashCommand[]
   isPreview: boolean
-  onTogglePreview: () => void
+  onPreview: () => void
   onSelect: (command: SlashCommand) => void
 }
 
-/**
- * The editor's one toolbar, as two pills: the commands on the left, the preview
- * toggle on its own to the right. The command pill is dropped entirely rather
- * than shown empty — in preview, and when a typed `/` matches nothing.
- */
 export function EditorToolbar({
   items,
   isPreview,
-  onTogglePreview,
+  onPreview,
   onSelect,
 }: IProps) {
   const tokens = useTokens()
+
+  if (isPreview) return null
 
   return (
     <View
@@ -102,15 +99,8 @@ export function EditorToolbar({
       ) : null}
 
       <Pill>
-        <ToolButton
-          label="Preview"
-          active={isPreview}
-          onPress={onTogglePreview}
-        >
-          <Eye
-            size={22}
-            color={isPreview ? tokens.primary : tokens.cardForeground}
-          />
+        <ToolButton label="Preview" onPress={onPreview}>
+          <Eye size={22} color={tokens.cardForeground} />
         </ToolButton>
       </Pill>
     </View>
@@ -145,12 +135,10 @@ function Pill({ grow, children }: { grow?: boolean; children: ReactNode }) {
 
 function ToolButton({
   label,
-  active,
   onPress,
   children,
 }: {
   label: string
-  active?: boolean
   onPress: () => void
   children: ReactNode
 }) {
@@ -159,12 +147,7 @@ function ToolButton({
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={label}
-      accessibilityState={{ selected: active }}
-      className={
-        active
-          ? "size-10 items-center justify-center rounded-full bg-secondary"
-          : "size-10 items-center justify-center rounded-full active:bg-secondary"
-      }
+      className="size-10 items-center justify-center rounded-full active:bg-secondary"
     >
       {children}
     </Pressable>
