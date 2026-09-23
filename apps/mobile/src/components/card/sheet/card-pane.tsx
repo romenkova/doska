@@ -126,6 +126,7 @@ export function CardPane({ cardId, content, onQueue }: IProps) {
             cardId={cardId}
             deckId={deckId ?? ""}
             body={content.body}
+            attachments={content.attachments}
             isPreview={isPreview}
             onChangeBody={(value) => edit({ body: value })}
             onEdit={() => setPreview(false)}

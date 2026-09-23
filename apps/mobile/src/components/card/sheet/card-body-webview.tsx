@@ -1,6 +1,7 @@
 import { cardDisplayId } from "@doska/contract/card-id"
 import { useBoard } from "@doska/core/queries"
 import { useTagOptions } from "@doska/core/tag-options"
+import type { Attachment } from "@doska/core/types"
 import Constants from "expo-constants"
 import { router } from "expo-router"
 import {
@@ -21,6 +22,7 @@ import type {
 import html from "webview/html"
 import { ROUTES } from "@/lib/routes"
 import { useTheme } from "@/lib/theme"
+import { useAttachmentImages } from "./use-attachment-images"
 
 export interface CardBodyWebviewHandle {
   insert: (snippet: string) => void
@@ -37,6 +39,7 @@ interface IProps {
   cardId: string
   deckId: string
   body: string
+  attachments: Attachment[]
   isPreview: boolean
   onChangeBody: (value: string) => void
   onEdit: () => void
@@ -72,6 +75,7 @@ export function CardBodyWebview({
   cardId,
   deckId,
   body,
+  attachments,
   isPreview,
   onChangeBody,
   onEdit,
@@ -81,6 +85,7 @@ export function CardBodyWebview({
   const { theme } = useTheme()
   const tags = useTagOptions(deckId, cardId)
   const refs = useCardRefs(deckId, cardId)
+  const images = useAttachmentImages(cardId, attachments)
   const [isReady, setReady] = useState(false)
   const [isFocused, setFocused] = useState(false)
   const [height, setHeight] = useState(0)
@@ -99,8 +104,8 @@ export function CardBodyWebview({
   }))
 
   const state: WebviewState = useMemo(
-    () => ({ isPreview, isDark: theme === "dark", tags, refs }),
-    [isPreview, theme, tags, refs]
+    () => ({ isPreview, isDark: theme === "dark", tags, refs, images }),
+    [isPreview, theme, tags, refs, images]
   )
 
   useEffect(() => {
