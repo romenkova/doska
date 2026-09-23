@@ -5,7 +5,11 @@ import { TextField } from "@doska/ui-kit-mobile"
 import { useEffect, useRef, useState } from "react"
 import { ScrollView, View } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
+import { pickDocuments, pickImages } from "@/lib/pick-files"
+import { imageMarkdown, isImage, type LocalFile } from "@/lib/upload-files"
+import { useAttachmentUpload } from "@/lib/use-attachment-upload"
 import { useKeyboardHeight } from "@/lib/use-keyboard-height"
+import { CardAttachments } from "./card-attachments"
 import {
   CardBodyWebview,
   type CardBodyWebviewHandle,
@@ -48,12 +52,23 @@ export function CardPane({ cardId, content, onQueue }: IProps) {
   const [caretBottom, setCaretBottom] = useState<number | null>(null)
   const scroller = useRef<ScrollView>(null)
 
+  const uploads = useAttachmentUpload(cardId)
+
+  async function attach(files: LocalFile[]) {
+    const added = await uploads.add(files)
+    const images = added.filter(isImage).map(imageMarkdown)
+    if (images.length) webview.current?.insert(images.join("\n"))
+  }
+
   const toolbar = {
     items: DEFAULT_SLASH_COMMANDS,
     isPreview,
     onPreview: () => setPreview(true),
     onSelect: (command: SlashCommand) =>
       webview.current?.insert(command.insert),
+    isUploading: uploads.busy,
+    onAttachImage: () => pickImages().then(attach),
+    onAttachFile: () => pickDocuments().then(attach),
   }
 
   // Everything the bar covers: its own height, a gap, and the keyboard or the
@@ -104,6 +119,11 @@ export function CardPane({ cardId, content, onQueue }: IProps) {
           deadline={content.deadline}
           priority={content.priority}
           conflict={!!content.bodyConflict}
+        />
+        <CardAttachments
+          cardId={cardId}
+          attachments={content.attachments}
+          pending={uploads.pending}
         />
         <TextField
           multiline

@@ -10,6 +10,7 @@ export const ROUTES = {
   trash: "/trash",
   signIn: "/sign-in",
   search: "/search",
+  share: "/share",
   boardActions: "/board/actions",
   boardReorder: "/board/reorder",
   boardDelete: "/board/delete",
@@ -29,6 +30,8 @@ export const ROUTES = {
   cardMove: (id: string) => `/card/${id}/move` as const,
   cardBoard: (id: string) => `/card/${id}/board` as const,
   cardDelete: (id: string) => `/card/${id}/delete` as const,
+  cardFile: (id: string, key: string, name: string) =>
+    ({ pathname: "/card/[id]/file", params: { id, key, name } }) as const,
 } as const
 
 export const SCREENS = {
@@ -38,6 +41,7 @@ export const SCREENS = {
   trash: "trash",
   signIn: "sign-in",
   search: "search",
+  share: "share",
   boardActions: "board/actions",
   boardReorder: "board/reorder",
   boardDelete: "board/delete",
@@ -57,4 +61,5 @@ export const SCREENS = {
   cardMove: "card/[id]/move",
   cardBoard: "card/[id]/board",
   cardDelete: "card/[id]/delete",
+  cardFile: "card/[id]/file",
 } as const

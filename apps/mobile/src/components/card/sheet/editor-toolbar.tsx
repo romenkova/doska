@@ -1,5 +1,5 @@
 import type { SlashCommand } from "@doska/markdown"
-import { Frosted } from "@doska/ui-kit-mobile"
+import { cn, Frosted } from "@doska/ui-kit-mobile"
 import { useTokens } from "@doska/ui-kit-mobile/tokens"
 import type { LucideIcon } from "lucide-react-native"
 import Code from "lucide-react-native/icons/code"
@@ -7,9 +7,11 @@ import Eye from "lucide-react-native/icons/eye"
 import Heading1 from "lucide-react-native/icons/heading-1"
 import Heading2 from "lucide-react-native/icons/heading-2"
 import Heading3 from "lucide-react-native/icons/heading-3"
+import ImagePlus from "lucide-react-native/icons/image-plus"
 import Link from "lucide-react-native/icons/link"
 import ListChecks from "lucide-react-native/icons/list-checks"
 import Minus from "lucide-react-native/icons/minus"
+import Paperclip from "lucide-react-native/icons/paperclip"
 import Scissors from "lucide-react-native/icons/scissors"
 import TextQuote from "lucide-react-native/icons/text-quote"
 import type { ReactNode } from "react"
@@ -49,6 +51,9 @@ interface IProps {
   isPreview: boolean
   onPreview: () => void
   onSelect: (command: SlashCommand) => void
+  isUploading: boolean
+  onAttachImage: () => void
+  onAttachFile: () => void
 }
 
 export function EditorToolbar({
@@ -56,6 +61,9 @@ export function EditorToolbar({
   isPreview,
   onPreview,
   onSelect,
+  isUploading,
+  onAttachImage,
+  onAttachFile,
 }: IProps) {
   const tokens = useTokens()
 
@@ -99,6 +107,23 @@ export function EditorToolbar({
       ) : null}
 
       <Pill>
+        <ToolButton
+          label="Attach photo"
+          disabled={isUploading}
+          onPress={onAttachImage}
+        >
+          <ImagePlus size={22} color={tokens.cardForeground} />
+        </ToolButton>
+        <ToolButton
+          label="Attach file"
+          disabled={isUploading}
+          onPress={onAttachFile}
+        >
+          <Paperclip size={22} color={tokens.cardForeground} />
+        </ToolButton>
+      </Pill>
+
+      <Pill>
         <ToolButton label="Preview" onPress={onPreview}>
           <Eye size={22} color={tokens.cardForeground} />
         </ToolButton>
@@ -135,19 +160,26 @@ function Pill({ grow, children }: { grow?: boolean; children: ReactNode }) {
 
 function ToolButton({
   label,
+  disabled,
   onPress,
   children,
 }: {
   label: string
+  disabled?: boolean
   onPress: () => void
   children: ReactNode
 }) {
   return (
     <Pressable
       onPress={onPress}
+      disabled={disabled}
       accessibilityRole="button"
       accessibilityLabel={label}
-      className="size-10 items-center justify-center rounded-full active:bg-secondary"
+      accessibilityState={{ disabled }}
+      className={cn(
+        "size-10 items-center justify-center rounded-full active:bg-secondary",
+        disabled && "opacity-40"
+      )}
     >
       {children}
     </Pressable>
