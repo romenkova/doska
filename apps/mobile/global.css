@@ -13,7 +13,7 @@
   --quote-bar: #c2b9fb;
 
   --card-ring: #343c541a;
-  --button-muted: #676d7f0d;
+  --button-muted: #606a850d;
 }
 
 .dark:root {
@@ -21,5 +21,5 @@
   --quote-bar: #5b5998;
 
   --card-ring: #f7f7f81a;
-  --button-muted: #ffffff0a;
+  --button-muted: #ffffff04;
 }

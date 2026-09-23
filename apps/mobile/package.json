@@ -47,6 +47,7 @@
     "react": "^19.2.3",
     "react-native": "0.86.3",
     "react-native-css-interop": "0.2.6",
+    "react-native-file-viewer": "^2.1.5",
     "react-native-gesture-handler": "~2.32.0",
     "react-native-get-random-values": "~1.11.0",
     "react-native-reanimated": "4.5.1",
