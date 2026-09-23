@@ -13,10 +13,6 @@ import { View } from "react-native"
 import { ROUTES } from "@/lib/routes"
 import { ColumnSwatch } from "./column-swatch"
 
-/** The web's `text-emerald-600/50 dark:text-emerald-500/50`, which is a
- * Tailwind palette entry rather than a theme token. */
-const DONE_TINT = { light: "#05966980", dark: "#34d39980" }
-
 interface IProps {
   deckId: string
   column: Column
@@ -27,7 +23,7 @@ interface IProps {
 /** A column's section in the board list: swatch, editable title, add card,
  * and the actions it keeps behind a `⋯`. */
 export function ColumnHead({ deckId, column, onAddCard }: IProps) {
-  const { dark } = useTokens()
+  const { mutedForeground } = useTokens()
   const { mutate: rename } = useRenameColumn(deckId)
   const { mutate: setCollapsed } = useSetColumnCollapsed(deckId)
 
@@ -76,7 +72,7 @@ export function ColumnHead({ deckId, column, onAddCard }: IProps) {
         {column.done ? (
           <CircleCheck
             size={16}
-            color={dark ? DONE_TINT.dark : DONE_TINT.light}
+            color={mutedForeground}
             accessibilityLabel={`${column.title} is the done column`}
           />
         ) : null}

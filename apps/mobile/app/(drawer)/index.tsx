@@ -16,7 +16,7 @@ export default function BoardScreen() {
   )
 
   return (
-    <View className="flex-1 bg-sidebar">
+    <View className="flex-1 bg-background">
       {board ? <Board board={board} /> : <NoBoards isPending={isPending} />}
     </View>
   )

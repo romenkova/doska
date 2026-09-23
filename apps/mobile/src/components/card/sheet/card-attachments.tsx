@@ -1,10 +1,10 @@
 import { activeStorage } from "@doska/core/attachments"
 import { useUpdateCard } from "@doska/core/mutations"
 import type { Attachment } from "@doska/core/types"
-import { router } from "expo-router"
+import { useState } from "react"
 import { Alert, View } from "react-native"
+import { openAttachment } from "@/lib/open-attachment"
 import type { LocalFile } from "@/lib/upload-files"
-import { ROUTES } from "@/lib/routes"
 import { AttachmentRow } from "./attachment-row"
 
 interface IProps {
@@ -15,6 +15,7 @@ interface IProps {
 
 export function CardAttachments({ cardId, attachments, pending }: IProps) {
   const { mutate: save } = useUpdateCard(cardId)
+  const [openingId, setOpeningId] = useState<string | null>(null)
 
   if (!attachments.length && !pending.length) return null
 
@@ -37,17 +38,21 @@ export function CardAttachments({ cardId, attachments, pending }: IProps) {
     ])
   }
 
+  function open(attachment: Attachment) {
+    setOpeningId(attachment.id)
+    openAttachment(attachment)
+      .catch(() => Alert.alert(`Could not open ${attachment.name}`))
+      .finally(() => setOpeningId(null))
+  }
+
   return (
     <View className="px-4 py-2">
       {attachments.map((attachment) => (
         <AttachmentRow
           key={attachment.id}
           name={attachment.name}
-          onPress={() =>
-            router.push(
-              ROUTES.cardFile(cardId, attachment.key, attachment.name)
-            )
-          }
+          isPending={openingId === attachment.id}
+          onPress={() => open(attachment)}
           onLongPress={() => confirmRemove(attachment)}
         />
       ))}
