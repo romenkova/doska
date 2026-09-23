@@ -1,7 +1,8 @@
 import {
-  useMoveSidebarItem,
-  useSetFolderCollapsed,
-} from "@doska/core/mutations"
+  setFolderCollapsed,
+  useCollapsedFolders,
+} from "@doska/core/folder-collapsed"
+import { useMoveSidebarItem } from "@doska/core/mutations"
 import { useSidebarTree } from "@doska/core/queries"
 import type { Dashboard } from "@doska/core/types"
 import { IconButton } from "@doska/ui-kit-mobile"
@@ -38,16 +39,19 @@ export function DashboardsList({
 }: IProps) {
   const { data: nodes = [] } = useSidebarTree()
   const { mutate: move } = useMoveSidebarItem()
-  const { mutate: setCollapsed } = useSetFolderCollapsed()
-  const rows = useMemo(() => sidebarRows(nodes), [nodes])
+  const collapsedIds = useCollapsedFolders()
+  const rows = useMemo(
+    () => sidebarRows(nodes, collapsedIds),
+    [nodes, collapsedIds]
+  )
 
   const renderRow = useCallback<SortableGridRenderItem<SidebarRow>>(
     ({ item }) => {
       if (item.kind === "folder") {
-        return <FolderRow folder={item.folder} />
+        return <FolderRow folder={item.folder} collapsed={item.collapsed} />
       }
       if (item.kind === "end") {
-        const isEmpty = !item.folder.collapsed && !item.folder.boards.length
+        const isEmpty = !item.collapsed && !item.folder.boards.length
         return (
           <Sortable.Handle mode="non-draggable">
             {isEmpty ? (
@@ -80,11 +84,11 @@ export function DashboardsList({
   const handleDragStart = useCallback(
     ({ key }: DragStartParams) => {
       const row = rows.find((r) => r.key === key)
-      if (row?.kind === "folder" && !row.folder.collapsed) {
-        setCollapsed({ id: row.folder.id, collapsed: true })
+      if (row?.kind === "folder" && !row.collapsed) {
+        setFolderCollapsed(row.folder.id, true)
       }
     },
-    [rows, setCollapsed]
+    [rows]
   )
 
   const handleDragEnd = useCallback(

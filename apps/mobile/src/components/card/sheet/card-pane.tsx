@@ -49,9 +49,9 @@ export function CardPane({ cardId, content, onQueue }: IProps) {
   const scroller = useRef<ScrollView>(null)
 
   const toolbar = {
-    items: isPreview ? [] : DEFAULT_SLASH_COMMANDS,
+    items: DEFAULT_SLASH_COMMANDS,
     isPreview,
-    onTogglePreview: () => setPreview(!isPreview),
+    onPreview: () => setPreview(true),
     onSelect: (command: SlashCommand) =>
       webview.current?.insert(command.insert),
   }

@@ -123,23 +123,31 @@ export function App() {
 
   return (
     <MarkdownRenderersProvider value={renderers}>
-      <MarkdownEditor
-        isPreview={state.isPreview}
-        renderPreview={Markdown}
-        value={body}
-        autoFocus
-        onChangeValue={change}
-        onToggleTask={change}
-        markers={PREVIEW_MARKERS}
-        slashMenu
-        hideSlashFab
-        markdown
-        wikilinks={wikilinks}
-        suggestions={suggestions}
-        placeholder="Notes"
-        className="text-[15px]"
-        containerClassName="px-4"
-      />
+      <div
+        onClick={(e) => {
+          if (!state.isPreview) return
+          if ((e.target as HTMLElement).closest("a, input, button")) return
+          post({ type: "edit" })
+        }}
+      >
+        <MarkdownEditor
+          isPreview={state.isPreview}
+          renderPreview={Markdown}
+          value={body}
+          autoFocus
+          onChangeValue={change}
+          onToggleTask={change}
+          markers={PREVIEW_MARKERS}
+          slashMenu
+          hideSlashFab
+          markdown
+          wikilinks={wikilinks}
+          suggestions={suggestions}
+          placeholder="Notes"
+          className="text-[15px]"
+          containerClassName="px-4"
+        />
+      </div>
     </MarkdownRenderersProvider>
   )
 }
