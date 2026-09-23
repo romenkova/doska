@@ -3,10 +3,10 @@ import type { Board, Card } from "@doska/core/types"
 import {
   byPosition,
   dropNeighbours,
+  filterByTags,
   keyBetween,
   sortCards,
 } from "@doska/core/utils"
-import { filterByTags } from "../tag-filter"
 
 /**
  * Builds the drop handler for the board: translates a drag result into the

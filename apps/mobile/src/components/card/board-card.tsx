@@ -12,10 +12,11 @@ interface IProps {
   card: Card
   /** The card sits in the board's done column. */
   done: boolean
+  onPressTag: (tag: string) => void
 }
 
 /** A board row: title, meta and tags. The body lives in the card sheet. */
-export function BoardCard({ card, done }: IProps) {
+export function BoardCard({ card, done, onPressTag }: IProps) {
   const tags = tagsIn(card.body)
   const hasMeta =
     taskProgress(card.body).total > 0 ||
@@ -59,7 +60,7 @@ export function BoardCard({ card, done }: IProps) {
       )}
       {tags.length > 0 && (
         <View className="border-t border-muted px-3 pt-2">
-          <CardTags tags={tags} />
+          <CardTags tags={tags} onPressTag={onPressTag} />
         </View>
       )}
     </Pressable>
