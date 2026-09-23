@@ -16,7 +16,6 @@ export {
   moveItem,
   moveSidebarItem,
   renameFolder,
-  setFolderCollapsed,
 } from "./sidebar-layout"
 export type { SidebarTarget } from "./sidebar-layout"
 export { getBoard } from "./get-board"

@@ -9,7 +9,7 @@ import type { Dashboard } from "@doska/core/types"
 // `folderId` is the block a row is part of. A folder header is part of its own
 // block; a root board has none.
 export type SidebarRow = { id: string; folderId: string | null } & (
-  | { type: "folder"; node: SidebarFolderNode }
+  | { type: "folder"; node: SidebarFolderNode; collapsed: boolean }
   | { type: "board"; dashboard: Dashboard }
   // "No boards yet". Every expanded folder has one, hidden once it has boards.
   | { type: "empty"; hidden: boolean }
@@ -20,7 +20,10 @@ export interface SidebarMove {
   target: SidebarTarget
 }
 
-export function flattenTree(nodes: SidebarNode[]): SidebarRow[] {
+export function flattenTree(
+  nodes: SidebarNode[],
+  collapsedIds: string[]
+): SidebarRow[] {
   const rows: SidebarRow[] = []
   for (const node of nodes) {
     if (node.type === "board") {
@@ -28,8 +31,15 @@ export function flattenTree(nodes: SidebarNode[]): SidebarRow[] {
       rows.push({ type: "board", id: dashboard.id, dashboard, folderId: null })
       continue
     }
-    rows.push({ type: "folder", id: node.id, node, folderId: node.id })
-    if (node.collapsed) continue
+    const collapsed = collapsedIds.includes(node.id)
+    rows.push({
+      type: "folder",
+      id: node.id,
+      node,
+      collapsed,
+      folderId: node.id,
+    })
+    if (collapsed) continue
     for (const dashboard of node.boards) {
       rows.push({
         type: "board",
@@ -113,7 +123,7 @@ function endsBlock(rest: SidebarRow[], index: number) {
 
 // A collapsed folder's boards are not rows, so it takes the board last.
 function folderIndex(before: SidebarRow[], above: SidebarRow) {
-  if (above.type === "folder" && above.node.collapsed) {
+  if (above.type === "folder" && above.collapsed) {
     return above.node.boards.length
   }
   return before.filter(

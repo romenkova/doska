@@ -1,11 +1,8 @@
 import { SidebarMenuButton, cn } from "@doska/ui-kit"
 import { Folder, FolderOpen } from "lucide-react"
 import type { SidebarFolderNode } from "@doska/core/operations"
-import {
-  useDeleteFolder,
-  useRenameFolder,
-  useSetFolderCollapsed,
-} from "@doska/core/mutations"
+import { setFolderCollapsed } from "@doska/core/folder-collapsed"
+import { useDeleteFolder, useRenameFolder } from "@doska/core/mutations"
 import { useCardDrop } from "@/providers/card-drop/card-drop-context"
 import { FolderMenu } from "./folder-menu"
 import { FolderTitleInput } from "./folder-title-input"
@@ -15,6 +12,7 @@ const OPEN_ON_HOVER_MS = 500
 
 interface IProps {
   node: SidebarFolderNode
+  collapsed: boolean
   renaming: boolean
   isDropTarget: boolean
   onRenameStart: () => void
@@ -23,32 +21,32 @@ interface IProps {
 
 export function FolderItem({
   node,
+  collapsed,
   renaming,
   isDropTarget,
   onRenameStart,
   onRenameEnd,
 }: IProps) {
-  const { mutate: setCollapsed } = useSetFolderCollapsed()
   const { mutate: rename } = useRenameFolder()
   const { mutate: remove } = useDeleteFolder()
 
   // A dragged card hovers a collapsed folder: it opens to offer its boards.
   const { target } = useCardDrop()
   const opensOnHover =
-    target?.kind === "folder" && target.id === node.id && node.collapsed
+    target?.kind === "folder" && target.id === node.id && collapsed
   useEffect(() => {
     if (!opensOnHover) return
     const timer = setTimeout(
-      () => setCollapsed({ id: node.id, collapsed: false }),
+      () => setFolderCollapsed(node.id, false),
       OPEN_ON_HOVER_MS
     )
     return () => clearTimeout(timer)
-  }, [opensOnHover, node.id, setCollapsed])
+  }, [opensOnHover, node.id])
 
   const FolderIcon = useMemo(() => {
-    if (node.collapsed || isDropTarget) return Folder
+    if (collapsed || isDropTarget) return Folder
     return FolderOpen
-  }, [node.collapsed, isDropTarget])
+  }, [collapsed, isDropTarget])
 
   return (
     <>
@@ -62,10 +60,8 @@ export function FolderItem({
         <>
           <SidebarMenuButton
             tooltip={node.title}
-            aria-expanded={!node.collapsed}
-            onClick={() =>
-              setCollapsed({ id: node.id, collapsed: !node.collapsed })
-            }
+            aria-expanded={!collapsed}
+            onClick={() => setFolderCollapsed(node.id, !collapsed)}
             data-drop-folder={node.id}
             className={cn(
               "pr-8",

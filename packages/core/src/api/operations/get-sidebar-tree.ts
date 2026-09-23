@@ -9,7 +9,6 @@ export type SidebarFolderNode = {
   type: "folder"
   id: string
   title: string
-  collapsed: boolean
   boards: Dashboard[]
 }
 
@@ -27,7 +26,6 @@ export function buildTree(
           type: "folder",
           id: item.id,
           title: item.title,
-          collapsed: item.collapsed,
           boards: item.boardIds.map((id) => byId.get(id)!),
         }
   )
@@ -41,7 +39,6 @@ export function treeItems(nodes: SidebarNode[]): SidebarItem[] {
           type: "folder",
           id: node.id,
           title: node.title,
-          collapsed: node.collapsed,
           boardIds: node.boards.map((d) => d.id),
         }
   )

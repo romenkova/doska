@@ -11,7 +11,6 @@ const folder = (id: string, boardIds: string[]): SidebarItem => ({
   type: "folder",
   id,
   title: id,
-  collapsed: false,
   boardIds,
 })
 const ids = (items: SidebarItem[]) =>
