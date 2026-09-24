@@ -63,6 +63,12 @@ Doska never makes you wait on the server, doesn't keep features behind a paywall
 
 ## Apps
 
+Desktop builds are on [Releases](https://github.com/romenkova/doska/releases/latest), or on macOS via Homebrew:
+
+```sh
+brew install romenkova/tap/doska
+```
+
 - **Web**: PWA, mobile-friendly layout.
 - **macOS**: universal build, signed and notarized.
 - **Windows** (beta): NSIS installer, unsigned. See [desktop docs](https://doska.sh/docs/desktop).

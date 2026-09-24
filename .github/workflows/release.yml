@@ -11,6 +11,7 @@ name: Release Desktop
 #   APPLE_API_KEY                       App Store Connect key id, e.g. ABC123DEF4
 #   APPLE_API_ISSUER                    the issuer uuid from the same Keys page
 #   APPLE_API_KEY_P8                    base64 of the AuthKey_<id>.p8 file
+#   HOMEBREW_TAP_TOKEN                  fine-grained PAT with contents: write on romenkova/homebrew-tap
 
 on:
   push:
@@ -129,3 +130,27 @@ jobs:
             echo "AppImage bundles libwayland-client, see tauri-apps/tauri#15976"
             exit 1
           fi
+
+  homebrew:
+    needs: release
+    if: github.ref_type == 'tag' && !contains(github.ref_name, '-')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Bump cask in romenkova/homebrew-tap
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          gh release download "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --pattern "Doska_${VERSION}_universal.dmg"
+          SHA=$(sha256sum "Doska_${VERSION}_universal.dmg" | cut -d' ' -f1)
+
+          git clone "https://x-access-token:${TAP_TOKEN}@github.com/romenkova/homebrew-tap.git" tap
+          cd tap
+          sed -i -E "s/^  version \".*\"/  version \"${VERSION}\"/; s/^  sha256 \".*\"/  sha256 \"${SHA}\"/" Casks/doska.rb
+          git diff --exit-code && exit 0
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "doska ${VERSION}"
+          git push
