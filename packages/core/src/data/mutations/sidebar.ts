@@ -12,15 +12,6 @@ export function useCreateFolder() {
   })
 }
 
-export function useSetFolderCollapsed() {
-  const qc = useQueryClient()
-  return useMutation({
-    mutationFn: ({ id, collapsed }: { id: string; collapsed: boolean }) =>
-      api.setFolderCollapsed(id, collapsed),
-    onSettled: () => qc.invalidateQueries({ queryKey: keys.sidebar }),
-  })
-}
-
 export function useRenameFolder() {
   const qc = useQueryClient()
   return useMutation({

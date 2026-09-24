@@ -6,6 +6,7 @@ import {
   cn,
 } from "@doska/ui-kit"
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd"
+import { useCollapsedFolders } from "@doska/core/folder-collapsed"
 import { useSidebarTree } from "@doska/core/queries"
 import { useState } from "react"
 import { DROP_ANIMATION_MS } from "@/lib/hooks"
@@ -30,7 +31,8 @@ export function DashboardsList({
 }: IProps) {
   const { data: nodes = [] } = useSidebarTree()
   const [renamingId, setRenamingId] = useState<string | null>(null)
-  const rows = flattenTree(nodes)
+  const collapsedIds = useCollapsedFolders()
+  const rows = flattenTree(nodes, collapsedIds)
   const {
     dragging,
     draggingFolderId,
@@ -125,6 +127,7 @@ export function DashboardsList({
                                 <div className={lifted(snapshot.isDragging)}>
                                   <FolderItem
                                     node={row.node}
+                                    collapsed={row.collapsed}
                                     renaming={row.id === renamingId}
                                     isDropTarget={row.id === landingFolderId}
                                     onRenameStart={() => setRenamingId(row.id)}

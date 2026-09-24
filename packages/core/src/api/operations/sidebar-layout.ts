@@ -51,7 +51,7 @@ async function updateSidebarLayout(
 export async function createFolder(title: string): Promise<string> {
   const id = newId("folder")
   await updateSidebarLayout((items) => [
-    { type: "folder", id, title, collapsed: false, boardIds: [] },
+    { type: "folder", id, title, boardIds: [] },
     ...items,
   ])
   return id
@@ -59,17 +59,6 @@ export async function createFolder(title: string): Promise<string> {
 
 export function prependBoard(id: string): Promise<void> {
   return updateSidebarLayout((items) => [{ type: "board", id }, ...items])
-}
-
-export function setFolderCollapsed(
-  id: string,
-  collapsed: boolean
-): Promise<void> {
-  return updateSidebarLayout((items) =>
-    items.map((item) =>
-      item.type === "folder" && item.id === id ? { ...item, collapsed } : item
-    )
-  )
 }
 
 export function renameFolder(id: string, title: string): Promise<void> {

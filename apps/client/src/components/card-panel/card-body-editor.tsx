@@ -3,6 +3,7 @@ import { useMemo } from "react"
 import { useCardRefOptions } from "@doska/core/card-refs"
 import { useCard } from "@doska/core/queries"
 import { useDeck } from "@/providers/deck/deck-context"
+import { useTagOptions } from "@/lib/hooks"
 import { imageSlashCommands } from "../card/attachments/image-slash-commands"
 import { isRenderableImage } from "../card/attachments/renderable-image"
 import { useUploads } from "@/providers/attachment-upload/attachment-upload-context"
@@ -35,12 +36,15 @@ export function CardBodyEditor({
   const { data: card } = useCard(cardId)
   const { addFiles } = useUploads()
   const cardRefs = useCardRefOptions(deckId, cardId)
+  const tags = useTagOptions(deckId, cardId)
   const attachments = card?.attachments
 
   const slashCommands = useMemo(
     () => [...DEFAULT_SLASH_COMMANDS, ...imageSlashCommands(attachments ?? [])],
     [attachments]
   )
+
+  const suggestions = useMemo(() => ({ "#": tags }), [tags])
 
   async function handlePasteFiles(files: File[]): Promise<string | null> {
     const added = await addFiles(files)
@@ -63,6 +67,7 @@ export function CardBodyEditor({
         slashCommands={slashCommands}
         overlayContainer={overlayContainer}
         wikilinks={cardRefs}
+        suggestions={suggestions}
         onPasteFiles={handlePasteFiles}
         placeholder="Notes"
         isPreview={isPreview}

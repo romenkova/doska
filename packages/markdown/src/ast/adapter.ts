@@ -66,6 +66,7 @@ export interface MarkdownAdapter {
   ): ReactNode
   /** `alias` is the label written into the text, as in `[[12|Fix it]]`. */
   wikilink(target: string, alias: string | undefined, key: string): ReactNode
+  tag(name: string, key: string): ReactNode
   cut(key: string): ReactNode
   footnoteReference(label: string, key: string): ReactNode
 }

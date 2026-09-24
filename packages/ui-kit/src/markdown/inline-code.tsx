@@ -36,7 +36,7 @@ export function MdInlineCode({ children }: { children: string }) {
       onClick={copy}
       onKeyDown={onKeyDown}
       className={cn(
-        "relative cursor-pointer rounded-[0.3125rem] border border-border bg-muted/70 px-[0.35em] py-[0.1em] font-mono text-[0.8125em]",
+        "relative cursor-pointer rounded-[0.5rem] border border-border bg-muted/70 px-[0.35em] py-[0.1em] font-mono text-[0.8125em]",
         "transition-colors hover:border-primary/50",
         copied && "border-primary/60 bg-primary/10"
       )}

@@ -57,9 +57,9 @@ Doska never makes you wait on the server, doesn't keep features behind a paywall
 - [x] **MCP** server
 - [x] Cross-board deadlines view
 - [x] **Quick note window** (beta): always on top, opened with a keyboard shortcut
+- [x] Tags
 - [ ] Activity/history view
 - [ ] User mentions with `@`
-- [ ] Tags
 
 ## Apps
 

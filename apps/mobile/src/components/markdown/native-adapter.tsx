@@ -288,6 +288,17 @@ export function createNativeAdapter(
       )
     },
 
+    tag(name, key) {
+      return (
+        <Text
+          key={key}
+          className="font-sans-medium text-[13px] text-muted-foreground"
+        >
+          {`#${name}`}
+        </Text>
+      )
+    },
+
     cut(key) {
       return (
         <Text key={key} className="font-sans text-xs text-muted-foreground">

@@ -9,25 +9,18 @@ const board = (id: string): SidebarNode => ({
   type: "board",
   dashboard: dashboard(id),
 })
-const folder = (
-  id: string,
-  boards: string[],
-  collapsed = false
-): SidebarNode => ({
+const folder = (id: string, boards: string[]): SidebarNode => ({
   type: "folder",
   id,
   title: id,
-  collapsed,
   boards: boards.map(dashboard),
 })
 
 // Rows: a, F, b, c, F:empty (hidden), G (collapsed, holds g1), d.
-const rows = flattenTree([
-  board("a"),
-  folder("F", ["b", "c"]),
-  folder("G", ["g1"], true),
-  board("d"),
-])
+const rows = flattenTree(
+  [board("a"), folder("F", ["b", "c"]), folder("G", ["g1"]), board("d")],
+  ["G"]
+)
 
 // `destination` is the index in the list with the dragged row taken out.
 const drop = (id: string, destination: number, nested = false) =>
@@ -60,7 +53,7 @@ it("flattens expanded folders, each with an empty row after its boards", () => {
     "d",
   ])
   expect(rows[4]).toMatchObject({ type: "empty", hidden: true })
-  const empty = flattenTree([folder("E", [])])
+  const empty = flattenTree([folder("E", [])], [])
   expect(empty[1]).toMatchObject({ type: "empty", hidden: false })
 })
 

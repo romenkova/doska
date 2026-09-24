@@ -5,12 +5,15 @@ import { AppSidebar } from "@/components"
 import { CardRevealProvider } from "@/providers/card-reveal/card-reveal-provider"
 import { CardDropProvider } from "@/providers/card-drop/card-drop-provider"
 import { CardPanel } from "@/components/card-panel/card-panel"
-import { DeckProvider } from "@/providers/deck/deck-context"
+import {
+  DeckProvider,
+  type DeckContextValue,
+} from "@/providers/deck/deck-context"
 import { useUndoShortcut } from "@/lib/hooks"
 import { routes } from "@/lib/routes"
 
 interface IProps {
-  deck: { id: string; sort: string[] }
+  deck: DeckContextValue
   cardCloseHref?: string
   children: ReactNode
 }

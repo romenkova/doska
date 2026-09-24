@@ -1,5 +1,6 @@
 import { HighlightStyle } from "@codemirror/language"
 import { tags as t } from "@lezer/highlight"
+import { hashtagTag } from "./hashtag"
 import { markTag } from "./mark"
 
 const MUTED = "color-mix(in oklab, var(--muted-foreground) 60%, transparent)"
@@ -15,6 +16,10 @@ export const highlightStyle = HighlightStyle.define([
     tag: markTag,
     borderRadius: "0.2em",
     backgroundColor: "oklch(0.69 0.17 286.88 / 0.3)",
+  },
+  {
+    tag: hashtagTag,
+    color: "var(--primary)",
   },
   {
     tag: [t.processingInstruction, t.url, t.contentSeparator, t.labelName],

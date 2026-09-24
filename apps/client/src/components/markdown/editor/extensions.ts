@@ -5,10 +5,16 @@ import { EditorView, keymap, placeholder } from "@codemirror/view"
 import type { RefObject } from "react"
 import {
   DEFAULT_SLASH_COMMANDS,
+  type PrefixOption,
   type SlashCommand,
   type WikilinkOption,
 } from "@doska/markdown"
-import { completions, slashCompletion, wikilinkCompletion } from "./completions"
+import {
+  completions,
+  prefixCompletion,
+  slashCompletion,
+  wikilinkCompletion,
+} from "./completions"
 import { decorations, wikilinkTargets } from "./decorations"
 import { markdownSyntax } from "./language"
 import { pasteFiles } from "./paste-files"
@@ -24,6 +30,7 @@ export interface EditorOptions {
   slashMenu?: boolean
   slashCommands?: SlashCommand[]
   wikilinks?: WikilinkOption[]
+  suggestions?: Record<string, PrefixOption[]>
   onPasteFiles?: (files: File[]) => Promise<string | null>
 }
 
@@ -37,6 +44,7 @@ export function editorExtensions(
     markdown,
     slashMenu,
     wikilinks,
+    suggestions,
     placeholder: placeholderText,
   } = live.current
 
@@ -49,6 +57,10 @@ export function editorExtensions(
     )
   if (wikilinks)
     sources.push(wikilinkCompletion(() => live.current.wikilinks ?? []))
+  for (const prefix of Object.keys(suggestions ?? {}))
+    sources.push(
+      prefixCompletion(prefix, () => live.current.suggestions?.[prefix] ?? [])
+    )
 
   const markdownExtensions: Extension = markdown
     ? [

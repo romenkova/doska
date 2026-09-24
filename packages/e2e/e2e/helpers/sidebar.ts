@@ -212,7 +212,6 @@ export function remoteFolder(
     type: "folder",
     id: `folder-${crypto.randomUUID().slice(0, 8)}`,
     title,
-    collapsed: false,
     boardIds,
   }
 }

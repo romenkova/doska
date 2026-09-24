@@ -4,6 +4,7 @@ import { remarkMark } from "remark-mark-highlight"
 import remarkParse from "remark-parse"
 import { unified } from "unified"
 import { remarkCut } from "../plugins/remark-cut"
+import { remarkTags } from "../plugins/remark-tags"
 import { remarkWikilinks } from "../plugins/remark-wikilinks"
 
 /**
@@ -16,6 +17,7 @@ const processor = unified()
   .use(remarkMark)
   .use(remarkCut)
   .use(remarkWikilinks)
+  .use(remarkTags)
 
 export function parseMarkdown(markdown: string): Root {
   return processor.runSync(processor.parse(markdown))
@@ -51,6 +53,7 @@ export interface MdNode {
  */
 export type MarkdownExtra =
   | { kind: "wikilink"; target: string; alias?: string }
+  | { kind: "tag"; name: string }
   | { kind: "cut" }
   | null
 
@@ -69,6 +72,9 @@ export function markdownExtra(node: { data?: unknown }): MarkdownExtra {
       alias: typeof alias === "string" ? alias : undefined,
     }
   }
+
+  const name = properties.dataTag
+  if (typeof name === "string") return { kind: "tag", name }
 
   const className = properties.className
   const names = Array.isArray(className) ? className : []

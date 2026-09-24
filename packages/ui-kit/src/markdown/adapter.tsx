@@ -18,6 +18,7 @@ import { MdRule } from "./rule"
 import { MdStrikethrough } from "./strikethrough"
 import { MdStrong } from "./strong"
 import { MdTable } from "./table"
+import { MdTag } from "./tag"
 import { MdTableCell } from "./table-cell"
 import { MdTaskItem } from "./task-item"
 import { MdWikilink } from "./wikilink"
@@ -27,6 +28,7 @@ import type { MarkdownAdapter, MarkdownRenderers } from "@doska/markdown"
 export function createWebAdapter({
   renderImage,
   renderWikilink,
+  onTagClick,
 }: MarkdownRenderers): MarkdownAdapter {
   return {
     // ----------------------------------------------------------- blocks
@@ -168,6 +170,16 @@ export function createWebAdapter({
       const custom = renderWikilink?.(target, alias)
       if (custom) return <Fragment key={key}>{custom}</Fragment>
       return <MdWikilink key={key} target={target} label={alias} />
+    },
+
+    tag(name, key) {
+      return (
+        <MdTag
+          key={key}
+          name={name}
+          onSelect={onTagClick && (() => onTagClick(name))}
+        />
+      )
     },
 
     cut(key) {

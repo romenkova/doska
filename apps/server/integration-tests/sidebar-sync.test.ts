@@ -19,7 +19,6 @@ const layout = (folderTitle: string, updatedAt = now) => ({
         type: "folder" as const,
         id: `f-${folderTitle}`,
         title: folderTitle,
-        collapsed: false,
         boardIds: ["b1"],
       },
     ],
