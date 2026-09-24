@@ -1,10 +1,14 @@
 import { useState } from "react"
 import { DragDropContext, type DropResult } from "@hello-pangea/dnd"
 import type { Board, Dashboard, DashboardView } from "@doska/core/types"
-import { byPosition, groupCardsByColumn, sortCards } from "@doska/core/utils"
+import {
+  byPosition,
+  filterByTags,
+  groupCardsByColumn,
+  sortCards,
+} from "@doska/core/utils"
 import type { CardPatch } from "@doska/core/mutations"
 import { useLandingSlot } from "@/lib/hooks"
-import { filterByTags } from "@/lib/tag-filter"
 import { useDeck } from "@/providers/deck/deck-context"
 import { Column } from "../column/column"
 import { AddColumn } from "../column/add-column"

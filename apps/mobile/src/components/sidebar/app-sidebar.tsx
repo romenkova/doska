@@ -32,7 +32,7 @@ export function AppSidebar({
   const insets = useSafeAreaInsets()
   const pathname = usePathname()
   const tokens = useTokens()
-  const { dashboards, deckId } = useActiveBoard()
+  const { deckId } = useActiveBoard()
   const { mutate: createDashboard } = useCreateDashboard()
 
   // Navigating from inside the drawer does not dismiss it; the drawer is its own
@@ -57,7 +57,7 @@ export function AppSidebar({
         <Text className="text-base font-sans-semibold text-sidebar-foreground">
           Doska
         </Text>
-        <Text className="text-[13px] text-muted-foreground/50">
+        <Text className="text-[13px] text-muted-foreground opacity-50">
           {Constants.expoConfig?.version ?? ""}
         </Text>
       </View>
@@ -92,7 +92,6 @@ export function AppSidebar({
         </View>
 
         <DashboardsList
-          dashboards={dashboards}
           activeDashboardId={pathname === ROUTES.board ? deckId : null}
           onSelectDashboard={(dashboard) => openBoard(dashboard.id)}
         />

@@ -37,7 +37,9 @@ export function SidebarAccount() {
         <Text
           numberOfLines={1}
           className={
-            dropped ? "text-xs text-destructive" : "text-xs text-muted-foreground"
+            dropped
+              ? "text-xs text-destructive"
+              : "text-xs text-muted-foreground"
           }
         >
           {subtitle}

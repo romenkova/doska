@@ -17,7 +17,7 @@ export function SheetScreen({ children }: { children: ReactNode }) {
   return (
     <View
       style={{ paddingBottom: insets.bottom + 12 }}
-      className="bg-card px-4 pt-4"
+      className="bg-background px-4 pt-4"
     >
       {children}
     </View>
@@ -83,28 +83,6 @@ function BarButton({
         {action.label}
       </Text>
     </Pressable>
-  )
-}
-
-/** A grouped list's footer: the explanatory line iOS sets below a form, not
- * above it. */
-export function SheetFootnote({
-  text,
-  error,
-}: {
-  text: string
-  error?: boolean
-}) {
-  return (
-    <Text
-      className={
-        error
-          ? "px-1 pt-2 text-[13px] leading-[18px] text-destructive"
-          : "px-1 pt-2 text-[13px] leading-[18px] text-muted-foreground"
-      }
-    >
-      {text}
-    </Text>
   )
 }
 

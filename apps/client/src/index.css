@@ -9,6 +9,7 @@
 
 @source "../../../packages/ui-kit/src";
 @source "../../../packages/markdown/src";
+@source "../../../packages/editor/src";
 
 @custom-variant dark (&:is(.dark *));
 

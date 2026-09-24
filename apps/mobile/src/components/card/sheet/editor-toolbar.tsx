@@ -1,5 +1,5 @@
 import type { SlashCommand } from "@doska/markdown"
-import { Frosted } from "@doska/ui-kit-mobile"
+import { cn, Frosted } from "@doska/ui-kit-mobile"
 import { useTokens } from "@doska/ui-kit-mobile/tokens"
 import type { LucideIcon } from "lucide-react-native"
 import Code from "lucide-react-native/icons/code"
@@ -7,9 +7,11 @@ import Eye from "lucide-react-native/icons/eye"
 import Heading1 from "lucide-react-native/icons/heading-1"
 import Heading2 from "lucide-react-native/icons/heading-2"
 import Heading3 from "lucide-react-native/icons/heading-3"
+import ImagePlus from "lucide-react-native/icons/image-plus"
 import Link from "lucide-react-native/icons/link"
 import ListChecks from "lucide-react-native/icons/list-checks"
 import Minus from "lucide-react-native/icons/minus"
+import Paperclip from "lucide-react-native/icons/paperclip"
 import Scissors from "lucide-react-native/icons/scissors"
 import TextQuote from "lucide-react-native/icons/text-quote"
 import type { ReactNode } from "react"
@@ -47,22 +49,25 @@ interface IProps {
   /** Commands to offer: the matches for a typed `/`, or the full list. */
   items: SlashCommand[]
   isPreview: boolean
-  onTogglePreview: () => void
+  onPreview: () => void
   onSelect: (command: SlashCommand) => void
+  isUploading: boolean
+  onAttachImage: () => void
+  onAttachFile: () => void
 }
 
-/**
- * The editor's one toolbar, as two pills: the commands on the left, the preview
- * toggle on its own to the right. The command pill is dropped entirely rather
- * than shown empty — in preview, and when a typed `/` matches nothing.
- */
 export function EditorToolbar({
   items,
   isPreview,
-  onTogglePreview,
+  onPreview,
   onSelect,
+  isUploading,
+  onAttachImage,
+  onAttachFile,
 }: IProps) {
   const tokens = useTokens()
+
+  if (isPreview) return null
 
   return (
     <View
@@ -103,14 +108,24 @@ export function EditorToolbar({
 
       <Pill>
         <ToolButton
-          label="Preview"
-          active={isPreview}
-          onPress={onTogglePreview}
+          label="Attach photo"
+          disabled={isUploading}
+          onPress={onAttachImage}
         >
-          <Eye
-            size={22}
-            color={isPreview ? tokens.primary : tokens.cardForeground}
-          />
+          <ImagePlus size={22} color={tokens.cardForeground} />
+        </ToolButton>
+        <ToolButton
+          label="Attach file"
+          disabled={isUploading}
+          onPress={onAttachFile}
+        >
+          <Paperclip size={22} color={tokens.cardForeground} />
+        </ToolButton>
+      </Pill>
+
+      <Pill>
+        <ToolButton label="Preview" onPress={onPreview}>
+          <Eye size={22} color={tokens.cardForeground} />
         </ToolButton>
       </Pill>
     </View>
@@ -145,26 +160,26 @@ function Pill({ grow, children }: { grow?: boolean; children: ReactNode }) {
 
 function ToolButton({
   label,
-  active,
+  disabled,
   onPress,
   children,
 }: {
   label: string
-  active?: boolean
+  disabled?: boolean
   onPress: () => void
   children: ReactNode
 }) {
   return (
     <Pressable
       onPress={onPress}
+      disabled={disabled}
       accessibilityRole="button"
       accessibilityLabel={label}
-      accessibilityState={{ selected: active }}
-      className={
-        active
-          ? "size-10 items-center justify-center rounded-full bg-secondary"
-          : "size-10 items-center justify-center rounded-full active:bg-secondary"
-      }
+      accessibilityState={{ disabled }}
+      className={cn(
+        "size-10 items-center justify-center rounded-full active:bg-secondary",
+        disabled && "opacity-40"
+      )}
     >
       {children}
     </Pressable>

@@ -8,18 +8,16 @@ import { routes } from "@/lib/routes"
 
 export function DeleteItem({ cardId }: { cardId: string }) {
   const { id: deckId } = useParams<typeof routes.deck.pattern>()
-  const { mutate: deleteCard } = useDeleteCard(deckId)
+  const { mutateAsync: deleteCard } = useDeleteCard(deckId)
   const { data: card } = useCard(cardId)
   const { showCardDeleteToast } = useCardDeleteToast()
 
   return (
     <MenuItem
-      onClick={() => {
-        deleteCard(cardId, {
-          onSuccess: () =>
-            showCardDeleteToast(cardId, {
-              title: card?.title?.trim() || "Card",
-            }),
+      onClick={async () => {
+        await deleteCard(cardId)
+        showCardDeleteToast(cardId, {
+          title: card?.title?.trim() || "Card",
         })
       }}
       className="ml-auto data-highlighted:text-destructive"

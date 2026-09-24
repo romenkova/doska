@@ -11,11 +11,19 @@ interface IProps {
   /** The unsaved body, so task progress tracks it live. */
   body: string
   deadline: string | null
+  priority: string
+  conflict: boolean
 }
 
 /** The card's meta row, standing in for a navigation bar. The system draws the
  * sheet's grabber over the top ~16pt of this, so the row starts below it. */
-export function CardPaneHeader({ cardId, body, deadline }: IProps) {
+export function CardPaneHeader({
+  cardId,
+  body,
+  deadline,
+  priority,
+  conflict,
+}: IProps) {
   const { data: column } = useCardCol(cardId)
 
   return (
@@ -24,7 +32,10 @@ export function CardPaneHeader({ cardId, body, deadline }: IProps) {
         cardId={cardId}
         body={body}
         deadline={deadline}
+        priority={priority}
         done={column?.done ?? false}
+        conflict={conflict}
+        showEmpty
       />
       {column ? (
         <Pressable

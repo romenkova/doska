@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react"
+import { toggleTag } from "@doska/core/utils"
 import { DeckView } from "@/components"
 import { useActiveDashboard } from "@/lib/hooks"
 import { routes } from "@/lib/routes"
-import { toggleTag } from "@/lib/tag-filter"
 import { AppShell } from "./app-shell"
 
 interface IProps {

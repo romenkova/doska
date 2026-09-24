@@ -1,7 +1,7 @@
 import { useCreateColumn } from "@doska/core/mutations"
 import { SheetScreen } from "@doska/ui-kit-mobile"
 import { router } from "expo-router"
-import { NewColumnForm } from "@/components/column/new-column-form"
+import { NameForm } from "@/components/shell/name-form"
 import { useActiveBoard } from "@/lib/use-active-board"
 
 export default function NewColumnSheet() {
@@ -14,7 +14,10 @@ function Body({ deckId }: { deckId: string }) {
 
   return (
     <SheetScreen>
-      <NewColumnForm
+      <NameForm
+        title="New column"
+        placeholder="Column name"
+        confirmLabel="Add"
         onCommit={(title) => createColumn(title)}
         // Past the actions sheet underneath, back to the board.
         onClose={() => router.dismissAll()}

@@ -2,14 +2,14 @@ import { DEFAULT_SLASH_COMMANDS, toAttachmentSrc, cut } from "@doska/markdown"
 import { useMemo } from "react"
 import { useCardRefOptions } from "@doska/core/card-refs"
 import { useCard } from "@doska/core/queries"
+import { useTagOptions } from "@doska/core/tag-options"
 import { useDeck } from "@/providers/deck/deck-context"
-import { useTagOptions } from "@/lib/hooks"
 import { imageSlashCommands } from "../card/attachments/image-slash-commands"
 import { isRenderableImage } from "../card/attachments/renderable-image"
 import { useUploads } from "@/providers/attachment-upload/attachment-upload-context"
 import { CardMarkdown } from "../card/card-markdown"
 import { cn, Markdown } from "@doska/ui-kit"
-import { MarkdownEditor } from "../markdown"
+import { MarkdownEditor } from "@doska/editor"
 
 const PREVIEW_MARKERS = [cut]
 

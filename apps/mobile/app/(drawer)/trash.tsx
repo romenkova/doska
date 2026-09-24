@@ -27,7 +27,7 @@ export default function TrashScreen() {
         <ScreenTitle>Trash</ScreenTitle>
       </ScreenHeader>
 
-      <TrashBody />
+      <TrashBody boardIds={boardIds ? boardIds.split(",") : []} />
     </View>
   )
 }

@@ -1,21 +1,21 @@
 import { groupByDeadline, type DigestCard } from "@doska/core/operations"
-import { longDate } from "@doska/core/utils"
 import { EmptyState } from "@doska/ui-kit-mobile"
-import { SectionList, Text } from "react-native"
+import { RefreshControl, SectionList } from "react-native"
+import { GroupHeading } from "@/components/upcoming/group-heading"
+import { toSection } from "@/components/upcoming/sections"
 import { UpcomingRow } from "@/components/upcoming/upcoming-row"
+import { useSyncRefresh } from "@/lib/use-sync-refresh"
 
 interface IProps {
   cards: DigestCard[]
   hideDone: boolean
+  boardIds: string[]
 }
 
-export function UpcomingList({ cards, hideDone }: IProps) {
+export function UpcomingList({ cards, hideDone, boardIds }: IProps) {
+  const { refreshing, onRefresh } = useSyncRefresh(boardIds)
   const visible = hideDone ? cards.filter((one) => !one.isDone) : cards
-  const sections = groupByDeadline(visible).map((group) => ({
-    title: group.date ? longDate(group.date) : "Overdue",
-    overdue: group.date === "",
-    data: group.entries,
-  }))
+  const sections = groupByDeadline(visible).map(toSection)
 
   if (sections.length === 0) return <EmptyState message="Nothing due." />
 
@@ -24,17 +24,10 @@ export function UpcomingList({ cards, hideDone }: IProps) {
       sections={sections}
       keyExtractor={(entry) => entry.card.id}
       contentContainerClassName="gap-2 p-3"
-      renderSectionHeader={({ section }) => (
-        <Text
-          className={
-            section.overdue
-              ? "pt-3 text-xs font-sans-semibold uppercase text-destructive"
-              : "pt-3 text-xs font-sans-semibold uppercase text-muted-foreground"
-          }
-        >
-          {section.title}
-        </Text>
-      )}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+      renderSectionHeader={({ section }) => <GroupHeading section={section} />}
       renderItem={({ item }) => <UpcomingRow entry={item} />}
     />
   )

@@ -53,6 +53,13 @@ export function formatDeadline(iso: string): string {
   return `${day}.${month}.${year}`
 }
 
+/** Same as `formatDeadline`, but drops the year when it's the current one. */
+export function formatDeadlineShort(iso: string): string {
+  const [year, month, day] = iso.split("-")
+  const sameYear = Number(year) === new Date().getFullYear()
+  return sameYear ? `${day}.${month}` : `${day}.${month}.${year}`
+}
+
 /** A short relative label: how many days are left, or how long it's overdue. */
 export function deadlineLabel(iso: string): string {
   const days = daysUntil(iso)

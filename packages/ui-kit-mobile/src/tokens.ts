@@ -3,24 +3,20 @@ import { useColorScheme } from "nativewind"
 
 export interface Tokens extends ThemeTokens {
   dark: boolean
-  /** The column head's tint over its blur */
-  headVeil: string
-  /** {@link headVeil}'s counterpart over the card sheet's `--card` surface. */
+  /** The toolbar's tint over its blur, on the card sheet's `--card` surface. */
   cardVeil: string
 }
 
 const LIGHT_TOKENS: Tokens = {
   ...LIGHT,
   dark: false,
-  headVeil: "#f7f7facc",
   cardVeil: "#ffffffcc",
 }
 
 const DARK_TOKENS: Tokens = {
   ...DARK,
   dark: true,
-  headVeil: "#232939cc",
-  cardVeil: "#2d3447cc",
+  cardVeil: "#282e3fcc",
 }
 
 export function useTokens(): Tokens {

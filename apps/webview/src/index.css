@@ -1,0 +1,42 @@
+@import "tailwindcss";
+@import "@fontsource-variable/geist-mono";
+@import "@fontsource-variable/mulish";
+
+@import "@doska/tokens/tokens.css";
+@import "@doska/tokens/theme.css";
+
+@source "../../../packages/ui-kit/src";
+@source "../../../packages/markdown/src";
+@source "../../../packages/editor/src";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-heading: var(--font-sans);
+  --font-sans: "Mulish Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, monospace;
+}
+
+:root {
+  --radius: 0.625rem;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply text-card-foreground;
+    margin: 0;
+    /* Room for the new line before native catches up on the height. */
+    padding-bottom: 3rem;
+  }
+  ::selection {
+    background-color: color-mix(in oklab, var(--primary) 25%, transparent);
+  }
+}
