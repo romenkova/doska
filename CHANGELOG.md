@@ -1,20 +1,24 @@
 # Changelog
 
-## Unreleased
+## [0.25.0] - 2026-09-27
 
 ### Added
 
-- Ability to move card into the other board
 - `#tags` in card text show as pills, and the board
   can be filtered by tag. The editor highlights and autocompletes them.
 - macOS app on Homebrew: `brew install romenkova/tap/doska`. Stable releases
   bump the cask automatically.
 
+## [0.24.0] - 2026-09-21
+
+### Added
+
+- Ability to move card into the other board
+
 ### Changed
 
 - Sync merges cards and columns field by field, and card text line by line, so
   edits made on two devices to the same card keep both. Conflict resolution banner.
-
 
 ## [0.23.2] - 2026-09-14
 
