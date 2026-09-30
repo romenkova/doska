@@ -79,6 +79,7 @@ export async function applyOne(
         number: stored?.number ?? (await allocateCardNumber(tx, boardId)),
         deadline: record.deadline,
         priority: record.priority,
+        tags: record.tags,
         attachments: record.attachments,
         updatedAt: record.updatedAt,
         deletedAt: record.deletedAt,
