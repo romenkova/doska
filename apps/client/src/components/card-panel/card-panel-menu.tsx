@@ -19,6 +19,7 @@ import { CopyIdItem } from "../card/menu/copy-id-item"
 import { DeadlineSub } from "../card/menu/deadline-sub"
 import { MoveToColumnSub } from "../card/menu/move-to-column-sub"
 import { PrioritySub } from "../card/menu/priority-sub"
+import { TagsSub } from "../card/menu/tags-sub"
 
 interface IProps {
   cardId: string
@@ -78,6 +79,7 @@ export function CardPanelMenu({
         )}
         <MoveToColumnSub cardId={cardId} />
         <PrioritySub cardId={cardId} />
+        <TagsSub cardId={cardId} />
         <DeadlineSub
           cardId={cardId}
           closeMenu={() => actionsRef.current?.close()}
