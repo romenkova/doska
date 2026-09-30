@@ -45,9 +45,8 @@ export function MemberRow({ member, board, isSelf, isOwner, onRemove }: IProps) 
           <div className="ml-auto flex shrink-0 items-center gap-1">
             <Button
               type="button"
-              variant="ghost"
+              variant="destructive"
               size="sm"
-              className="text-destructive"
               onClick={() => setConfirming(true)}
             >
               {leaving ? "Leave" : "Remove"}

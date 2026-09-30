@@ -63,13 +63,20 @@ function MenuContent({
   )
 }
 
-function MenuItem({ className, ...props }: MenuPrimitive.Item.Props) {
+function MenuItem({
+  className,
+  variant = "default",
+  ...props
+}: MenuPrimitive.Item.Props & { variant?: "default" | "destructive" }) {
   return (
     <MenuPrimitive.Item
       data-slot="menu-item"
       className={cn(
         "flex cursor-pointer items-center gap-2 px-3 py-1.5 outline-none",
-        "data-highlighted:bg-muted data-highlighted:text-foreground",
+        "data-highlighted:bg-muted",
+        variant === "destructive"
+          ? "text-destructive"
+          : "data-highlighted:text-foreground",
         "[&_svg]:size-4 [&_svg]:shrink-0",
         className
       )}
@@ -109,7 +116,7 @@ function MenuSeparator({ className, ...props }: MenuPrimitive.Separator.Props) {
   return (
     <MenuPrimitive.Separator
       data-slot="menu-separator"
-      className={cn("bg-border", className)}
+      className={cn("h-px bg-border", className)}
       {...props}
     />
   )

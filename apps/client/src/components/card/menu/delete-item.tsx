@@ -20,7 +20,7 @@ export function DeleteItem({ cardId }: { cardId: string }) {
           title: card?.title?.trim() || "Card",
         })
       }}
-      className="ml-auto data-highlighted:text-destructive"
+      variant="destructive"
     >
       <Trash2 />
       Delete

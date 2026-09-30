@@ -46,8 +46,8 @@ export function ColumnMenu({
           <CircleCheck />
           {done ? "Unmark cards as done" : "Mark cards as done"}
         </MenuItem>
-        <MenuSeparator className="my-1 h-px" />
-        <MenuItem onClick={onDelete} className="text-destructive">
+        <MenuSeparator />
+        <MenuItem onClick={onDelete} variant="destructive">
           <Trash2 />
           Delete column
         </MenuItem>

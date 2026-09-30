@@ -77,7 +77,9 @@ export function CardPanelMenu({
             Open in new window
           </MenuItem>
         )}
+        <MenuSeparator />
         <MoveToColumnSub cardId={cardId} />
+        <MenuSeparator />
         <PrioritySub cardId={cardId} />
         <TagsSub cardId={cardId} />
         <DeadlineSub
@@ -86,10 +88,7 @@ export function CardPanelMenu({
         />
         <CopyIdItem cardId={cardId} />
         <MenuSeparator />
-        <MenuItem
-          onClick={onDelete}
-          className="data-highlighted:text-destructive"
-        >
+        <MenuItem onClick={onDelete} variant="destructive">
           <Trash2 />
           Delete
         </MenuItem>

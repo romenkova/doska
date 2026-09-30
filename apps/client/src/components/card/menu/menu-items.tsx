@@ -28,8 +28,10 @@ export function CardMenuItems({
         <Pencil />
         Edit
       </MenuItem>
+      <MenuSeparator />
       <MoveToColumnSub cardId={cardId} />
       <MoveToBoardSub cardId={cardId} />
+      <MenuSeparator />
       <PrioritySub cardId={cardId} />
       <TagsSub cardId={cardId} />
       <DeadlineSub cardId={cardId} closeMenu={closeMenu} />
