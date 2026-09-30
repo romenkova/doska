@@ -32,6 +32,12 @@ Priority
 - It is an ordering hint, not a deadline: a board can be sorted by priority, and
   nothing expires when one is set.
 
+Tags
+- A card's tags are its tags list: tags on create_card or update_card sets it,
+  replacing what was there. The board shows and filters by these alone.
+- A #tag written in a body is only a link to that tag's filter. It does not tag
+  the card.
+
 Card bodies: GitHub-flavored Markdown, plus these
 - Task lists (- [ ] / - [x]) are first class: the card shows a done/total count
   and the boxes are clickable. Use check_task to tick one instead of rewriting

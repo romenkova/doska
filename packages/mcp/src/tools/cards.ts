@@ -29,6 +29,13 @@ const priority = z
   .nullable()
   .describe("How important the card is; null or omitted for none")
 
+const tags = z
+  .array(z.string())
+  .describe(
+    "The card's tags, without the #. Replaces the card's list; " +
+      "#tags written in the body are only filter links and stay"
+  )
+
 const cardId = z
   .string()
   .describe(
@@ -56,10 +63,20 @@ export function registerCardTools(server: McpServer, board: Board): void {
         body: z.string().optional(),
         deadline: deadline.optional(),
         priority: priority.optional(),
+        tags: tags.optional(),
         place: place.default("top"),
       },
     },
-    async ({ boardId, columnId, title, body, deadline, priority, place }) => {
+    async ({
+      boardId,
+      columnId,
+      title,
+      body,
+      deadline,
+      priority,
+      tags,
+      place,
+    }) => {
       const { cards } = await board.board(boardId)
       await board.column(boardId, columnId) // Reject an unknown column before writing.
 
@@ -77,6 +94,7 @@ export function registerCardTools(server: McpServer, board: Board): void {
           number: null,
           deadline: deadline ?? null,
           priority: priority ?? "",
+          tags: tags ?? [],
           attachments: [],
           updatedAt: now,
           deletedAt: null,
@@ -98,7 +116,7 @@ export function registerCardTools(server: McpServer, board: Board): void {
     {
       title: "Update card",
       description:
-        "Edit a card's title, body, deadline, or priority. Omitted fields " +
+        "Edit a card's title, body, deadline, priority, or tags. Omitted fields " +
         "are left alone; pass a null deadline or priority to clear it. " +
         "`append` adds to the end " +
         "of the body instead of replacing it, which is the safe way to add " +
@@ -116,9 +134,19 @@ export function registerCardTools(server: McpServer, board: Board): void {
           ),
         deadline: deadline.optional(),
         priority: priority.optional(),
+        tags: tags.optional(),
       },
     },
-    async ({ boardId, cardId, title, body, append, deadline, priority }) => {
+    async ({
+      boardId,
+      cardId,
+      title,
+      body,
+      append,
+      deadline,
+      priority,
+      tags,
+    }) => {
       const existing = await board.card(boardId, cardId)
 
       let nextBody = body ?? existing.body
@@ -133,12 +161,14 @@ export function registerCardTools(server: McpServer, board: Board): void {
         body: nextBody,
         deadline: deadline === undefined ? existing.deadline : deadline,
         priority: priority === undefined ? existing.priority : (priority ?? ""),
+        tags: tags ?? existing.tags,
       }
       const groups: CardGroup[] = []
       if (next.title !== existing.title) groups.push("title")
       if (next.body !== existing.body) groups.push("body")
       if (next.deadline !== existing.deadline) groups.push("deadline")
       if (next.priority !== existing.priority) groups.push("priority")
+      if (tags !== undefined) groups.push("tags")
       if (groups.length === 0) return reply(shapeCard(existing))
 
       const card = touchCard(next, groups, board.now())

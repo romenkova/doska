@@ -31,6 +31,7 @@ const card: Card = {
   number: 1,
   deadline: null,
   priority: "",
+  tags: [],
   attachments: [],
   updatedAt: synced,
   deletedAt: null,
