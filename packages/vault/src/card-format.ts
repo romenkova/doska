@@ -42,6 +42,14 @@ export function num(value: unknown): number | null {
   return Number.isFinite(parsed) ? parsed : null
 }
 
+/** Comma/space separated string. */
+export function tagList(value: unknown): string[] {
+  const items = Array.isArray(value)
+    ? value.map(str)
+    : str(value).split(/[\s,]+/)
+  return items.map((tag) => tag.replace(/^#/, "")).filter(Boolean)
+}
+
 /**
  * Frontmatter and body
  */
