@@ -12,8 +12,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@orpc/contract": "^1.15.0",
-    "zod": "^4.5.4"
+    "@orpc/contract": "^1.15.4",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@doska/configs": "workspace:*",

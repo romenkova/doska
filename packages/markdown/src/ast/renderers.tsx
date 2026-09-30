@@ -1,4 +1,5 @@
-import { createContext, useContext, type ReactNode } from "react"
+import type { ReactNode } from "react"
+import { MarkdownRenderersContext } from "./use-markdown-renderers"
 
 /**
  * Hooks for the pieces of a body that only the host app can resolve — an
@@ -16,17 +17,9 @@ export interface MarkdownRenderers {
   onTagClick?: (name: string) => void
 }
 
-const NONE: MarkdownRenderers = {}
-
-const MarkdownRenderersContext = createContext<MarkdownRenderers>(NONE)
-
 /**
  * Provides the renderers for the bodies rendered beneath it. Mount it wherever
  * the data they need is in scope — image refs resolve per card, so the card is
  * the natural place. Unprovided refs fall back to plain markdown.
  */
 export const MarkdownRenderersProvider = MarkdownRenderersContext.Provider
-
-export function useMarkdownRenderers() {
-  return useContext(MarkdownRenderersContext)
-}

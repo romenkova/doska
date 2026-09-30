@@ -7,6 +7,6 @@
     "dev": "bakemd dev content --port 5175"
   },
   "devDependencies": {
-    "bakemd": "^0.2.1"
+    "bakemd": "^0.2.4"
   }
 }

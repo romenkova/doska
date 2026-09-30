@@ -32,7 +32,7 @@
     "upd": "pnpm dlx npm-check-updates --workspaces --root -i"
   },
   "devDependencies": {
-    "prettier": "^3.9.6",
-    "turbo": "^2.10.12"
+    "prettier": "^3.9.9",
+    "turbo": "^2.11.5"
   }
 }

@@ -17,7 +17,7 @@ jobs:
     container:
       # Must match @playwright/test in packages/e2e exactly — the browsers are
       # baked into the image, and Playwright refuses a build it didn't ship with.
-      image: mcr.microsoft.com/playwright:v1.62.0-noble
+      image: mcr.microsoft.com/playwright:v1.63.0-noble
       options: --user 1001
     env:
       # Browsers are baked into the image at /ms-playwright. The image already

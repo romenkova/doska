@@ -2,6 +2,7 @@ import { expect, type APIRequestContext, type Page } from "@playwright/test"
 import type { Dashboard } from "@doska/contract"
 import { dashboardSync, newerThan } from "./rpc"
 import { menu } from "./menu"
+import { sidebarRow } from "./sidebar"
 
 /* -------------------------------------------------------------------------- */
 /*  Board (dashboard) helpers. Everything tests touch is what a user sees:    */
@@ -70,6 +71,8 @@ export async function renameBoard(
   await input.fill(toName)
   await input.press("Enter")
   await expect(boardTitle(page, toName)).toBeVisible()
+  // The header shows the draft at once; the sidebar only updates once it's saved.
+  await expect(sidebarRow(page, toName)).toBeVisible()
 }
 
 /**

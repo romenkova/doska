@@ -12,17 +12,17 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@base-ui/react": "1.7.0",
+    "@base-ui/react": "1.8.0",
     "@doska/markdown": "workspace:*",
     "@doska/tokens": "workspace:*",
     "@doska/utils": "workspace:*",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
     "date-fns": "^4.4.0",
-    "lucide-react": "1.39.0",
-    "motion": "^13.1.1",
+    "lucide-react": "1.48.0",
+    "motion": "^13.4.6",
     "react-day-picker": "^10.0.1",
-    "tailwind-merge": "3.6.0"
+    "tailwind-merge": "3.7.0"
   },
   "peerDependencies": {
     "react": "^19",
@@ -30,9 +30,9 @@
   },
   "devDependencies": {
     "@doska/configs": "workspace:*",
-    "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.5",
-    "eslint": "^10.9.1",
+    "@types/react": "~19.2.18",
+    "@types/react-dom": "~19.2.5",
+    "eslint": "^10.11.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "typescript": "~6"

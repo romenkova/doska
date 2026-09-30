@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "clsx": "2.1.1",
-    "tailwind-merge": "3.6.0"
+    "tailwind-merge": "3.7.0"
   },
   "peerDependencies": {
     "@doska/tokens": "workspace:*",
@@ -28,8 +28,8 @@
   "devDependencies": {
     "@doska/configs": "workspace:*",
     "@doska/tokens": "workspace:*",
-    "@types/react": "^19.2.18",
-    "eslint": "^10.9.1",
+    "@types/react": "~19.2.18",
+    "eslint": "^10.11.0",
     "expo-blur": "^57.0.2",
     "lucide-react-native": "^1.39.0",
     "nativewind": "^4.2.6",

@@ -167,9 +167,11 @@ export async function openCard(page: Page, title: string): Promise<void> {
   await expect(cardPanel(page)).toBeVisible()
   // Exact: a board card with a conflict marker is named "... Edit conflict".
   const edit = page.getByRole("button", { name: "Edit", exact: true })
+  const titleField = panelField(page, "Title")
+  // isVisible() doesn't wait, so let the panel render one mode or the other first.
+  await expect(edit.or(titleField).first()).toBeVisible()
   if (await edit.isVisible()) await edit.click()
   // Click to focus: a panel reused mid-close-animation won't refire the field's autoFocus.
-  const titleField = panelField(page, "Title")
   await titleField.click()
   await expect(titleField).toBeFocused()
 }

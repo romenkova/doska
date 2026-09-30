@@ -16,14 +16,14 @@
     "@doska/markdown": "workspace:*",
     "@doska/tokens": "workspace:*",
     "@doska/utils": "workspace:*",
-    "@modelcontextprotocol/sdk": "^1.30.0",
+    "@modelcontextprotocol/sdk": "^1.31.0",
     "fractional-indexing": "^3.2.0",
-    "zod": "^4.5.4"
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@doska/configs": "workspace:*",
     "@types/node": "^22",
     "typescript": "~6",
-    "vitest": "^4.1.11"
+    "vitest": "^5.0.2"
   }
 }

@@ -22,7 +22,7 @@
   "devDependencies": {
     "@doska/configs": "workspace:*",
     "@types/node": "^22",
-    "eslint": "^10.9.1",
+    "eslint": "^10.11.0",
     "typescript": "~6"
   }
 }

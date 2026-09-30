@@ -15,6 +15,6 @@
   "devDependencies": {
     "@doska/configs": "workspace:*",
     "fake-indexeddb": "^6.2.5",
-    "vitest": "^4.1.11"
+    "vitest": "^5.0.2"
   }
 }
