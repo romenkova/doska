@@ -30,7 +30,13 @@ export function useDeleteCard(deckId: string) {
 export type CardPatch = Partial<
   Pick<
     Card,
-    "title" | "body" | "deadline" | "priority" | "attachments" | "bodyConflict"
+    | "title"
+    | "body"
+    | "deadline"
+    | "priority"
+    | "tags"
+    | "attachments"
+    | "bodyConflict"
   >
 >
 
