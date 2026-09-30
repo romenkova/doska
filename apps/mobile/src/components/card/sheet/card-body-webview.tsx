@@ -83,7 +83,7 @@ export function CardBodyWebview({
 }: IProps) {
   const webview = useRef<WebView>(null)
   const { theme } = useTheme()
-  const tags = useTagOptions(deckId, cardId)
+  const tags = useTagOptions(deckId)
   const refs = useCardRefs(deckId, cardId)
   const images = useAttachmentImages(cardId, attachments)
   const [isReady, setReady] = useState(false)

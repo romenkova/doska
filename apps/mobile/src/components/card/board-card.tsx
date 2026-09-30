@@ -1,5 +1,5 @@
 import type { Card } from "@doska/core/types"
-import { tagsIn, taskProgress } from "@doska/markdown"
+import { taskProgress } from "@doska/markdown"
 import { router } from "expo-router"
 import { Pressable, View } from "react-native"
 import { ROUTES } from "@/lib/routes"
@@ -21,7 +21,7 @@ export function BoardCard({ card, done, onPressTag }: IProps) {
   const image = cardSoleImage(card)
   if (image) return <ImageCard card={card} image={image} />
 
-  const tags = tagsIn(card.body)
+  const tags = card.tags ?? []
   const hasMeta =
     taskProgress(card.body).total > 0 ||
     !!card.deadline ||
