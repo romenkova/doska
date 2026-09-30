@@ -62,9 +62,8 @@ export function AccountRow({ account, isSelf }: IProps) {
           {canDelete && (
             <Button
               type="button"
-              variant="ghost"
+              variant="destructive"
               size="sm"
-              className="text-destructive"
               onClick={() => setDeleting(true)}
             >
               Delete

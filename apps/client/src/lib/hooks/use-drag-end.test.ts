@@ -10,6 +10,7 @@ const card = (id: string, columnId: string, fields: Partial<Card> = {}): Card =>
     body: "",
     columnId,
     priority: "",
+    tags: [],
     deadline: null,
     number: null,
     attachments: [],
@@ -84,10 +85,10 @@ describe("useDragEnd", () => {
   describe("tag filter on", () => {
     it("a drop lands between the visible neighbours, not the hidden ones", () => {
       const cards = [
-        card("a", "todo", { position: "a0", body: "#bug" }),
+        card("a", "todo", { position: "a0", tags: ["bug"] }),
         card("hidden", "todo", { position: "a1" }),
-        card("c", "todo", { position: "a2", body: "#bug" }),
-        card("moved", "todo", { position: "a3", body: "#bug" }),
+        card("c", "todo", { position: "a2", tags: ["bug"] }),
+        card("moved", "todo", { position: "a3", tags: ["bug"] }),
       ]
       const moveCard = vi.fn()
       const handleDragEnd = useDragEnd(board(cards), moveCard, [], ["bug"])

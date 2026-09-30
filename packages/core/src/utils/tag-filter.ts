@@ -1,4 +1,3 @@
-import { tagsIn } from "@doska/markdown/core"
 import type { Card } from "../types"
 
 const sameTag = (a: string, b: string) => a.toLowerCase() === b.toLowerCase()
@@ -6,7 +5,7 @@ const sameTag = (a: string, b: string) => a.toLowerCase() === b.toLowerCase()
 export function filterByTags(cards: Card[], tags: string[] = []) {
   if (tags.length === 0) return cards
   return cards.filter((card) => {
-    const names = tagsIn(card.body)
+    const names = card.tags ?? []
     return tags.every((tag) => names.some((name) => sameTag(name, tag)))
   })
 }

@@ -12,7 +12,6 @@ import {
   cut,
   soleImage,
   taskProgress,
-  tagsIn,
   useMarkers,
   type SoleImage,
 } from "@doska/markdown"
@@ -102,7 +101,7 @@ export function CardView({
     )
 
   const tasks = taskProgress(body)
-  const tags = tagsIn(body)
+  const tags = card.tags ?? []
   const hasMeta =
     !!metaLead ||
     tasks.total > 0 ||
@@ -177,7 +176,7 @@ export function CardView({
               </div>
             )}
             {files.length > 0 && showBody && attachments}
-            {!showBody && tags.length > 0 && <CardTags tags={tags} />}
+            {tags.length > 0 && <CardTags tags={tags} />}
           </CardBase>
         )
       )}

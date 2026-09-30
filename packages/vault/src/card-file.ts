@@ -5,6 +5,7 @@ import {
   render,
   split,
   str,
+  tagList,
   toAttachmentRefs,
   toFileRefs,
   unshownIn,
@@ -17,6 +18,7 @@ const KNOWN = [
   "title",
   "deadline",
   "priority",
+  "tags",
   "attachments",
   "stamps",
   "bodyConflict",
@@ -24,7 +26,7 @@ const KNOWN = [
 ]
 
 export type CardPatch = Partial<
-  Pick<Card, "title" | "body" | "deadline" | "priority">
+  Pick<Card, "title" | "body" | "deadline" | "priority" | "tags">
 >
 
 /**
@@ -39,6 +41,7 @@ export class CardFile {
   readonly body: string
   readonly deadline: string
   readonly priority: string
+  readonly tags: string[]
   readonly attachments: Attachment[]
   readonly extra: Record<string, unknown>
 
@@ -49,6 +52,7 @@ export class CardFile {
     body?: string
     deadline?: string
     priority?: string
+    tags?: string[]
     attachments?: Attachment[]
     extra?: Record<string, unknown>
   }) {
@@ -58,6 +62,7 @@ export class CardFile {
     this.body = clean(fields.body ?? "")
     this.deadline = fields.deadline ?? ""
     this.priority = fields.priority ?? ""
+    this.tags = fields.tags ?? []
     this.attachments = fields.attachments ?? []
     this.extra = fields.extra ?? {}
   }
@@ -70,6 +75,7 @@ export class CardFile {
       body: card.body,
       deadline: card.deadline ?? "",
       priority: card.priority,
+      tags: card.tags ?? [],
       attachments: card.attachments,
       extra,
     })
@@ -91,6 +97,7 @@ export class CardFile {
       body: toAttachmentRefs(body),
       deadline: str(front.deadline),
       priority: str(front.priority),
+      tags: tagList(front.tags),
       extra,
     })
   }
@@ -102,6 +109,7 @@ export class CardFile {
     front.title = this.title
     if (this.deadline) front.deadline = this.deadline
     if (this.priority) front.priority = this.priority
+    if (this.tags.length > 0) front.tags = this.tags
     const unshown = unshownIn(body, this.attachments)
     if (unshown.length > 0) front.attachments = unshown
     Object.assign(front, this.extra)
@@ -118,6 +126,11 @@ export class CardFile {
       patch.deadline = this.deadline || null
     }
     if (this.priority !== card.priority) patch.priority = this.priority
+    if (!sameTags(this.tags, card.tags ?? [])) patch.tags = this.tags
     return Object.keys(patch).length > 0 ? patch : null
   }
+}
+
+function sameTags(a: string[], b: string[]): boolean {
+  return a.length === b.length && a.every((tag, i) => tag === b[i])
 }

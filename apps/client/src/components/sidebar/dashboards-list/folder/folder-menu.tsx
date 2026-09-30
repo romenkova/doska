@@ -37,7 +37,7 @@ export function FolderMenu({ onRename, onDelete }: IProps) {
           <Pencil />
           Rename
         </MenuItem>
-        <MenuItem onClick={onDelete} className="text-destructive">
+        <MenuItem onClick={onDelete} variant="destructive">
           <Trash2 />
           Delete folder
         </MenuItem>

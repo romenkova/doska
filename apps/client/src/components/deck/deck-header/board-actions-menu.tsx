@@ -58,11 +58,8 @@ export function BoardActionsMenu({
             <ArrowRightLeft />
             Reorder columns
           </MenuItem>
-          <MenuSeparator className="my-1 h-px" />
-          <MenuItem
-            onClick={() => setConfirmOpen(true)}
-            className="text-destructive"
-          >
+          <MenuSeparator />
+          <MenuItem onClick={() => setConfirmOpen(true)} variant="destructive">
             <Trash2 />
             Delete board
           </MenuItem>

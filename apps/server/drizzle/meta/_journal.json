@@ -134,6 +134,13 @@
       "when": 1789316507345,
       "tag": "0018_field_stamps",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1790782296325,
+      "tag": "0019_card_tags",
+      "breakpoints": true
     }
   ]
 }

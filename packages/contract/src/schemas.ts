@@ -20,6 +20,7 @@ export const CARD_GROUPS = [
   "place",
   "deadline",
   "priority",
+  "tags",
   "attachments",
   "deleted",
   "conflict",
@@ -72,6 +73,8 @@ export const CardSchema = z.object({
   deadline: z.string().nullable().default(null),
   /** Importance: `high` / `medium` / `low`, empty for none. See `PRIORITIES`. */
   priority: z.string().default(""),
+  /** `#tags`*/
+  tags: z.array(z.string()).default([]),
   /** Attached files; travels with the card's last-writer-wins record. */
   attachments: z.array(AttachmentSchema).default([]),
   updatedAt: z.number(),
@@ -98,6 +101,7 @@ export const CARD_FIELD_GROUP: Record<
   position: "place",
   deadline: "deadline",
   priority: "priority",
+  tags: "tags",
   attachments: "attachments",
   deletedAt: "deleted",
   bodyConflict: "conflict",
