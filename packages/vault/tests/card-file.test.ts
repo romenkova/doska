@@ -35,6 +35,23 @@ describe("CardFile", () => {
     expect(parsed.patchFor(card)).toBeNull()
   })
 
+  it("writes and reads back the card's own tags", () => {
+    const card = makeCard({
+      columnId: "col-1",
+      title: "T",
+      tags: ["work", "q3"],
+    })
+    const text = CardFile.fromCard(card).text
+
+    expect(text).toContain("tags:\n  - work\n  - q3\n")
+    expect(CardFile.parse(text).patchFor(card)).toBeNull()
+  })
+
+  it("reads Obsidian's string form of tags", () => {
+    const parsed = CardFile.parse('---\nid: c\ntags: "#work, q3 later"\n---\n')
+    expect(parsed.tags).toEqual(["work", "q3", "later"])
+  })
+
   it("reads a file with no frontmatter as all body", () => {
     const parsed = CardFile.parse("just a note\n")
     expect(parsed.id).toBe("")
@@ -170,20 +187,20 @@ describe("CardFile", () => {
   it("drops sync state a copied file carries in its frontmatter", () => {
     const card = makeCard({ columnId: "col-1", title: "Ship it" })
     const parsed = CardFile.parse(
-      `---\nid: ${card.id}\ntitle: Ship it\nstamps:\n  body: 5\nbodyConflict:\n  body: theirs\n  at: 4\nsyncedBody: old\ntags: [ops]\n---\n`
+      `---\nid: ${card.id}\ntitle: Ship it\nstamps:\n  body: 5\nbodyConflict:\n  body: theirs\n  at: 4\nsyncedBody: old\naliases: [ops]\n---\n`
     )
 
-    expect(parsed.extra).toEqual({ tags: ["ops"] })
+    expect(parsed.extra).toEqual({ aliases: ["ops"] })
     expect(CardFile.fromCard(card, parsed.extra).text).not.toContain("stamps")
   })
 
   it("keeps frontmatter keys the user added", () => {
     const card = makeCard({ columnId: "col-1", title: "Ship it" })
     const parsed = CardFile.parse(
-      `---\nid: ${card.id}\ntitle: Ship it\ntags: [ops]\n---\n`
+      `---\nid: ${card.id}\ntitle: Ship it\naliases: [ops]\n---\n`
     )
 
-    expect(parsed.extra).toEqual({ tags: ["ops"] })
-    expect(CardFile.fromCard(card, parsed.extra).text).toContain("tags:")
+    expect(parsed.extra).toEqual({ aliases: ["ops"] })
+    expect(CardFile.fromCard(card, parsed.extra).text).toContain("aliases:")
   })
 })

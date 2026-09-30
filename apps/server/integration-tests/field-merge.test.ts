@@ -38,6 +38,7 @@ function card(patch: Partial<Card> = {}): Card {
     number: null,
     deadline: null,
     priority: "",
+    tags: [],
     attachments: [],
     updatedAt: created,
     deletedAt: null,

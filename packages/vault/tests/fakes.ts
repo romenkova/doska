@@ -112,6 +112,7 @@ export function makeCard(fields: Partial<Card> & { columnId: string }): Card {
     number: null,
     deadline: null,
     priority: "",
+    tags: [],
     attachments: [],
     updatedAt: 0,
     deletedAt: null,

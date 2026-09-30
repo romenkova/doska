@@ -290,6 +290,7 @@ export async function remoteAddCard(
           number: null,
           deadline: null,
           priority: "",
+          tags: [],
           attachments: [],
           updatedAt: Date.now(),
           deletedAt: null,
