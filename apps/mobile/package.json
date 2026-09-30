@@ -22,7 +22,6 @@
     "@expo-google-fonts/mulish": "^0.4.2",
     "@react-native-community/datetimepicker": "9.2.0",
     "@react-native-community/netinfo": "12.0.1",
-    "@react-navigation/drawer": "^7.13.10",
     "@react-navigation/native": "^7.3.18",
     "@tanstack/react-query": "5.102.8",
     "expo": "~57.0.19",

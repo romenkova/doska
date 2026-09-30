@@ -21,7 +21,6 @@
     "@doska/core": "workspace:*",
     "@doska/markdown": "workspace:*",
     "@doska/ui-kit": "workspace:*",
-    "@lezer/common": "^1.5.2",
     "@lezer/highlight": "^1.2.3",
     "@lezer/markdown": "^1.7.2"
   },
