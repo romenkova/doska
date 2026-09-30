@@ -1,6 +1,7 @@
 import { test, expect, type Locator, type Page } from "@playwright/test"
 import {
   addCard,
+  addCardTags,
   cardTitled,
   column,
   columnCardTitles,
@@ -19,6 +20,15 @@ async function boardWithCards(page: Page, cards: Record<string, string>) {
     await addCard(page, "To Do")
     await retitleCard(page, "Untitled card", title)
     if (body) await editCardBody(page, title, body)
+  }
+}
+
+async function boardWithTags(page: Page, cards: Record<string, string[]>) {
+  await createBoard(page)
+  for (const [title, tags] of Object.entries(cards)) {
+    await addCard(page, "To Do")
+    await retitleCard(page, "Untitled card", title)
+    if (tags.length > 0) await addCardTags(page, title, tags)
   }
 }
 
@@ -60,10 +70,10 @@ test.describe("card tags", () => {
   test("clicking a tag filters the board to cards carrying it", async ({
     page,
   }) => {
-    await boardWithCards(page, {
-      Alpha: "#urgent fix",
-      Beta: "later #urgent",
-      Gamma: "#someday",
+    await boardWithTags(page, {
+      Alpha: ["urgent"],
+      Beta: ["urgent"],
+      Gamma: ["someday"],
     })
 
     await tagChip(page, "Alpha", "urgent").click()
@@ -77,7 +87,7 @@ test.describe("card tags", () => {
   test("adding cards is off while filtered, since a new card wouldn't match", async ({
     page,
   }) => {
-    await boardWithCards(page, { Alpha: "#urgent" })
+    await boardWithTags(page, { Alpha: ["urgent"] })
 
     await tagChip(page, "Alpha", "urgent").click()
 
@@ -91,7 +101,7 @@ test.describe("card tags", () => {
   })
 
   test("the pill clears the filter", async ({ page }) => {
-    await boardWithCards(page, { Alpha: "#urgent", Beta: "" })
+    await boardWithTags(page, { Alpha: ["urgent"], Beta: [] })
 
     await tagChip(page, "Alpha", "urgent").click()
     await expect.poll(() => visibleTitles(page)).toEqual(["Alpha"])
@@ -106,7 +116,7 @@ test.describe("card tags", () => {
   })
 
   test("clicking the same tag again clears it", async ({ page }) => {
-    await boardWithCards(page, { Alpha: "#urgent", Beta: "" })
+    await boardWithTags(page, { Alpha: ["urgent"], Beta: [] })
 
     await tagChip(page, "Alpha", "urgent").click()
     await expect.poll(() => visibleTitles(page)).toEqual(["Alpha"])
@@ -118,10 +128,10 @@ test.describe("card tags", () => {
   })
 
   test("two tags narrow to cards carrying both", async ({ page }) => {
-    await boardWithCards(page, {
-      Alpha: "#urgent #backend",
-      Beta: "#urgent",
-      Gamma: "#backend",
+    await boardWithTags(page, {
+      Alpha: ["urgent", "backend"],
+      Beta: ["urgent"],
+      Gamma: ["backend"],
     })
 
     await tagChip(page, "Alpha", "urgent").click()
@@ -133,10 +143,10 @@ test.describe("card tags", () => {
   })
 
   test("the filter ignores case", async ({ page }) => {
-    await boardWithCards(page, {
-      Alpha: "#Urgent",
-      Beta: "#urgent",
-      Gamma: "",
+    await boardWithTags(page, {
+      Alpha: ["Urgent"],
+      Beta: ["urgent"],
+      Gamma: [],
     })
 
     await tagChip(page, "Beta", "urgent").click()
@@ -144,20 +154,20 @@ test.describe("card tags", () => {
     await expect.poll(() => visibleTitles(page)).toEqual(["Alpha", "Beta"])
   })
 
-  test("the # menu offers the board's tags, most used first, and leaves out the card being edited", async ({
+  test("the # menu offers the board's card tags, most used first", async ({
     page,
   }) => {
-    await boardWithCards(page, {
-      Alpha: "#rare #common",
-      Beta: "#common",
-      Source: "#mine",
+    await boardWithTags(page, {
+      Alpha: ["rare", "common"],
+      Beta: ["common"],
+      Source: [],
     })
+    await editCardBody(page, "Beta", "#bodyonly")
 
     await openCard(page, "Source")
     const notes = panelField(page, "Notes")
     await notes.click()
-    await notes.press("End")
-    await notes.pressSequentially(" #")
+    await notes.pressSequentially("fix #")
 
     const rows = tagMenuRows(page)
     await expect(rows).toHaveCount(2)
@@ -170,7 +180,7 @@ test.describe("card tags", () => {
   test("picking a tag from the menu inserts it with a trailing space", async ({
     page,
   }) => {
-    await boardWithCards(page, { Alpha: "#urgent", Source: "" })
+    await boardWithTags(page, { Alpha: ["urgent"], Source: [] })
 
     await openCard(page, "Source")
     const notes = panelField(page, "Notes")
@@ -183,7 +193,7 @@ test.describe("card tags", () => {
   })
 
   test("a bare # opening a line is left to be a heading", async ({ page }) => {
-    await boardWithCards(page, { Alpha: "#urgent", Source: "" })
+    await boardWithTags(page, { Alpha: ["urgent"], Source: [] })
 
     await openCard(page, "Source")
     const notes = panelField(page, "Notes")
@@ -195,6 +205,18 @@ test.describe("card tags", () => {
     // Once a letter follows, it can only be a tag.
     await notes.pressSequentially("u")
     await expect(page.getByRole("option", { name: /^#urgent/ })).toBeVisible()
+  })
+
+  test("a #tag in the body filters by card tags but doesn't count as one", async ({
+    page,
+  }) => {
+    await boardWithTags(page, { Alpha: [], Beta: ["urgent"] })
+    await editCardBody(page, "Alpha", "#urgent")
+
+    await tagChip(page, "Alpha", "urgent").click()
+
+    await expect(filterPill(page, "urgent")).toBeVisible()
+    await expect.poll(() => visibleTitles(page)).toEqual(["Beta"])
   })
 
   test("the slash menu's Tag command starts a tag", async ({ page }) => {

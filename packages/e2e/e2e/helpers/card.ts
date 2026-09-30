@@ -218,6 +218,28 @@ export async function setCardPriority(
   await expect(menu(page, "Card actions")).toBeHidden()
 }
 
+export async function addCardTags(
+  page: Page,
+  title: string,
+  tags: string[]
+): Promise<void> {
+  await openCardMenu(page, title)
+  await menu(page, "Card actions")
+    .getByRole("menuitem", { name: "Tags", exact: true })
+    .click()
+  const input = menu(page, "Tags").getByRole("textbox", { name: "Add tag" })
+  for (const tag of tags) {
+    await input.fill(tag)
+    await input.press("Enter")
+    await expect(input).toHaveValue("")
+  }
+  // Escape closes the submenu first, then the menu.
+  await input.press("Escape")
+  await expect(menu(page, "Tags")).toBeHidden()
+  await page.keyboard.press("Escape")
+  await expect(menu(page, "Card actions")).toBeHidden()
+}
+
 export type DeadlinePreset = "No deadline" | "Today" | "Tomorrow" | "In a week"
 
 export async function setDeadline(
