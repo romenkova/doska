@@ -6,6 +6,8 @@ export type Session = {
   authed: boolean
   login: string | null
   userId: string | null
+  /** A file key from `/api/files`, or an absolute URL an SSO provider gave us. */
+  image: string | null
   isAdmin: boolean
 }
 
@@ -28,6 +30,7 @@ export const SIGNED_OUT: Session = {
   authed: false,
   login: null,
   userId: null,
+  image: null,
   isAdmin: false,
 }
 
@@ -46,12 +49,14 @@ export async function fetchSession(): Promise<Session> {
 function toSession(user: {
   id: string
   username?: string | null
+  image?: string | null
   role?: string | null
 }): Session {
   return {
     authed: true,
     login: user.username ?? null,
     userId: user.id,
+    image: user.image ?? null,
     isAdmin: user.role === "admin",
   }
 }

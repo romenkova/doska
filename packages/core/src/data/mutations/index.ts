@@ -1,4 +1,5 @@
 export * from "./accounts"
+export * from "./avatar"
 export * from "./auth"
 export * from "./boards"
 export * from "./dashboard"

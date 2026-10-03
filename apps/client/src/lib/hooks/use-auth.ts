@@ -8,6 +8,7 @@ export function useAuth(): Omit<Session, "authed"> & {
     authed: data === undefined ? null : data.authed,
     login: data?.login ?? null,
     userId: data?.userId ?? null,
+    image: data?.image ?? null,
     isAdmin: data?.isAdmin ?? false,
   }
 }

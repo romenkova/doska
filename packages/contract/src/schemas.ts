@@ -199,6 +199,7 @@ export const MemberRoleSchema = z.enum(["owner", "editor"])
 export const MemberSchema = z.object({
   userId: z.string(),
   username: z.string(),
+  image: z.string().nullable(),
   role: MemberRoleSchema,
 })
 
@@ -206,6 +207,7 @@ export const MemberSchema = z.object({
 export const DirectoryUserSchema = z.object({
   id: z.string(),
   username: z.string(),
+  image: z.string().nullable(),
 })
 
 const DashboardRecordChangeSchema = z.object({
