@@ -63,12 +63,13 @@ export function DeckView({ dashboard }: { dashboard: Dashboard }) {
     [saveCard]
   )
 
-  const { tagFilters } = useDeck()
+  const { tagFilters, userFilters } = useDeck()
   const handleDragEnd = useDragEnd(
     board,
     moveCard,
     dashboard.sort ?? [],
-    tagFilters
+    tagFilters,
+    userFilters
   )
 
   return (
