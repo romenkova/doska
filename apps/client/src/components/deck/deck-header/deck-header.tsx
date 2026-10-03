@@ -5,6 +5,7 @@ import { BoardActionsMenu } from "./board-actions-menu"
 import { SearchButton } from "./search-button"
 import { RowViewButton } from "./row-view-button"
 import { ShareButton } from "./share-button"
+import { UserFilter } from "./user-filter"
 import type { Column, DashboardView } from "@doska/core"
 import { VaultButton } from "./vault-button"
 import { isDesktop } from "@/lib/platform"
@@ -20,8 +21,8 @@ interface IProps {
   onReorderColumns: (changed: Column[]) => void
   onChangeSort: (sort: string[]) => void
   onChangeView: (view: DashboardView) => void
-  /** Omitted while the board has no column to put a card in. */
-  onAddCard?: () => void
+  onAddCard: () => void
+  addCardDisabledReason?: string
 }
 
 export function DeckHeader({
@@ -36,6 +37,7 @@ export function DeckHeader({
   onChangeSort,
   onChangeView,
   onAddCard,
+  addCardDisabledReason,
 }: IProps) {
   return (
     <PageHeader>
@@ -47,17 +49,18 @@ export function DeckHeader({
       />
 
       <div className="ml-auto flex items-center gap-1">
-        {onAddCard && (
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            aria-label="Add card"
-            className="text-muted-foreground"
-            onClick={onAddCard}
-          >
-            <Plus />
-          </Button>
-        )}
+        <UserFilter boardId={boardId} />
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          aria-label="Add card"
+          className="text-muted-foreground"
+          onClick={onAddCard}
+          disabled={!!addCardDisabledReason}
+          tooltip={addCardDisabledReason ?? true}
+        >
+          <Plus />
+        </Button>
         <SearchButton boardId={boardId} />
         <RowViewButton view={view} onChangeView={onChangeView} />
         <ShareButton boardId={boardId} title={title} />
