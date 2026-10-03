@@ -27,6 +27,7 @@ function card(fields: Partial<Card> & { id: string }): Card {
     deadline: null,
     priority: "",
     tags: [],
+    users: [],
     attachments: [],
     updatedAt: 0,
     deletedAt: null,

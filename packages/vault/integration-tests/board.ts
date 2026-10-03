@@ -1,6 +1,6 @@
 import type { Card, Column, Dashboard } from "@doska/contract"
 import type { KeyRange } from "@doska/ports"
-import { installRuntime, type Runtime } from "@doska/core"
+import { installRuntime, sync, type Runtime } from "@doska/core"
 import type { VaultBoard } from "../src/vault"
 
 export const BOARD_ID = "board-1"
@@ -77,6 +77,7 @@ export async function installBoard(columns: Column[]): Promise<TestBoard> {
     net: { online: () => true, subscribe: () => () => {} },
     http: { isConfigured: () => false, subscribe: () => () => {} },
   } as unknown as Runtime)
+  sync.init()
 
   const dashboard: Dashboard = {
     id: BOARD_ID,
