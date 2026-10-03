@@ -1,9 +1,13 @@
 import { useState } from "react"
 import { Button, cn } from "@doska/ui-kit"
 import { Check, Copy, Globe } from "lucide-react"
-import { useBoardMembers, usePublicBoardStatus } from "@doska/core/queries"
-import { usePublishBoard, useUnpublishBoard } from "@doska/core/mutations"
-import { apiUrl } from "@doska/core/server"
+import {
+  useBoardMembers,
+  usePublicBoardStatus,
+  usePublishBoard,
+  useUnpublishBoard,
+  apiUrl,
+} from "@doska/core"
 import { routes } from "@/lib/routes"
 
 interface IProps {

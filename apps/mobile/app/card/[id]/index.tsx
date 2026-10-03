@@ -1,5 +1,4 @@
-import { useCardSave } from "@doska/core/mutations"
-import { useCard } from "@doska/core/queries"
+import { useCardSave, useCard } from "@doska/core"
 import { Spinner } from "@doska/ui-kit-mobile"
 import { router, useLocalSearchParams } from "expo-router"
 import { useEffect } from "react"

@@ -1,6 +1,9 @@
-import type { Dashboard } from "@doska/core/types"
-import { setLastBoard, useLastBoard } from "@doska/core/last-board"
-import { useDashboards } from "@doska/core/queries"
+import {
+  type Dashboard,
+  setLastBoard,
+  useLastBoard,
+  useDashboards,
+} from "@doska/core"
 
 /** Which board the screen is showing, remembered across launches. */
 export function useActiveBoard(): {

@@ -1,7 +1,7 @@
 import { Button, Input } from "@doska/ui-kit"
 import { UserPlus } from "lucide-react"
 import { useState } from "react"
-import { useCreateAccount } from "@doska/core/mutations"
+import { useCreateAccount } from "@doska/core"
 
 /** Adds an account: a login and its first password, nothing else. */
 export function CreateAccountForm() {

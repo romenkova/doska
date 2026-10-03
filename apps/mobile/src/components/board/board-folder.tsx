@@ -1,7 +1,9 @@
-import { useMoveSidebarItem } from "@doska/core/mutations"
-import type { SidebarTarget } from "@doska/core/operations"
-import { useSidebarTree } from "@doska/core/queries"
-import { useTokens } from "@doska/ui-kit-mobile/tokens"
+import {
+  useMoveSidebarItem,
+  type SidebarTarget,
+  useSidebarTree,
+} from "@doska/core"
+import { useTokens } from "@doska/ui-kit-mobile"
 import Check from "lucide-react-native/icons/check"
 import Folder from "lucide-react-native/icons/folder"
 import Inbox from "lucide-react-native/icons/inbox"

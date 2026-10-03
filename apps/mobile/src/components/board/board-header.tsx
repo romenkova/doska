@@ -1,5 +1,4 @@
-import { useRenameDashboard } from "@doska/core/mutations"
-import type { Dashboard } from "@doska/core/types"
+import { useRenameDashboard, type Dashboard } from "@doska/core"
 import { IconButton, TextField } from "@doska/ui-kit-mobile"
 import { router } from "expo-router"
 import MoreHorizontal from "lucide-react-native/icons/ellipsis"

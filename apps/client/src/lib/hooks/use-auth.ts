@@ -1,5 +1,4 @@
-import type { Session } from "@doska/core/auth"
-import { useSession } from "@doska/core/queries"
+import { type Session, useSession } from "@doska/core"
 
 export function useAuth(): Omit<Session, "authed"> & {
   authed: boolean | null

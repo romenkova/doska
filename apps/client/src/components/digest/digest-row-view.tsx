@@ -1,11 +1,11 @@
 import { useCallback, useState } from "react"
 import { motion } from "motion/react"
-import type { DigestCard } from "@doska/core/operations"
 import {
+  type DigestCard,
   useMoveCardToColumn,
   useSaveCard,
   type CardPatch,
-} from "@doska/core/mutations"
+} from "@doska/core"
 import { useDashboardNav } from "@/lib/hooks"
 import { REORDER_TRANSITION } from "@/lib/motion"
 import { DigestRow } from "./digest-row"

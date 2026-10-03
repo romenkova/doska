@@ -1,4 +1,4 @@
-import { useSession } from "@doska/core/queries"
+import { useSession } from "@doska/core"
 import { ScrollView } from "react-native"
 import { SignedIn } from "@/components/sign-in/signed-in"
 import { SyncSetup } from "@/components/sign-in/sync-setup"

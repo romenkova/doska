@@ -1,10 +1,5 @@
-import {
-  expiryLabel,
-  type TrashEntry,
-  type TrashKind,
-} from "@doska/core/operations"
-import { Button } from "@doska/ui-kit-mobile"
-import { useTokens } from "@doska/ui-kit-mobile/tokens"
+import { expiryLabel, type TrashEntry, type TrashKind } from "@doska/core"
+import { Button, useTokens } from "@doska/ui-kit-mobile"
 import Columns3 from "lucide-react-native/icons/columns-3"
 import LayoutDashboard from "lucide-react-native/icons/layout-dashboard"
 import StickyNote from "lucide-react-native/icons/sticky-note"

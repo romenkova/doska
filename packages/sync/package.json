@@ -4,8 +4,7 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts",
-    "./hlc": "./src/hlc.ts"
+    ".": "./src/index.ts"
   },
   "dependencies": {
     "@doska/ports": "workspace:*"

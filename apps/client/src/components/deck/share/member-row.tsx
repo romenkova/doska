@@ -1,7 +1,6 @@
 import { useState } from "react"
 import { Avatar, AvatarFallback, Button } from "@doska/ui-kit"
-import { initials } from "@doska/core/utils"
-import type { Member } from "@doska/core/types"
+import { initials, type Member } from "@doska/core"
 import { AccountTag } from "../../accounts/account-tag"
 
 interface IProps {
@@ -18,7 +17,13 @@ interface IProps {
  * rather than a second dialog — losing a board is worth spelling out, but not
  * worth stacking modals for.
  */
-export function MemberRow({ member, board, isSelf, isOwner, onRemove }: IProps) {
+export function MemberRow({
+  member,
+  board,
+  isSelf,
+  isOwner,
+  onRemove,
+}: IProps) {
   const [confirming, setConfirming] = useState(false)
 
   const leaving = isSelf && member.role !== "owner"

@@ -1,5 +1,4 @@
-import { IconButton, TextField } from "@doska/ui-kit-mobile"
-import { useTokens } from "@doska/ui-kit-mobile/tokens"
+import { IconButton, TextField, useTokens } from "@doska/ui-kit-mobile"
 import SearchIcon from "lucide-react-native/icons/search"
 import X from "lucide-react-native/icons/x"
 import { Platform, Pressable, Text, View } from "react-native"

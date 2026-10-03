@@ -1,5 +1,5 @@
 import { ChevronRight } from "lucide-react"
-import { getBoard } from "@doska/core/operations"
+import { getBoard } from "@doska/core"
 import { CardPane } from "@/components/card-panel/card-pane"
 import { DeckProvider } from "@/providers/deck/deck-context"
 import { BoardPicker } from "./board-picker"

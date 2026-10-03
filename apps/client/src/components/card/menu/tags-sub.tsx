@@ -7,10 +7,7 @@ import {
 } from "@doska/ui-kit"
 import { Check, Tag } from "lucide-react"
 import { useState } from "react"
-import { useUpdateCard } from "@doska/core/mutations"
-import { useCard } from "@doska/core/queries"
-import { useTagOptions } from "@doska/core/tag-options"
-import { toggleTag } from "@doska/core/utils"
+import { useUpdateCard, useCard, useTagOptions, toggleTag } from "@doska/core"
 import { useDeck } from "@/providers/deck/deck-context"
 import { NewTagInput } from "./new-tag-input"
 

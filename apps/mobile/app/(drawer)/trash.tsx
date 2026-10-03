@@ -1,5 +1,4 @@
-import { useDashboards } from "@doska/core/queries"
-import { sync } from "@doska/core/sync"
+import { useDashboards, sync } from "@doska/core"
 import { useFocusEffect } from "expo-router"
 import { useCallback, useEffect } from "react"
 import { View } from "react-native"

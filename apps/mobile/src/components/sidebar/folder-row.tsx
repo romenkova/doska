@@ -1,5 +1,4 @@
-import { setFolderCollapsed } from "@doska/core/folder-collapsed"
-import type { SidebarFolderNode } from "@doska/core/operations"
+import { setFolderCollapsed, type SidebarFolderNode } from "@doska/core"
 import { IconButton } from "@doska/ui-kit-mobile"
 import { router } from "expo-router"
 import Folder from "lucide-react-native/icons/folder"

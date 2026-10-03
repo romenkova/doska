@@ -1,5 +1,4 @@
-import { useCard } from "@doska/core/queries"
-import { activeStorage } from "@doska/core/attachments"
+import { useCard, activeStorage } from "@doska/core"
 import { downloadBlob } from "@/lib/download"
 import { useAttachmentUrlByKey } from "@/lib/hooks/use-attachment-url"
 import { AttachmentImage } from "./attachment-image"

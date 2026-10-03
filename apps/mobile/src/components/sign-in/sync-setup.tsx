@@ -1,13 +1,14 @@
-import { useLogin } from "@doska/core/mutations"
 import {
+  useLogin,
   UNCLAIMED_BOARDS_WARNING,
   useUnclaimedLocalBoards,
-} from "@doska/core/queries"
+  getServerUrl,
+  setServerUrl,
+} from "@doska/core"
 import { Button, Input } from "@doska/ui-kit-mobile"
 import { useRouter } from "expo-router"
 import { useState } from "react"
 import { Text, View } from "react-native"
-import { getServerUrl, setServerUrl } from "@doska/core/server"
 
 export function SyncSetup() {
   const router = useRouter()

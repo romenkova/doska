@@ -5,8 +5,7 @@ import {
   type ReactNode,
 } from "react"
 import { useLocation } from "wouter"
-import type { CardPatch } from "@doska/core/mutations"
-import type { Card as CardData, Column } from "@doska/core/types"
+import type { CardPatch, Card as CardData, Column } from "@doska/core"
 import { routes } from "@/lib/routes"
 import { useIsRevealed } from "@/providers/card-reveal/card-reveal-context"
 import { CardAttachments } from "./attachments/card-attachments"

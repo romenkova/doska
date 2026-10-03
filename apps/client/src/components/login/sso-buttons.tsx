@@ -1,7 +1,6 @@
 import { Button } from "@doska/ui-kit"
 import { useState } from "react"
-import { ssoSignInUrl } from "@doska/core/sso"
-import { useSsoProviders } from "@doska/core/queries"
+import { ssoSignInUrl, useSsoProviders } from "@doska/core"
 
 interface IProps {
   /** Where the provider sends the browser back to, signed in. */

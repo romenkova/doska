@@ -1,6 +1,7 @@
 import type { KeyRange } from "@doska/ports"
 import type { Runtime } from "../src/runtime"
 import { installRuntime } from "../src/runtime"
+import { sync } from "../src/api/sync"
 
 /** An in-memory `ClientDB`, keyed `store/key`, honouring the cards-by-column index. */
 export const rows = new Map<string, unknown>()
@@ -48,4 +49,5 @@ export function installMemoryRuntime() {
   rows.clear()
   kvStore.clear()
   installRuntime({ db, kv, net, http } as unknown as Runtime)
+  sync.init()
 }

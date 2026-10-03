@@ -2,8 +2,8 @@ import { cn } from "@doska/ui-kit"
 import {
   attachmentUnavailable,
   type AttachmentSource,
-} from "@doska/core/attachment-labels"
-import { useConnection } from "@doska/core/sync"
+  useConnection,
+} from "@doska/core"
 
 interface IProps {
   className?: string

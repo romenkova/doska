@@ -1,6 +1,6 @@
-import { activeStorage } from "@doska/core/attachments"
-import { keys } from "@doska/core/keys"
 import {
+  activeStorage,
+  keys,
   createCard,
   createColumn,
   deleteCard,
@@ -10,7 +10,7 @@ import {
   renameColumn,
   restore,
   updateCard,
-} from "@doska/core/operations"
+} from "@doska/core"
 import { Vault, type VaultBoard, type VaultFiles } from "@doska/vault"
 import { useQueryClient } from "@tanstack/react-query"
 import { useCallback, useEffect, useState } from "react"

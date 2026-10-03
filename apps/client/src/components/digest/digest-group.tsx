@@ -1,7 +1,11 @@
 import { AnimatePresence, motion } from "motion/react"
 import { cn, deadlineLabel } from "@doska/ui-kit"
-import type { DigestCard, DigestGroup as Group } from "@doska/core/operations"
-import { longDate, weekday } from "@doska/core/utils"
+import {
+  type DigestCard,
+  type DigestGroup as Group,
+  longDate,
+  weekday,
+} from "@doska/core"
 import { REORDER_TRANSITION } from "@/lib/motion"
 import { DigestRowView } from "./digest-row-view"
 

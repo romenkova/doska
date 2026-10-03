@@ -1,6 +1,6 @@
 import { Button } from "@doska/ui-kit"
 import { Columns3, Rows3 } from "lucide-react"
-import type { DashboardView } from "@doska/core/types"
+import type { DashboardView } from "@doska/core"
 
 interface IProps {
   view: DashboardView

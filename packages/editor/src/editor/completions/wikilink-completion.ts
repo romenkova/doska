@@ -4,7 +4,7 @@ import {
   toWikilink,
   type WikilinkOption,
 } from "@doska/markdown"
-import { rankBy } from "@doska/core/search"
+import { rankBy } from "@doska/core"
 import { insertAt } from "./insert-at"
 
 /**

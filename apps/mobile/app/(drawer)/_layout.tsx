@@ -1,4 +1,4 @@
-import { useTokens } from "@doska/ui-kit-mobile/tokens"
+import { useTokens } from "@doska/ui-kit-mobile"
 import { Drawer } from "expo-router/drawer"
 import { AppSidebar } from "@/components/sidebar/app-sidebar"
 import { SCREENS } from "@/lib/routes"

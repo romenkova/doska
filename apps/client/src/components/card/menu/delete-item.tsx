@@ -1,8 +1,7 @@
 import { MenuItem } from "@doska/ui-kit"
 import { Trash2 } from "lucide-react"
 import { useParams } from "wouter"
-import { useDeleteCard } from "@doska/core/mutations"
-import { useCard } from "@doska/core/queries"
+import { useDeleteCard, useCard } from "@doska/core"
 import { useCardDeleteToast } from "@/components/toasts/card-delete/use-card-delete-toast"
 import { routes } from "@/lib/routes"
 

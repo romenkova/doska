@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest"
 import type { DropResult } from "@hello-pangea/dnd"
-import type { Board, Card } from "@doska/core/types"
+import type { Board, Card } from "@doska/core"
 import { useDragEnd } from "./use-drag-end"
 
 const card = (id: string, columnId: string, fields: Partial<Card> = {}): Card =>

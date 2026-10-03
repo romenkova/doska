@@ -1,8 +1,10 @@
-import { useAccount } from "@doska/core/account"
-import { useUpdateCard } from "@doska/core/mutations"
-import { useCard } from "@doska/core/queries"
-import { isSyncConfigured } from "@doska/core/server"
-import type { Attachment } from "@doska/core/types"
+import {
+  useAccount,
+  useUpdateCard,
+  useCard,
+  isSyncConfigured,
+  type Attachment,
+} from "@doska/core"
 import { useState } from "react"
 import { Alert } from "react-native"
 import { uploadFiles, type LocalFile } from "./upload-files"

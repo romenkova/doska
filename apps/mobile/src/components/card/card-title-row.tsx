@@ -1,4 +1,4 @@
-import type { Card } from "@doska/core/types"
+import type { Card } from "@doska/core"
 import { Text, View } from "react-native"
 import { CardActionsButton } from "./card-actions-button"
 

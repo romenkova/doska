@@ -1,10 +1,12 @@
 import { useState } from "react"
-import type { Attachment } from "@doska/core/types"
-import { useCard } from "@doska/core/queries"
-import { useUpdateCard } from "@doska/core/mutations"
-import { activeStorage } from "@doska/core/attachments"
-import { attachmentUnavailable } from "@doska/core/attachment-labels"
-import { useConnection } from "@doska/core/sync"
+import {
+  type Attachment,
+  useCard,
+  useUpdateCard,
+  activeStorage,
+  attachmentUnavailable,
+  useConnection,
+} from "@doska/core"
 import { downloadBlob, revealInDownloads } from "@/lib/download"
 import { isDesktop } from "@/lib/platform"
 import { useAttachmentUrls } from "@/lib/hooks/use-attachment-url"

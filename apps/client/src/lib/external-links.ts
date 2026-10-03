@@ -1,5 +1,5 @@
 import { navigate } from "wouter/use-browser-location"
-import { getServerUrl } from "@doska/core/server"
+import { getServerUrl } from "@doska/core"
 import { isDesktop } from "./platform"
 
 const EXTERNAL_PROTOCOLS = ["http:", "https:", "mailto:", "tel:"]

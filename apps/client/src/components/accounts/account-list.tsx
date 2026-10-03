@@ -1,4 +1,4 @@
-import { useAccounts } from "@doska/core/queries"
+import { useAccounts } from "@doska/core"
 import { useAuth } from "@/lib/hooks"
 import { AccountRow } from "./account-row"
 import { CreateAccountForm } from "./create-account-form"

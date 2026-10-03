@@ -1,4 +1,4 @@
-import { RETENTION_MS } from "@doska/contract/retention"
+import { RETENTION_MS } from "@doska/contract"
 import { CARDS, COLUMNS, DASHBOARDS, type StoreName } from "../constants"
 import { db } from "../db/db"
 import { sync } from "../sync"

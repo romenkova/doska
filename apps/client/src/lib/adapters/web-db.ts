@@ -5,7 +5,7 @@ import {
   CARDS_BY_NUMBER,
   META_STORE,
   STORES,
-} from "@doska/core/constants"
+} from "@doska/core"
 
 const DB_NAME = "deck"
 const VERSION = 13

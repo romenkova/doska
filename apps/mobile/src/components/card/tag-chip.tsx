@@ -1,4 +1,4 @@
-import { useTokens } from "@doska/ui-kit-mobile/tokens"
+import { useTokens } from "@doska/ui-kit-mobile"
 import Hash from "lucide-react-native/icons/hash"
 import type { ReactNode } from "react"
 import { Text, View } from "react-native"

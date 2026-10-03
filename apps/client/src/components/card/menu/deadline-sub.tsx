@@ -10,8 +10,7 @@ import {
 } from "@doska/ui-kit"
 import { CalendarDays, Check } from "lucide-react"
 import { Suspense, lazy } from "react"
-import { useUpdateCard } from "@doska/core/mutations"
-import { useCard } from "@doska/core/queries"
+import { useUpdateCard, useCard } from "@doska/core"
 
 const DeadlineCalendar = lazy(() => import("./deadline-calendar"))
 

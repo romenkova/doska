@@ -1,5 +1,4 @@
-import { cn } from "@doska/ui-kit-mobile"
-import { useTokens } from "@doska/ui-kit-mobile/tokens"
+import { cn, useTokens } from "@doska/ui-kit-mobile"
 import Paperclip from "lucide-react-native/icons/paperclip"
 import { ActivityIndicator, Pressable, Text } from "react-native"
 

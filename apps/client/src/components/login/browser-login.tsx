@@ -4,9 +4,10 @@ import {
   desktopLoginToken,
   startDesktopLogin,
   type DesktopLogin,
-} from "@doska/core/desktop-login"
-import { useLogin } from "@doska/core/mutations"
-import { getServerUrl, setServerUrl } from "@doska/core/server"
+  useLogin,
+  getServerUrl,
+  setServerUrl,
+} from "@doska/core"
 
 interface IProps {
   onDone: () => void

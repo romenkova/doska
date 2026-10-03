@@ -1,5 +1,4 @@
-import { useRestore } from "@doska/core/mutations"
-import type { TrashEntry } from "@doska/core/operations"
+import { useRestore, type TrashEntry } from "@doska/core"
 import { FlatList, RefreshControl, Text } from "react-native"
 import { TrashRow } from "@/components/trash/trash-row"
 import { useSyncRefresh } from "@/lib/use-sync-refresh"

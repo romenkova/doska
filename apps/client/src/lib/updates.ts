@@ -1,5 +1,5 @@
 import { invoke } from "@tauri-apps/api/core"
-import { getServerUrl, getServerVersion } from "@doska/core/server"
+import { getServerUrl, getServerVersion } from "@doska/core"
 import { isDesktop } from "./platform"
 
 /**

@@ -1,11 +1,14 @@
-import { useAccount } from "@doska/core/account"
-import { keys } from "@doska/core/keys"
-import { setLastBoard } from "@doska/core/last-board"
-import { useSaveCard } from "@doska/core/mutations"
-import { createCard, getBoard } from "@doska/core/operations"
-import { useDashboards } from "@doska/core/queries"
-import { isSyncConfigured } from "@doska/core/server"
-import type { Attachment } from "@doska/core/types"
+import {
+  useAccount,
+  keys,
+  setLastBoard,
+  useSaveCard,
+  createCard,
+  getBoard,
+  useDashboards,
+  isSyncConfigured,
+  type Attachment,
+} from "@doska/core"
 import { useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { ActivityIndicator, Alert, Pressable, Text, View } from "react-native"

@@ -1,5 +1,5 @@
-import { cardDisplayId } from "@doska/contract/card-id"
-import type { SearchHit } from "@doska/core/search"
+import { cardDisplayId } from "@doska/contract"
+import type { SearchHit } from "@doska/core"
 import { Pressable, Text, View } from "react-native"
 import { ColumnSwatch } from "@/components/column/column-swatch"
 import { Segments } from "./segments"

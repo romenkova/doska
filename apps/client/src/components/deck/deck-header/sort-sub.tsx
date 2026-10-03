@@ -1,5 +1,5 @@
 import { MenuContent, MenuItem, MenuSub, MenuSubTrigger } from "@doska/ui-kit"
-import { SORT_MODES, type SortKey } from "@doska/core/utils"
+import { SORT_MODES, type SortKey } from "@doska/core"
 import { CalendarClock, Check, Flag, ListFilter } from "lucide-react"
 
 const ICONS: Record<SortKey, typeof Flag> = {

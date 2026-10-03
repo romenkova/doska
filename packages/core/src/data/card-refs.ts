@@ -1,5 +1,4 @@
-import { cardDisplayId, refNumber } from "@doska/contract/card-id"
-import type { Card } from "@doska/contract"
+import { cardDisplayId, refNumber, type Card } from "@doska/contract"
 import { useMemo } from "react"
 import { useQuery } from "@tanstack/react-query"
 import * as api from "../api/operations"

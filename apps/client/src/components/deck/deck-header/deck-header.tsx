@@ -5,7 +5,7 @@ import { BoardActionsMenu } from "./board-actions-menu"
 import { SearchButton } from "./search-button"
 import { RowViewButton } from "./row-view-button"
 import { ShareButton } from "./share-button"
-import type { Column, DashboardView } from "@doska/core/types"
+import type { Column, DashboardView } from "@doska/core"
 import { VaultButton } from "./vault-button"
 import { isDesktop } from "@/lib/platform"
 

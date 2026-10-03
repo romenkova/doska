@@ -7,8 +7,7 @@ import { useRevealCard } from "@/providers/card-reveal/card-reveal-context"
 import { useCardDeleteToast } from "@/components/toasts/card-delete/use-card-delete-toast"
 import { CardPane } from "./card-pane"
 import { CardPanelShell } from "./card-panel-shell"
-import { useCardSave, useDeleteCard } from "@doska/core/mutations"
-import { useCard } from "@doska/core/queries"
+import { useCardSave, useDeleteCard, useCard } from "@doska/core"
 import { isDesktop } from "@/lib/platform"
 import {
   openCardWindow,

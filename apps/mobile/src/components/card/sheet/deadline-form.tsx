@@ -1,5 +1,4 @@
-import { SheetAction, SheetBar } from "@doska/ui-kit-mobile"
-import { useTokens } from "@doska/ui-kit-mobile/tokens"
+import { SheetAction, SheetBar, useTokens } from "@doska/ui-kit-mobile"
 import DateTimePicker from "@react-native-community/datetimepicker"
 import { useState } from "react"
 import { View } from "react-native"

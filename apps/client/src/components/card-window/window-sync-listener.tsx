@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { useQueryClient } from "@tanstack/react-query"
-import { keys } from "@doska/core/keys"
+import { keys } from "@doska/core"
 import { isDesktop } from "@/lib/platform"
 import { CHANGED_EVENT } from "@/components/quick-note/quick-note-event"
 

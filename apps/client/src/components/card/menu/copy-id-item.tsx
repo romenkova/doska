@@ -1,7 +1,7 @@
 import { MenuItem, MenuSeparator } from "@doska/ui-kit"
 import { Hash } from "lucide-react"
-import { useCard } from "@doska/core/queries"
-import { cardDisplayId } from "@doska/contract/card-id"
+import { useCard } from "@doska/core"
+import { cardDisplayId } from "@doska/contract"
 
 /** Copies the card's display id. Nothing to copy on a card that has never
  *  synced — its number is stamped there. */

@@ -1,6 +1,6 @@
 import { CardContent, cn } from "@doska/ui-kit"
 import { Loader2, Paperclip, X } from "lucide-react"
-import type { Attachment } from "@doska/core/types"
+import type { Attachment } from "@doska/core"
 
 interface IProps {
   attachments: Attachment[]

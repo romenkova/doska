@@ -2,7 +2,7 @@ import { Button, cn } from "@doska/ui-kit"
 import { diffBody } from "@doska/merge"
 import { TriangleAlert } from "lucide-react"
 import { useState } from "react"
-import type { Card } from "@doska/core/types"
+import type { Card } from "@doska/core"
 import { diffHunks } from "./diff-hunks"
 
 const LINE_BY_KIND = {

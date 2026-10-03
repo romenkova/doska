@@ -2,8 +2,9 @@ import { useState } from "react"
 import {
   imageUnavailable,
   type AttachmentSource,
-} from "@doska/core/attachment-labels"
-import { useConnection, type Connection } from "@doska/core/sync"
+  useConnection,
+  type Connection,
+} from "@doska/core"
 
 type Status = Connection["status"]
 

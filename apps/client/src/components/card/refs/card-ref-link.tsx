@@ -1,5 +1,5 @@
 import { useLocation, useRoute } from "wouter"
-import { useCardRef } from "@doska/core/card-refs"
+import { useCardRef } from "@doska/core"
 import { columnHue, MdWikilink } from "@doska/ui-kit"
 import { routes } from "@/lib/routes"
 import { revealInMain } from "@/components/card-window/card-window-event"

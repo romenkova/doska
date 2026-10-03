@@ -1,20 +1,22 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useQueryClient } from "@tanstack/react-query"
 import { getCurrentWindow } from "@tauri-apps/api/window"
-import { CARDS } from "@doska/core/constants"
-import { db } from "@doska/core/db"
-import { keys } from "@doska/core/keys"
-import { LAST_CARD_KEY, useCardSave } from "@doska/core/mutations"
 import {
+  CARDS,
+  db,
+  keys,
+  LAST_CARD_KEY,
+  useCardSave,
   createCard,
   deleteCard,
   moveCardToColumn,
-} from "@doska/core/operations"
-import { useCard, useCardCol } from "@doska/core/queries"
-import { sync } from "@doska/core/sync"
-import type { Column } from "@doska/core/types"
+  useCard,
+  useCardCol,
+  sync,
+  type Column,
+  type CardPatch,
+} from "@doska/core"
 import type { Draft } from "@/components/card-panel/draft"
-import type { CardPatch } from "@doska/core/mutations"
 import { isDesktop } from "@/lib/platform"
 
 interface Target {

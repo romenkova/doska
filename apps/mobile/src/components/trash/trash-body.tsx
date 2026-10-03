@@ -1,5 +1,4 @@
-import { purgeExpired } from "@doska/core/operations"
-import { useTrash } from "@doska/core/queries"
+import { purgeExpired, useTrash } from "@doska/core"
 import { EmptyState, Spinner } from "@doska/ui-kit-mobile"
 import { useEffect } from "react"
 import { TrashList } from "@/components/trash/trash-list"

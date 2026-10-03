@@ -1,4 +1,4 @@
-import { useDeleteDashboard } from "@doska/core/mutations"
+import { useDeleteDashboard } from "@doska/core"
 import { ConfirmBody, SheetScreen } from "@doska/ui-kit-mobile"
 import { router } from "expo-router"
 import { useActiveBoard } from "@/lib/use-active-board"

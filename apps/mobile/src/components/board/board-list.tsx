@@ -1,13 +1,16 @@
-import { useCreateCard, useMoveCard } from "@doska/core/mutations"
-import { useBoard } from "@doska/core/queries"
-import type { Card, Column, Dashboard } from "@doska/core/types"
 import {
+  useCreateCard,
+  useMoveCard,
+  useBoard,
+  type Card,
+  type Column,
+  type Dashboard,
   byPosition,
   dropNeighbours,
   filterByTags,
   keyBetween,
   sortCards,
-} from "@doska/core/utils"
+} from "@doska/core"
 import { EmptyState, Spinner } from "@doska/ui-kit-mobile"
 import { useCallback, useMemo, useRef, useState } from "react"
 import {

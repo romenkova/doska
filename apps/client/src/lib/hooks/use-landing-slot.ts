@@ -1,5 +1,5 @@
 import type { DropResult } from "@hello-pangea/dnd"
-import { useLandingSlot as useSharedLandingSlot } from "@doska/core/landing-slot"
+import { useLandingSlot as useSharedLandingSlot } from "@doska/core"
 
 /** Matches the drop transition `draggable-card` sets. */
 export const DROP_ANIMATION_MS = 150

@@ -93,9 +93,13 @@ class DeckSync {
   private readonly listeners = new Set<() => void>()
 
   constructor() {
+    subscribeAuthed(() => void this.reconcile())
+  }
+
+  init() {
+    if (this.board) return
     this.rebuild()
     subscribeSyncConfig(() => this.rebuild())
-    subscribeAuthed(() => void this.reconcile())
   }
 
   // Safe to call repeatedly; the old engines are simply dropped.

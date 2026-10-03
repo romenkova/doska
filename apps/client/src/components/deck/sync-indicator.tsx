@@ -9,7 +9,7 @@ import {
   TriangleAlert,
 } from "lucide-react"
 import { useLoginPrompt } from "@/providers/login-prompt/login-prompt-context"
-import { sync, useConnection, type Connection } from "@doska/core/sync"
+import { sync, useConnection, type Connection } from "@doska/core"
 import { useAuth, useSyncStatus } from "@/lib/hooks"
 
 /** Resolves the live sync state into the icon, label, and tint to render. */

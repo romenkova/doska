@@ -1,4 +1,4 @@
-import { sync } from "@doska/core/sync"
+import { sync } from "@doska/core"
 import { useCallback, useState } from "react"
 
 interface SyncRefresh {

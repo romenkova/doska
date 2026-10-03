@@ -1,7 +1,10 @@
-import { useSetDashboardSort } from "@doska/core/mutations"
-import type { Dashboard } from "@doska/core/types"
-import { SORT_MODES, type SortKey } from "@doska/core/utils"
-import { useTokens } from "@doska/ui-kit-mobile/tokens"
+import {
+  useSetDashboardSort,
+  type Dashboard,
+  SORT_MODES,
+  type SortKey,
+} from "@doska/core"
+import { useTokens } from "@doska/ui-kit-mobile"
 import type { LucideIcon } from "lucide-react-native"
 import CalendarClock from "lucide-react-native/icons/calendar-clock"
 import Check from "lucide-react-native/icons/check"

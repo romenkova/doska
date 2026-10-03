@@ -1,4 +1,4 @@
-import type { Column } from "@doska/core/types"
+import type { Column } from "@doska/core"
 import { MenuItem } from "@doska/ui-kit"
 import { Picker } from "./picker"
 

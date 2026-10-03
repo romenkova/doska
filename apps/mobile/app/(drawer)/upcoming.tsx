@@ -1,6 +1,4 @@
-import type { DigestFilter } from "@doska/core/operations"
-import { useDashboards, useDigest } from "@doska/core/queries"
-import { sync } from "@doska/core/sync"
+import { type DigestFilter, useDashboards, useDigest, sync } from "@doska/core"
 import { Spinner } from "@doska/ui-kit-mobile"
 import { useFocusEffect } from "expo-router"
 import { useCallback, useState } from "react"

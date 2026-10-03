@@ -1,7 +1,7 @@
 import { useLocation } from "wouter"
-import { refNumber } from "@doska/contract/card-id"
+import { refNumber } from "@doska/contract"
 import { columnHue, MdWikilink } from "@doska/ui-kit"
-import type { Card, Column } from "@doska/core/types"
+import type { Card, Column } from "@doska/core"
 import { routes } from "@/lib/routes"
 
 interface IProps {
@@ -25,7 +25,8 @@ export function PublicCardRefLink({
   const [, navigate] = useLocation()
 
   const wanted = refNumber(displayId)
-  const card = wanted == null ? undefined : cards.find((one) => one.number === wanted)
+  const card =
+    wanted == null ? undefined : cards.find((one) => one.number === wanted)
 
   if (!card)
     return (

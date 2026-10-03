@@ -1,5 +1,4 @@
-import { useUpdateCard } from "@doska/core/mutations"
-import { useCard } from "@doska/core/queries"
+import { useUpdateCard, useCard } from "@doska/core"
 import { SheetScreen } from "@doska/ui-kit-mobile"
 import { router, useLocalSearchParams } from "expo-router"
 import { DeadlineForm } from "@/components/card/sheet/deadline-form"

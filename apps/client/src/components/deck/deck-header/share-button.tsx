@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react"
 import { Button } from "@doska/ui-kit"
 import { Globe, UserLock, Users } from "lucide-react"
-import { useBoardMembers, usePublicBoardStatus } from "@doska/core/queries"
+import { useBoardMembers, usePublicBoardStatus } from "@doska/core"
 import { ShareModal } from "../share/share-modal"
 import { useAuth } from "@/lib/hooks"
 

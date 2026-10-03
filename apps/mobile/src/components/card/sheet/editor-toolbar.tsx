@@ -1,6 +1,5 @@
 import type { SlashCommand } from "@doska/markdown"
-import { cn, Frosted } from "@doska/ui-kit-mobile"
-import { useTokens } from "@doska/ui-kit-mobile/tokens"
+import { cn, Frosted, useTokens } from "@doska/ui-kit-mobile"
 import type { LucideIcon } from "lucide-react-native"
 import Code from "lucide-react-native/icons/code"
 import Eye from "lucide-react-native/icons/eye"

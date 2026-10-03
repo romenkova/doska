@@ -1,6 +1,5 @@
-import { useAccount } from "@doska/core/account"
-import { initials } from "@doska/core/utils"
-import { useTokens } from "@doska/ui-kit-mobile/tokens"
+import { useAccount, initials } from "@doska/core"
+import { useTokens } from "@doska/ui-kit-mobile"
 import { router } from "expo-router"
 import ChevronRight from "lucide-react-native/icons/chevron-right"
 import UserRound from "lucide-react-native/icons/user-round"

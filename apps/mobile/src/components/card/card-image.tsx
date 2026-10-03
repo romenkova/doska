@@ -1,5 +1,4 @@
-import { runtime } from "@doska/core"
-import { apiUrl } from "@doska/core/server"
+import { runtime, apiUrl } from "@doska/core"
 import type { SoleImage } from "@doska/markdown"
 import { useState } from "react"
 import { Image, type ImageURISource, useWindowDimensions } from "react-native"

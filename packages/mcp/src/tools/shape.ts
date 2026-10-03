@@ -1,5 +1,4 @@
-import type { Card, Column } from "@doska/contract"
-import { cardDisplayId } from "@doska/contract/card-id"
+import { type Card, type Column, cardDisplayId } from "@doska/contract"
 import { taskProgress } from "@doska/markdown/core"
 
 /**

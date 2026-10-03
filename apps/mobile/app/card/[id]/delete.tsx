@@ -1,5 +1,4 @@
-import { useDeleteCard } from "@doska/core/mutations"
-import { useCard, useCardDeckId } from "@doska/core/queries"
+import { useDeleteCard, useCard, useCardDeckId } from "@doska/core"
 import { ConfirmBody, SheetScreen } from "@doska/ui-kit-mobile"
 import { router, useLocalSearchParams } from "expo-router"
 

@@ -1,4 +1,4 @@
-import { useTokens } from "@doska/ui-kit-mobile/tokens"
+import { useTokens } from "@doska/ui-kit-mobile"
 import X from "lucide-react-native/icons/x"
 import { Pressable, View } from "react-native"
 import { TagChip } from "@/components/card/tag-chip"

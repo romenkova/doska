@@ -1,5 +1,4 @@
-import { useSetColumnColor, useSetColumnDone } from "@doska/core/mutations"
-import { useBoard } from "@doska/core/queries"
+import { useSetColumnColor, useSetColumnDone, useBoard } from "@doska/core"
 import { Separator, SheetItem } from "@doska/ui-kit-mobile"
 import { router } from "expo-router"
 import CircleCheck from "lucide-react-native/icons/circle-check"

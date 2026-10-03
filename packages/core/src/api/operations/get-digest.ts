@@ -1,5 +1,5 @@
-import { priorityRank } from "@doska/tokens/priority"
-import { UPCOMING_DAYS } from "@doska/utils/dates"
+import { priorityRank } from "@doska/tokens"
+import { UPCOMING_DAYS } from "@doska/utils"
 import type { Board, Card, Column } from "../../types"
 import { addDays, byPosition, todayIso } from "../../utils"
 import { db } from "../db/db"

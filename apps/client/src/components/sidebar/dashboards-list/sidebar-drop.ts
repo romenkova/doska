@@ -3,8 +3,8 @@ import type {
   SidebarFolderNode,
   SidebarNode,
   SidebarTarget,
-} from "@doska/core/operations"
-import type { Dashboard } from "@doska/core/types"
+  Dashboard,
+} from "@doska/core"
 
 // `folderId` is the block a row is part of. A folder header is part of its own
 // block; a root board has none.

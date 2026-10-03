@@ -1,6 +1,4 @@
-import { apiUrl } from "@doska/core/server"
-import { runtime } from "@doska/core/runtime"
-import type { Attachment } from "@doska/core/types"
+import { apiUrl, runtime, type Attachment } from "@doska/core"
 import { Directory, File, Paths } from "expo-file-system"
 import FileViewer from "react-native-file-viewer"
 

@@ -1,6 +1,6 @@
 import { Button, Input } from "@doska/ui-kit"
 import { useState } from "react"
-import { useSetAccountPassword } from "@doska/core/mutations"
+import { useSetAccountPassword } from "@doska/core"
 
 interface IProps {
   id: string
