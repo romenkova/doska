@@ -54,6 +54,7 @@ export interface MdNode {
 export type MarkdownExtra =
   | { kind: "wikilink"; target: string; alias?: string }
   | { kind: "tag"; name: string }
+  | { kind: "user"; name: string }
   | { kind: "cut" }
   | null
 
@@ -75,6 +76,9 @@ export function markdownExtra(node: { data?: unknown }): MarkdownExtra {
 
   const name = properties.dataTag
   if (typeof name === "string") return { kind: "tag", name }
+
+  const user = properties.dataUser
+  if (typeof user === "string") return { kind: "user", name: user }
 
   const className = properties.className
   const names = Array.isArray(className) ? className : []

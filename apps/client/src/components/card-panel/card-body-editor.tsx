@@ -53,8 +53,6 @@ export function CardBodyEditor({
     [tags, members]
   )
 
-  console.log({ suggestions })
-
   async function handlePasteFiles(files: File[]): Promise<string | null> {
     const added = await addFiles(files)
     const refs = added
