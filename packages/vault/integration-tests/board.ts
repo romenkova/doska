@@ -98,8 +98,10 @@ export async function installBoard(columns: Column[]): Promise<TestBoard> {
     moveCardToColumn,
     renameColumn,
     restore,
+    sync,
     updateCard,
   } = await import("@doska/core")
+  sync.init()
 
   return {
     load: () => getBoard(BOARD_ID),
