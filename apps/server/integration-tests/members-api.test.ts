@@ -84,15 +84,15 @@ describe("members.add / remove / list", () => {
   test("the roster is the owner, then whoever has been added", async () => {
     const before = await owner.members.list({ boardId: "b1" })
     expect(before.members).toEqual([
-      { userId: ownerId, username: "tester", role: "owner" },
+      { userId: ownerId, username: "tester", image: null, role: "owner" },
     ])
 
     await owner.members.add({ boardId: "b1", userId: memberId })
 
     const { members } = await owner.members.list({ boardId: "b1" })
     expect(members).toEqual([
-      { userId: ownerId, username: "tester", role: "owner" },
-      { userId: memberId, username: "member", role: "editor" },
+      { userId: ownerId, username: "tester", image: null, role: "owner" },
+      { userId: memberId, username: "member", image: null, role: "editor" },
     ])
   })
 
@@ -234,12 +234,12 @@ describe("the board's own owner is not a member", () => {
 })
 
 describe("users.list", () => {
-  test("a non-admin session gets id and username, nothing else", async () => {
+  test("a non-admin session gets id, username and image, nothing else", async () => {
     const { users } = await member.users.list()
 
     expect(users.map((u) => u.username).sort()).toEqual(["member", "tester"])
     for (const u of users)
-      expect(Object.keys(u).sort()).toEqual(["id", "username"])
+      expect(Object.keys(u).sort()).toEqual(["id", "image", "username"])
     expect(users.find((u) => u.id === ownerId)).toBeDefined()
   })
 
