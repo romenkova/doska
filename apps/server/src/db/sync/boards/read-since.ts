@@ -60,6 +60,7 @@ export async function readSince(
         deadline: r.deadline,
         priority: r.priority,
         tags: r.tags,
+        users: r.users,
         attachments: r.attachments,
         updatedAt: r.updatedAt,
         deletedAt: r.deletedAt,

@@ -106,6 +106,7 @@ export const cards = pgTable(
     deadline: text("deadline"),
     priority: text("priority").notNull().default(""),
     tags: jsonb("tags").$type<string[]>().notNull().default([]),
+    users: jsonb("users").$type<string[]>().notNull().default([]),
     attachments: jsonb("attachments")
       .$type<Attachment[]>()
       .notNull()

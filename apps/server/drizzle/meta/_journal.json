@@ -141,6 +141,13 @@
       "when": 1790782296325,
       "tag": "0019_card_tags",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1791065896157,
+      "tag": "0020_card_users",
+      "breakpoints": true
     }
   ]
 }

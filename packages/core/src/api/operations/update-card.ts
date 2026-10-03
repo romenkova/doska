@@ -15,6 +15,7 @@ export async function updateCard(
       | "deadline"
       | "priority"
       | "tags"
+      | "users"
       | "attachments"
       | "bodyConflict"
     >

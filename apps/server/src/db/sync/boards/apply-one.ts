@@ -80,6 +80,7 @@ export async function applyOne(
         deadline: record.deadline,
         priority: record.priority,
         tags: record.tags,
+        users: record.users,
         attachments: record.attachments,
         updatedAt: record.updatedAt,
         deletedAt: record.deletedAt,
