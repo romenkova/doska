@@ -16,7 +16,7 @@ export type {
   FileInput,
   FileStorage as Files,
   StoredFile,
-} from "@doska/file-storage/file-storage"
+} from "@doska/file-storage"
 
 export type { KeyValue } from "./key-value"
 export type { Http } from "./http"

@@ -1,4 +1,4 @@
-import { useCreateFolder } from "@doska/core/mutations"
+import { useCreateFolder } from "@doska/core"
 import { SheetScreen } from "@doska/ui-kit-mobile"
 import { router } from "expo-router"
 import { NameForm } from "@/components/shell/name-form"

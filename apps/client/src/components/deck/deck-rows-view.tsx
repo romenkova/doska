@@ -1,6 +1,5 @@
 import { useLocation, useRoute } from "wouter"
-import { boardDigest, groupBoardCards } from "@doska/core/operations"
-import type { Board } from "@doska/core/types"
+import { boardDigest, groupBoardCards, type Board } from "@doska/core"
 import { routes } from "@/lib/routes"
 import { DeckRows } from "./deck-rows"
 

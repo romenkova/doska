@@ -1,6 +1,5 @@
-import { useMoveCardToBoard } from "@doska/core/mutations"
-import { useCardDeckId, useDashboards } from "@doska/core/queries"
-import { useTokens } from "@doska/ui-kit-mobile/tokens"
+import { useMoveCardToBoard, useCardDeckId, useDashboards } from "@doska/core"
+import { useTokens } from "@doska/ui-kit-mobile"
 import Check from "lucide-react-native/icons/check"
 import { Pressable, Text, View } from "react-native"
 

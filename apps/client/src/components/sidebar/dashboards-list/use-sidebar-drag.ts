@@ -4,7 +4,7 @@ import type {
   DragUpdate,
   DropResult,
 } from "@hello-pangea/dnd"
-import { useMoveSidebarItem } from "@doska/core/mutations"
+import { useMoveSidebarItem } from "@doska/core"
 import type { PointerEvent } from "react"
 import { useEffect, useMemo, useRef, useState } from "react"
 import type { SidebarRow } from "./sidebar-drop"

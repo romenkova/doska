@@ -1,4 +1,4 @@
-import { groupByDeadline, type DigestCard } from "@doska/core/operations"
+import { groupByDeadline, type DigestCard } from "@doska/core"
 import { EmptyState } from "@doska/ui-kit-mobile"
 import { RefreshControl, SectionList } from "react-native"
 import { GroupHeading } from "@/components/upcoming/group-heading"

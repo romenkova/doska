@@ -1,6 +1,6 @@
 import { Button, SidebarGroupLabel } from "@doska/ui-kit"
 import { Folder, Plus } from "lucide-react"
-import { useCreateFolder } from "@doska/core/mutations"
+import { useCreateFolder } from "@doska/core"
 import { useDashboardNav } from "@/lib/hooks"
 
 interface IProps {

@@ -2,7 +2,7 @@ import { fetchSession, onSessionExpired, SIGNED_OUT } from "./api/auth"
 import { seed } from "./api/db/db"
 import { migrateUserKey, reconcileIdentity } from "./api/identity"
 import { purgeExpired } from "./api/operations"
-import { seedClock, startBackgroundSync } from "./api/sync"
+import { seedClock, startBackgroundSync, sync } from "./api/sync"
 import { keys } from "./data/keys"
 import { queryClient } from "./query-client"
 
@@ -15,6 +15,8 @@ import { queryClient } from "./query-client"
  * reads it from its own build config.
  */
 export async function bootstrapClient(syncIntervalMs?: number): Promise<void> {
+  sync.init()
+
   onSessionExpired(() => {
     queryClient.setQueryData(keys.session, SIGNED_OUT)
   })

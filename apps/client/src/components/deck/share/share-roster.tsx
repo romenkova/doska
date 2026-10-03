@@ -1,6 +1,4 @@
-import { useRemoveMember } from "@doska/core/mutations"
-import { useBoardMembers } from "@doska/core/queries"
-import { useConnection } from "@doska/core/sync"
+import { useRemoveMember, useBoardMembers, useConnection } from "@doska/core"
 import { useAuth } from "@/lib/hooks"
 import { AddMember } from "./add-member"
 import { MemberRow } from "./member-row"

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { completeDesktopLogin } from "@doska/core/desktop-login"
+import { completeDesktopLogin } from "@doska/core"
 
 /** Hands this browser's session to the desktop app that asked for it. */
 export function DesktopHandoff({ id }: { id: string }) {

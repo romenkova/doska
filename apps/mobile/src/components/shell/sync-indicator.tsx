@@ -1,12 +1,11 @@
-import { useAccount } from "@doska/core/account"
 import {
+  useAccount,
   sync,
   useConnection,
   type Connection,
   type SyncState,
-} from "@doska/core/sync"
-import { cn } from "@doska/ui-kit-mobile"
-import { useTokens } from "@doska/ui-kit-mobile/tokens"
+} from "@doska/core"
+import { cn, useTokens } from "@doska/ui-kit-mobile"
 import { router } from "expo-router"
 import type { LucideIcon } from "lucide-react-native"
 import Check from "lucide-react-native/icons/check"

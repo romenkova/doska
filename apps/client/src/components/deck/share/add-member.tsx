@@ -1,9 +1,7 @@
 import { useState } from "react"
 import { UserPlus } from "lucide-react"
 import { Button, Input } from "@doska/ui-kit"
-import { useAddMember } from "@doska/core/mutations"
-import { useDirectory } from "@doska/core/queries"
-import type { Member } from "@doska/core/types"
+import { useAddMember, useDirectory, type Member } from "@doska/core"
 
 interface IProps {
   boardId: string

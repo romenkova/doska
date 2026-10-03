@@ -1,4 +1,4 @@
-import type { DigestFilter } from "@doska/core/operations"
+import type { DigestFilter } from "@doska/core"
 import { Pressable, Text, View } from "react-native"
 
 const FILTERS: { id: DigestFilter; label: string }[] = [

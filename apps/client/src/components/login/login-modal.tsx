@@ -1,10 +1,10 @@
 import { Button, Input, Modal, ModalContent, ModalTitle } from "@doska/ui-kit"
 import { useState } from "react"
-import { useLogin } from "@doska/core/mutations"
 import {
+  useLogin,
   UNCLAIMED_BOARDS_WARNING,
   useUnclaimedLocalBoards,
-} from "@doska/core/queries"
+} from "@doska/core"
 import { isDesktop } from "@/lib/platform"
 import { BrowserLogin } from "./browser-login"
 import { SsoButtons } from "./sso-buttons"

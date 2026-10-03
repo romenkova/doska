@@ -1,8 +1,4 @@
-import type {
-  DigestCard,
-  DigestFilter,
-  DigestGroup,
-} from "@doska/core/operations"
+import type { DigestCard, DigestFilter, DigestGroup } from "@doska/core"
 import { DigestBody } from "./digest-body"
 import { DigestHeader } from "./digest-header"
 

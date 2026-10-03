@@ -1,7 +1,6 @@
-import { useCreateDashboard } from "@doska/core/mutations"
+import { useCreateDashboard, setLastBoard } from "@doska/core"
 import { Button, EmptyState, Spinner } from "@doska/ui-kit-mobile"
 import { ScreenHeader } from "@/components/shell/screen-header"
-import { setLastBoard } from "@doska/core/last-board"
 
 interface IProps {
   isPending: boolean

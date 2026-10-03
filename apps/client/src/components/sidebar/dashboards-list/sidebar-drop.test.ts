@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest"
 import type { DropResult } from "@hello-pangea/dnd"
-import type { SidebarNode } from "@doska/core/operations"
-import type { Dashboard } from "@doska/core/types"
+import type { SidebarNode, Dashboard } from "@doska/core"
 import { flattenTree, sidebarDropTarget } from "./sidebar-drop"
 
 const dashboard = (id: string) => ({ id, title: id }) as Dashboard

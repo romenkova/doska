@@ -1,4 +1,4 @@
-import type { Segment } from "@doska/core/search"
+import type { Segment } from "@doska/core"
 import { Text } from "react-native"
 
 /** Matched runs in weight only, as on the web. */

@@ -1,5 +1,4 @@
-import { useAccount } from "@doska/core/account"
-import { initials } from "@doska/core/utils"
+import { useAccount, initials } from "@doska/core"
 import {
   Avatar,
   AvatarFallback,

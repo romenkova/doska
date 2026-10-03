@@ -1,6 +1,5 @@
 import { DEFAULT_SLASH_COMMANDS, type SlashCommand } from "@doska/markdown"
-import type { Card } from "@doska/core/types"
-import { useCardDeckId } from "@doska/core/queries"
+import { type Card, useCardDeckId } from "@doska/core"
 import { TextField } from "@doska/ui-kit-mobile"
 import { useEffect, useRef, useState } from "react"
 import { ScrollView, View } from "react-native"

@@ -1,4 +1,4 @@
-import type { Card } from "@doska/core/types"
+import type { Card } from "@doska/core"
 import type { SoleImage } from "@doska/markdown"
 import { cn } from "@doska/ui-kit-mobile"
 import { router } from "expo-router"

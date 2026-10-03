@@ -1,5 +1,4 @@
-import type { SidebarFolderNode } from "@doska/core/operations"
-import { useSidebarTree } from "@doska/core/queries"
+import { type SidebarFolderNode, useSidebarTree } from "@doska/core"
 
 export function useFolder(id: string | undefined): SidebarFolderNode | null {
   const { data: nodes = [] } = useSidebarTree()

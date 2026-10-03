@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from "react"
-import { subscribeServerUrl } from "@doska/core/server"
+import { subscribeServerUrl } from "@doska/core"
 import { isDesktop } from "./platform"
 import { checkServiceWorkerUpdate, registerServiceWorker } from "./pwa"
 import { checkForUpdates, type UpdateState } from "./updates"

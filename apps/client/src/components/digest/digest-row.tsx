@@ -1,6 +1,5 @@
 import { Checkbox, cn } from "@doska/ui-kit"
-import type { DigestCard } from "@doska/core/operations"
-import type { CardPatch } from "@doska/core/mutations"
+import type { DigestCard, CardPatch } from "@doska/core"
 import { Card } from "../card/card"
 import { ColumnSwatch } from "../column/column-swatch"
 

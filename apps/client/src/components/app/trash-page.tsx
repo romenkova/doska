@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { TrashView } from "@/components/trash/trash-view"
-import { sync } from "@doska/core/sync"
+import { sync } from "@doska/core"
 import { AppShell } from "./app-shell"
 
 const NO_DECK = { id: "", sort: [] }

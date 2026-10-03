@@ -2,8 +2,8 @@ import type {
   SidebarFolderNode,
   SidebarNode,
   SidebarTarget,
-} from "@doska/core/operations"
-import type { Dashboard } from "@doska/core/types"
+  Dashboard,
+} from "@doska/core"
 
 // Every folder block closes with an `end` row, so a board dropped between a
 // folder and its end is in that folder, and anywhere else is at the root.

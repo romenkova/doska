@@ -7,8 +7,7 @@ import {
   PriorityChip,
 } from "@doska/ui-kit"
 import { Check, Flag } from "lucide-react"
-import { useUpdateCard } from "@doska/core/mutations"
-import { useCard } from "@doska/core/queries"
+import { useUpdateCard, useCard } from "@doska/core"
 
 /** The priority picker, for a card whose chip the board hides when unset. */
 export function PrioritySub({ cardId }: { cardId: string }) {

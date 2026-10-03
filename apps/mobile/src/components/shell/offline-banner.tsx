@@ -1,4 +1,4 @@
-import { sync, useConnection } from "@doska/core/sync"
+import { sync, useConnection } from "@doska/core"
 import { Button, IconButton } from "@doska/ui-kit-mobile"
 import X from "lucide-react-native/icons/x"
 import { useState } from "react"

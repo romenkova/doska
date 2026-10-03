@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react"
-import { toggleTag } from "@doska/core/utils"
+import { toggleTag } from "@doska/core"
 import { DeckView } from "@/components"
 import { useActiveDashboard } from "@/lib/hooks"
 import { routes } from "@/lib/routes"

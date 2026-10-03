@@ -6,7 +6,7 @@ import {
   SidebarGroup,
   SidebarMenu,
 } from "@doska/ui-kit"
-import { usePublishedBoards, useSharedBoards } from "@doska/core/queries"
+import { usePublishedBoards, useSharedBoards } from "@doska/core"
 import { useAuth } from "@/lib/hooks"
 import { AppSidebarHeader } from "./app-sidebar-header"
 import { ThemeToggle } from "@/components/theme-toggle"

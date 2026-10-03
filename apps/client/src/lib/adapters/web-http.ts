@@ -1,6 +1,6 @@
 import type { Http } from "@doska/ports"
 import { isDesktop } from "@/lib/platform"
-import { getServerUrl, subscribeServerUrl } from "@doska/core/server"
+import { getServerUrl, subscribeServerUrl } from "@doska/core"
 
 export const webHttp: Http = {
   // On desktop this routes through Tauri's HTTP plugin, so the request runs in

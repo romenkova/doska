@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { cardDisplayId, refNumber } from "@doska/contract/card-id"
+import { cardDisplayId, refNumber } from "@doska/contract"
 
 describe("cardDisplayId", () => {
   it("is the number, and nothing until the server stamps one", () => {

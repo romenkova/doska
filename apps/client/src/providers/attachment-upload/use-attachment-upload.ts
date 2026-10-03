@@ -1,10 +1,12 @@
 import { createElement, useCallback, useState } from "react"
 import { toast } from "react-hot-toast"
-import type { Attachment } from "@doska/core/types"
-import { useCard } from "@doska/core/queries"
-import { useUpdateCard } from "@doska/core/mutations"
-import { activeStorage } from "@doska/core/attachments"
-import { isSyncConfigured } from "@doska/core/server"
+import {
+  type Attachment,
+  useCard,
+  useUpdateCard,
+  activeStorage,
+  isSyncConfigured,
+} from "@doska/core"
 import { useAuth } from "@/lib/hooks"
 import { ErrorToast } from "@/components/toasts/error/error-toast"
 

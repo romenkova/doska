@@ -1,7 +1,6 @@
 import { useState } from "react"
 import { cn, MdImage } from "@doska/ui-kit"
-import type { Attachment } from "@doska/core/types"
-import type { AttachmentSource } from "@doska/core/attachment-labels"
+import type { Attachment, AttachmentSource } from "@doska/core"
 import { AttachmentViewer } from "./attachment-viewer"
 import { AttachmentUnavailable } from "./attachment-unavailable"
 import { useImageFailure } from "./use-image-failure"

@@ -1,4 +1,4 @@
-import { bootstrapClient } from "@doska/core/bootstrap"
+import { bootstrapClient } from "@doska/core"
 import { useFonts } from "expo-font"
 import * as SplashScreen from "expo-splash-screen"
 import { type ReactNode, useEffect, useState } from "react"

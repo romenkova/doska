@@ -5,9 +5,7 @@ import {
   ModalContent,
   ModalHeader,
 } from "@doska/ui-kit"
-import { useDeleteAccount } from "@doska/core/mutations"
-import { useOwnedBoards } from "@doska/core/queries"
-import type { Account } from "@doska/core/queries"
+import { useDeleteAccount, useOwnedBoards, type Account } from "@doska/core"
 
 interface IProps {
   account: Account

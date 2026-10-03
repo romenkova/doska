@@ -1,12 +1,12 @@
 import { Modal, ModalContent, ModalTitle } from "@doska/ui-kit"
 import { Download, X } from "lucide-react"
 import { useState } from "react"
-import type { Attachment } from "@doska/core/types"
 import {
+  type Attachment,
   attachmentUnavailable,
   type AttachmentSource,
-} from "@doska/core/attachment-labels"
-import { useConnection } from "@doska/core/sync"
+  useConnection,
+} from "@doska/core"
 import { AttachmentUnavailable } from "./attachment-unavailable"
 
 interface IProps {

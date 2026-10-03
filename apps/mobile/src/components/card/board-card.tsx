@@ -1,4 +1,4 @@
-import type { Card } from "@doska/core/types"
+import type { Card } from "@doska/core"
 import { taskProgress } from "@doska/markdown"
 import { router } from "expo-router"
 import { Pressable, View } from "react-native"

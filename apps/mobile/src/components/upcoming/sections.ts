@@ -1,5 +1,4 @@
-import type { DigestGroup } from "@doska/core/operations"
-import { deadlineLabel, longDate, weekday } from "@doska/core/utils"
+import { type DigestGroup, deadlineLabel, longDate, weekday } from "@doska/core"
 
 export interface GroupSection {
   title: string

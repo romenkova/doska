@@ -1,7 +1,7 @@
 import type { BoardStore } from "@doska/mcp"
 import type { Change, Dashboard, DashboardChange } from "@doska/contract"
 import { ORPCError } from "@orpc/server"
-import { HybridClock } from "@doska/sync/hlc"
+import { HybridClock } from "@doska/sync"
 import { boardSync, boardsListSync } from "../db/sync"
 
 const clock = new HybridClock()

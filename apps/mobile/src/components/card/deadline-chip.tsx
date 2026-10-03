@@ -2,9 +2,9 @@ import {
   deadlineRelative,
   deadlineStatus,
   formatDeadlineShort,
-} from "@doska/core/utils"
-import { DEADLINE } from "@doska/tokens/deadline"
-import { useTokens } from "@doska/ui-kit-mobile/tokens"
+} from "@doska/core"
+import { DEADLINE } from "@doska/tokens"
+import { useTokens } from "@doska/ui-kit-mobile"
 import Calendar from "lucide-react-native/icons/calendar"
 import { Text, View } from "react-native"
 

@@ -1,6 +1,4 @@
-import { activeStorage } from "@doska/core/attachments"
-import { useUpdateCard } from "@doska/core/mutations"
-import type { Attachment } from "@doska/core/types"
+import { activeStorage, useUpdateCard, type Attachment } from "@doska/core"
 import { useState } from "react"
 import { Alert, View } from "react-native"
 import { openAttachment } from "@/lib/open-attachment"

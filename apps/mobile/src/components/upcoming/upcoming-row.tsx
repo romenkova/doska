@@ -1,5 +1,4 @@
-import { useMoveCardToColumn } from "@doska/core/mutations"
-import type { DigestCard } from "@doska/core/operations"
+import { useMoveCardToColumn, type DigestCard } from "@doska/core"
 import { router } from "expo-router"
 import { Pressable, Text, View } from "react-native"
 import { ColumnSwatch } from "@/components/column/column-swatch"

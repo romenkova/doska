@@ -1,6 +1,5 @@
 import { useState } from "react"
-import { useLastBoard } from "@doska/core/last-board"
-import { useBoard, useDashboards } from "@doska/core/queries"
+import { useLastBoard, useBoard, useDashboards } from "@doska/core"
 
 const BOARD_KEY = "doska:quick-note-board"
 const COLUMN_KEY = "doska:quick-note-column"

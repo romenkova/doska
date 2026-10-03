@@ -1,12 +1,13 @@
 import type { DropResult } from "@hello-pangea/dnd"
-import type { Board, Card } from "@doska/core/types"
 import {
+  type Board,
+  type Card,
   byPosition,
   dropNeighbours,
   filterByTags,
   keyBetween,
   sortCards,
-} from "@doska/core/utils"
+} from "@doska/core"
 
 /**
  * Builds the drop handler for the board: translates a drag result into the

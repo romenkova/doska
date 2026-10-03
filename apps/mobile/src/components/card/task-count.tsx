@@ -1,4 +1,4 @@
-import { useTokens } from "@doska/ui-kit-mobile/tokens"
+import { useTokens } from "@doska/ui-kit-mobile"
 import { Text, View } from "react-native"
 import Svg, { Circle, Path } from "react-native-svg"
 

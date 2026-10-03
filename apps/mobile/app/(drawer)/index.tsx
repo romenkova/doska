@@ -1,4 +1,4 @@
-import { sync } from "@doska/core/sync"
+import { sync } from "@doska/core"
 import { useFocusEffect } from "expo-router"
 import { useCallback } from "react"
 import { View } from "react-native"

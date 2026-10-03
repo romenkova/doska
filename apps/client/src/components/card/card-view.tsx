@@ -15,7 +15,7 @@ import {
   useMarkers,
   type SoleImage,
 } from "@doska/markdown"
-import type { Card, Column } from "@doska/core/types"
+import type { Card, Column } from "@doska/core"
 import { MarkdownCardPreview } from "../markdown"
 import { CardMeta } from "./card-meta"
 import { CardTags } from "./card-tags"

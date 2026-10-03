@@ -1,4 +1,4 @@
-import { useTokens } from "@doska/ui-kit-mobile/tokens"
+import { useTokens } from "@doska/ui-kit-mobile"
 import type { LucideIcon } from "lucide-react-native"
 import { Pressable, Text, View } from "react-native"
 

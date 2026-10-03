@@ -1,7 +1,7 @@
 import "../global.css"
 
-import { queryClient } from "@doska/core/query-client"
-import { useTokens } from "@doska/ui-kit-mobile/tokens"
+import { queryClient } from "@doska/core"
+import { useTokens } from "@doska/ui-kit-mobile"
 import { QueryClientProvider } from "@tanstack/react-query"
 import { Stack } from "expo-router"
 import { ShareIntentProvider } from "expo-share-intent"

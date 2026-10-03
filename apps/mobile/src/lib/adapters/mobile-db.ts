@@ -6,7 +6,7 @@ import {
   DASHBOARDS,
   META_STORE,
   SIDEBAR,
-} from "@doska/core/constants"
+} from "@doska/core"
 import { SQLiteDB } from "./sqlite-db"
 
 const DB_NAME = "deck.db"

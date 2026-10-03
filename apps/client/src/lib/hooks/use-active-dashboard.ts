@@ -1,11 +1,14 @@
 import { useEffect } from "react"
 import { generateKeyBetween } from "fractional-indexing"
 import { useLocation } from "wouter"
-import { sync } from "@doska/core/sync"
-import { setLastBoard, useLastBoard } from "@doska/core/last-board"
-import { useDashboards } from "@doska/core/queries"
+import {
+  sync,
+  setLastBoard,
+  useLastBoard,
+  useDashboards,
+  type Dashboard,
+} from "@doska/core"
 import { useDashboardNav } from "@/lib/hooks/use-dashboard-nav"
-import type { Dashboard } from "@doska/core/types"
 
 /**
  * Resolves the dashboard for the open route: the list, the active board (or a

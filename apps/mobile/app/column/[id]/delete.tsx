@@ -1,5 +1,4 @@
-import { useDeleteColumn } from "@doska/core/mutations"
-import { useBoard } from "@doska/core/queries"
+import { useDeleteColumn, useBoard } from "@doska/core"
 import { ConfirmBody, SheetScreen } from "@doska/ui-kit-mobile"
 import { router, useLocalSearchParams } from "expo-router"
 import { useActiveBoard } from "@/lib/use-active-board"

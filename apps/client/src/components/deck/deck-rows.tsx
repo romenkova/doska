@@ -1,6 +1,6 @@
 import { AnimatePresence } from "motion/react"
 import { CalendarClock } from "lucide-react"
-import type { DigestCard, DigestGroup as Group } from "@doska/core/operations"
+import type { DigestCard, DigestGroup as Group } from "@doska/core"
 import { CenteredState } from "../digest/centered-state"
 import { DigestGroup } from "../digest/digest-group"
 

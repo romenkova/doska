@@ -8,9 +8,6 @@
   ],
   "exports": {
     ".": "./src/index.ts",
-    "./columns": "./src/columns.ts",
-    "./deadline": "./src/deadline.ts",
-    "./priority": "./src/priority.ts",
     "./tokens.css": "./tokens.css",
     "./theme.css": "./theme.css",
     "./tailwind-colors.cjs": "./tailwind-colors.cjs"

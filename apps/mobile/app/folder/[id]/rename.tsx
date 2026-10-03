@@ -1,4 +1,4 @@
-import { useRenameFolder } from "@doska/core/mutations"
+import { useRenameFolder } from "@doska/core"
 import { SheetScreen } from "@doska/ui-kit-mobile"
 import { router, useLocalSearchParams } from "expo-router"
 import { NameForm } from "@/components/shell/name-form"

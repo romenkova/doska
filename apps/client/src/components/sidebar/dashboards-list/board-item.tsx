@@ -1,7 +1,7 @@
 import { SidebarMenuButton, cn } from "@doska/ui-kit"
 import { Globe, Users } from "lucide-react"
 import { useMemo } from "react"
-import type { Dashboard } from "@doska/core/types"
+import type { Dashboard } from "@doska/core"
 import { useCardDrop } from "@/providers/card-drop/card-drop-context"
 import { useDashboardNav } from "@/lib/hooks"
 

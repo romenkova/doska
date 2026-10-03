@@ -1,6 +1,4 @@
-import { runtime } from "@doska/core/runtime"
-import { apiUrl } from "@doska/core/server"
-import type { Attachment } from "@doska/core/types"
+import { runtime, apiUrl, type Attachment } from "@doska/core"
 import { toAttachmentSrc } from "@doska/markdown"
 import { File } from "expo-file-system"
 import { v4 as uuid } from "uuid"
@@ -30,7 +28,10 @@ export async function uploadFiles(files: LocalFile[]): Promise<Attachment[]> {
     if (res.status < 200 || res.status >= 300) {
       throw new Error(`upload failed: ${res.status}`)
     }
-    const stored = JSON.parse(res.body) as Pick<Attachment, "key" | "mime" | "size">
+    const stored = JSON.parse(res.body) as Pick<
+      Attachment,
+      "key" | "mime" | "size"
+    >
     added.push({
       id: uuid(),
       name: file.name,

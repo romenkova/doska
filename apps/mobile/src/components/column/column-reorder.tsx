@@ -1,5 +1,4 @@
-import { useMoveColumn } from "@doska/core/mutations"
-import { useBoard } from "@doska/core/queries"
+import { useMoveColumn, useBoard } from "@doska/core"
 import { ReorderColumns } from "@/components/column/reorder-columns"
 
 interface IProps {

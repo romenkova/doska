@@ -1,7 +1,7 @@
 import { Button, buttonVariants, cn } from "@doska/ui-kit"
 import { Component, type ErrorInfo, type ReactNode } from "react"
 import { Check, Copy } from "lucide-react"
-import { errorLog, type ReportedError } from "@doska/core/report-error"
+import { errorLog, type ReportedError } from "@doska/core"
 import { isDesktop } from "@/lib/platform"
 
 const ISSUE_URL = "https://github.com/romenkova/doska/issues/new"

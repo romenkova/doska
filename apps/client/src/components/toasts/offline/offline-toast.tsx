@@ -1,4 +1,4 @@
-import { sync, useConnection } from "@doska/core/sync"
+import { sync, useConnection } from "@doska/core"
 import { toast } from "react-hot-toast"
 import { useEffect, useState } from "react"
 import { OfflineToastContent } from "./offline-toast-content"

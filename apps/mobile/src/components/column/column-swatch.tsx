@@ -1,5 +1,5 @@
 import { View } from "react-native"
-import { columnSwatch } from "@doska/tokens/columns"
+import { columnSwatch } from "@doska/tokens"
 
 /** A column's color as a dot; `""` is the dashed "no color" outline. */
 export function ColumnSwatch({ color }: { color: string }) {

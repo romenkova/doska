@@ -1,4 +1,4 @@
-import { PRIORITIES, PRIORITY } from "@doska/tokens/priority"
+import { PRIORITIES, PRIORITY } from "@doska/tokens"
 import Flag from "lucide-react-native/icons/flag"
 import { useTokens } from "./tokens"
 

@@ -11,7 +11,7 @@ import { ArrowRightLeft, MoreHorizontal, Trash2 } from "lucide-react"
 import { ConfirmDialog } from "../../confirm-dialog"
 import { ReorderColumnsModal } from "../reorder-columns/reorder-columns-modal"
 import { SortSub } from "./sort-sub"
-import type { Column } from "@doska/core/types"
+import type { Column } from "@doska/core"
 
 interface IProps {
   title: string

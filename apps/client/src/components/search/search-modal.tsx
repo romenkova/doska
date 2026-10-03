@@ -1,5 +1,4 @@
-import { useBoard } from "@doska/core/queries"
-import { searchCards, type SearchHit } from "@doska/core/search"
+import { useBoard, searchCards, type SearchHit } from "@doska/core"
 import { Modal, ModalContent, ModalTitle } from "@doska/ui-kit"
 import { Search } from "lucide-react"
 import { useMemo, useState } from "react"

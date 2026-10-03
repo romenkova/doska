@@ -1,8 +1,11 @@
 import { SidebarMenuButton, cn } from "@doska/ui-kit"
 import { Folder, FolderOpen } from "lucide-react"
-import type { SidebarFolderNode } from "@doska/core/operations"
-import { setFolderCollapsed } from "@doska/core/folder-collapsed"
-import { useDeleteFolder, useRenameFolder } from "@doska/core/mutations"
+import {
+  type SidebarFolderNode,
+  setFolderCollapsed,
+  useDeleteFolder,
+  useRenameFolder,
+} from "@doska/core"
 import { useCardDrop } from "@/providers/card-drop/card-drop-context"
 import { FolderMenu } from "./folder-menu"
 import { FolderTitleInput } from "./folder-title-input"

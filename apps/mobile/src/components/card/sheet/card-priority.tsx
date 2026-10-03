@@ -1,8 +1,6 @@
-import { useUpdateCard } from "@doska/core/mutations"
-import { useCard } from "@doska/core/queries"
-import { PRIORITIES } from "@doska/tokens/priority"
-import { PriorityChip } from "@doska/ui-kit-mobile"
-import { useTokens } from "@doska/ui-kit-mobile/tokens"
+import { useUpdateCard, useCard } from "@doska/core"
+import { PRIORITIES } from "@doska/tokens"
+import { PriorityChip, useTokens } from "@doska/ui-kit-mobile"
 import Check from "lucide-react-native/icons/check"
 import { Pressable, Text, View } from "react-native"
 

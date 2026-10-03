@@ -5,7 +5,7 @@ import {
   type Column,
   type ColumnGroup,
 } from "@doska/contract"
-import { COLUMN_COLORS } from "@doska/tokens/columns"
+import { COLUMN_COLORS } from "@doska/tokens"
 import { z } from "zod"
 import {
   type Board,

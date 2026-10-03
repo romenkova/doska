@@ -1,7 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
 import { CARD_GROUPS, type Card, type CardGroup } from "@doska/contract"
 import { taskProgress, toggleTaskByIndex } from "@doska/markdown/core"
-import { PRIORITIES } from "@doska/tokens/priority"
+import { PRIORITIES } from "@doska/tokens"
 import { z } from "zod"
 import {
   type Board,

@@ -6,8 +6,7 @@ import {
   cn,
 } from "@doska/ui-kit"
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd"
-import { useCollapsedFolders } from "@doska/core/folder-collapsed"
-import { useSidebarTree } from "@doska/core/queries"
+import { useCollapsedFolders, useSidebarTree } from "@doska/core"
 import { useState } from "react"
 import { DROP_ANIMATION_MS } from "@/lib/hooks"
 import { OrderAnimator } from "../../card/order-animator"

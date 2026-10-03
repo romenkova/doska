@@ -1,4 +1,4 @@
-import type { Dashboard } from "@doska/core/types"
+import type { Dashboard } from "@doska/core"
 import { MenuItem } from "@doska/ui-kit"
 import { Picker } from "./picker"
 

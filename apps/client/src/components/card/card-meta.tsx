@@ -1,7 +1,7 @@
 import { TaskIndicator, cn } from "@doska/ui-kit"
 import { taskProgress, type TaskProgress } from "@doska/markdown"
 import type { ReactNode } from "react"
-import type { Card, Column } from "@doska/core/types"
+import type { Card, Column } from "@doska/core"
 import { ConflictMarker } from "./conflict-marker"
 import { CardDeadline } from "./deadline/card-deadline"
 import { CardPriority } from "./priority/card-priority"

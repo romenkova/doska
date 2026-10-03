@@ -1,4 +1,4 @@
-import { useTokens } from "@doska/ui-kit-mobile/tokens"
+import { useTokens } from "@doska/ui-kit-mobile"
 import * as Haptics from "expo-haptics"
 import Check from "lucide-react-native/icons/check"
 import { Pressable, View } from "react-native"

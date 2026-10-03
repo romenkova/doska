@@ -1,4 +1,4 @@
-import { useDeleteFolder } from "@doska/core/mutations"
+import { useDeleteFolder } from "@doska/core"
 import { Separator, SheetItem, SheetScreen } from "@doska/ui-kit-mobile"
 import { router, useLocalSearchParams } from "expo-router"
 import Pencil from "lucide-react-native/icons/pencil"

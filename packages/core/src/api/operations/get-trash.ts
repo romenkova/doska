@@ -1,4 +1,4 @@
-import { RETENTION_MS } from "@doska/contract/retention"
+import { RETENTION_MS } from "@doska/contract"
 import { db } from "../db/db"
 import { live } from "./live"
 import type { TrashKind } from "./restore"

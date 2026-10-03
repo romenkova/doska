@@ -1,4 +1,4 @@
-import { useCardCol } from "@doska/core/queries"
+import { useCardCol } from "@doska/core"
 import { Chip } from "@doska/ui-kit-mobile"
 import { router } from "expo-router"
 import { Pressable, Text, View } from "react-native"

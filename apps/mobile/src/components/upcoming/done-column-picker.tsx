@@ -1,6 +1,4 @@
-import { useSetColumnDone } from "@doska/core/mutations"
-import { useBoard } from "@doska/core/queries"
-import { byPosition } from "@doska/core/utils"
+import { useSetColumnDone, useBoard, byPosition } from "@doska/core"
 import { Pressable, Text, View } from "react-native"
 import { ColumnSwatch } from "@/components/column/column-swatch"
 

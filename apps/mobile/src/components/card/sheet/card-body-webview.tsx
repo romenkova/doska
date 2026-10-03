@@ -1,7 +1,5 @@
-import { cardDisplayId } from "@doska/contract/card-id"
-import { useBoard } from "@doska/core/queries"
-import { useTagOptions } from "@doska/core/tag-options"
-import type { Attachment } from "@doska/core/types"
+import { cardDisplayId } from "@doska/contract"
+import { useBoard, useTagOptions, type Attachment } from "@doska/core"
 import Constants from "expo-constants"
 import { router } from "expo-router"
 import {

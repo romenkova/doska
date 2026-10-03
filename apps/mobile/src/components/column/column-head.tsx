@@ -1,7 +1,9 @@
-import { useRenameColumn, useSetColumnCollapsed } from "@doska/core/mutations"
-import type { Column } from "@doska/core/types"
-import { IconButton, TextField } from "@doska/ui-kit-mobile"
-import { useTokens } from "@doska/ui-kit-mobile/tokens"
+import {
+  useRenameColumn,
+  useSetColumnCollapsed,
+  type Column,
+} from "@doska/core"
+import { IconButton, TextField, useTokens } from "@doska/ui-kit-mobile"
 import { router } from "expo-router"
 import ChevronDown from "lucide-react-native/icons/chevron-down"
 import ChevronRight from "lucide-react-native/icons/chevron-right"

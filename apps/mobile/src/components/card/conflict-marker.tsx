@@ -1,5 +1,5 @@
-import { DEADLINE } from "@doska/tokens/deadline"
-import { useTokens } from "@doska/ui-kit-mobile/tokens"
+import { DEADLINE } from "@doska/tokens"
+import { useTokens } from "@doska/ui-kit-mobile"
 import TriangleAlert from "lucide-react-native/icons/triangle-alert"
 
 export function ConflictMarker() {

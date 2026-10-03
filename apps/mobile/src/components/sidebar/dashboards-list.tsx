@@ -1,10 +1,10 @@
 import {
   setFolderCollapsed,
   useCollapsedFolders,
-} from "@doska/core/folder-collapsed"
-import { useMoveSidebarItem } from "@doska/core/mutations"
-import { useSidebarTree } from "@doska/core/queries"
-import type { Dashboard } from "@doska/core/types"
+  useMoveSidebarItem,
+  useSidebarTree,
+  type Dashboard,
+} from "@doska/core"
 import { IconButton } from "@doska/ui-kit-mobile"
 import { router } from "expo-router"
 import FolderPlus from "lucide-react-native/icons/folder-plus"

@@ -1,5 +1,5 @@
 import { useLocation } from "wouter"
-import { useCreateDashboard } from "@doska/core/mutations"
+import { useCreateDashboard } from "@doska/core"
 import { routes } from "@/lib/routes"
 
 /** Open a board, or create one and open it. Side-effect free. */

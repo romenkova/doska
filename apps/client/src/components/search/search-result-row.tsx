@@ -1,5 +1,5 @@
-import { cardDisplayId } from "@doska/contract/card-id"
-import type { SearchHit, Segment } from "@doska/core/search"
+import { cardDisplayId } from "@doska/contract"
+import type { SearchHit, Segment } from "@doska/core"
 import { cn } from "@doska/ui-kit"
 import { useEffect, useRef } from "react"
 import { ColumnSwatch } from "../column/column-swatch"

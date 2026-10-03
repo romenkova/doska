@@ -1,9 +1,13 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
-import type { Card, Column, Dashboard } from "@doska/contract"
-import { cardDisplayId } from "@doska/contract/card-id"
+import {
+  type Card,
+  type Column,
+  type Dashboard,
+  cardDisplayId,
+} from "@doska/contract"
 import { z } from "zod"
 import type { Board } from "../board"
-import { addDays, todayIso, UPCOMING_DAYS } from "@doska/utils/dates"
+import { addDays, todayIso, UPCOMING_DAYS } from "@doska/utils"
 import { PRIORITY_IDS } from "./cards"
 import { reply } from "./reply"
 import { shapeCard } from "./shape"

@@ -5,7 +5,6 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./file-storage": "./src/file-storage.ts",
     "./server": "./src/server/index.ts"
   },
   "dependencies": {

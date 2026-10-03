@@ -1,6 +1,9 @@
-import { useBoard, useSidebarTree } from "@doska/core/queries"
-import type { Dashboard } from "@doska/core/types"
-import { SORT_MODES } from "@doska/core/utils"
+import {
+  useBoard,
+  useSidebarTree,
+  type Dashboard,
+  SORT_MODES,
+} from "@doska/core"
 import { Separator, SheetItem } from "@doska/ui-kit-mobile"
 import { router } from "expo-router"
 import ArrowRightLeft from "lucide-react-native/icons/arrow-right-left"

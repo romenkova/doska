@@ -1,6 +1,5 @@
 import { Button } from "@doska/ui-kit"
-import { useSetColumnDone } from "@doska/core/mutations"
-import { useBoard } from "@doska/core/queries"
+import { useSetColumnDone, useBoard } from "@doska/core"
 import { ColumnSwatch } from "../column/column-swatch"
 
 interface IProps {

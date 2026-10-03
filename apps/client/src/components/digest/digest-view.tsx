@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react"
 import { useLocation, useRoute } from "wouter"
-import { groupByDeadline, type DigestFilter } from "@doska/core/operations"
-import { sync } from "@doska/core/sync"
-import { useDashboards, useDigest } from "@doska/core/queries"
+import {
+  groupByDeadline,
+  type DigestFilter,
+  sync,
+  useDashboards,
+  useDigest,
+} from "@doska/core"
 import { routes } from "@/lib/routes"
 import { Digest } from "./digest"
 

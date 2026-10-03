@@ -1,7 +1,6 @@
 import { useState } from "react"
 import { useLocation } from "wouter"
-import { publicAttachmentUrl } from "@doska/core/public"
-import { groupCardsByColumn, sortCards } from "@doska/core/utils"
+import { publicAttachmentUrl, groupCardsByColumn, sortCards } from "@doska/core"
 import type { PublicBoard as Snapshot } from "@doska/contract"
 import { AttachmentImage } from "../card/attachments/attachment-image"
 import { CardView } from "../card/card-view"

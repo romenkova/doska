@@ -1,5 +1,4 @@
-import { useBoard } from "@doska/core/queries"
-import { searchCards } from "@doska/core/search"
+import { useBoard, searchCards } from "@doska/core"
 import { EmptyState, Spinner } from "@doska/ui-kit-mobile"
 import { useMemo } from "react"
 import { FlatList, Text } from "react-native"

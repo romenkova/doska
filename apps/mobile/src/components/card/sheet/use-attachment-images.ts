@@ -1,5 +1,4 @@
-import { activeStorage } from "@doska/core/attachments"
-import type { Attachment } from "@doska/core/types"
+import { activeStorage, type Attachment } from "@doska/core"
 import { useEffect, useState } from "react"
 
 const cache = new Map<string, string>()

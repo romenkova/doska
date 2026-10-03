@@ -1,5 +1,4 @@
-import type { Dashboard } from "@doska/core/types"
-import { toggleTag } from "@doska/core/utils"
+import { type Dashboard, toggleTag } from "@doska/core"
 import { useState } from "react"
 import { View } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"

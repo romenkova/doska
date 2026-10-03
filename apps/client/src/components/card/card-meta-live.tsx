@@ -1,6 +1,4 @@
-import { fallbackCard } from "@doska/core/seed"
-import { useCard, useCardCol } from "@doska/core/queries"
-import { useUpdateCard } from "@doska/core/mutations"
+import { fallbackCard, useCard, useCardCol, useUpdateCard } from "@doska/core"
 import { CardMeta } from "./card-meta"
 
 interface IProps {

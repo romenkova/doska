@@ -1,10 +1,6 @@
 import { Button, Card as CardBase } from "@doska/ui-kit"
 import { Columns3, LayoutDashboard, StickyNote } from "lucide-react"
-import {
-  expiryLabel,
-  type TrashEntry,
-  type TrashKind,
-} from "@doska/core/operations"
+import { expiryLabel, type TrashEntry, type TrashKind } from "@doska/core"
 
 const ICONS: Record<TrashKind, typeof StickyNote> = {
   cards: StickyNote,

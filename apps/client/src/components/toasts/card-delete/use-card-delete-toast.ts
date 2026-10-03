@@ -1,6 +1,4 @@
-import { getCard } from "@doska/core/operations"
-import { useRestore } from "@doska/core/mutations"
-import { keys } from "@doska/core/keys"
+import { getCard, useRestore, keys } from "@doska/core"
 import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "react-hot-toast"
 import { createElement, useCallback } from "react"

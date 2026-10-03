@@ -1,4 +1,4 @@
-import type { Card } from "@doska/core/types"
+import type { Card } from "@doska/core"
 import { cut, soleImage, type SoleImage } from "@doska/markdown"
 
 /** The one image a card consists of, if that's all it holds. Mirrors web's `cardSoleImage`. */

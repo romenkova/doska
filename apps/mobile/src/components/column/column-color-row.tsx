@@ -1,4 +1,4 @@
-import { COLUMN_COLORS } from "@doska/tokens/columns"
+import { COLUMN_COLORS } from "@doska/tokens"
 import { Pressable, ScrollView, Text, View } from "react-native"
 import { ColumnSwatch } from "./column-swatch"
 

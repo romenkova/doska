@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react"
-import type { CardPatch } from "@doska/core/mutations"
-import type { Card } from "@doska/core/types"
+import type { CardPatch, Card } from "@doska/core"
 import { CardEditor } from "./card-editor"
 import { ConflictBanner } from "./conflict-banner"
 import { rebaseDraft, type DraftState } from "./draft"
