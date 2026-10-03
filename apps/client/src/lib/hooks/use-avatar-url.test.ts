@@ -33,6 +33,12 @@ describe("useAvatarUrl", () => {
     expect(query.options?.enabled).toBe(false)
   })
 
+  it("passes a data URI straight through", () => {
+    const picture = "data:image/svg+xml;base64,PHN2Zy8+"
+    expect(useAvatarUrl(picture)).toBe(picture)
+    expect(query.options?.enabled).toBe(false)
+  })
+
   it("resolves an uploaded file key through storage", async () => {
     query.data = "/api/files/abc.png"
     expect(useAvatarUrl("abc.png")).toBe("/api/files/abc.png")

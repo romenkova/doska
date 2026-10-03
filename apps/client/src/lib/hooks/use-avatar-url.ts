@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query"
 import { activeStorage } from "@doska/core"
 import { isDesktop } from "@/lib/platform"
 
-const isUrl = (image: string) => /^https?:\/\//.test(image)
+const isUrl = (image: string) => /^(https?:\/\/|data:)/.test(image)
 
 function resolve(key: string): Promise<string> {
   return isDesktop()
