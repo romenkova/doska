@@ -1,7 +1,8 @@
-import { Avatar, AvatarFallback, Button, cn } from "@doska/ui-kit"
-import { initials, useSetAccountActive, type Account } from "@doska/core"
+import { Button, cn } from "@doska/ui-kit"
+import { useSetAccountActive, type Account } from "@doska/core"
 import { useState } from "react"
 import { AccountTag } from "./account-tag"
+import { UserAvatar } from "./user-avatar"
 import { DeleteAccountModal } from "./delete-account-modal"
 import { ResetPasswordForm } from "./reset-password-form"
 
@@ -20,11 +21,12 @@ export function AccountRow({ account, isSelf }: IProps) {
   return (
     <li className="flex flex-col gap-2 border-b border-border p-3 last:border-b-0">
       <div className="flex items-center gap-3">
-        <Avatar className={cn("size-8", !account.active && "opacity-50")}>
-          <AvatarFallback className="text-xs">
-            {initials(account.login)}
-          </AvatarFallback>
-        </Avatar>
+        <UserAvatar
+          name={account.login}
+          image={account.image}
+          className={cn("size-8", !account.active && "opacity-50")}
+          fallbackClassName="text-xs"
+        />
         <div className="flex min-w-0 flex-col">
           <span className="truncate text-sm font-medium">{account.login}</span>
           <div className="flex items-center gap-1">

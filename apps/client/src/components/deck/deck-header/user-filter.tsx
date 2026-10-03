@@ -1,14 +1,8 @@
-import {
-  Avatar,
-  AvatarFallback,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-  cn,
-} from "@doska/ui-kit"
-import { initials, useBoardMembers } from "@doska/core"
+import { Tooltip, TooltipContent, TooltipTrigger, cn } from "@doska/ui-kit"
+import { useBoardMembers } from "@doska/core"
 import { useDeck } from "@/providers/deck/deck-context"
 import { useAuth } from "@/lib/hooks"
+import { UserAvatar } from "@/components/accounts/user-avatar"
 
 /** Board members as a row of avatars; clicking one filters to their cards. */
 export function UserFilter({ boardId }: { boardId: string }) {
@@ -42,17 +36,18 @@ export function UserFilter({ boardId }: { boardId: string }) {
                     userFilters.length > 0 && !active && "opacity-50"
                   )}
                 >
-                  <Avatar className="size-6 bg-background">
-                    <AvatarFallback
-                      className={cn(
-                        "border border-border bg-white text-[10px] font-medium text-foreground/70 dark:bg-muted",
-                        active &&
-                          "border-primary bg-primary/10 text-primary dark:bg-primary/20"
-                      )}
-                    >
-                      {initials(member.username)}
-                    </AvatarFallback>
-                  </Avatar>
+                  <UserAvatar
+                    name={member.username}
+                    image={member.image}
+                    className={cn(
+                      "size-6 border border-border bg-background",
+                      active && "border-primary"
+                    )}
+                    fallbackClassName={cn(
+                      "bg-white text-[10px] font-medium text-foreground/70 dark:bg-muted",
+                      active && "bg-primary/10 text-primary dark:bg-primary/20"
+                    )}
+                  />
                 </button>
               }
             />

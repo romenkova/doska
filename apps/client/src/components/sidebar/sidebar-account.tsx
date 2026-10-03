@@ -1,15 +1,14 @@
-import { useAccount, initials } from "@doska/core"
+import { useAccount } from "@doska/core"
 import {
-  Avatar,
-  AvatarFallback,
   cn,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@doska/ui-kit"
-import { LogIn, UserRound } from "lucide-react"
+import { LogIn } from "lucide-react"
 import { useState } from "react"
 import { useLoginPrompt } from "@/providers/login-prompt/login-prompt-context"
+import { UserAvatar } from "@/components/accounts/user-avatar"
 import { AccountModal } from "./account-modal"
 
 export function SidebarAccount() {
@@ -32,15 +31,12 @@ export function SidebarAccount() {
               else if (signedOut) openLogin()
             }}
           >
-            <Avatar className="size-8 rounded-full">
-              <AvatarFallback className="rounded-full text-xs">
-                {authed && login ? (
-                  initials(login)
-                ) : (
-                  <UserRound className="size-4" />
-                )}
-              </AvatarFallback>
-            </Avatar>
+            <UserAvatar
+              name={authed ? login : null}
+              image={authed ? (session?.image ?? null) : null}
+              className="size-8 rounded-full"
+              fallbackClassName="rounded-full text-xs"
+            />
             <div className="flex flex-col overflow-hidden text-left leading-tight">
               <span className="truncate text-sm font-medium">{name}</span>
               <span
