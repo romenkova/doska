@@ -6,7 +6,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip"
 
 type TProps = ButtonPrimitive.Props &
   VariantProps<typeof buttonVariants> & {
-    tooltip?: boolean
+    /** A string replaces the `aria-label` as the tooltip text. */
+    tooltip?: boolean | string
   }
 
 function Button({
@@ -24,12 +25,19 @@ function Button({
     />
   )
 
-  if (!tooltip || !props["aria-label"]) return button
+  const label = typeof tooltip === "string" ? tooltip : props["aria-label"]
+  if (!tooltip || !label) return button
 
   return (
-    <Tooltip>
-      <TooltipTrigger render={button} />
-      <TooltipContent>{props["aria-label"]}</TooltipContent>
+    <Tooltip key={props.disabled ? "disabled" : "enabled"}>
+      {props.disabled ? (
+        <TooltipTrigger render={<span className="inline-flex" />}>
+          {button}
+        </TooltipTrigger>
+      ) : (
+        <TooltipTrigger render={button} />
+      )}
+      <TooltipContent>{label}</TooltipContent>
     </Tooltip>
   )
 }

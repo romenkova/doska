@@ -10,6 +10,14 @@ export function filterByTags(cards: Card[], tags: string[] = []) {
   })
 }
 
+/** Cards tagged with any of `userIds`, unlike tags which must all match. */
+export function filterByUsers(cards: Card[], userIds: string[] = []) {
+  if (userIds.length === 0) return cards
+  return cards.filter((card) =>
+    (card.users ?? []).some((id) => userIds.includes(id))
+  )
+}
+
 export function toggleTag(tags: string[], tag: string) {
   if (tags.some((t) => sameTag(t, tag)))
     return tags.filter((t) => !sameTag(t, tag))

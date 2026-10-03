@@ -6,6 +6,7 @@ import {
   type DashboardView,
   byPosition,
   filterByTags,
+  filterByUsers,
   groupCardsByColumn,
   sortCards,
   type CardPatch,
@@ -72,9 +73,13 @@ export function Deck({
   const [isDragging, setIsDragging] = useState(false)
   const sidebarDrop = useSidebarCardDrop(isDragging)
 
-  const { tagFilters = [] } = useDeck()
-  const isFiltered = tagFilters.length > 0
-  const visible = { ...board, cards: filterByTags(board.cards, tagFilters) }
+  const { tagFilters = [], userFilters = [] } = useDeck()
+  const isFiltered = tagFilters.length > 0 || userFilters.length > 0
+  const filteredReason = isFiltered ? "Clear filters to add cards" : undefined
+  const visible = {
+    ...board,
+    cards: filterByUsers(filterByTags(board.cards, tagFilters), userFilters),
+  }
   const grouped = groupCardsByColumn(visible)
   const orderedColumns = [...board.columns].sort(byPosition)
   const sort = dashboard.sort ?? []
@@ -112,10 +117,13 @@ export function Deck({
                 onChangeSort={onChangeSort}
                 view={view}
                 onChangeView={onChangeView}
-                onAddCard={
-                  orderedColumns[0] && !isFiltered
-                    ? () => onAddAndOpenCard(orderedColumns[0].id)
-                    : undefined
+                onAddCard={() => {
+                  if (orderedColumns[0]) onAddAndOpenCard(orderedColumns[0].id)
+                }}
+                addCardDisabledReason={
+                  orderedColumns.length === 0
+                    ? "Add a column first"
+                    : filteredReason
                 }
               />
               <TagFilterPills />
@@ -137,9 +145,8 @@ export function Deck({
                     color={column.color}
                     showBody={showBody}
                     onToggleBody={() => onToggleBody(column.id, showBody)}
-                    onAddCard={
-                      isFiltered ? undefined : () => onAddCard(column.id)
-                    }
+                    onAddCard={() => onAddCard(column.id)}
+                    addCardDisabledReason={filteredReason}
                     onRename={(title) => onRenameColumn(column.id, title)}
                     onChangeColor={(color) =>
                       onChangeColumnColor(column.id, color)

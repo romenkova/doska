@@ -35,6 +35,7 @@ export type CardPatch = Partial<
     | "deadline"
     | "priority"
     | "tags"
+    | "users"
     | "attachments"
     | "bodyConflict"
   >

@@ -4,7 +4,7 @@ import type { MarkdownExtension } from "@lezer/markdown"
 
 export const hashtagTag = Tag.define()
 
-const HASHTAG = new RegExp(`^#${PREFIXED_NAME}`, "u")
+const HASHTAG = new RegExp(`^[#@]${PREFIXED_NAME}`, "u")
 
 export const hashtag: MarkdownExtension = {
   defineNodes: [{ name: "Hashtag", style: hashtagTag }],
@@ -12,7 +12,8 @@ export const hashtag: MarkdownExtension = {
     {
       name: "Hashtag",
       parse(cx, next, pos) {
-        if (next !== 35) return -1
+        // `#tag` or `@user`
+        if (next !== 35 && next !== 64) return -1
         if (!/\s|^$/.test(cx.slice(pos - 1, pos))) return -1
         const match = HASHTAG.exec(cx.slice(pos, cx.end))
         if (!match) return -1

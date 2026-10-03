@@ -204,7 +204,7 @@ export async function readPublicBoard(
     cards: boardCards
       .filter((c) => liveColumns.has(c.columnId))
       .sort(byPosition)
-      .map((c) => ({ ...c, stamps: {}, bodyConflict: null })),
+      .map((c) => ({ ...c, users: [], stamps: {}, bodyConflict: null })),
   }
   remember(token, board, now)
   return board

@@ -12,6 +12,7 @@ interface IProps {
   showBody: boolean
   onToggleBody: () => void
   onAddCard?: () => void
+  addCardDisabledReason?: string
   onRename: (title: string) => void
   onChangeColor: (color: string) => void
   /** Cards in this column count as finished. */
@@ -28,6 +29,7 @@ export function Column({
   showBody,
   onToggleBody,
   onAddCard,
+  addCardDisabledReason,
   onRename,
   onChangeColor,
   done,
@@ -47,6 +49,7 @@ export function Column({
           onToggleBody={onToggleBody}
           onRename={onRename}
           onAddCard={onAddCard}
+          addCardDisabledReason={addCardDisabledReason}
           isDraggingOver={snapshot.isDraggingOver}
           listRef={provided.innerRef}
           listProps={provided.droppableProps}

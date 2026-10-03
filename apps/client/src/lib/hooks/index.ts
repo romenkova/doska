@@ -1,6 +1,7 @@
 export { useActiveDashboard } from "./use-active-dashboard"
 export { useDashboardNav } from "./use-dashboard-nav"
 export { useAuth } from "./use-auth"
+export { useAvatarUrl } from "./use-avatar-url"
 export { useDragEnd } from "./use-drag-end"
 export { useIsFullscreen } from "./use-is-fullscreen"
 export { useLandingSlot, DROP_ANIMATION_MS } from "./use-landing-slot"

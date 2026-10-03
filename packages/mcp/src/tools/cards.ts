@@ -95,6 +95,7 @@ export function registerCardTools(server: McpServer, board: Board): void {
           deadline: deadline ?? null,
           priority: priority ?? "",
           tags: tags ?? [],
+          users: [],
           attachments: [],
           updatedAt: now,
           deletedAt: null,

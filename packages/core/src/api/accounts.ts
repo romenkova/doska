@@ -11,6 +11,7 @@ import { orpc } from "./sync/orpc"
 export type Account = {
   id: string
   login: string
+  image: string | null
   isAdmin: boolean
   active: boolean
   /** Signs in through an identity provider, maybe besides a password. */
@@ -26,6 +27,7 @@ type AdminUser = {
   id: string
   name: string
   username?: string | null
+  image?: string | null
   role?: string | null
   banned?: boolean | null
 }
@@ -58,6 +60,7 @@ export async function listAccounts(): Promise<Account[]> {
   return (data.users as AdminUser[]).map((user) => ({
     id: user.id,
     login: user.username ?? user.name,
+    image: user.image ?? null,
     isAdmin: user.role === "admin",
     active: !user.banned,
     sso: sso.has(user.id),

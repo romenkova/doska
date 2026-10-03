@@ -21,6 +21,7 @@ export const CARD_GROUPS = [
   "deadline",
   "priority",
   "tags",
+  "users",
   "attachments",
   "deleted",
   "conflict",
@@ -75,6 +76,8 @@ export const CardSchema = z.object({
   priority: z.string().default(""),
   /** `#tags`*/
   tags: z.array(z.string()).default([]),
+  /** User ids tagged on the card. */
+  users: z.array(z.string()).default([]),
   /** Attached files; travels with the card's last-writer-wins record. */
   attachments: z.array(AttachmentSchema).default([]),
   updatedAt: z.number(),
@@ -102,6 +105,7 @@ export const CARD_FIELD_GROUP: Record<
   deadline: "deadline",
   priority: "priority",
   tags: "tags",
+  users: "users",
   attachments: "attachments",
   deletedAt: "deleted",
   bodyConflict: "conflict",
@@ -195,6 +199,7 @@ export const MemberRoleSchema = z.enum(["owner", "editor"])
 export const MemberSchema = z.object({
   userId: z.string(),
   username: z.string(),
+  image: z.string().nullable(),
   role: MemberRoleSchema,
 })
 
@@ -202,6 +207,7 @@ export const MemberSchema = z.object({
 export const DirectoryUserSchema = z.object({
   id: z.string(),
   username: z.string(),
+  image: z.string().nullable(),
 })
 
 const DashboardRecordChangeSchema = z.object({

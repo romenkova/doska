@@ -1,31 +1,45 @@
-import { TagChip } from "@doska/ui-kit"
-import { X } from "lucide-react"
+import { useBoardMembers } from "@doska/core"
 import { useDeck } from "@/providers/deck/deck-context"
+import { useAuth } from "@/lib/hooks"
+import { FilterPill } from "./filter-pill"
 
-/** The strip under the board header listing the active tag filters. */
+/** The strip under the board header listing the active user and tag filters. */
 export function TagFilterPills() {
-  const { tagFilters = [], toggleTagFilter } = useDeck()
-  if (!toggleTagFilter || tagFilters.length === 0) return null
+  const {
+    id: deckId,
+    tagFilters = [],
+    toggleTagFilter,
+    userFilters = [],
+    toggleUserFilter,
+  } = useDeck()
+  const { authed } = useAuth()
+  const { data: roster } = useBoardMembers(deckId, !!authed)
+
+  const users = (roster?.members ?? []).filter((member) =>
+    userFilters.includes(member.userId)
+  )
+  if (tagFilters.length === 0 && users.length === 0) return null
 
   return (
     <div className="flex shrink-0 flex-wrap items-center gap-2 border-b px-4 py-1.5">
-      {tagFilters.map((tag) => (
-        <button
-          key={tag}
-          type="button"
-          title={`Stop filtering by #${tag}`}
-          aria-label={`Clear #${tag} filter`}
-          onClick={() => toggleTagFilter(tag)}
-          className="group inline-flex cursor-pointer"
-        >
-          <TagChip
+      {toggleUserFilter &&
+        users.map((member) => (
+          <FilterPill
+            key={member.userId}
+            label={member.username}
+            prefix="@"
+            onClear={() => toggleUserFilter(member.userId)}
+          />
+        ))}
+      {toggleTagFilter &&
+        tagFilters.map((tag) => (
+          <FilterPill
+            key={tag}
             label={tag}
-            className="transition-colors group-hover:border-primary/50"
-          >
-            <X className="mt-[1px] ml-0.5 size-3 shrink-0 text-muted-foreground group-hover:text-foreground" />
-          </TagChip>
-        </button>
-      ))}
+            prefix="#"
+            onClear={() => toggleTagFilter(tag)}
+          />
+        ))}
     </div>
   )
 }
