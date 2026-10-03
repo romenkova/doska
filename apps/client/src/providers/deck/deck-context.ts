@@ -7,6 +7,8 @@ export interface DeckContextValue {
   sort: string[]
   tagFilters?: string[]
   toggleTagFilter?: (tag: string) => void
+  userFilters?: string[]
+  toggleUserFilter?: (userId: string) => void
 }
 
 /**
