@@ -1,5 +1,5 @@
 import { MenuContent, MenuItem, MenuSub, MenuSubTrigger } from "@doska/ui-kit"
-import { Check, User } from "lucide-react"
+import { AtSign, Check } from "lucide-react"
 import { useUpdateCard, useCard, useBoardMembers } from "@doska/core"
 import { useDeck } from "@/providers/deck/deck-context"
 import { useAuth } from "@/lib/hooks"
@@ -25,7 +25,7 @@ export function UsersSub({ cardId }: { cardId: string }) {
   return (
     <MenuSub>
       <MenuSubTrigger>
-        <User />
+        <AtSign />
         Users
       </MenuSubTrigger>
       <MenuContent
