@@ -1,7 +1,10 @@
 import { keys } from "@doska/core"
 import { Vault } from "@doska/vault"
 import { useQueryClient } from "@tanstack/react-query"
-import { useCallback, useEffect, useState } from "react"
+import { createElement, useCallback, useEffect, useState } from "react"
+import { toast } from "react-hot-toast"
+import { ErrorToast } from "@/components/toasts/error/error-toast"
+import { VaultUnlinkedToast } from "@/components/toasts/vault-unlinked/vault-unlinked-toast"
 import { isDesktop } from "../platform"
 import { boardOps, vaultFiles } from "./board-ops"
 import { tauriFs } from "./tauri-fs"
@@ -31,6 +34,31 @@ async function ignore(root: string): Promise<void> {
 
 export function unlinkVault(boardId: string): void {
   localStorage.removeItem(pathKey(boardId))
+}
+
+export function unlinkDeletedBoard(boardId: string): void {
+  const path = localStorage.getItem(pathKey(boardId))
+  if (!path) return
+  unlinkVault(boardId)
+  toast.custom(
+    (toastInstance) =>
+      createElement(VaultUnlinkedToast, {
+        visible: toastInstance.visible,
+        path,
+      }),
+    { id: "vault-unlinked" }
+  )
+}
+
+function showGone(path: string) {
+  toast.custom(
+    (toastInstance) =>
+      createElement(ErrorToast, {
+        visible: toastInstance.visible,
+        message: `Stopped syncing: ${path} is gone.`,
+      }),
+    { id: "vault-gone" }
+  )
 }
 
 function message(cause: unknown): string {
@@ -73,6 +101,13 @@ export function useVault(boardId: string) {
       onBoardChange: () => {
         setError(null)
         invalidate()
+      },
+      onGone: () => {
+        if (!live) return
+        live = false
+        showGone(path)
+        unlinkVault(boardId)
+        setPath(null)
       },
     })
 
