@@ -9,6 +9,7 @@ import {
 } from "@doska/core"
 import { routes } from "@/lib/routes"
 import { Digest } from "./digest"
+import { useHiddenBoards } from "./use-hidden-boards"
 
 /** Connects the digest to its data, and pulls every board so it isn't reading a
  * partial picture — only the open board syncs during normal use. */
@@ -17,6 +18,7 @@ export function DigestView() {
   const [, params] = useRoute(routes.card.pattern)
   const [filter, setFilter] = useState<DigestFilter>("week")
   const [hideDone, setHideDone] = useState(false)
+  const { hidden, toggleBoard } = useHiddenBoards()
 
   const { data: dashboards = [] } = useDashboards()
   const { data: entries = [], isPending, error } = useDigest(filter)
@@ -30,7 +32,9 @@ export function DigestView() {
     return () => void sync.watchBoards([])
   }, [boardIds])
 
-  const visible = hideDone ? entries.filter((e) => !e.isDone) : entries
+  const visible = entries.filter(
+    (e) => !hidden.includes(e.boardId) && !(hideDone && e.isDone)
+  )
 
   return (
     <Digest
@@ -41,6 +45,9 @@ export function DigestView() {
       error={error}
       hideDone={hideDone}
       onToggleHideDone={() => setHideDone((v) => !v)}
+      boards={dashboards}
+      hiddenBoards={hidden}
+      onToggleBoard={toggleBoard}
       openCardId={params?.id ?? null}
       onOpenCard={(entry) => navigate(routes.card.to(entry.card.id))}
     />

@@ -1,4 +1,9 @@
-import type { DigestCard, DigestFilter, DigestGroup } from "@doska/core"
+import type {
+  Dashboard,
+  DigestCard,
+  DigestFilter,
+  DigestGroup,
+} from "@doska/core"
 import { DigestBody } from "./digest-body"
 import { DigestHeader } from "./digest-header"
 
@@ -11,6 +16,9 @@ interface IProps {
   error: Error | null
   hideDone: boolean
   onToggleHideDone: () => void
+  boards: Dashboard[]
+  hiddenBoards: string[]
+  onToggleBoard: (id: string) => void
   /** The card open in the panel, highlighted in the list. */
   openCardId: string | null
   onOpenCard: (entry: DigestCard) => void
@@ -25,6 +33,9 @@ export function Digest({
   error,
   hideDone,
   onToggleHideDone,
+  boards,
+  hiddenBoards,
+  onToggleBoard,
   openCardId,
   onOpenCard,
 }: IProps) {
@@ -35,6 +46,9 @@ export function Digest({
         onChangeFilter={onChangeFilter}
         hideDone={hideDone}
         onToggleHideDone={onToggleHideDone}
+        boards={boards}
+        hiddenBoards={hiddenBoards}
+        onToggleBoard={onToggleBoard}
       />
 
       <div className="min-h-0 flex-1 overflow-y-auto px-4 py-10 sm:px-4">
