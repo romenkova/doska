@@ -50,6 +50,12 @@ export function tagList(value: unknown): string[] {
   return items.map((tag) => tag.replace(/^#/, "")).filter(Boolean)
 }
 
+/** Comma separated string: usernames may hold spaces. */
+export function nameList(value: unknown): string[] {
+  const items = Array.isArray(value) ? value.map(str) : str(value).split(",")
+  return items.map((name) => name.trim().replace(/^@/, "")).filter(Boolean)
+}
+
 /**
  * Frontmatter and body
  */
