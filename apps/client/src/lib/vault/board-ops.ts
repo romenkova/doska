@@ -46,7 +46,7 @@ export function boardOps(boardId: string): VaultBoard {
       const cards = board.cards.map((card) => ({
         ...card,
         users: members
-          .filter((m) => card.users.includes(m.userId))
+          .filter((m) => (card.users ?? []).includes(m.userId))
           .map((m) => m.username),
       }))
       return { ...board, cards }
