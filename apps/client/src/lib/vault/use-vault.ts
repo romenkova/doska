@@ -29,6 +29,10 @@ async function ignore(root: string): Promise<void> {
   await invoke("ignore_vault", { dir: root })
 }
 
+export function unlinkVault(boardId: string): void {
+  localStorage.removeItem(pathKey(boardId))
+}
+
 function message(cause: unknown): string {
   return cause instanceof Error ? cause.message : String(cause)
 }
@@ -90,7 +94,7 @@ export function useVault(boardId: string) {
       .catch((cause: unknown) => {
         if (!live) return
         setError(message(cause))
-        localStorage.removeItem(pathKey(boardId))
+        unlinkVault(boardId)
         setPath(null)
       })
 
@@ -130,7 +134,7 @@ export function useVault(boardId: string) {
   }, [boardId])
 
   const unmount = useCallback(() => {
-    localStorage.removeItem(pathKey(boardId))
+    unlinkVault(boardId)
     setPath(null)
   }, [boardId])
 
