@@ -7,6 +7,7 @@
 - Tags: set tags to cards, frontmatter support, mcp support, filtering.
 - Card assignees: set tags to cards, frontmatter support, mcp support, filtering.
 - User avatars.
+- Upcoming can be filtered by board
 
 ### Changed
 
