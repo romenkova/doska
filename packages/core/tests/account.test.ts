@@ -6,6 +6,7 @@ const SIGNED_IN: Session = {
   authed: true,
   login: "rita",
   userId: "u1",
+  image: null,
   isAdmin: false,
 }
 
@@ -13,6 +14,7 @@ const SIGNED_OUT: Session = {
   authed: false,
   login: null,
   userId: null,
+  image: null,
   isAdmin: false,
 }
 

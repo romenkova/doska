@@ -7,6 +7,7 @@ import { MoveToBoardSub } from "./move-to-board-sub"
 import { MoveToColumnSub } from "./move-to-column-sub"
 import { PrioritySub } from "./priority-sub"
 import { TagsSub } from "./tags-sub"
+import { UsersSub } from "./users-sub"
 
 interface IProps {
   cardId: string
@@ -34,6 +35,7 @@ export function CardMenuItems({
       <MenuSeparator />
       <PrioritySub cardId={cardId} />
       <TagsSub cardId={cardId} />
+      <UsersSub cardId={cardId} />
       <DeadlineSub cardId={cardId} closeMenu={closeMenu} />
       <CopyIdItem cardId={cardId} />
       <MenuSeparator />

@@ -1,20 +1,9 @@
-import {
-  activeStorage,
-  keys,
-  createCard,
-  createColumn,
-  deleteCard,
-  getBoard,
-  getDeletedIds,
-  moveCardToColumn,
-  renameColumn,
-  restore,
-  updateCard,
-} from "@doska/core"
-import { Vault, type VaultBoard, type VaultFiles } from "@doska/vault"
+import { keys } from "@doska/core"
+import { Vault } from "@doska/vault"
 import { useQueryClient } from "@tanstack/react-query"
 import { useCallback, useEffect, useState } from "react"
 import { isDesktop } from "../platform"
+import { boardOps, vaultFiles } from "./board-ops"
 import { tauriFs } from "./tauri-fs"
 
 const PATHS = "deck:vault:"
@@ -42,30 +31,6 @@ async function ignore(root: string): Promise<void> {
 
 function message(cause: unknown): string {
   return cause instanceof Error ? cause.message : String(cause)
-}
-
-/** Attachment bytes come from backend. */
-const vaultFiles: VaultFiles = {
-  async get(cardId, key) {
-    const blob = await activeStorage().get(cardId, key)
-    return new Uint8Array(await blob.arrayBuffer())
-  },
-}
-
-function boardOps(boardId: string): VaultBoard {
-  return {
-    load: () => getBoard(boardId),
-    createCard,
-    createColumn: (title) => createColumn(boardId, title),
-    updateCard,
-    moveCardToColumn: async (id, columnId) => {
-      await moveCardToColumn(id, columnId)
-    },
-    renameColumn,
-    deleteCard: (id) => deleteCard(boardId, id),
-    restoreCard: (id) => restore("cards", id),
-    deleted: () => getDeletedIds(boardId),
-  }
 }
 
 /**

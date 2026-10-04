@@ -5,6 +5,7 @@ import {
   byPosition,
   dropNeighbours,
   filterByTags,
+  filterByUsers,
   keyBetween,
   sortCards,
 } from "@doska/core"
@@ -17,7 +18,8 @@ export function useDragEnd(
   board: Board | undefined,
   moveCard: (changed: Card[]) => void,
   sort: string[],
-  tagFilters: string[] = []
+  tagFilters: string[] = [],
+  userFilters: string[] = []
 ) {
   return function handleDragEnd({
     source,
@@ -42,11 +44,14 @@ export function useDragEnd(
 
     // The destination column as rendered, minus the card being dropped, so the
     // insertion index lines up with the neighbors at the drop site.
-    const destCards = sortCards(filterByTags(column, tagFilters), sort)
+    const destCards = sortCards(
+      filterByUsers(filterByTags(column, tagFilters), userFilters),
+      sort
+    )
 
     let [prev, next] = dropNeighbours(destCards, destination.index, moved, sort)
 
-    if (tagFilters.length > 0) {
+    if (tagFilters.length > 0 || userFilters.length > 0) {
       if (prev) next = column[column.indexOf(prev) + 1]
       else if (next) prev = column[column.indexOf(next) - 1]
     }

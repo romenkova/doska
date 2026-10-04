@@ -94,10 +94,10 @@ test.describe("card tags", () => {
     await expect(filterPill(page, "urgent")).toBeVisible()
     await expect(
       column(page, "To Do").getByRole("button", { name: "Add card to To Do" })
-    ).toHaveCount(0)
+    ).toBeDisabled()
     await expect(
       page.getByRole("button", { name: "Add card", exact: true })
-    ).toHaveCount(0)
+    ).toBeDisabled()
   })
 
   test("the pill clears the filter", async ({ page }) => {

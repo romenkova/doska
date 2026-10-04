@@ -1,6 +1,11 @@
 import { DEFAULT_SLASH_COMMANDS, toAttachmentSrc, cut } from "@doska/markdown"
 import { useMemo } from "react"
-import { useCardRefOptions, useCard, useTagOptions } from "@doska/core"
+import {
+  useCardRefOptions,
+  useCard,
+  useTagOptions,
+  useMembersOptions,
+} from "@doska/core"
 import { useDeck } from "@/providers/deck/deck-context"
 import { imageSlashCommands } from "../card/attachments/image-slash-commands"
 import { isRenderableImage } from "../card/attachments/renderable-image"
@@ -35,6 +40,7 @@ export function CardBodyEditor({
   const { addFiles } = useUploads()
   const cardRefs = useCardRefOptions(deckId, cardId)
   const tags = useTagOptions(deckId)
+  const members = useMembersOptions(deckId)
   const attachments = card?.attachments
 
   const slashCommands = useMemo(
@@ -42,7 +48,10 @@ export function CardBodyEditor({
     [attachments]
   )
 
-  const suggestions = useMemo(() => ({ "#": tags }), [tags])
+  const suggestions = useMemo(
+    () => ({ "#": tags, "@": members }),
+    [tags, members]
+  )
 
   async function handlePasteFiles(files: File[]): Promise<string | null> {
     const added = await addFiles(files)

@@ -1,6 +1,7 @@
 import type { Attachment, Card } from "@doska/contract"
 import {
   clean,
+  nameList,
   num,
   render,
   split,
@@ -19,6 +20,7 @@ const KNOWN = [
   "deadline",
   "priority",
   "tags",
+  "users",
   "attachments",
   "stamps",
   "bodyConflict",
@@ -26,7 +28,7 @@ const KNOWN = [
 ]
 
 export type CardPatch = Partial<
-  Pick<Card, "title" | "body" | "deadline" | "priority" | "tags">
+  Pick<Card, "title" | "body" | "deadline" | "priority" | "tags" | "users">
 >
 
 /**
@@ -42,6 +44,7 @@ export class CardFile {
   readonly deadline: string
   readonly priority: string
   readonly tags: string[]
+  readonly users: string[]
   readonly attachments: Attachment[]
   readonly extra: Record<string, unknown>
 
@@ -53,6 +56,7 @@ export class CardFile {
     deadline?: string
     priority?: string
     tags?: string[]
+    users?: string[]
     attachments?: Attachment[]
     extra?: Record<string, unknown>
   }) {
@@ -63,6 +67,7 @@ export class CardFile {
     this.deadline = fields.deadline ?? ""
     this.priority = fields.priority ?? ""
     this.tags = fields.tags ?? []
+    this.users = fields.users ?? []
     this.attachments = fields.attachments ?? []
     this.extra = fields.extra ?? {}
   }
@@ -76,6 +81,7 @@ export class CardFile {
       deadline: card.deadline ?? "",
       priority: card.priority,
       tags: card.tags ?? [],
+      users: card.users ?? [],
       attachments: card.attachments,
       extra,
     })
@@ -98,6 +104,7 @@ export class CardFile {
       deadline: str(front.deadline),
       priority: str(front.priority),
       tags: tagList(front.tags),
+      users: nameList(front.users),
       extra,
     })
   }
@@ -110,6 +117,7 @@ export class CardFile {
     if (this.deadline) front.deadline = this.deadline
     if (this.priority) front.priority = this.priority
     if (this.tags.length > 0) front.tags = this.tags
+    if (this.users.length > 0) front.users = this.users
     const unshown = unshownIn(body, this.attachments)
     if (unshown.length > 0) front.attachments = unshown
     Object.assign(front, this.extra)
@@ -126,11 +134,12 @@ export class CardFile {
       patch.deadline = this.deadline || null
     }
     if (this.priority !== card.priority) patch.priority = this.priority
-    if (!sameTags(this.tags, card.tags ?? [])) patch.tags = this.tags
+    if (!sameList(this.tags, card.tags ?? [])) patch.tags = this.tags
+    if (!sameList(this.users, card.users ?? [])) patch.users = this.users
     return Object.keys(patch).length > 0 ? patch : null
   }
 }
 
-function sameTags(a: string[], b: string[]): boolean {
-  return a.length === b.length && a.every((tag, i) => tag === b[i])
+function sameList(a: string[], b: string[]): boolean {
+  return a.length === b.length && a.every((item, i) => item === b[i])
 }

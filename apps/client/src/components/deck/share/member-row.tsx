@@ -1,7 +1,8 @@
 import { useState } from "react"
-import { Avatar, AvatarFallback, Button } from "@doska/ui-kit"
-import { initials, type Member } from "@doska/core"
+import { Button } from "@doska/ui-kit"
+import { type Member } from "@doska/core"
 import { AccountTag } from "../../accounts/account-tag"
+import { UserAvatar } from "../../accounts/user-avatar"
 
 interface IProps {
   member: Member
@@ -32,11 +33,12 @@ export function MemberRow({
   return (
     <li className="flex flex-col gap-2 border-b border-border p-3 last:border-b-0">
       <div className="flex items-center gap-3">
-        <Avatar className="size-8">
-          <AvatarFallback className="text-xs">
-            {initials(member.username)}
-          </AvatarFallback>
-        </Avatar>
+        <UserAvatar
+          name={member.username}
+          image={member.image}
+          className="size-8"
+          fallbackClassName="text-xs"
+        />
         <div className="flex min-w-0 flex-col">
           <span className="truncate text-sm font-medium">
             {member.username}

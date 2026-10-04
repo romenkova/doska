@@ -11,6 +11,7 @@ const card = (id: string, columnId: string, fields: Partial<Card> = {}): Card =>
     columnId,
     priority: "",
     tags: [],
+    users: [],
     deadline: null,
     number: null,
     attachments: [],

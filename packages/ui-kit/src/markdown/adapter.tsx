@@ -21,6 +21,7 @@ import { MdTable } from "./table"
 import { MdTag } from "./tag"
 import { MdTableCell } from "./table-cell"
 import { MdTaskItem } from "./task-item"
+import { MdUser } from "./user"
 import { MdWikilink } from "./wikilink"
 import { toAttachmentSrc } from "@doska/markdown"
 import type { MarkdownAdapter, MarkdownRenderers } from "@doska/markdown"
@@ -180,6 +181,10 @@ export function createWebAdapter({
           onSelect={onTagClick && (() => onTagClick(name))}
         />
       )
+    },
+
+    user(name, key) {
+      return <MdUser key={key} name={name} />
     },
 
     cut(key) {

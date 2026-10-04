@@ -17,6 +17,7 @@ interface IProps {
   menu?: ReactNode
   /** Omit to drop the add-card button. */
   onAddCard?: () => void
+  addCardDisabledReason?: string
   /** Drag state and wiring, supplied by the board's `Droppable`. */
   isDraggingOver?: boolean
   listRef?: Ref<HTMLDivElement>
@@ -34,6 +35,7 @@ export function ColumnView({
   onRename,
   menu,
   onAddCard,
+  addCardDisabledReason,
   isDraggingOver,
   listRef,
   listProps,
@@ -97,9 +99,10 @@ export function ColumnView({
           <Button
             variant="muted"
             onClick={onAddCard}
+            disabled={!!addCardDisabledReason}
             aria-label={`Add card to ${title}`}
             className="mb-3 w-full"
-            tooltip={false}
+            tooltip={addCardDisabledReason ?? false}
           >
             <Plus />
           </Button>

@@ -52,6 +52,23 @@ describe("CardFile", () => {
     expect(parsed.tags).toEqual(["work", "q3", "later"])
   })
 
+  it("writes and reads back the card's users", () => {
+    const card = makeCard({
+      columnId: "col-1",
+      title: "T",
+      users: ["rita", "Jo Smith"],
+    })
+    const text = CardFile.fromCard(card).text
+
+    expect(text).toContain("users:\n  - rita\n  - Jo Smith\n")
+    expect(CardFile.parse(text).patchFor(card)).toBeNull()
+  })
+
+  it("reads the string form of users, split on commas only", () => {
+    const parsed = CardFile.parse('---\nid: c\nusers: "@rita, Jo Smith"\n---\n')
+    expect(parsed.users).toEqual(["rita", "Jo Smith"])
+  })
+
   it("reads a file with no frontmatter as all body", () => {
     const parsed = CardFile.parse("just a note\n")
     expect(parsed.id).toBe("")

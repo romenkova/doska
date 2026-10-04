@@ -14,6 +14,16 @@ function Avatar({ className, ...props }: AvatarPrimitive.Root.Props) {
   )
 }
 
+function AvatarImage({ className, ...props }: AvatarPrimitive.Image.Props) {
+  return (
+    <AvatarPrimitive.Image
+      data-slot="avatar-image"
+      className={cn("size-full rounded-full object-cover", className)}
+      {...props}
+    />
+  )
+}
+
 function AvatarFallback({
   className,
   ...props
@@ -31,4 +41,4 @@ function AvatarFallback({
   )
 }
 
-export { Avatar, AvatarFallback }
+export { Avatar, AvatarFallback, AvatarImage }

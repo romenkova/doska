@@ -338,6 +338,7 @@ export class Vault {
       deadline: file.card.deadline,
       priority: file.card.priority,
       tags: file.card.tags,
+      users: file.card.users,
       extra: file.card.extra,
     })
 
@@ -347,6 +348,7 @@ export class Vault {
       deadline: card.deadline || null,
       priority: card.priority,
       tags: card.tags,
+      users: card.users,
     })
     await folder.save(card, file.path)
     this.written.set(id, { path: file.path, text: card.text })

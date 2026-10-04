@@ -13,11 +13,13 @@ interface IProps {
 export function BoardPage({ deckId }: IProps) {
   const { dashboard } = useActiveDashboard(deckId)
   const [tagFilters, setTagFilters] = useState<string[]>([])
+  const [userFilters, setUserFilters] = useState<string[]>([])
   const [lastDeckId, setLastDeckId] = useState(deckId)
 
   if (deckId !== lastDeckId) {
     setLastDeckId(deckId)
     setTagFilters([])
+    setUserFilters([])
   }
 
   const deck = useMemo(
@@ -27,8 +29,15 @@ export function BoardPage({ deckId }: IProps) {
       tagFilters,
       toggleTagFilter: (tag: string) =>
         setTagFilters((tags) => toggleTag(tags, tag)),
+      userFilters,
+      toggleUserFilter: (userId: string) =>
+        setUserFilters((ids) =>
+          ids.includes(userId)
+            ? ids.filter((id) => id !== userId)
+            : [...ids, userId]
+        ),
     }),
-    [dashboard.id, dashboard.sort, tagFilters]
+    [dashboard.id, dashboard.sort, tagFilters, userFilters]
   )
 
   return (

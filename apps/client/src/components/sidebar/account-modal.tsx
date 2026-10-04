@@ -1,7 +1,5 @@
-import { useAccount, useLogout, apiUrlDomain, initials } from "@doska/core"
+import { useAccount, useLogout, useSetAvatar, apiUrlDomain } from "@doska/core"
 import {
-  Avatar,
-  AvatarFallback,
   Button,
   CardContent,
   cn,
@@ -9,10 +7,11 @@ import {
   ModalContent,
   ModalHeader,
 } from "@doska/ui-kit"
-import { LogOut, UserRound } from "lucide-react"
+import { LogOut } from "lucide-react"
 import { AccountTag } from "@/components/accounts/account-tag"
 import { SettingsSection } from "@/components/settings/section"
 import { SignInSection } from "@/components/settings/sections/sign-in"
+import { AvatarPicker } from "./avatar-picker"
 
 interface IProps {
   open: boolean
@@ -22,8 +21,10 @@ interface IProps {
 export function AccountModal({ open, onOpenChange }: IProps) {
   const { session, name, subtitle, dropped } = useAccount()
   const { mutate: logout } = useLogout()
+  const { mutate: setAvatar, isPending, error } = useSetAvatar()
 
   const login = session?.login ?? null
+  const image = session?.image ?? null
 
   return (
     <Modal open={open} onOpenChange={onOpenChange}>
@@ -32,11 +33,12 @@ export function AccountModal({ open, onOpenChange }: IProps) {
         <CardContent className="flex flex-col overflow-y-auto px-0">
           <SettingsSection>
             <div className="flex items-center gap-3">
-              <Avatar className="size-12 rounded-full">
-                <AvatarFallback className="rounded-full text-base">
-                  {login ? initials(login) : <UserRound className="size-5" />}
-                </AvatarFallback>
-              </Avatar>
+              <AvatarPicker
+                login={login}
+                image={image}
+                disabled={isPending}
+                onPick={setAvatar}
+              />
               <div className="flex min-w-0 flex-col gap-1">
                 <div className="flex items-center gap-2">
                   <span className="truncate text-base font-medium">{name}</span>
@@ -58,6 +60,19 @@ export function AccountModal({ open, onOpenChange }: IProps) {
                 </span>
               </div>
             </div>
+            {image && (
+              <button
+                type="button"
+                disabled={isPending}
+                className="cursor-pointer self-start text-xs text-muted-foreground hover:text-foreground"
+                onClick={() => setAvatar(null)}
+              >
+                Remove avatar
+              </button>
+            )}
+            {error && (
+              <p className="text-xs text-destructive">{error.message}</p>
+            )}
           </SettingsSection>
           <SignInSection />
           <SettingsSection>

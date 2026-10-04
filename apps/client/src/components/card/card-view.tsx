@@ -102,6 +102,7 @@ export function CardView({
 
   const tasks = taskProgress(body)
   const tags = card.tags ?? []
+  const users = card.users ?? []
   const hasMeta =
     !!metaLead ||
     tasks.total > 0 ||
@@ -176,7 +177,7 @@ export function CardView({
               </div>
             )}
             {files.length > 0 && showBody && attachments}
-            {tags.length > 0 && <CardTags tags={tags} />}
+            <CardTags tags={tags} users={users} />
           </CardBase>
         )
       )}

@@ -15,7 +15,7 @@ const displayName = sql<string>`coalesce(${user.username}, ${user.name})`
  */
 export async function listRoster(boardId: string): Promise<Member[]> {
   const [owner] = await db
-    .select({ userId: user.id, username: displayName })
+    .select({ userId: user.id, username: displayName, image: user.image })
     .from(dashboards)
     .innerJoin(user, eq(user.id, dashboards.ownerId))
     .where(eq(dashboards.id, boardId))
@@ -25,6 +25,7 @@ export async function listRoster(boardId: string): Promise<Member[]> {
       userId: boardMembers.userId,
       role: boardMembers.role,
       username: displayName,
+      image: user.image,
     })
     .from(boardMembers)
     .innerJoin(user, eq(user.id, boardMembers.userId))
