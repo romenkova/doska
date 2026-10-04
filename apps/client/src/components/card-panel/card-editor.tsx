@@ -17,6 +17,7 @@ interface IProps {
   body: string
   isPreview: boolean
   notice?: ReactNode
+  tags?: ReactNode
   onChangeTitle: (value: string) => void
   onChangeBody: (value: string) => void
   onTogglePreview?: () => void
@@ -47,6 +48,7 @@ export function CardEditor({
   body,
   isPreview,
   notice,
+  tags,
   onChangeTitle,
   onChangeBody,
   onTogglePreview,
@@ -109,6 +111,7 @@ export function CardEditor({
                 />
               }
               notice={notice}
+              tags={tags}
               onClickBody={
                 isPreview
                   ? (e) => {

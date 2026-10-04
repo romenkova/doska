@@ -177,9 +177,7 @@ export function CardView({
               </div>
             )}
             {files.length > 0 && showBody && attachments}
-            {(tags.length > 0 || users.length > 0) && (
-              <CardTags tags={tags} users={users} />
-            )}
+            <CardTags tags={tags} users={users} />
           </CardBase>
         )
       )}

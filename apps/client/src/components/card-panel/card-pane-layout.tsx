@@ -8,6 +8,7 @@ interface IProps {
   notice?: ReactNode
   title: ReactNode
   body: ReactNode
+  tags?: ReactNode
   /** Fired by clicking the body, where clicking it starts an edit. */
   onClickBody?: (e: React.MouseEvent) => void
   /** The window itself scrolls, so the content must not. */
@@ -21,6 +22,7 @@ export function CardPaneLayout({
   notice,
   title,
   body,
+  tags,
   onClickBody,
   inWindow,
 }: IProps) {
@@ -28,6 +30,7 @@ export function CardPaneLayout({
     <>
       {header}
       <CardContentLayout className={cn(inWindow && "overflow-y-visible")}>
+        {tags}
         {attachments}
         {notice}
         <CardContent
