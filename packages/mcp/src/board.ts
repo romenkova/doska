@@ -8,6 +8,7 @@ import {
   type ColumnGroup,
   type Dashboard,
   type DashboardChange,
+  type Member,
 } from "@doska/contract"
 import { generateKeyBetween } from "fractional-indexing"
 import type { BoardStore } from "./store"
@@ -171,6 +172,22 @@ export function createBoard(store: BoardStore) {
       )
       if (!found) throw new Error(`No card ${cardId} on board ${boardId}`)
       return found
+    },
+
+    members(boardId: string): Promise<Member[]> {
+      return store.readMembers(boardId)
+    },
+
+    /** Rejects user ids that aren't on the board before they're written. */
+    async assignable(boardId: string, userIds: string[]): Promise<string[]> {
+      const members = await this.members(boardId)
+      const known = new Set(members.map((m) => m.userId))
+      const unknown = userIds.filter((id) => !known.has(id))
+      if (unknown.length > 0)
+        throw new Error(
+          `Not on board ${boardId}: ${unknown.join(", ")}. get_board lists its members.`
+        )
+      return [...new Set(userIds)]
     },
 
     /** The clock every write on this board is stamped from. */

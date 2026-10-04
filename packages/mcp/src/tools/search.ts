@@ -67,7 +67,7 @@ export function registerSearchTools(server: McpServer, board: Board): void {
       title: "Search cards",
       description:
         "Find cards across every board by text, deadline range, priority, " +
-        "or column. " +
+        "assignee, or column. " +
         "Searches titles and Markdown bodies, so it also finds " +
         "[[card]] links. Cheaper than reading whole boards when you " +
         "know roughly what you're after.",
@@ -87,6 +87,10 @@ export function registerSearchTools(server: McpServer, board: Board): void {
           .enum(PRIORITY_IDS)
           .optional()
           .describe("Only cards carrying this priority"),
+        userId: z
+          .string()
+          .optional()
+          .describe("Only cards assigned to this user id"),
         includeDone: z
           .boolean()
           .default(true)
@@ -102,6 +106,7 @@ export function registerSearchTools(server: McpServer, board: Board): void {
       deadlineTo,
       hasDeadline,
       priority,
+      userId,
       includeDone,
       bodies,
       limit,
@@ -127,6 +132,8 @@ export function registerSearchTools(server: McpServer, board: Board): void {
         )
 
       if (priority) criteria.push(({ card }) => card.priority === priority)
+
+      if (userId) criteria.push(({ card }) => card.users.includes(userId))
 
       const needle = query?.trim().toLowerCase()
       if (needle) criteria.push((entry) => haystack(entry).includes(needle))

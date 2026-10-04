@@ -38,6 +38,12 @@ Tags
 - A #tag written in a body is only a link to that tag's filter. It does not tag
   the card.
 
+Assignees
+- A card's users list is who it's assigned to, as user ids. get_board lists the
+  board's members, which are the only people a card can be assigned to.
+- users on create_card or update_card sets the list, replacing what was there;
+  search_cards filters by userId.
+
 Card bodies: GitHub-flavored Markdown, plus these
 - Task lists (- [ ] / - [x]) are first class: the card shows a done/total count
   and the boxes are clickable. Use check_task to tick one instead of rewriting

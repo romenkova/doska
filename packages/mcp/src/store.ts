@@ -1,4 +1,9 @@
-import type { Change, Dashboard, DashboardChange } from "@doska/contract"
+import type {
+  Change,
+  Dashboard,
+  DashboardChange,
+  Member,
+} from "@doska/contract"
 
 /**
  * The board, as the MCP tools need it — the sync protocol and nothing else:
@@ -16,6 +21,8 @@ export type BoardStore = {
   readBoard(boardId: string): Promise<Change[]>
   pushDashboards(changes: DashboardChange[]): Promise<void>
   pushBoard(boardId: string, changes: Change[]): Promise<void>
+  /** Everyone with access to the board, the people a card can be assigned to. */
+  readMembers(boardId: string): Promise<Member[]>
   /**
    * The timestamp to stamp a write with. A peer's own clock, not wall time:
    * `updatedAt` settles last-writer-wins, and a plain `Date.now()` here loses

@@ -24,20 +24,20 @@ an access token from there on. Same URL works for Claude Desktop and claude.ai.
 | Tool                             | What it does                                                                           |
 | -------------------------------- | -------------------------------------------------------------------------------------- |
 | `list_boards`                    | Every board with its id and title                                                      |
-| `get_board`                      | One board in full: columns with color and done flag, each with its cards               |
+| `get_board`                      | One board in full: its members, and columns with color and done flag, with their cards |
 | `get_card`                       | One card, without pulling the whole board                                              |
 | `create_board`                   | New board with the default To Do / In Progress / Done columns                          |
 | `rename_board`, `delete_board`   | Rename; delete along with its columns and cards                                        |
 | `create_column`, `delete_column` | Delete takes the column's cards with it                                                |
 | `update_column`                  | Title, color, collapsed, or which column counts as done                                |
 | `move_column`                    | Reorder: to either end, or next to another column                                      |
-| `create_card`                    | Add a card to a column — title, Markdown body, optional deadline and priority          |
-| `update_card`                    | Edit title, body, deadline, or priority; or `append` to the body without rewriting it  |
+| `create_card`                    | Add a card to a column — title, Markdown body, optional deadline, priority, assignees  |
+| `update_card`                    | Edit title, body, deadline, priority, or assignees; or `append` to the body            |
 | `move_card`                      | To another column, to an end of one, or directly above a named card                    |
 | `set_card_done`                  | Into the board's done column, or back out to the leftmost open one                     |
 | `check_task`                     | Tick or untick one task-list checkbox by index, leaving the rest of the body untouched |
 | `delete_card`                    | Delete a card                                                                          |
-| `search_cards`                   | Across every board, by text, deadline range, priority, or column                       |
+| `search_cards`                   | Across every board, by text, deadline range, priority, assignee, or column             |
 | `list_upcoming`                  | The app's upcoming view: overdue first, then today, then out to 60 days                |
 
 Every tool addresses records by their opaque id. A card also comes back with a
