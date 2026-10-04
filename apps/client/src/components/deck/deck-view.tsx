@@ -23,6 +23,7 @@ import { useCallback } from "react"
 import { useLocation } from "wouter"
 import { useDragEnd, useSyncShortcut } from "@/lib/hooks"
 import { routes } from "@/lib/routes"
+import { unlinkDeletedBoard } from "@/lib/vault/use-vault"
 import { useDeck } from "@/providers/deck/deck-context"
 import { Deck } from "./deck"
 
@@ -99,7 +100,10 @@ export function DeckView({ dashboard }: { dashboard: Dashboard }) {
       }
       onDeleteColumn={deleteColumn}
       onRenameDashboard={(name) => renameDashboard({ id, name })}
-      onDeleteDashboard={() => deleteDashboard(id)}
+      onDeleteDashboard={() => {
+        unlinkDeletedBoard(id)
+        deleteDashboard(id)
+      }}
       onChangeSort={(sort) => setDashboardSort({ id, sort })}
       view={view}
       onChangeView={(next) => setBoardView(id, next)}

@@ -49,6 +49,8 @@ export interface VaultOptions {
   onBoardChange?: () => void
   /** A sync that failed. Nothing above the watcher can catch these. */
   onError?: (error: unknown) => void
+  /** The folder itself is gone. */
+  onGone?: () => void
 }
 
 /**
@@ -63,6 +65,7 @@ export class Vault {
   private readonly root: string
   private readonly onBoardChange?: () => void
   private readonly onError?: (error: unknown) => void
+  private readonly onGone?: () => void
 
   private readonly written: Written
   private readonly folders: Folders
@@ -79,6 +82,7 @@ export class Vault {
     root,
     onBoardChange,
     onError,
+    onGone,
   }: VaultOptions) {
     this.fs = fs
     this.board = board
@@ -87,6 +91,7 @@ export class Vault {
     this.root = root
     this.onBoardChange = onBoardChange
     this.onError = onError
+    this.onGone = onGone
     this.written = new Written(fs, root, boardId)
     this.folders = new Folders(fs, root, this.written, (title) =>
       board.createColumn(title)
@@ -128,7 +133,10 @@ export class Vault {
   }
 
   private async pass(): Promise<void> {
-    if ((await this.fs.readDir(this.root)) === null) return
+    if ((await this.fs.readDir(this.root)) === null) {
+      this.onGone?.()
+      return
+    }
 
     // Two boards mirroring one folder each adopt what the other wrote, and
     // every adoption gives the other something new to adopt.
