@@ -1,8 +1,14 @@
 import type { BoardStore } from "@doska/mcp"
-import type { Change, Dashboard, DashboardChange } from "@doska/contract"
+import type {
+  Change,
+  Dashboard,
+  DashboardChange,
+  Member,
+} from "@doska/contract"
 import { ORPCError } from "@orpc/server"
 import { HybridClock } from "@doska/sync"
-import { boardSync, boardsListSync } from "../db/sync"
+import { assertBoardAccess } from "../db/access"
+import { boardSync, boardsListSync, listRoster } from "../db/sync"
 
 const clock = new HybridClock()
 
@@ -55,6 +61,11 @@ export class DbStore implements BoardStore {
 
   async pushDashboards(changes: DashboardChange[]): Promise<void> {
     await boardsListSync.applyPush(changes, this.userId)
+  }
+
+  async readMembers(boardId: string): Promise<Member[]> {
+    await checkMissing(boardId, assertBoardAccess(this.userId, boardId))
+    return listRoster(boardId)
   }
 
   async pushBoard(boardId: string, changes: Change[]): Promise<void> {

@@ -3,7 +3,7 @@ import { taskProgress } from "@doska/markdown/core"
 
 /**
  * How a card goes back to a client: the ids it can be addressed by, its
- * deadline, priority and own tags, its task-list progress, and its attachments by name
+ * deadline, priority, own tags and assignees, its task-list progress, and its attachments by name
  * only — the
  * bytes live behind the app's file endpoints, not the sync channel.
  */
@@ -19,6 +19,8 @@ export function shapeCard(card: Card) {
     // Stored as "" for none, but reported as null to match what the tools take.
     priority: card.priority || null,
     tags: card.tags,
+    // User ids; get_board maps them to members.
+    users: card.users,
     tasks: total > 0 ? { done, total } : null,
     attachments: card.attachments.map(({ name, mime, size }) => ({
       name,

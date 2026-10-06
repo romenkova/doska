@@ -41,7 +41,8 @@ export function registerBoardTools(server: McpServer, board: Board): void {
         "Read a board in full: its columns left to right — with their " +
         "color, and which one is the done column — each holding its cards " +
         "top to bottom with Markdown bodies, deadlines and task-list " +
-        "progress. Pass bodies: false for an outline of a large board.",
+        "progress, plus its members: the people a card can be assigned to. " +
+        "Pass bodies: false for an outline of a large board.",
       inputSchema: {
         boardId: z.string(),
         bodies: z
@@ -53,9 +54,15 @@ export function registerBoardTools(server: McpServer, board: Board): void {
     async ({ boardId, bodies }) => {
       const { title } = await board.dashboard(boardId)
       const { columns, cards } = await board.board(boardId)
+      const members = await board.members(boardId)
       return reply({
         boardId,
         title,
+        members: members.map(({ userId, username, role }) => ({
+          userId,
+          username,
+          role,
+        })),
         columns: columns.map((column) => ({
           ...shapeColumn(column),
           cards: cards

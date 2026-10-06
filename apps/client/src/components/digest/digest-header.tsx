@@ -1,6 +1,7 @@
 import { Button, cn } from "@doska/ui-kit"
-import type { DigestFilter } from "@doska/core"
+import type { Dashboard, DigestFilter } from "@doska/core"
 import { PageHeader } from "../app/page-header"
+import { BoardFilter } from "./board-filter"
 
 // const FILTERS: { id: DigestFilter; label: string }[] = [
 //   // { id: "today", label: "Today" },
@@ -12,6 +13,9 @@ interface IProps {
   onChangeFilter: (filter: DigestFilter) => void
   hideDone: boolean
   onToggleHideDone: () => void
+  boards: Dashboard[]
+  hiddenBoards: string[]
+  onToggleBoard: (id: string) => void
 }
 
 export function DigestHeader({
@@ -19,11 +23,19 @@ export function DigestHeader({
   // onChangeFilter,
   hideDone,
   onToggleHideDone,
+  boards,
+  hiddenBoards,
+  onToggleBoard,
 }: IProps) {
   return (
     <PageHeader>
       <h1 className="text-base font-semibold">Upcoming</h1>
       <div className="ml-auto flex items-center gap-1">
+        <BoardFilter
+          boards={boards}
+          hidden={hiddenBoards}
+          onToggleBoard={onToggleBoard}
+        />
         <Button
           size="sm"
           variant={hideDone ? "secondary" : "ghost"}

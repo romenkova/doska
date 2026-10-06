@@ -1,5 +1,5 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
-import type { Card, Change, Column } from "@doska/contract"
+import type { Card, Change, Column, Member } from "@doska/contract"
 import { describe, expect, it } from "vitest"
 import { createBoard } from "../src/board"
 import type { BoardStore } from "../src/store"
@@ -40,6 +40,13 @@ const card: Card = {
   bodyConflict: null,
 }
 
+const member: Member = {
+  userId: "user-1",
+  username: "rita",
+  image: null,
+  role: "owner",
+}
+
 class MemoryStore implements BoardStore {
   pushed: Change[] = []
   now = () => now
@@ -48,8 +55,10 @@ class MemoryStore implements BoardStore {
     Promise.resolve<Change[]>([
       { store: "columns", record: column },
       { store: "cards", record: card },
+      ...this.pushed,
     ])
   pushDashboards = () => Promise.resolve()
+  readMembers = () => Promise.resolve([member])
   pushBoard = (_boardId: string, changes: Change[]) => {
     this.pushed.push(...changes)
     return Promise.resolve()
@@ -106,6 +115,38 @@ describe("update_card", () => {
     await call("update_card", { title: card.title, deadline: null })
 
     expect(store.pushed).toEqual([])
+  })
+
+  it("assigns a board member and stamps only users", async () => {
+    const { call, pushedCard } = cardTools()
+    await call("update_card", { users: ["user-1"] })
+
+    const { record } = pushedCard()
+    expect(record.users).toEqual(["user-1"])
+    expect(record.stamps.users).toBe(now)
+    expect(record.stamps.tags).toBe(synced)
+  })
+
+  it("refuses a user who isn't on the board", async () => {
+    const { call, store } = cardTools()
+    await expect(call("update_card", { users: ["user-2"] })).rejects.toThrow(
+      "user-2"
+    )
+    expect(store.pushed).toEqual([])
+  })
+})
+
+describe("create_card", () => {
+  it("creates a card already assigned", async () => {
+    const { call, pushedCard } = cardTools()
+    await call("create_card", {
+      columnId: "col-1",
+      title: "New",
+      users: ["user-1"],
+      place: "top",
+    })
+
+    expect(pushedCard().record.users).toEqual(["user-1"])
   })
 })
 

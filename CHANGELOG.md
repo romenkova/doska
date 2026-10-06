@@ -1,5 +1,25 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- Tags: set tags to cards, frontmatter support, mcp support, filtering.
+- Card assignees: set tags to cards, frontmatter support, mcp support, filtering.
+- User avatars.
+- Upcoming can be filtered by board
+
+### Changed
+
+- Context menus look improvements.
+
+### Fixed
+
+- Deleting a board unlinks its synced folder, so another board can sync with
+  it. Restoring the board brings it back unlinked.
+- If the synced folder is deleted, the board stops syncing and says so instead
+  of silently doing nothing.
+
 ## [0.25.0] - 2026-09-27
 
 ### Added
