@@ -17,6 +17,7 @@ import {
 import {
   boardSync,
   boardsListSync,
+  historySync,
   listRoster,
   listSharedBoards,
   revokeAllMemberships,
@@ -61,6 +62,12 @@ export const router = os.router({
     sync: os.dashboards.sync.handler(async ({ input, context }) => {
       await boardsListSync.applyPush(input.changes, context.userId)
       return boardsListSync.readSince(input.since, context.userId)
+    }),
+  },
+  history: {
+    sync: os.history.sync.handler(async ({ input, context }) => {
+      await historySync.applyPush(input.changes, context.userId)
+      return historySync.readSince(input.since, context.userId)
     }),
   },
   boards: {
