@@ -14,11 +14,11 @@ const inStore = (store: string) =>
 const db = {
   get: (store: string, key: string) =>
     Promise.resolve(rows.get(`${store}/${key}`)),
-  getAll: (store: string, query?: { index: string; range: KeyRange }) =>
+  getAll: (store: string, query?: { index: string; range?: KeyRange }) =>
     Promise.resolve(
       inStore(store).filter(
         (row) =>
-          !query ||
+          !query?.range ||
           (row as Record<string, unknown>)[query.index] === query.range.lower
       )
     ),

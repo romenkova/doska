@@ -1,5 +1,5 @@
 import { MenuContent, MenuItem, MenuSeparator } from "@doska/ui-kit"
-import { Pencil } from "lucide-react"
+import { History, Pencil } from "lucide-react"
 import { CopyIdItem } from "./copy-id-item"
 import { DeadlineSub } from "./deadline-sub"
 import { DeleteItem } from "./delete-item"
@@ -12,6 +12,7 @@ import { UsersSub } from "./users-sub"
 interface IProps {
   cardId: string
   onEdit: () => void
+  onShowHistory: () => void
   closeMenu: () => void
   align?: "start" | "center" | "end"
 }
@@ -20,6 +21,7 @@ interface IProps {
 export function CardMenuItems({
   cardId,
   onEdit,
+  onShowHistory,
   closeMenu,
   align = "end",
 }: IProps) {
@@ -38,6 +40,10 @@ export function CardMenuItems({
       <UsersSub cardId={cardId} />
       <DeadlineSub cardId={cardId} closeMenu={closeMenu} />
       <CopyIdItem cardId={cardId} />
+      <MenuItem onClick={onShowHistory}>
+        <History />
+        History
+      </MenuItem>
       <MenuSeparator />
       <DeleteItem cardId={cardId} />
     </MenuContent>

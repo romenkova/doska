@@ -66,6 +66,7 @@ export function DeckHeader({
         <ShareButton boardId={boardId} title={title} />
         {isDesktop() && <VaultButton boardId={boardId} />}
         <BoardActionsMenu
+          boardId={boardId}
           title={title}
           columns={columns}
           sort={sort}

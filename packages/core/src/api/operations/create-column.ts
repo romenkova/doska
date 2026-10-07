@@ -1,6 +1,7 @@
 import { COLUMN_GROUPS } from "@doska/contract"
 import { generateKeyBetween } from "fractional-indexing"
 import { db } from "../db/db"
+import { recordHistory } from "../history/record-history"
 import { newId } from "./new-id"
 import { live } from "./live"
 import { sync } from "../sync"
@@ -34,5 +35,6 @@ export async function createColumn(
   }
   await db.setColumn(touchColumn(column, COLUMN_GROUPS))
   sync.markDirty("columns", id)
+  await recordHistory.column(dashboardId, id, title, "create")
   return id
 }

@@ -7,13 +7,15 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from "@doska/ui-kit"
-import { ArrowRightLeft, MoreHorizontal, Trash2 } from "lucide-react"
+import { ArrowRightLeft, History, MoreHorizontal, Trash2 } from "lucide-react"
 import { ConfirmDialog } from "../../confirm-dialog"
+import { HistoryModal } from "../../history/history-modal"
 import { ReorderColumnsModal } from "../reorder-columns/reorder-columns-modal"
 import { SortSub } from "./sort-sub"
 import type { Column } from "@doska/core"
 
 interface IProps {
+  boardId: string
   title: string
   columns: Column[]
   sort: string[]
@@ -23,6 +25,7 @@ interface IProps {
 }
 
 export function BoardActionsMenu({
+  boardId,
   title,
   columns,
   sort,
@@ -32,6 +35,7 @@ export function BoardActionsMenu({
 }: IProps) {
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [reorderOpen, setReorderOpen] = useState(false)
+  const [historyOpen, setHistoryOpen] = useState(false)
 
   return (
     <>
@@ -58,6 +62,10 @@ export function BoardActionsMenu({
             <ArrowRightLeft />
             Reorder columns
           </MenuItem>
+          <MenuItem onClick={() => setHistoryOpen(true)}>
+            <History />
+            History
+          </MenuItem>
           <MenuSeparator />
           <MenuItem onClick={() => setConfirmOpen(true)} variant="destructive">
             <Trash2 />
@@ -78,6 +86,12 @@ export function BoardActionsMenu({
         onOpenChange={setReorderOpen}
         columns={columns}
         onReorder={onReorderColumns}
+      />
+      <HistoryModal
+        entityType="board"
+        entityId={boardId}
+        open={historyOpen}
+        onOpenChange={setHistoryOpen}
       />
     </>
   )

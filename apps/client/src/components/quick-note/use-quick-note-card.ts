@@ -3,6 +3,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import { getCurrentWindow } from "@tauri-apps/api/window"
 import {
   CARDS,
+  HISTORY,
   db,
   keys,
   LAST_CARD_KEY,
@@ -113,8 +114,11 @@ export function useQuickNoteCard(target: Target) {
   async function discard() {
     if (!cardId) return
     if (content?.number == null) {
+      const historyIds = (await db.getHistory(cardId)).map((entry) => entry.id)
       sync.dropDirty(CARDS, [cardId])
+      sync.dropDirty(HISTORY, historyIds)
       await db.hardDelete(CARDS, cardId)
+      for (const id of historyIds) await db.hardDelete(HISTORY, id)
     } else {
       await deleteCard(column?.dashboardId ?? "", cardId)
     }

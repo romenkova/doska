@@ -6,12 +6,13 @@ import {
 } from "@doska/sync"
 import { ORPCError } from "@orpc/client"
 import type { StoreName } from "../constants"
-import { DASHBOARDS, SIDEBAR } from "../constants"
+import { DASHBOARDS, HISTORY, SIDEBAR } from "../constants"
 import { DeckSyncDriver } from "./drivers/board-driver"
 import {
   DashboardListDriver,
   DASHBOARDS_SCOPE,
 } from "./drivers/dashboard-list-driver"
+import { HistoryDriver, HISTORY_SCOPE } from "./drivers/history-driver"
 import { dropBoardLocally } from "../operations/drop-board-locally"
 import { isAuthed, subscribeAuthed } from "../../utils"
 import { runtime } from "../../runtime"
@@ -46,29 +47,29 @@ const LIST_STORES: StoreName[] = [DASHBOARDS, SIDEBAR]
 const createDrivers = (onRemoved: (boardId: string) => Promise<void>) => ({
   board: new DeckSyncDriver(),
   list: new DashboardListDriver(onRemoved),
+  history: new HistoryDriver(),
 })
 
 /**
- * Worst-case across the two channels
+ * Worst-case across the channels
  */
-function mergeStatus(a: SyncStatus, b: SyncStatus): SyncStatus {
-  if (a === "syncing" || b === "syncing") return "syncing"
-  if (a === "error" || b === "error") return "error"
-  if (a === "paused" || b === "paused") return "paused"
+function mergeStatus(statuses: SyncStatus[]): SyncStatus {
+  if (statuses.includes("syncing")) return "syncing"
+  if (statuses.includes("error")) return "error"
+  if (statuses.includes("paused")) return "paused"
   return "idle"
 }
 
-/** The newer of two successes; null only when neither channel has ever synced. */
-function mergeLastSynced(a: number | null, b: number | null): number | null {
-  if (a === null) return b
-  if (b === null) return a
-  return Math.max(a, b)
+/** The newest success; null only when no channel has ever synced. */
+function mergeLastSynced(times: (number | null)[]): number | null {
+  const synced = times.filter((time) => time !== null)
+  return synced.length ? Math.max(...synced) : null
 }
 
 /**
- * The one sync facade the app drives. Runs two independent engines: the board
- * engine (scoped to the open board) and the always-active dashboard-list engine.
- * Both are rebuilt when the server URL changes, reusing the same dirty queues so
+ * The one sync facade the app drives. Runs three independent engines: the board
+ * engine (scoped to the open board), and the always-active dashboard-list and
+ * history engines. All are rebuilt when the server URL changes, reusing the same dirty queues so
  * pending edits flush to whichever server is now active. Callers don't pick a
  * channel — {@link markDirty} routes by store and the UI sees one merged
  * {@link SyncState}. Singleton.
@@ -76,6 +77,7 @@ function mergeLastSynced(a: number | null, b: number | null): number | null {
 class DeckSync {
   private board!: SyncEngine<string, never>
   private list!: SyncEngine<string, never>
+  private history!: SyncEngine<string, never>
 
   /** The open board, remembered so a rebuild can re-point the new engine. */
   private currentBoard: string | null = null
@@ -104,7 +106,9 @@ class DeckSync {
 
   // Safe to call repeatedly; the old engines are simply dropped.
   private rebuild() {
-    const { board, list } = createDrivers((boardId) => this.forget(boardId))
+    const { board, list, history } = createDrivers((boardId) =>
+      this.forget(boardId)
+    )
     // The generic engine is Change-shaped per channel; the facade only routes
     // dirty refs and reads status, so the change type is erased to `never`.
     this.board = new SyncEngine(board, {
@@ -120,10 +124,18 @@ class DeckSync {
       canSync,
       classify,
     }) as unknown as SyncEngine<string, never>
+    this.history = new SyncEngine(history, {
+      kv: runtime().kv,
+      storageKey: "deck:sync:dirty:history",
+      canSync,
+      classify,
+    }) as unknown as SyncEngine<string, never>
 
     this.board.subscribe(() => this.recompute())
     this.list.subscribe(() => this.recompute())
+    this.history.subscribe(() => this.recompute())
     this.list.setActiveScope(DASHBOARDS_SCOPE)
+    this.history.setActiveScope(HISTORY_SCOPE)
     this.board.watchScopes(this.watchedBoards)
     this.board.setActiveScope(this.currentBoard)
 
@@ -132,17 +144,20 @@ class DeckSync {
 
   // Notifies only on a real transition.
   private recompute() {
-    const a = this.board.getState()
-    const b = this.list.getState()
+    const states = [
+      this.board.getState(),
+      this.list.getState(),
+      this.history.getState(),
+    ]
     const prev = this.state
     const next: SyncState = {
-      status: mergeStatus(a.status, b.status),
-      pending: a.pending + b.pending,
+      status: mergeStatus(states.map((state) => state.status)),
+      pending: states.reduce((sum, state) => sum + state.pending, 0),
       // The longest-running failure, so a channel that has been down for a
       // while isn't masked by one that only just started failing.
-      failures: Math.max(a.failures, b.failures),
-      lastSyncedAt: mergeLastSynced(a.lastSyncedAt, b.lastSyncedAt),
-      failure: a.failure ?? b.failure,
+      failures: Math.max(...states.map((state) => state.failures)),
+      lastSyncedAt: mergeLastSynced(states.map((state) => state.lastSyncedAt)),
+      failure: states.find((state) => state.failure)?.failure ?? null,
     }
     if (
       next.status === prev.status &&
@@ -173,6 +188,7 @@ class DeckSync {
   }
 
   private engineFor(store: StoreName) {
+    if (store === HISTORY) return this.history
     return LIST_STORES.includes(store) ? this.list : this.board
   }
 
@@ -190,22 +206,25 @@ class DeckSync {
   }
 
   /**
-   * Drops both channels' pending refs
+   * Drops every channel's pending refs
    */
   clearDirty() {
     this.board.clearDirty()
     this.list.clearDirty()
+    this.history.clearDirty()
   }
 
   /**
-   * Points both channels back at nothing
+   * Points every channel back at nothing
    */
   reset() {
     this.currentBoard = null
     this.watchedBoards = []
     this.board.reset()
     this.list.reset()
+    this.history.reset()
     this.list.setActiveScope(DASHBOARDS_SCOPE)
+    this.history.setActiveScope(HISTORY_SCOPE)
   }
 
   /**
@@ -216,6 +235,8 @@ class DeckSync {
    */
   private async listFirst(run: () => Promise<void>): Promise<void> {
     await this.list.reconcile()
+    // After the list, so a new board exists on the server before its rows land.
+    await this.history.reconcile()
     await run()
   }
 
@@ -241,7 +262,7 @@ class DeckSync {
     return this.reconcile()
   }
 
-  /** Reconciles both channels once. Each engine no-ops while not configured. */
+  /** Reconciles every channel once. Each engine no-ops while not configured. */
   reconcile(): Promise<void> {
     return this.listFirst(() => this.board.reconcile())
   }

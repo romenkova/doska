@@ -2,6 +2,7 @@ import { CARD_GROUPS } from "@doska/contract"
 import { generateKeyBetween } from "fractional-indexing"
 import { byPosition } from "../../utils"
 import { db } from "../db/db"
+import { recordHistory } from "../history/record-history"
 import { sync } from "../sync"
 import { touchCard } from "../sync/touch"
 import { live } from "./live"
@@ -34,6 +35,11 @@ export async function moveCardToColumn(
   if (!from || from.dashboardId === to.dashboardId) {
     await db.setCard(touchCard({ ...card, columnId, position }, ["place"]))
     sync.markDirty("cards", id)
+    if (from && from.id !== to.id)
+      await recordHistory.card(to.dashboardId, id, card.title, "move", {
+        from: from.title,
+        to: to.title,
+      })
     return id
   }
 
@@ -54,5 +60,22 @@ export async function moveCardToColumn(
     ])
   )
   sync.markDirty("cards", id)
+
+  const fromBoard = await db.getDashboard(from.dashboardId)
+  const toBoard = await db.getDashboard(to.dashboardId)
+  const move = {
+    from: from.title,
+    to: to.title,
+    fromBoard: fromBoard?.title ?? "",
+    toBoard: toBoard?.title ?? "",
+  }
+  await recordHistory.card(from.dashboardId, id, card.title, "move", {
+    ...move,
+    toCard: copyId,
+  })
+  await recordHistory.card(to.dashboardId, copyId, card.title, "move", {
+    ...move,
+    fromCard: id,
+  })
   return copyId
 }

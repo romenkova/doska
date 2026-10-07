@@ -14,9 +14,10 @@ import { CardMenuItems } from "./menu-items"
 interface IProps {
   cardId: string
   onEdit: () => void
+  onShowHistory: () => void
 }
 
-export function CardMenu({ cardId, onEdit }: IProps) {
+export function CardMenu({ cardId, onEdit, onShowHistory }: IProps) {
   const actionsRef = useRef<MenuActions>(null)
 
   return (
@@ -37,6 +38,7 @@ export function CardMenu({ cardId, onEdit }: IProps) {
       <CardMenuItems
         cardId={cardId}
         onEdit={onEdit}
+        onShowHistory={onShowHistory}
         closeMenu={() => actionsRef.current?.close()}
       />
     </Menu>
@@ -48,6 +50,7 @@ export function CardContextMenu({
   isEnabled = true,
   cardId,
   onEdit,
+  onShowHistory,
 }: IProps & { children: ReactNode; isEnabled?: boolean }) {
   const isMobile = useIsMobile()
   const actionsRef = useRef<MenuActions>(null)
@@ -61,6 +64,7 @@ export function CardContextMenu({
         align="start"
         cardId={cardId}
         onEdit={onEdit}
+        onShowHistory={onShowHistory}
         closeMenu={() => actionsRef.current?.close()}
       />
     </ContextMenu>

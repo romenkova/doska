@@ -2,6 +2,7 @@ import type {
   Attachment,
   Card,
   Column,
+  HistoryEntry,
   MemberRole,
   SidebarItem,
 } from "@doska/contract"
@@ -157,3 +158,22 @@ export const sidebarLayouts = pgTable("sidebar_layouts", {
   updatedAt: bigint("updated_at", { mode: "number" }).notNull(),
   seq: integer("seq").notNull(),
 })
+
+export const history = pgTable(
+  "history",
+  {
+    id: text("id").primaryKey(),
+    boardId: text("board_id").notNull(),
+    entityId: text("entity_id").notNull(),
+    entityType: text("entity_type")
+      .$type<HistoryEntry["entityType"]>()
+      .notNull(),
+    userId: text("user_id"),
+    action: text("action").$type<HistoryEntry["action"]>().notNull(),
+    data: jsonb("data").$type<Record<string, unknown>>().notNull().default({}),
+    createdAt: bigint("created_at", { mode: "number" }).notNull(),
+    updatedAt: bigint("updated_at", { mode: "number" }).notNull(),
+    seq: integer("seq").notNull(),
+  },
+  (t) => [index("history_board_seq").on(t.boardId, t.seq)]
+)

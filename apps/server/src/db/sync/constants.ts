@@ -10,6 +10,8 @@ export const boardCounter = (boardId: string) =>
 /** Board-list counter. Global, not per-user  */
 export const boardsListCounter = () => counter("boards-list")
 
+export const historyCounter = () => counter("history")
+
 /** The `counters` row holding a board's next human-readable card number. */
 const cardNumberCounterId = (boardId: string) => `cardno:${boardId}`
 

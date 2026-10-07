@@ -1,5 +1,11 @@
 import { RETENTION_MS } from "@doska/contract"
-import { CARDS, COLUMNS, DASHBOARDS, type StoreName } from "../constants"
+import {
+  CARDS,
+  COLUMNS,
+  DASHBOARDS,
+  HISTORY,
+  type StoreName,
+} from "../constants"
 import { db } from "../db/db"
 import { sync } from "../sync"
 
@@ -36,5 +42,13 @@ export async function purgeExpired(now = Date.now()): Promise<number> {
     await db.hardDelete(store, id)
     purged += 1
   }
-  return purged
+
+  // Unlike tombstones, an unpushed history row is dropped too: the server
+  // would drop it on its next sweep anyway.
+  const expiredHistory = await db.getExpiredHistory(cutoff)
+  const historyIds = expiredHistory.map((entry) => entry.id)
+  for (const id of historyIds) await db.hardDelete(HISTORY, id)
+  sync.dropDirty(HISTORY, historyIds)
+
+  return purged + historyIds.length
 }

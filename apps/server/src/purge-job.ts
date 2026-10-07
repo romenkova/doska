@@ -14,7 +14,11 @@ const INTERVAL_MS = 60 * 60 * 1000
 async function sweep(log: FastifyBaseLogger): Promise<void> {
   try {
     const result = await purgeExpired()
-    if (result.cards + result.columns + result.dashboards === 0) return
+    if (
+      result.cards + result.columns + result.dashboards + result.history ===
+      0
+    )
+      return
 
     const storage = storageFromEnv()
     for (const key of result.attachments) {
@@ -30,6 +34,7 @@ async function sweep(log: FastifyBaseLogger): Promise<void> {
         cards: result.cards,
         columns: result.columns,
         dashboards: result.dashboards,
+        history: result.history,
         attachments: result.attachments.length,
       },
       "purge: removed expired tombstones"

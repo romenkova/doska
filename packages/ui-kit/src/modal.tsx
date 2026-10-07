@@ -111,4 +111,13 @@ function ModalDescription({
   )
 }
 
-export { Modal, ModalContent, ModalHeader, ModalTitle, ModalDescription }
+const ModalClose = DialogPrimitive.Close
+
+export {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalTitle,
+  ModalDescription,
+  ModalClose,
+}

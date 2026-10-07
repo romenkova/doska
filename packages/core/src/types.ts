@@ -5,6 +5,7 @@ export type {
   Card,
   Column,
   Dashboard,
+  HistoryEntry,
   Member,
   SidebarItem,
   SidebarLayout,

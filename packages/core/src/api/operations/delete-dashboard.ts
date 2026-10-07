@@ -1,4 +1,5 @@
 import { db } from "../db/db"
+import { recordHistory } from "../history/record-history"
 import { sync } from "../sync"
 
 /** Tombstones a board, its columns, and all of their cards. */
@@ -18,4 +19,5 @@ export async function deleteDashboard(id: string): Promise<void> {
   sync.markDirty("dashboards", id)
   for (const c of columns) sync.markDirty("columns", c.id)
   for (const c of cards) sync.markDirty("cards", c.id)
+  if (dashboard) await recordHistory.board(id, dashboard.title, "delete")
 }

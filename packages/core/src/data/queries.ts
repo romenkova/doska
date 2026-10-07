@@ -4,6 +4,11 @@ import { publicBoardToken, publishedBoards } from "../api/boards"
 import { fetchSession } from "../api/auth"
 import { fetchLinkedProviders, fetchSsoProviders } from "../api/sso"
 import { fetchPublicBoard } from "../api/public"
+import {
+  getActivity,
+  getBoardHistory,
+  getHistory,
+} from "../api/history/get-history"
 import { listDirectory, listMembers, listSharedBoards } from "../api/members"
 import {
   hasUnclaimedLocalBoards,
@@ -11,6 +16,7 @@ import {
 } from "../api/identity"
 import * as api from "../api/operations"
 import type { DigestFilter } from "../api/operations"
+import type { HistoryEntry } from "../types"
 import { keys } from "./keys"
 
 export type { Account } from "../api/accounts"
@@ -158,6 +164,30 @@ export function useBoard(deckId: string) {
   return useQuery({
     queryKey: keys.board(deckId),
     queryFn: () => api.getBoard(deckId),
+    networkMode: "always",
+  })
+}
+
+/** Newest first. A board's history covers everything on it. */
+export function useHistory(
+  entityType: HistoryEntry["entityType"],
+  entityId: string,
+  enabled: boolean
+) {
+  return useQuery({
+    queryKey: keys.history(entityId),
+    queryFn: () =>
+      entityType === "board" ? getBoardHistory(entityId) : getHistory(entityId),
+    enabled,
+    networkMode: "always",
+  })
+}
+
+export function useActivity(enabled: boolean) {
+  return useQuery({
+    queryKey: keys.activity,
+    queryFn: () => getActivity(),
+    enabled,
     networkMode: "always",
   })
 }

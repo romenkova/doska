@@ -4,18 +4,20 @@ import {
   ChangeSchema,
   DashboardChangeSchema,
   DirectoryUserSchema,
+  HistoryEntrySchema,
   MemberRoleSchema,
   MemberSchema,
 } from "./schemas"
 
 /**
- * The sync contract. Two channels, each push-then-pull with a `since` cursor:
+ * The sync contract. Three channels, each push-then-pull with a `since` cursor:
  *
  *  - `board.sync`: a single board's columns and cards, scoped by `boardId`.
  *  - `dashboards.sync`: the dashboard list, account-level and board-independent,
  *    so other boards' create/rename/delete reach a client whatever board is open.
+ *  - `history.sync`: the action log of every board the account can read.
  *
- * In both: push the client's locally-changed records in `changes`; pull every
+ * In all three: push the client's locally-changed records in `changes`; pull every
  * record changed past the client's `since` cursor, plus the new high-water `cursor`.
  *
  * `members` and `users` are not channels. They are ordinary request/response
@@ -53,6 +55,21 @@ export const contract = {
           changes: z.array(DashboardChangeSchema),
           // Boards this account has lost access to
           removed: z.array(z.string()).optional(),
+        })
+      ),
+  },
+  history: {
+    sync: oc
+      .input(
+        z.object({
+          since: z.number(),
+          changes: z.array(HistoryEntrySchema),
+        })
+      )
+      .output(
+        z.object({
+          cursor: z.number(),
+          changes: z.array(HistoryEntrySchema),
         })
       ),
   },

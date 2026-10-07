@@ -1,6 +1,12 @@
 import { runtime } from "../../runtime"
 import { cards as seedCards, seedColumns, seedDashboards } from "../../seed"
-import type { Card, Column, Dashboard, SidebarLayout } from "../../types"
+import type {
+  Card,
+  Column,
+  Dashboard,
+  HistoryEntry,
+  SidebarLayout,
+} from "../../types"
 import {
   CARDS,
   CARDS_BY_COLUMN,
@@ -8,6 +14,9 @@ import {
   CARDS_BY_NUMBER,
   COLUMNS,
   DASHBOARDS,
+  HISTORY,
+  HISTORY_BY_CREATED,
+  HISTORY_BY_ENTITY,
   SIDEBAR,
   SIDEBAR_LAYOUT_ID,
   type StoreName,
@@ -146,6 +155,29 @@ export const db = {
   },
   setSidebarLayout(layout: SidebarLayout): Promise<void> {
     return runtime().db.set(SIDEBAR, SIDEBAR_LAYOUT_ID, layout)
+  },
+  async getHistory(entityId: string): Promise<HistoryEntry[]> {
+    const entries = await runtime().db.getAll<HistoryEntry>(HISTORY, {
+      index: HISTORY_BY_ENTITY,
+      range: { lower: entityId, upper: entityId },
+    })
+    return entries.sort((a, b) => b.createdAt - a.createdAt)
+  },
+  /** Newest first. Both adapters only read ascending, so reverse. */
+  async getAllHistory(): Promise<HistoryEntry[]> {
+    const entries = await runtime().db.getAll<HistoryEntry>(HISTORY, {
+      index: HISTORY_BY_CREATED,
+    })
+    return entries.reverse()
+  },
+  getExpiredHistory(cutoff: number): Promise<HistoryEntry[]> {
+    return runtime().db.getAll<HistoryEntry>(HISTORY, {
+      index: HISTORY_BY_CREATED,
+      range: { upper: cutoff, exclusive: { upper: true } },
+    })
+  },
+  setHistory(entry: HistoryEntry): Promise<void> {
+    return runtime().db.set(HISTORY, entry.id, entry)
   },
   async hardDelete(store: StoreName, id: string): Promise<void> {
     await runtime().db.delete(store, id)
