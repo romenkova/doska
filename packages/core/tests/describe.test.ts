@@ -18,7 +18,7 @@ const entry = (
   deletedAt: null,
 })
 
-const title = { kind: "title", text: "Fix login" }
+const title = { kind: "title", text: "Fix login", cardId: "card1" }
 const text = (text: string) => ({ kind: "text", text })
 const chip = (text: string, board?: string) => ({ kind: "chip", text, board })
 const arrow = { kind: "arrow" }
