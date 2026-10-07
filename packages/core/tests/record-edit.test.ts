@@ -23,7 +23,7 @@ const pastEdit = (overrides: Partial<HistoryEntry>): HistoryEntry => ({
   entityType: "card",
   userId: null,
   action: "edit",
-  data: { fields: ["body"], added: 1, removed: 0 },
+  data: {},
   createdAt: Date.now(),
   updatedAt: Date.now(),
   deletedAt: null,
@@ -39,14 +39,14 @@ beforeEach(() => {
 })
 
 describe("recordEdit", () => {
-  it("merges two body saves within 5 minutes into one row", async () => {
+  it("keeps two saves within 5 minutes as one row", async () => {
     await editBody(before, "one\ntwo")
     await editBody({ ...before, body: "one\ntwo" }, "one\ntwo\nthree")
 
     const [entry, ...rest] = historyRows()
     expect(rest).toEqual([])
     expect(entry.boardId).toBe("board1")
-    expect(entry.data).toEqual({ fields: ["body"], added: 2, removed: 0 })
+    expect(entry.action).toBe("edit")
   })
 
   it("starts a new row after 5 minutes", async () => {

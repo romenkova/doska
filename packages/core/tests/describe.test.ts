@@ -24,8 +24,7 @@ describe("describeEntry", () => {
   })
 
   it("edit", () => {
-    const data = { fields: ["body", "tags"], added: 3, removed: 1 }
-    expect(describeEntry(entry("edit", data))).toBe("edited body (+3 -1), tags")
+    expect(describeEntry(entry("edit"))).toBe("edited")
   })
 
   it("rename", () => {

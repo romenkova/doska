@@ -15,7 +15,7 @@ export async function currentUser(): Promise<string | null> {
   return (await stampedUser()) ?? null
 }
 
-export async function saveHistory(entry: HistoryEntry): Promise<void> {
+async function saveHistory(entry: HistoryEntry): Promise<void> {
   await db.setHistory(entry)
   sync.markDirty(HISTORY, entry.id)
   queryClient.invalidateQueries({ queryKey: keys.activity })
