@@ -13,6 +13,7 @@ import {
 } from "../../constants"
 import { db } from "../../db/db"
 import { clock, persistClock } from "../hlc"
+import { resetHistoryCursor } from "./history-driver"
 
 /** Account-level dashboard-list steps, shared server ⇄ filesystem. */
 
@@ -74,6 +75,14 @@ export async function applyDashboardRemote(
   changes: DashboardChange[]
 ): Promise<void> {
   let touched = false
+
+  // A board shared with us brings history older than our cursor.
+  for (const { store, record } of changes) {
+    if (store !== DASHBOARDS) continue
+    if (await runtime().db.get(DASHBOARDS, record.id)) continue
+    await resetHistoryCursor()
+    break
+  }
 
   for (const { store, record } of changes) {
     clock.receive(record.updatedAt)
