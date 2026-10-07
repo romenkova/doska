@@ -63,11 +63,18 @@ export async function moveCardToColumn(
 
   const fromBoard = await db.getDashboard(from.dashboardId)
   const toBoard = await db.getDashboard(to.dashboardId)
-  await recordHistory.card(to.dashboardId, copyId, card.title, "move", {
+  const move = {
     from: from.title,
     to: to.title,
     fromBoard: fromBoard?.title ?? "",
     toBoard: toBoard?.title ?? "",
+  }
+  await recordHistory.card(from.dashboardId, id, card.title, "move", {
+    ...move,
+    toCard: copyId,
+  })
+  await recordHistory.card(to.dashboardId, copyId, card.title, "move", {
+    ...move,
     fromCard: id,
   })
   return copyId

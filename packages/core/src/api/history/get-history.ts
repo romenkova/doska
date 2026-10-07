@@ -8,7 +8,8 @@ export async function getHistory(entityId: string): Promise<HistoryEntry[]> {
 
   while (cardId) {
     const rows = await db.getHistory(cardId)
-    entries.push(...rows)
+    // The old board's copy of a move; the new card's own move row already says it.
+    entries.push(...rows.filter((entry) => !entry.data.toCard))
 
     const oldest = rows.at(-1)
     cardId =
