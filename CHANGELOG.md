@@ -4,6 +4,12 @@
 
 ### Added
 
+- History for cards and boards: shows users' activity, and changes for past 14 days.
+
+## [0.26.0] - 2026-10-08
+
+### Added
+
 - Tags: set tags to cards, frontmatter support, mcp support, filtering.
 - Card assignees: set tags to cards, frontmatter support, mcp support, filtering.
 - User avatars.
