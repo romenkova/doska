@@ -10,10 +10,15 @@ export function HistoryList({ entries }: IProps) {
     return <p className="text-sm text-muted-foreground">No history yet</p>
 
   return (
-    <ul className="flex flex-col">
-      {entries.map((entry) => (
-        <HistoryRow key={entry.id} entry={entry} />
-      ))}
-    </ul>
+    <>
+      <p className="mb-2 text-sm text-muted-foreground">
+        Showing the last 14 days
+      </p>
+      <ul className="flex flex-col">
+        {entries.map((entry) => (
+          <HistoryRow key={entry.id} entry={entry} />
+        ))}
+      </ul>
+    </>
   )
 }

@@ -71,6 +71,7 @@ test.describe("history", () => {
 
     await openCardHistory(page, "Ship")
 
+    await expect(historyDialog(page)).toContainText("Showing the last 14 days")
     await expect(historyDialog(page).getByRole("listitem")).toHaveText([
       sentence("You set priority of Ship to High"),
       sentence("You renamed card Plan Ship"),
@@ -85,6 +86,7 @@ test.describe("history", () => {
     await openCardHistory(page, "Untitled card")
 
     await expect(historyDialog(page)).toContainText("No history yet")
+    await expect(historyDialog(page)).not.toContainText("last 14 days")
   })
 
   test("the card panel's menu opens the card's history", async ({ page }) => {
