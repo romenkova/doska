@@ -1,6 +1,10 @@
 import { beforeEach, describe, expect, it } from "vitest"
-import { HISTORY } from "../src/api/constants"
-import { getBoardHistory, getHistory } from "../src/api/history/get-history"
+import { DASHBOARDS, HISTORY } from "../src/api/constants"
+import {
+  getActivity,
+  getBoardHistory,
+  getHistory,
+} from "../src/api/history/get-history"
 import type { HistoryEntry } from "../src/types"
 import { installMemoryRuntime, rows } from "./memory-runtime"
 
@@ -79,5 +83,37 @@ describe("getBoardHistory", () => {
       "column-create",
       "board-create",
     ])
+  })
+})
+
+describe("getActivity", () => {
+  const addBoard = (id: string, deletedAt: number | null = null) =>
+    rows.set(`${DASHBOARDS}/${id}`, { id, deletedAt })
+
+  it("leaves out boards that are gone", async () => {
+    addBoard("board1")
+    addBoard("board2", 1)
+    add("kept", "card1", 1)
+    add("deleted-board", "card2", 2, "edit", {}, "board2")
+    add("unknown-board", "card3", 3, "edit", {}, "board3")
+
+    expect(ids(await getActivity())).toEqual(["kept"])
+  })
+
+  it("shows a cross-board move once when both boards are visible", async () => {
+    addBoard("board1")
+    addBoard("board2")
+    add("a-create", "cardA", 1, "create")
+    add("a-move-out", "cardA", 2, "move", { toCard: "cardB" })
+    add("b-move", "cardB", 3, "move", { fromCard: "cardA" }, "board2")
+
+    expect(ids(await getActivity())).toEqual(["b-move", "a-create"])
+  })
+
+  it("keeps the move-out row when the new board isn't visible", async () => {
+    addBoard("board1")
+    add("a-move-out", "cardA", 2, "move", { toCard: "cardB" })
+
+    expect(ids(await getActivity())).toEqual(["a-move-out"])
   })
 })
