@@ -25,7 +25,7 @@ export function HistoryModal({
 
   return (
     <Modal open={open} onOpenChange={onOpenChange}>
-      <ModalContent className="md:max-w-md">
+      <ModalContent className="md:max-w-lg">
         <ModalHeader onClose={() => onOpenChange(false)}>
           {TITLES[entityType]}
         </ModalHeader>
