@@ -1,6 +1,7 @@
 import { Droppable } from "@hello-pangea/dnd"
 import { useState, type ReactNode } from "react"
 import { ConfirmDialog } from "../confirm-dialog"
+import { HistoryModal } from "../history/history-modal"
 import { ColumnMenu } from "./column-menu"
 import { ColumnView } from "./column-view"
 
@@ -37,6 +38,7 @@ export function Column({
   onDelete,
 }: IProps) {
   const [confirmOpen, setConfirmOpen] = useState(false)
+  const [historyOpen, setHistoryOpen] = useState(false)
 
   return (
     <Droppable droppableId={id}>
@@ -61,6 +63,7 @@ export function Column({
                 onChangeColor={onChangeColor}
                 done={done}
                 onChangeDone={onChangeDone}
+                onShowHistory={() => setHistoryOpen(true)}
                 onDelete={() => setConfirmOpen(true)}
               />
               <ConfirmDialog
@@ -70,6 +73,12 @@ export function Column({
                 description={`"${title}" and all of its cards move to the trash, where they stay restorable for 14 days.`}
                 confirmLabel="Delete column"
                 onConfirm={onDelete}
+              />
+              <HistoryModal
+                entityType="column"
+                entityId={id}
+                open={historyOpen}
+                onOpenChange={setHistoryOpen}
               />
             </>
           }

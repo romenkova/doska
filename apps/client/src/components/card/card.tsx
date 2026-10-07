@@ -1,5 +1,6 @@
 import {
   memo,
+  useState,
   type DetailedHTMLProps,
   type HTMLAttributes,
   type ReactNode,
@@ -8,6 +9,7 @@ import { useLocation } from "wouter"
 import type { CardPatch, Card as CardData, Column } from "@doska/core"
 import { routes } from "@/lib/routes"
 import { useIsRevealed } from "@/providers/card-reveal/card-reveal-context"
+import { HistoryModal } from "../history/history-modal"
 import { CardAttachments } from "./attachments/card-attachments"
 import { CardAttachmentImage } from "./attachments/card-attachment-image"
 import { CardContextMenu, CardMenu } from "./menu/card-menu"
@@ -42,15 +44,21 @@ export const Card = memo(function Card({
   const [, navigate] = useLocation()
   const id = card.id
   const isRevealed = useIsRevealed(id)
+  const [historyOpen, setHistoryOpen] = useState(false)
 
   const open = () => navigate(routes.card.to(id))
+  const showHistory = () => setHistoryOpen(true)
 
   return (
     <CardMarkdown cardId={id}>
       <CardView
         {...props}
         wrapCard={(inner) => (
-          <CardContextMenu cardId={id} onEdit={open}>
+          <CardContextMenu
+            cardId={id}
+            onEdit={open}
+            onShowHistory={showHistory}
+          >
             {inner}
           </CardContextMenu>
         )}
@@ -62,7 +70,9 @@ export const Card = memo(function Card({
         lead={lead}
         metaLead={metaLead}
         imageCard={imageCard}
-        action={<CardMenu cardId={id} onEdit={open} />}
+        action={
+          <CardMenu cardId={id} onEdit={open} onShowHistory={showHistory} />
+        }
         onChangeBody={(body) => onPatch(id, { body })}
         onChangeDeadline={(deadline) => onPatch(id, { deadline })}
         onChangePriority={(priority) => onPatch(id, { priority })}
@@ -77,6 +87,12 @@ export const Card = memo(function Card({
             className={className}
           />
         )}
+      />
+      <HistoryModal
+        entityType="card"
+        entityId={id}
+        open={historyOpen}
+        onOpenChange={setHistoryOpen}
       />
     </CardMarkdown>
   )
