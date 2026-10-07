@@ -4,7 +4,11 @@ import { publicBoardToken, publishedBoards } from "../api/boards"
 import { fetchSession } from "../api/auth"
 import { fetchLinkedProviders, fetchSsoProviders } from "../api/sso"
 import { fetchPublicBoard } from "../api/public"
-import { getBoardHistory, getHistory } from "../api/history/get-history"
+import {
+  getActivity,
+  getBoardHistory,
+  getHistory,
+} from "../api/history/get-history"
 import { listDirectory, listMembers, listSharedBoards } from "../api/members"
 import {
   hasUnclaimedLocalBoards,
@@ -174,6 +178,15 @@ export function useHistory(
     queryKey: keys.history(entityId),
     queryFn: () =>
       entityType === "board" ? getBoardHistory(entityId) : getHistory(entityId),
+    enabled,
+    networkMode: "always",
+  })
+}
+
+export function useActivity(enabled: boolean) {
+  return useQuery({
+    queryKey: keys.activity,
+    queryFn: () => getActivity(),
     enabled,
     networkMode: "always",
   })

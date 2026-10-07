@@ -4,7 +4,7 @@ import type { HistoryEntry } from "../../types"
 
 export type EntryPart =
   | { kind: "text"; text: string }
-  | { kind: "title"; text: string; cardId?: string }
+  | { kind: "title"; text: string; cardId?: string; boardId?: string }
   | { kind: "chip"; text: string; board?: string }
   | { kind: "user"; userId: string }
   | { kind: "arrow" }
@@ -122,15 +122,18 @@ function describeEdit(data: Data, name: EntryPart[]): EntryPart[] | null {
   }
 }
 
+function titlePart(entry: HistoryEntry, title: string): EntryPart {
+  const data = entry.data as Data
+  if (entry.entityType === "card")
+    // A moved-out row's card lives on as the copy on the other board.
+    return { kind: "title", text: title, cardId: data.toCard ?? entry.entityId }
+  return { kind: "title", text: title, boardId: entry.boardId }
+}
+
 /** The row as a sentence, minus who did it: "moved card Fix login [Todo] → [Done]". */
 export function describeEntry(entry: HistoryEntry): EntryPart[] {
   const data = entry.data as Data
-  // A moved-out row's card lives on as the copy on the other board.
-  const cardId =
-    entry.entityType === "card" ? (data.toCard ?? entry.entityId) : undefined
-  const name: EntryPart[] = data.title
-    ? [{ kind: "title", text: data.title, cardId }]
-    : []
+  const name: EntryPart[] = data.title ? [titlePart(entry, data.title)] : []
   const verb = text(`${VERBS[entry.action]} ${entry.entityType}`)
   const plain = [verb, ...name]
 
