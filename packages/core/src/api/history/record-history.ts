@@ -8,10 +8,8 @@ import { newId } from "../operations/new-id"
 import { sync } from "../sync"
 import { stamp } from "../sync/hlc"
 
-export type HistoryInput = Pick<
-  HistoryEntry,
-  "boardId" | "entityId" | "entityType" | "action" | "data"
->
+type Action = HistoryEntry["action"]
+type Data = HistoryEntry["data"]
 
 export async function currentUser(): Promise<string | null> {
   return (await stampedUser()) ?? null
@@ -23,7 +21,12 @@ export async function saveHistory(entry: HistoryEntry): Promise<void> {
   queryClient.invalidateQueries({ queryKey: keys.activity })
 }
 
-export async function recordHistory(input: HistoryInput): Promise<void> {
+async function record(
+  input: Pick<
+    HistoryEntry,
+    "boardId" | "entityId" | "entityType" | "action" | "data"
+  >
+): Promise<void> {
   const now = stamp()
   await saveHistory({
     ...input,
@@ -33,4 +36,18 @@ export async function recordHistory(input: HistoryInput): Promise<void> {
     updatedAt: now,
     deletedAt: null,
   })
+}
+
+export const recordHistory = {
+  card: (boardId: string, cardId: string, action: Action, data: Data = {}) =>
+    record({ boardId, entityId: cardId, entityType: "card", action, data }),
+  column: (
+    boardId: string,
+    columnId: string,
+    action: Action,
+    data: Data = {}
+  ) =>
+    record({ boardId, entityId: columnId, entityType: "column", action, data }),
+  board: (boardId: string, action: Action, data: Data = {}) =>
+    record({ boardId, entityId: boardId, entityType: "board", action, data }),
 }

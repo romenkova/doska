@@ -69,11 +69,10 @@ export async function recordEdit(
   const column = await db.getColumn(card.columnId)
   if (!column) return
 
-  await recordHistory({
-    boardId: column.dashboardId,
-    entityId: card.id,
-    entityType: "card",
-    action: "edit",
-    data: editData(fields, lines.added, lines.removed),
-  })
+  await recordHistory.card(
+    column.dashboardId,
+    card.id,
+    "edit",
+    editData(fields, lines.added, lines.removed)
+  )
 }

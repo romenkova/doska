@@ -1,6 +1,7 @@
 import type { Card, Column, Dashboard } from "../../types"
 import { CARDS, COLUMNS, DASHBOARDS } from "../constants"
 import { db } from "../db/db"
+import { recordHistory } from "../history/record-history"
 import { sync } from "../sync"
 import { live } from "./live"
 
@@ -35,11 +36,13 @@ export async function restore(kind: TrashKind, id: string): Promise<void> {
   const cards: Card[] = []
   const revivedColumns: Column[] = []
   let revivedDashboard: Dashboard | undefined
+  let boardId: string
 
   if (kind === DASHBOARDS) {
     const dashboard = dashboards.find((d) => d.id === id)
     if (!dashboard?.deletedAt) return
     revivedDashboard = dashboard
+    boardId = id
     revivedColumns.push(
       ...cascadedFrom(
         columns.filter((c) => c.dashboardId === id),
@@ -56,6 +59,7 @@ export async function restore(kind: TrashKind, id: string): Promise<void> {
     if (!column?.deletedAt) return
     const dashboard = dashboards.find((d) => d.id === column.dashboardId)
     if (!dashboard) return
+    boardId = dashboard.id
     revivedColumns.push(column)
     cards.push(...cascadedFrom(await db.getCards(id), column.deletedAt))
     if (!live(dashboard)) revivedDashboard = dashboard
@@ -65,6 +69,7 @@ export async function restore(kind: TrashKind, id: string): Promise<void> {
     const column = columns.find((c) => c.id === card.columnId)
     const dashboard = dashboards.find((d) => d.id === column?.dashboardId)
     if (!column || !dashboard) return
+    boardId = dashboard.id
     cards.push(card)
     if (!live(column)) revivedColumns.push(column)
     if (!live(dashboard)) revivedDashboard = dashboard
@@ -84,4 +89,8 @@ export async function restore(kind: TrashKind, id: string): Promise<void> {
     await db.restoreCard(card)
     sync.markDirty(CARDS, card.id)
   }
+
+  if (kind === DASHBOARDS) await recordHistory.board(id, "restore")
+  else if (kind === COLUMNS) await recordHistory.column(boardId, id, "restore")
+  else await recordHistory.card(boardId, id, "restore")
 }

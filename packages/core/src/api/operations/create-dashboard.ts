@@ -2,6 +2,7 @@ import { generateKeyBetween } from "fractional-indexing"
 import { BOARD_COLUMNS } from "../../seed"
 import type { Dashboard } from "../../types"
 import { db } from "../db/db"
+import { recordHistory } from "../history/record-history"
 import { newId } from "./new-id"
 import { prependBoard } from "./sidebar-layout"
 import { sync } from "../sync"
@@ -41,5 +42,6 @@ export async function createDashboard(name: string): Promise<Dashboard> {
       sync.markDirty("columns", column.id)
     })
   )
+  await recordHistory.board(id, "create")
   return dashboard
 }
