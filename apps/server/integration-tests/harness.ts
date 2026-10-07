@@ -78,7 +78,10 @@ export function rpcClient(h: Harness): RpcClient {
       for (const [key, value] of Object.entries(res.headers)) {
         if (typeof value === "string") out.set(key, value)
       }
-      return new Response(res.rawPayload, { status: res.statusCode, headers: out })
+      return new Response(res.rawPayload, {
+        status: res.statusCode,
+        headers: out,
+      })
     }) as typeof fetch,
   })
   return createORPCClient(link)
@@ -181,7 +184,7 @@ export function toolJson(result: ToolResult): any {
 /** Clears the sync tables; leaves the auth tables (and thus the session) intact. */
 export async function resetTables(): Promise<void> {
   await getDB().execute(
-    sql`TRUNCATE cards, columns, dashboards, board_members, sidebar_layouts, counters RESTART IDENTITY`
+    sql`TRUNCATE cards, columns, dashboards, board_members, sidebar_layouts, history, counters RESTART IDENTITY`
   )
 }
 

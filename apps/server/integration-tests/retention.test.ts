@@ -1,7 +1,7 @@
 import { RETENTION_MS } from "@doska/contract"
 import { beforeAll, beforeEach, describe, expect, test } from "vitest"
 import { getDB } from "../src/db/get-db"
-import { cards, columns, dashboards } from "../src/db/schema"
+import { cards, columns, dashboards, history } from "../src/db/schema"
 import { purgeExpired } from "../src/db/sync/purge"
 import { rpcClient, resetTables, startServer, type Harness } from "./harness"
 
@@ -155,5 +155,29 @@ describe("purgeExpired", () => {
       (await db.select().from(dashboards)).map((r) => r.id).sort()
     ).toEqual(["fresh", "live"])
     expect(await db.select().from(columns)).toHaveLength(0)
+  })
+
+  test("drops history rows past retention, keeps newer", async () => {
+    const db = getDB()
+    const row = (id: string, createdAt: number) => ({
+      id,
+      boardId: "b1",
+      entityId: "card1",
+      entityType: "card" as const,
+      userId: null,
+      action: "edit" as const,
+      data: {},
+      createdAt,
+      updatedAt: createdAt,
+      seq: 1,
+    })
+    await db
+      .insert(history)
+      .values([row("old", now - RETENTION_MS - 1), row("new", now - 1)])
+
+    const result = await purgeExpired(now)
+
+    expect(result.history).toBe(1)
+    expect((await db.select().from(history)).map((r) => r.id)).toEqual(["new"])
   })
 })
