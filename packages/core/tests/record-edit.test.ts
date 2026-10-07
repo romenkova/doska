@@ -49,6 +49,14 @@ describe("recordEdit", () => {
     expect(entry.action).toBe("edit")
   })
 
+  it("records an empty card as created when it gets its first content", async () => {
+    const empty = { ...before, title: "", body: "" }
+    await editBody(empty, "one")
+
+    const entries = historyRows()
+    expect(entries.map((entry) => entry.action)).toEqual(["create"])
+  })
+
   it("names a new card's untitled rows once it gets a title", async () => {
     const untitled = { ...before, title: "" }
     await editBody(untitled, "one\ntwo")

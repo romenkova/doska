@@ -67,6 +67,13 @@ export async function recordEdit(
 
   const userId = await currentUser()
   const history = await db.getHistory(card.id)
+
+  // Cards start empty, so one only counts as created once it gets content.
+  if (history.length === 0 && before.title === "" && before.body === "") {
+    await recordHistory.card(column.dashboardId, card.id, card.title, "create")
+    return
+  }
+
   if (before.title === "" && card.title !== "")
     await nameUntitledRows(history, userId, card.title)
 

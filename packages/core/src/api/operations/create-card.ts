@@ -2,7 +2,6 @@ import { CARD_GROUPS } from "@doska/contract"
 import { generateKeyBetween } from "fractional-indexing"
 import { fallbackCard } from "../../seed"
 import { db } from "../db/db"
-import { recordHistory } from "../history/record-history"
 import { newId } from "./new-id"
 import { live } from "./live"
 import { sync } from "../sync"
@@ -33,6 +32,5 @@ export async function createCard(columnId: string): Promise<string> {
   }
   await db.setCard(touchCard(card, CARD_GROUPS))
   sync.markDirty("cards", id)
-  await recordHistory.card(column.dashboardId, id, card.title, "create")
   return id
 }
