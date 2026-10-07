@@ -210,6 +210,30 @@ export const DirectoryUserSchema = z.object({
   image: z.string().nullable(),
 })
 
+export const HISTORY_ENTITY_TYPES = ["card", "column", "board"] as const
+export const HISTORY_ACTIONS = [
+  "create",
+  "edit",
+  "rename",
+  "move",
+  "delete",
+  "restore",
+] as const
+
+export const HistoryEntrySchema = z.object({
+  id: z.string(),
+  boardId: z.string(),
+  entityId: z.string(),
+  entityType: z.enum(HISTORY_ENTITY_TYPES),
+  userId: z.string().nullable(),
+  action: z.enum(HISTORY_ACTIONS),
+  data: z.record(z.string(), z.unknown()),
+  createdAt: z.number(),
+  updatedAt: z.number(),
+  // Never tombstoned, only purged by age. Here so generic sync helpers accept the row.
+  deletedAt: z.null(),
+})
+
 const DashboardRecordChangeSchema = z.object({
   store: z.literal("dashboards"),
   record: DashboardSchema,
