@@ -4,7 +4,7 @@ import type { HistoryEntry } from "../src/types"
 
 const entry = (
   action: HistoryEntry["action"],
-  data: HistoryEntry["data"] = { title: "Fix login" }
+  data: HistoryEntry["data"] = {}
 ): HistoryEntry => ({
   id: "hist1",
   boardId: "board1",
@@ -12,58 +12,110 @@ const entry = (
   entityType: "card",
   userId: null,
   action,
-  data,
+  data: { title: "Fix login", ...data },
   createdAt: 0,
   updatedAt: 0,
   deletedAt: null,
 })
 
+const title = { kind: "title", text: "Fix login" }
+const text = (text: string) => ({ kind: "text", text })
+const chip = (text: string, board?: string) => ({ kind: "chip", text, board })
+const arrow = { kind: "arrow" }
+
 describe("describeEntry", () => {
-  it("create", () => {
-    expect(describeEntry(entry("create"))).toBe("created card Fix login")
+  it.each([
+    ["create", "created card"],
+    ["delete", "deleted card"],
+    ["restore", "restored card"],
+  ] as const)("%s", (action, verb) => {
+    expect(describeEntry(entry(action))).toEqual([text(verb), title])
   })
 
-  it("edit", () => {
-    expect(describeEntry(entry("edit"))).toBe("edited card Fix login")
+  it("body edit", () => {
+    expect(describeEntry(entry("edit", { field: "body" }))).toEqual([
+      text("edited card"),
+      title,
+    ])
   })
 
   it("rename", () => {
-    const column = {
-      ...entry("rename", { title: "B", from: "A", to: "B" }),
-      entityType: "column" as const,
-    }
-    expect(describeEntry(column)).toBe("renamed column from A to B")
-  })
-
-  it("move within a board", () => {
-    const data = { title: "Fix login", from: "Todo", to: "Done" }
-    expect(describeEntry(entry("move", data))).toBe(
-      "moved card Fix login from Todo to Done"
-    )
+    const data = { title: "B", field: "title", from: "A", to: "B" }
+    expect(describeEntry(entry("rename", data))).toEqual([
+      text("renamed card"),
+      chip("A"),
+      arrow,
+      chip("B"),
+    ])
   })
 
   it("move across boards", () => {
     const data = {
-      title: "Fix login",
       from: "Todo",
       to: "Inbox",
       fromBoard: "Work",
       toBoard: "Home",
     }
-    expect(describeEntry(entry("move", data))).toBe(
-      "moved card Fix login from Todo (Work) to Inbox (Home)"
-    )
+    expect(describeEntry(entry("move", data))).toEqual([
+      text("moved card"),
+      title,
+      chip("Todo", "Work"),
+      arrow,
+      chip("Inbox", "Home"),
+    ])
   })
 
-  it("delete", () => {
-    expect(describeEntry(entry("delete"))).toBe("deleted card Fix login")
+  it("priority", () => {
+    const data = { field: "priority", from: "", to: "high" }
+    expect(describeEntry(entry("edit", data))).toEqual([
+      text("set priority of"),
+      title,
+      text("to"),
+      chip("High"),
+    ])
   })
 
-  it("restore", () => {
-    expect(describeEntry(entry("restore"))).toBe("restored card Fix login")
+  it("cleared deadline", () => {
+    const data = { field: "deadline", from: "2026-10-09", to: "" }
+    expect(describeEntry(entry("edit", data))).toEqual([
+      text("cleared deadline of"),
+      title,
+    ])
+  })
+
+  it("tags added and removed", () => {
+    const data = { field: "tags", from: ["later"], to: ["urgent"] }
+    expect(describeEntry(entry("edit", data))).toEqual([
+      text("added"),
+      chip("#urgent"),
+      text("to"),
+      title,
+      text("and removed"),
+      chip("#later"),
+    ])
+  })
+
+  it("assignees", () => {
+    const data = { field: "users", from: [], to: ["user1"] }
+    expect(describeEntry(entry("edit", data))).toEqual([
+      text("assigned"),
+      { kind: "user", userId: "user1" },
+      text("to"),
+      title,
+    ])
+  })
+
+  it("a list change that cancelled out reads as a plain edit", () => {
+    const data = { field: "tags", from: ["a"], to: ["a"] }
+    expect(describeEntry(entry("edit", data))).toEqual([
+      text("edited card"),
+      title,
+    ])
   })
 
   it("leaves out a missing title", () => {
-    expect(describeEntry(entry("create", {}))).toBe("created card")
+    expect(describeEntry(entry("create", { title: "" }))).toEqual([
+      text("created card"),
+    ])
   })
 })

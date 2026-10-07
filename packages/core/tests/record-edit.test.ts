@@ -23,7 +23,7 @@ const pastEdit = (overrides: Partial<HistoryEntry>): HistoryEntry => ({
   entityType: "card",
   userId: null,
   action: "edit",
-  data: {},
+  data: { field: "body" },
   createdAt: Date.now(),
   updatedAt: Date.now(),
   deletedAt: null,
@@ -49,21 +49,62 @@ describe("recordEdit", () => {
     expect(entry.action).toBe("edit")
   })
 
-  it("keeps the row's title current while edits merge", async () => {
-    await editBody({ ...before, title: "" }, "one\ntwo")
+  it("names a new card's untitled rows once it gets a title", async () => {
+    const untitled = { ...before, title: "" }
+    await editBody(untitled, "one\ntwo")
     await recordEdit(
-      { ...before, body: "one\ntwo" },
+      { ...untitled, title: "Title" },
       { title: "Title" },
-      {
-        ...before,
-        title: "",
-        body: "one\ntwo",
-      }
+      untitled
+    )
+
+    const entries = historyRows()
+    expect(entries.map((entry) => entry.data)).toEqual([
+      { field: "body", title: "Title" },
+    ])
+  })
+
+  it("records each changed field on its own row", async () => {
+    const after = { ...before, priority: "high", deadline: "2026-10-09" }
+    await recordEdit(
+      after,
+      { priority: "high", deadline: "2026-10-09" },
+      before
+    )
+
+    const fields = historyRows().map((entry) => entry.data.field)
+    expect(fields).toEqual(["priority", "deadline"])
+  })
+
+  it("keeps the first value when the same field changes again", async () => {
+    const withPriority = (priority: string) => ({ ...before, priority })
+    await recordEdit(
+      withPriority("high"),
+      { priority: "high" },
+      withPriority("")
+    )
+    await recordEdit(
+      withPriority("low"),
+      { priority: "low" },
+      withPriority("high")
     )
 
     const [entry, ...rest] = historyRows()
     expect(rest).toEqual([])
-    expect(entry.data.title).toBe("Title")
+    expect(entry.data).toMatchObject({ field: "priority", from: "", to: "low" })
+  })
+
+  it("cancels a tag added and removed again", async () => {
+    const withTags = (tags: string[]) => ({ ...before, tags })
+    await recordEdit(
+      withTags(["a", "b"]),
+      { tags: ["a", "b"] },
+      withTags(["a"])
+    )
+    await recordEdit(withTags(["a"]), { tags: ["a"] }, withTags(["a", "b"]))
+
+    const [entry] = historyRows()
+    expect(entry.data).toMatchObject({ field: "tags", from: ["a"], to: ["a"] })
   })
 
   it("starts a new row after 5 minutes", async () => {

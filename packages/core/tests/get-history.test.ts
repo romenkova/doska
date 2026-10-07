@@ -48,6 +48,18 @@ describe("getHistory", () => {
     ])
   })
 
+  it("skips the old board's copy of a cross-board move", async () => {
+    add("a-create", "cardA", 1, "create")
+    add("a-move-out", "cardA", 2, "move", { toCard: "cardB" })
+    add("b-move", "cardB", 2, "move", { fromCard: "cardA" }, "board2")
+
+    expect(ids(await getHistory("cardB"))).toEqual(["b-move", "a-create"])
+    expect(ids(await getBoardHistory("board1"))).toEqual([
+      "a-move-out",
+      "a-create",
+    ])
+  })
+
   it("stops when the linked card has no rows left", async () => {
     add("b-move", "cardB", 3, "move", { fromCard: "cardA" })
 
