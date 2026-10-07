@@ -3,12 +3,15 @@ import {
   CARDS_BY_COLUMN,
   CARDS_BY_DEADLINE,
   CARDS_BY_NUMBER,
+  HISTORY,
+  HISTORY_BY_CREATED,
+  HISTORY_BY_ENTITY,
   META_STORE,
   STORES,
 } from "@doska/core"
 
 const DB_NAME = "deck"
-const VERSION = 13
+const VERSION = 14
 
 class DeckDB extends IDB {
   upgrade(db: IDBDatabase, tx: IDBTransaction) {
@@ -28,6 +31,12 @@ class DeckDB extends IDB {
       cards.createIndex(CARDS_BY_DEADLINE, "deadline")
     if (!cards.indexNames.contains(CARDS_BY_NUMBER))
       cards.createIndex(CARDS_BY_NUMBER, "number")
+
+    const history = tx.objectStore(HISTORY)
+    if (!history.indexNames.contains(HISTORY_BY_ENTITY))
+      history.createIndex(HISTORY_BY_ENTITY, "entityId")
+    if (!history.indexNames.contains(HISTORY_BY_CREATED))
+      history.createIndex(HISTORY_BY_CREATED, "createdAt")
   }
 }
 

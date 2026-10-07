@@ -23,7 +23,7 @@ function userKey(): string {
   return server ? `${USER_KEY}:${server}` : USER_KEY
 }
 
-function stampedUser(): Promise<string | undefined> {
+export function stampedUser(): Promise<string | undefined> {
   return runtime().db.get<string>(META_STORE, userKey())
 }
 

@@ -11,6 +11,9 @@ export const keys = {
   cards: ["card"] as const,
   card: (id: string) => ["card", id] as const,
   trash: ["trash"] as const,
+  /** The prefix of every `history` key, so invalidating it refreshes them all. */
+  activity: ["history"] as const,
+  history: (entityId: string) => ["history", entityId] as const,
   /** The bare key is the invalidation prefix for every filter's digest. */
   digest: ["digest"] as const,
   digestFilter: (filter: DigestFilter) => ["digest", filter] as const,
