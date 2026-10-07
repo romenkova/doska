@@ -49,6 +49,23 @@ describe("recordEdit", () => {
     expect(entry.action).toBe("edit")
   })
 
+  it("keeps the row's title current while edits merge", async () => {
+    await editBody({ ...before, title: "" }, "one\ntwo")
+    await recordEdit(
+      { ...before, body: "one\ntwo" },
+      { title: "Title" },
+      {
+        ...before,
+        title: "",
+        body: "one\ntwo",
+      }
+    )
+
+    const [entry, ...rest] = historyRows()
+    expect(rest).toEqual([])
+    expect(entry.data.title).toBe("Title")
+  })
+
   it("starts a new row after 5 minutes", async () => {
     rows.set(
       `${HISTORY}/hist-old`,

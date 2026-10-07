@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest"
 import { HISTORY } from "../src/api/constants"
-import { getHistory } from "../src/api/history/get-history"
+import { getBoardHistory, getHistory } from "../src/api/history/get-history"
 import type { HistoryEntry } from "../src/types"
 import { installMemoryRuntime, rows } from "./memory-runtime"
 
@@ -9,11 +9,12 @@ const add = (
   entityId: string,
   createdAt: number,
   action: HistoryEntry["action"] = "edit",
-  data: HistoryEntry["data"] = {}
+  data: HistoryEntry["data"] = {},
+  boardId = "board1"
 ) =>
   rows.set(`${HISTORY}/${id}`, {
     id,
-    boardId: "board1",
+    boardId,
     entityId,
     entityType: "card",
     userId: null,
@@ -51,5 +52,20 @@ describe("getHistory", () => {
     add("b-move", "cardB", 3, "move", { fromCard: "cardA" })
 
     expect(ids(await getHistory("cardB"))).toEqual(["b-move"])
+  })
+})
+
+describe("getBoardHistory", () => {
+  it("returns every row on the board, newest first", async () => {
+    add("board-create", "board1", 1, "create")
+    add("column-create", "col1", 2, "create")
+    add("card-edit", "card1", 3)
+    add("other-board", "card2", 4, "edit", {}, "board2")
+
+    expect(ids(await getBoardHistory("board1"))).toEqual([
+      "card-edit",
+      "column-create",
+      "board-create",
+    ])
   })
 })
