@@ -8,7 +8,7 @@ interface IProps {
 }
 
 export function HistoryRow({ entry }: IProps) {
-  const { authed, userId } = useAuth()
+  const { authed, userId, login, image } = useAuth()
   const { data: roster } = useBoardMembers(entry.boardId, !!authed)
 
   const isMe = entry.userId === null || entry.userId === userId
@@ -20,8 +20,8 @@ export function HistoryRow({ entry }: IProps) {
   return (
     <li className="flex items-start gap-3 py-2">
       <UserAvatar
-        name={isMe || member ? name : null}
-        image={member?.image ?? null}
+        name={isMe ? login : (member?.username ?? null)}
+        image={isMe ? image : (member?.image ?? null)}
         className="size-6"
         fallbackClassName="text-[10px]"
       />
