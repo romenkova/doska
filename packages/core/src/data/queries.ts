@@ -4,6 +4,7 @@ import { publicBoardToken, publishedBoards } from "../api/boards"
 import { fetchSession } from "../api/auth"
 import { fetchLinkedProviders, fetchSsoProviders } from "../api/sso"
 import { fetchPublicBoard } from "../api/public"
+import { getHistory } from "../api/history/get-history"
 import { listDirectory, listMembers, listSharedBoards } from "../api/members"
 import {
   hasUnclaimedLocalBoards,
@@ -158,6 +159,16 @@ export function useBoard(deckId: string) {
   return useQuery({
     queryKey: keys.board(deckId),
     queryFn: () => api.getBoard(deckId),
+    networkMode: "always",
+  })
+}
+
+/** One card, column or board's history, newest first. */
+export function useHistory(entityId: string, enabled: boolean) {
+  return useQuery({
+    queryKey: keys.history(entityId),
+    queryFn: () => getHistory(entityId),
+    enabled,
     networkMode: "always",
   })
 }

@@ -7,7 +7,7 @@ import { currentUser, recordHistory, saveHistory } from "./record-history"
 
 const MERGE_WINDOW_MS = 5 * 60 * 1000
 
-type EditData = { fields: string[]; added?: number; removed?: number }
+export type EditData = { fields: string[]; added?: number; removed?: number }
 
 function changedFields(before: Card, patch: CardPatch): string[] {
   return Object.entries(patch)
