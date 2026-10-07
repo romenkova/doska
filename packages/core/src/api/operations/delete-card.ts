@@ -11,5 +11,5 @@ export async function deleteCard(_deckId: string, id: string): Promise<void> {
 
   const column = await db.getColumn(existing.columnId)
   if (!column) return
-  await recordHistory.card(column.dashboardId, id, "delete")
+  await recordHistory.card(column.dashboardId, id, existing.title, "delete")
 }

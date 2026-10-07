@@ -19,3 +19,11 @@ export async function getHistory(entityId: string): Promise<HistoryEntry[]> {
 
   return entries
 }
+
+/** Newest first: the board's own rows and those of every column and card on it. */
+export async function getBoardHistory(
+  boardId: string
+): Promise<HistoryEntry[]> {
+  const entries = await db.getAllHistory()
+  return entries.filter((entry) => entry.boardId === boardId)
+}

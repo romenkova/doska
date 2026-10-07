@@ -10,7 +10,7 @@ export async function renameColumn(id: string, title: string): Promise<void> {
   await db.setColumn(touchColumn({ ...column, title }, ["title"]))
   sync.markDirty("columns", id)
   if (column.title === title) return
-  await recordHistory.column(column.dashboardId, id, "rename", {
+  await recordHistory.column(column.dashboardId, id, title, "rename", {
     from: column.title,
     to: title,
   })

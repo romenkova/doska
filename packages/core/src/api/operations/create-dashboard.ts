@@ -42,6 +42,6 @@ export async function createDashboard(name: string): Promise<Dashboard> {
       sync.markDirty("columns", column.id)
     })
   )
-  await recordHistory.board(id, "create")
+  await recordHistory.board(id, name, "create")
   return dashboard
 }

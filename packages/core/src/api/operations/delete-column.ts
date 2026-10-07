@@ -15,5 +15,5 @@ export async function deleteColumn(_deckId: string, id: string): Promise<void> {
 
   sync.markDirty("columns", id)
   for (const c of cards) sync.markDirty("cards", c.id)
-  await recordHistory.column(column.dashboardId, id, "delete")
+  await recordHistory.column(column.dashboardId, id, column.title, "delete")
 }

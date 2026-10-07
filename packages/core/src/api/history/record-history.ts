@@ -15,21 +15,21 @@ export async function currentUser(): Promise<string | null> {
   return (await stampedUser()) ?? null
 }
 
-async function saveHistory(entry: HistoryEntry): Promise<void> {
+export async function saveHistory(entry: HistoryEntry): Promise<void> {
   await db.setHistory(entry)
   sync.markDirty(HISTORY, entry.id)
   queryClient.invalidateQueries({ queryKey: keys.activity })
 }
 
 async function record(
-  input: Pick<
-    HistoryEntry,
-    "boardId" | "entityId" | "entityType" | "action" | "data"
-  >
+  input: Pick<HistoryEntry, "boardId" | "entityId" | "entityType" | "action">,
+  title: string,
+  data: Data
 ): Promise<void> {
   const now = stamp()
   await saveHistory({
     ...input,
+    data: { title, ...data },
     id: newId("hist"),
     userId: await currentUser(),
     createdAt: now,
@@ -39,15 +39,34 @@ async function record(
 }
 
 export const recordHistory = {
-  card: (boardId: string, cardId: string, action: Action, data: Data = {}) =>
-    record({ boardId, entityId: cardId, entityType: "card", action, data }),
-  column: (
+  card: (
     boardId: string,
-    columnId: string,
+    cardId: string,
+    title: string,
     action: Action,
     data: Data = {}
   ) =>
-    record({ boardId, entityId: columnId, entityType: "column", action, data }),
-  board: (boardId: string, action: Action, data: Data = {}) =>
-    record({ boardId, entityId: boardId, entityType: "board", action, data }),
+    record(
+      { boardId, entityId: cardId, entityType: "card", action },
+      title,
+      data
+    ),
+  column: (
+    boardId: string,
+    columnId: string,
+    title: string,
+    action: Action,
+    data: Data = {}
+  ) =>
+    record(
+      { boardId, entityId: columnId, entityType: "column", action },
+      title,
+      data
+    ),
+  board: (boardId: string, title: string, action: Action, data: Data = {}) =>
+    record(
+      { boardId, entityId: boardId, entityType: "board", action },
+      title,
+      data
+    ),
 }

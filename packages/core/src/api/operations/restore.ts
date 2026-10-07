@@ -37,12 +37,14 @@ export async function restore(kind: TrashKind, id: string): Promise<void> {
   const revivedColumns: Column[] = []
   let revivedDashboard: Dashboard | undefined
   let boardId: string
+  let title: string
 
   if (kind === DASHBOARDS) {
     const dashboard = dashboards.find((d) => d.id === id)
     if (!dashboard?.deletedAt) return
     revivedDashboard = dashboard
     boardId = id
+    title = dashboard.title
     revivedColumns.push(
       ...cascadedFrom(
         columns.filter((c) => c.dashboardId === id),
@@ -60,6 +62,7 @@ export async function restore(kind: TrashKind, id: string): Promise<void> {
     const dashboard = dashboards.find((d) => d.id === column.dashboardId)
     if (!dashboard) return
     boardId = dashboard.id
+    title = column.title
     revivedColumns.push(column)
     cards.push(...cascadedFrom(await db.getCards(id), column.deletedAt))
     if (!live(dashboard)) revivedDashboard = dashboard
@@ -70,6 +73,7 @@ export async function restore(kind: TrashKind, id: string): Promise<void> {
     const dashboard = dashboards.find((d) => d.id === column?.dashboardId)
     if (!column || !dashboard) return
     boardId = dashboard.id
+    title = card.title
     cards.push(card)
     if (!live(column)) revivedColumns.push(column)
     if (!live(dashboard)) revivedDashboard = dashboard
@@ -90,7 +94,8 @@ export async function restore(kind: TrashKind, id: string): Promise<void> {
     sync.markDirty(CARDS, card.id)
   }
 
-  if (kind === DASHBOARDS) await recordHistory.board(id, "restore")
-  else if (kind === COLUMNS) await recordHistory.column(boardId, id, "restore")
-  else await recordHistory.card(boardId, id, "restore")
+  if (kind === DASHBOARDS) await recordHistory.board(id, title, "restore")
+  else if (kind === COLUMNS)
+    await recordHistory.column(boardId, id, title, "restore")
+  else await recordHistory.card(boardId, id, title, "restore")
 }

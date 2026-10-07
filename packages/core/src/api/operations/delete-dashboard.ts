@@ -19,5 +19,5 @@ export async function deleteDashboard(id: string): Promise<void> {
   sync.markDirty("dashboards", id)
   for (const c of columns) sync.markDirty("columns", c.id)
   for (const c of cards) sync.markDirty("cards", c.id)
-  if (dashboard) await recordHistory.board(id, "delete")
+  if (dashboard) await recordHistory.board(id, dashboard.title, "delete")
 }

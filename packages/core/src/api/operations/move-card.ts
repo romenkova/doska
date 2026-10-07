@@ -27,7 +27,12 @@ export async function moveCard(
       }
       await db.setCard(touchCard(moved, ["place"], now))
       if (existing.columnId !== card.columnId)
-        await recordColumnChange(card.id, existing.columnId, card.columnId)
+        await recordColumnChange(
+          card.id,
+          existing.title,
+          existing.columnId,
+          card.columnId
+        )
     })
   )
   for (const card of changed) sync.markDirty("cards", card.id)
@@ -35,13 +40,14 @@ export async function moveCard(
 
 async function recordColumnChange(
   cardId: string,
+  title: string,
   fromColumnId: string,
   toColumnId: string
 ): Promise<void> {
   const from = await db.getColumn(fromColumnId)
   const to = await db.getColumn(toColumnId)
   if (!from || !to) return
-  await recordHistory.card(to.dashboardId, cardId, "move", {
+  await recordHistory.card(to.dashboardId, cardId, title, "move", {
     from: from.title,
     to: to.title,
   })

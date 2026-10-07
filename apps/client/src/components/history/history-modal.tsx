@@ -21,7 +21,7 @@ export function HistoryModal({
   open,
   onOpenChange,
 }: IProps) {
-  const { data: entries } = useHistory(entityId, open)
+  const { data: entries } = useHistory(entityType, entityId, open)
 
   return (
     <Modal open={open} onOpenChange={onOpenChange}>

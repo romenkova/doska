@@ -33,6 +33,6 @@ export async function createCard(columnId: string): Promise<string> {
   }
   await db.setCard(touchCard(card, CARD_GROUPS))
   sync.markDirty("cards", id)
-  await recordHistory.card(column.dashboardId, id, "create")
+  await recordHistory.card(column.dashboardId, id, card.title, "create")
   return id
 }

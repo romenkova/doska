@@ -35,6 +35,6 @@ export async function createColumn(
   }
   await db.setColumn(touchColumn(column, COLUMN_GROUPS))
   sync.markDirty("columns", id)
-  await recordHistory.column(dashboardId, id, "create")
+  await recordHistory.column(dashboardId, id, title, "create")
   return id
 }

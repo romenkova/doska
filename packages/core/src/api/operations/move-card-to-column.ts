@@ -36,7 +36,7 @@ export async function moveCardToColumn(
     await db.setCard(touchCard({ ...card, columnId, position }, ["place"]))
     sync.markDirty("cards", id)
     if (from && from.id !== to.id)
-      await recordHistory.card(to.dashboardId, id, "move", {
+      await recordHistory.card(to.dashboardId, id, card.title, "move", {
         from: from.title,
         to: to.title,
       })
@@ -63,7 +63,7 @@ export async function moveCardToColumn(
 
   const fromBoard = await db.getDashboard(from.dashboardId)
   const toBoard = await db.getDashboard(to.dashboardId)
-  await recordHistory.card(to.dashboardId, copyId, "move", {
+  await recordHistory.card(to.dashboardId, copyId, card.title, "move", {
     from: from.title,
     to: to.title,
     fromBoard: fromBoard?.title ?? "",

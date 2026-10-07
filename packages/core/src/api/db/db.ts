@@ -163,12 +163,12 @@ export const db = {
     })
     return entries.sort((a, b) => b.createdAt - a.createdAt)
   },
-  /** Newest first. Both adapters only read ascending, so take the tail. */
-  async getActivity(limit: number): Promise<HistoryEntry[]> {
+  /** Newest first. Both adapters only read ascending, so reverse. */
+  async getAllHistory(): Promise<HistoryEntry[]> {
     const entries = await runtime().db.getAll<HistoryEntry>(HISTORY, {
       index: HISTORY_BY_CREATED,
     })
-    return entries.slice(-limit).reverse()
+    return entries.reverse()
   },
   getExpiredHistory(cutoff: number): Promise<HistoryEntry[]> {
     return runtime().db.getAll<HistoryEntry>(HISTORY, {
