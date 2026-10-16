@@ -61,14 +61,7 @@ export function useSetColumnDone(deckId: string) {
     ({ id, done }: { id: string; done: boolean }) =>
       api.setColumnDone(id, done),
     {
-      // Marking one clears the others here too, or the board flickers two done
-      // columns until the refetch lands.
-      apply: (board, { id, done }) => ({
-        ...board,
-        columns: board.columns.map((c) =>
-          c.id === id ? { ...c, done } : { ...c, done: done ? false : c.done }
-        ),
-      }),
+      apply: (board, { id, done }) => patchColumn(board, id, { done }),
       also: () => [keys.digest],
     }
   )

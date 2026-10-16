@@ -1,9 +1,9 @@
-import type { DirectoryUser } from "@doska/contract"
+import type { ActiveUser } from "@doska/contract"
 import { asc, sql } from "drizzle-orm"
 import { db } from "./client"
 import { user } from "./schema"
 
-export function listUsers(): Promise<DirectoryUser[]> {
+export function listActiveUsers(): Promise<ActiveUser[]> {
   return db
     .select({
       id: user.id,

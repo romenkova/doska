@@ -46,20 +46,20 @@ Doska never makes you wait on the server, doesn't keep features behind a paywall
 
 ## Features
 
-- [x] **Offline-first**, local-first
-- [x] **Markdown editor**: syntax highlighting, tasks with a counter, slash menu
-- [x] Server to **sync** boards across devices
-- [x] **Accounts:** members, shared boards, public boards
-- [x] **Local folder sync:** boards and columns as folders, cards as Markdown files
-- [x] **Attachments:** files, images
-- [x] **SSO:** OIDC-compatible auth provider
-- [x] **Deadlines, priorities** and sorting for cards on the board
-- [x] **MCP** server
-- [x] Cross-board deadlines view
-- [x] **Quick note window**: always on top, opened with a keyboard shortcut
-- [x] **Tags**
-- [x] **Assign users** to cards
-- [ ] Activity/history view
+- **Offline-first**, local-first
+- **Markdown editor**: syntax highlighting, tasks with a counter, slash menu
+- Server to **sync** boards across devices
+- **Accounts:** members, shared boards, public boards
+- **Local folder sync:** boards and columns as folders, cards as Markdown files
+- **Attachments:** files, images
+- **SSO:** OIDC-compatible auth provider
+- **Deadlines, priorities** and sorting for cards on the board
+- **MCP** server
+- **Cross-board deadlines view**
+- **Quick note window**: always on top, opened with a keyboard shortcut
+- **Tags**
+- **Assign users** to cards
+- **Activity history view**
 
 ## Apps
 

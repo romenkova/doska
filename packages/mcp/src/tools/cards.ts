@@ -252,7 +252,7 @@ export function registerCardTools(server: McpServer, board: Board): void {
     {
       title: "Mark card done",
       description:
-        "Move a card into the board's done column, or back out of it — " +
+        "Move a card into the board's leftmost done column or back out of it — " +
         "what ticking a card off means on this board. Fails if no column " +
         "is marked done; set one with update_column.",
       inputSchema: {

@@ -6,7 +6,7 @@ import { rpc } from "./rpc"
 /*  while the page under test is signed in as the member.                      */
 /* -------------------------------------------------------------------------- */
 
-/** The account named `username`, from the directory the picker reads. */
+/** The account named `username`, from the active users the picker reads. */
 async function accountId(
   request: APIRequestContext,
   username: string

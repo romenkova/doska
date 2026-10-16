@@ -2,6 +2,7 @@ import os from "node:os"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
 import { defineConfig, devices } from "@playwright/test"
+import { seenModals } from "./e2e/helpers/seen-modals"
 
 const here = path.dirname(fileURLToPath(import.meta.url))
 const CLIENT_DIR = path.resolve(here, "../../apps/client")
@@ -16,6 +17,7 @@ const FILES_TMP = path.join(os.tmpdir(), "doska-e2e-files")
  * run never inherits another run's board state.
  */
 const SYNC_PORT = 3100
+const BASE_URL = "http://localhost:4173"
 
 export default defineConfig({
   testDir: "./e2e",
@@ -24,7 +26,8 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 1,
   reporter: "list",
   use: {
-    baseURL: "http://localhost:4173",
+    baseURL: BASE_URL,
+    storageState: seenModals(BASE_URL),
     colorScheme: "dark",
     // Keep a trace from the failing attempt so a rare flake is debuggable after
     // the fact (`npx playwright show-trace`), without the cost on green runs.

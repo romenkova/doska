@@ -1,5 +1,5 @@
 // Set once we've asked, so a declined prompt isn't re-raised on every load.
-const ASKED_KEY = "deck:storage-persist-asked"
+export const ASKED_KEY = "deck:storage-persist-asked"
 
 /**
  * Asks the browser to exempt this origin from storage eviction. Boards live

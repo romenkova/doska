@@ -62,16 +62,13 @@ test.describe("list continuation", () => {
 
     await notes.pressSequentially("- milk")
     await notes.press("Enter")
-    // The continued row is empty. Enter there first loosens the list, putting
-    // a blank line above the row; Enter again strips its marker — the way out
-    // of a list.
+    await expect.poll(() => fieldText(notes)).toBe("- milk\n- ")
+    // Enter on the empty row strips its marker, with no blank line first.
     await notes.press("Enter")
-    await expect.poll(() => fieldText(notes)).toBe("- milk\n\n- ")
-    await notes.press("Enter")
-    await expect.poll(() => fieldText(notes)).toBe("- milk\n\n")
+    await expect.poll(() => fieldText(notes)).toBe("- milk\n")
 
     await notes.pressSequentially("plain prose")
-    await expect.poll(() => fieldText(notes)).toBe("- milk\n\nplain prose")
+    await expect.poll(() => fieldText(notes)).toBe("- milk\nplain prose")
   })
 
   test("Enter on a plain line is left alone", async ({ page }) => {

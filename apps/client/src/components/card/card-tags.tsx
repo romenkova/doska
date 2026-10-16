@@ -1,5 +1,4 @@
-import { CardContent, MdTag, TagChip, cn } from "@doska/ui-kit"
-import { useMarkdownRenderers } from "@doska/markdown"
+import { CardContent, MdTag, cn } from "@doska/ui-kit"
 import { useBoardMembers } from "@doska/core"
 import { AtSign } from "lucide-react"
 import { useDeck } from "@/providers/deck/deck-context"
@@ -12,8 +11,7 @@ interface IProps {
 }
 
 export function CardTags({ tags, users, className }: IProps) {
-  const { onTagClick } = useMarkdownRenderers()
-  const { id: deckId } = useDeck()
+  const { id: deckId, toggleTagFilter, toggleUserFilter } = useDeck()
   const { authed } = useAuth()
   const { data: roster } = useBoardMembers(deckId, !!authed)
 
@@ -25,13 +23,19 @@ export function CardTags({ tags, users, className }: IProps) {
   return (
     <CardContent className={cn("flex flex-wrap gap-1 pt-2", className)}>
       {members.map((member) => (
-        <TagChip key={member.userId} label={member.username} icon={AtSign} />
+        <MdTag
+          key={member.userId}
+          name={member.username}
+          icon={AtSign}
+          title={`Show cards assigned to @${member.username}`}
+          onSelect={toggleUserFilter && (() => toggleUserFilter(member.userId))}
+        />
       ))}
       {tags.map((tag) => (
         <MdTag
           key={tag}
           name={tag}
-          onSelect={onTagClick && (() => onTagClick(tag))}
+          onSelect={toggleTagFilter && (() => toggleTagFilter(tag))}
         />
       ))}
     </CardContent>

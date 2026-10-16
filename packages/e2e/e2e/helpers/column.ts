@@ -55,6 +55,8 @@ export async function renameColumn(
 
 /** Opens the named column's "⋯" menu — its color, done flag and delete live there. */
 export async function openColumnMenu(page: Page, name: string): Promise<void> {
+  // A menu from the previous call stays in the DOM while it animates closed.
+  await expect(page.getByRole("menu")).toHaveCount(0)
   await column(page, name).getByRole("button", { name: `${name} actions` }).click()
   await expect(page.getByRole("menu")).toBeVisible()
 }

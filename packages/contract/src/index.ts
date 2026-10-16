@@ -6,7 +6,7 @@ import type {
   ColumnSchema,
   DashboardChangeSchema,
   DashboardSchema,
-  DirectoryUserSchema,
+  ActiveUserSchema,
   HistoryEntrySchema,
   MemberRoleSchema,
   MemberSchema,
@@ -28,7 +28,7 @@ export type Change = z.infer<typeof ChangeSchema>
 export type DashboardChange = z.infer<typeof DashboardChangeSchema>
 export type Member = z.infer<typeof MemberSchema>
 export type MemberRole = z.infer<typeof MemberRoleSchema>
-export type DirectoryUser = z.infer<typeof DirectoryUserSchema>
+export type ActiveUser = z.infer<typeof ActiveUserSchema>
 export type HistoryEntry = z.infer<typeof HistoryEntrySchema>
 export type PublicBoard = z.infer<typeof PublicBoardSchema>
 export type SidebarItem = z.infer<typeof SidebarItemSchema>

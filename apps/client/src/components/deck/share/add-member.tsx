@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { UserPlus } from "lucide-react"
 import { Button, Input } from "@doska/ui-kit"
-import { useAddMember, useDirectory, type Member } from "@doska/core"
+import { useAddMember, useActiveUsers, type Member } from "@doska/core"
 
 interface IProps {
   boardId: string
@@ -14,11 +14,11 @@ const FILTER_FROM = 6
 /** The picker: every account on the server that is not already on the board. */
 export function AddMember({ boardId, members }: IProps) {
   const [filter, setFilter] = useState("")
-  const directory = useDirectory(true)
+  const activeUsers = useActiveUsers(true)
   const add = useAddMember(boardId)
 
   const onBoard = new Set(members.map((member) => member.userId))
-  const candidates = (directory.data ?? []).filter(
+  const candidates = (activeUsers.data ?? []).filter(
     (account) => !onBoard.has(account.id)
   )
   const needle = filter.trim().toLowerCase()
@@ -34,15 +34,15 @@ export function AddMember({ boardId, members }: IProps) {
         <UserPlus className="size-4 text-muted-foreground" />
         Add someone
       </div>
-      {directory.isPending && (
+      {activeUsers.isPending && (
         <p className="text-xs text-muted-foreground">Loading accounts…</p>
       )}
-      {directory.error && (
-        <p className="text-xs text-destructive">{directory.error.message}</p>
+      {activeUsers.error && (
+        <p className="text-xs text-destructive">{activeUsers.error.message}</p>
       )}
-      {directory.data && candidates.length === 0 && (
+      {activeUsers.data && candidates.length === 0 && (
         <p className="text-xs text-muted-foreground">
-          {directory.data.length > 1
+          {activeUsers.data.length > 1
             ? "Everyone on this server is already on this board."
             : "Nobody else has an account on this server yet."}
         </p>

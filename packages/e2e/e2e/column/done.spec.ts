@@ -30,16 +30,16 @@ test.describe("marking a column done", () => {
     await expect(columnDoneBadge(page, "Done")).toHaveCount(0)
   })
 
-  test("marking a second column done clears the first", async ({ page }) => {
+  test("marking a second column done keeps the first", async ({ page }) => {
     await createBoard(page)
     await setColumnDone(page, "Done", true)
     await setColumnDone(page, "In Progress", true)
 
-    await expect(columnDoneBadge(page, "Done")).toHaveCount(0)
+    await expect(columnDoneBadge(page, "Done")).toBeVisible()
 
     await page.reload()
     await expect(columnDoneBadge(page, "In Progress")).toBeVisible()
-    await expect(columnDoneBadge(page, "Done")).toHaveCount(0)
+    await expect(columnDoneBadge(page, "Done")).toBeVisible()
   })
 
   test("a card in a done column reads as done in the digest", async ({

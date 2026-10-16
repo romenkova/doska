@@ -20,10 +20,13 @@ import { ErrorBoundary } from "@/components/error-boundary"
 import { PublicRouter } from "@/components/public/public-router"
 import { UpdateToast } from "@/components/toasts/update/update-toast"
 import { OfflineToast } from "@/components/toasts/offline/offline-toast"
+import { WhatsNewToast } from "@/components/toasts/whats-new/whats-new-toast"
+import { OnboardingModal } from "@/components/onboarding/onboarding-modal"
 import { UndoToaster } from "@/components/toasts/card-delete/undo-toaster"
 import { WindowDragRegion } from "@/components/window-drag-region"
 import { WindowControlsFlag } from "@/components/window-controls-flag"
 import { WindowSyncListener } from "@/components/card-window/window-sync-listener"
+import { DevMenu } from "@/components/dev-menu/dev-menu"
 import "./index.css"
 
 const root = createRoot(document.getElementById("root")!)
@@ -88,9 +91,12 @@ if (isPublicLink) {
               <UndoToaster />
               <UpdateToast />
               <OfflineToast />
+              <WhatsNewToast />
+              <OnboardingModal />
               <WindowDragRegion />
               <WindowControlsFlag />
               <WindowSyncListener />
+              {import.meta.env.DEV && <DevMenu />}
             </LoginPromptProvider>
           </ThemeProvider>
         </QueryClientProvider>

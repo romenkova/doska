@@ -9,6 +9,8 @@ export function completions(sources: CompletionSource[]): Extension {
     autocompletion({
       override: sources,
       icons: false,
+      activateOnTypingDelay: 0,
+      interactionDelay: 0,
       tooltipClass: () => "font-sans shadow-e3",
     }),
     // Absolute keeps the menu inside the panel's stacking context

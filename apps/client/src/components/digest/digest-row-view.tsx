@@ -8,6 +8,7 @@ import {
 } from "@doska/core"
 import { useDashboardNav } from "@/lib/hooks"
 import { REORDER_TRANSITION } from "@/lib/motion"
+import { DeckProvider, useDeck } from "@/providers/deck/deck-context"
 import { DigestRow } from "./digest-row"
 import { DoneColumnHelp } from "./done-column-help"
 
@@ -22,6 +23,7 @@ interface IProps {
  * explanation shown when the board has nowhere to move it to. */
 export function DigestRowView({ entry, isActive, showBoard, onOpen }: IProps) {
   const { card, boardId, isDone, doneColumnId, undoneColumnId } = entry
+  const deck = useDeck()
   const { selectDashboard } = useDashboardNav()
   const { mutate: moveCardToColumn } = useMoveCardToColumn()
   const { mutate: saveCard } = useSaveCard()
@@ -43,19 +45,21 @@ export function DigestRowView({ entry, isActive, showBoard, onOpen }: IProps) {
       exit={{ opacity: 0 }}
       transition={REORDER_TRANSITION}
     >
-      <DigestRow
-        entry={entry}
-        isActive={isActive}
-        showBoard={showBoard}
-        canToggleDone={target !== null}
-        onOpen={onOpen}
-        onToggleDone={() => {
-          if (target) moveCardToColumn({ id: card.id, columnId: target })
-          else setHelpOpen(true)
-        }}
-        onOpenBoard={() => selectDashboard(boardId)}
-        onPatch={patchCard}
-      />
+      <DeckProvider value={{ ...deck, id: boardId }}>
+        <DigestRow
+          entry={entry}
+          isActive={isActive}
+          showBoard={showBoard}
+          canToggleDone={target !== null}
+          onOpen={onOpen}
+          onToggleDone={() => {
+            if (target) moveCardToColumn({ id: card.id, columnId: target })
+            else setHelpOpen(true)
+          }}
+          onOpenBoard={() => selectDashboard(boardId)}
+          onPatch={patchCard}
+        />
+      </DeckProvider>
       {!target && (
         <DoneColumnHelp
           open={helpOpen}

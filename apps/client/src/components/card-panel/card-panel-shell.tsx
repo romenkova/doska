@@ -1,5 +1,7 @@
-import { cn, useOptionalSidebar } from "@doska/ui-kit"
+import { cn, useIsMobile, useOptionalSidebar } from "@doska/ui-kit"
 import { useEffect, type CSSProperties, type ReactNode } from "react"
+import { getCardView } from "@/lib/card-view"
+import { CardModalShell } from "./card-modal-shell"
 import { PanelResizeHandle } from "./panel-resize-handle"
 import { usePanelResize } from "./use-panel-resize"
 import { useTearOff } from "./use-tear-off"
@@ -26,15 +28,30 @@ export function CardPanelShell({
   const { width, isResizing, startResizing, resetWidth } = usePanelResize()
   const tearOff = useTearOff(onTearOff)
   const sidebarOpen = useOptionalSidebar()?.open ?? true
+  const isMobile = useIsMobile()
+  const isModal = getCardView() === "modal" && !isMobile
 
   useEffect(() => {
-    if (!isOpen) return
+    if (!isOpen || isModal) return
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose()
     }
     window.addEventListener("keydown", onKeyDown)
     return () => window.removeEventListener("keydown", onKeyDown)
-  }, [isOpen, onClose])
+  }, [isOpen, isModal, onClose])
+
+  if (isModal) {
+    return (
+      <CardModalShell
+        isOpen={isOpen}
+        onClose={onClose}
+        onClosed={onClosed}
+        onTearOff={onTearOff}
+      >
+        {children}
+      </CardModalShell>
+    )
+  }
 
   return (
     <div

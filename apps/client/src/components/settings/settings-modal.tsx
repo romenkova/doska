@@ -4,6 +4,7 @@ import { FaGithub } from "react-icons/fa"
 import { useAuth } from "@/lib/hooks"
 import { SettingsSection } from "./section"
 import { SettingsRow } from "./settings-row"
+import { CardViewSection } from "./sections/card-view"
 import { QuickNoteSection } from "./sections/quick-note"
 import { UpdatesSection } from "./sections/updates"
 
@@ -22,6 +23,7 @@ export function SettingsModal({ open, onOpenChange, onOpenAccounts }: IProps) {
         <ModalHeader onClose={() => onOpenChange(false)}>Settings</ModalHeader>
         <CardContent className="flex flex-col overflow-y-auto px-0">
           <UpdatesSection />
+          <CardViewSection />
           <QuickNoteSection />
           <SettingsSection>
             <div className="flex flex-col">

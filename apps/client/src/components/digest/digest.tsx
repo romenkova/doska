@@ -4,6 +4,7 @@ import type {
   DigestFilter,
   DigestGroup,
 } from "@doska/core"
+import { TagFilterPills } from "../deck/deck-header/tag-filter-pills"
 import { DigestBody } from "./digest-body"
 import { DigestHeader } from "./digest-header"
 
@@ -50,6 +51,7 @@ export function Digest({
         hiddenBoards={hiddenBoards}
         onToggleBoard={onToggleBoard}
       />
+      <TagFilterPills />
 
       <div className="min-h-0 flex-1 overflow-y-auto px-4 py-10 sm:px-4">
         <div className="mx-auto max-w-lg">

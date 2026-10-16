@@ -16,7 +16,8 @@ export interface DigestCard {
   columnTitle: string
   columnColor: string
   isDone: boolean
-  /** Where ticking the row's checkbox sends the card; null if the board has no done column. */
+  /** Where ticking the row's checkbox sends the card - leftmost done column;
+   * null if the board has no done column. */
   doneColumnId: string | null
   /** Where un-ticking sends it: the board's leftmost non-done column. */
   undoneColumnId: string | null

@@ -1,4 +1,4 @@
-import type { DirectoryUser, Member, MemberRole } from "@doska/contract"
+import type { ActiveUser, Member, MemberRole } from "@doska/contract"
 import { orpc } from "./sync/orpc"
 
 /** A board's roster plus what the account reading it is allowed to do. */
@@ -24,7 +24,7 @@ export function removeMember(boardId: string, userId: string): Promise<void> {
   return orpc.members.remove({ boardId, userId })
 }
 
-export async function listDirectory(): Promise<DirectoryUser[]> {
+export async function listActiveUsers(): Promise<ActiveUser[]> {
   const { users } = await orpc.users.list()
   return users
 }

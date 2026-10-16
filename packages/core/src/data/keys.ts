@@ -40,7 +40,7 @@ export const keys = {
   publicBoard: (token: string) => ["public-board", token] as const,
   publishedBoards: ["public-status", "published"] as const,
   sharedBoards: ["dashboards", "shared"] as const,
-  directory: ["directory"] as const,
+  activeUsers: ["activeUsers"] as const,
   unclaimedLocalBoards: ["unclaimed-local-boards"] as const,
   /** Both sit under the board key, so a board invalidation refreshes them. */
   cardRefOptions: (deckId: string) => ["board", deckId, "ref-options"] as const,

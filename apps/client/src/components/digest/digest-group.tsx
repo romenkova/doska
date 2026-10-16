@@ -25,7 +25,7 @@ export function DigestGroup({
   const { kind, date, entries } = group
   return (
     <motion.section
-      layout
+      layout="position"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}

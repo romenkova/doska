@@ -3,7 +3,7 @@ import { z } from "zod"
 import {
   ChangeSchema,
   DashboardChangeSchema,
-  DirectoryUserSchema,
+  ActiveUserSchema,
   HistoryEntrySchema,
   MemberRoleSchema,
   MemberSchema,
@@ -119,7 +119,7 @@ export const contract = {
       .output(z.void()),
   },
   users: {
-    list: oc.output(z.object({ users: z.array(DirectoryUserSchema) })),
+    list: oc.output(z.object({ users: z.array(ActiveUserSchema) })),
   },
   accounts: {
     ownedBoards: oc

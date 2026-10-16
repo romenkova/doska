@@ -14,10 +14,10 @@ Ids and references
 
 Columns
 - Column order is left to right; card order is top to bottom.
-- One column per board may be the done column (done: true). Cards in it count as
-  finished — that is what "mark this done" means, so use set_card_done rather
-  than inventing a checkbox or a [done] tag. Marking a column done clears the
-  flag from the board's other columns.
+- Any number of columns per board may be done columns (done: true), e.g. Done,
+  Canceled, Archived. Cards in them count as finished. That is what "mark this
+  done" means, so use set_card_done rather than inventing a checkbox or a
+  [done] tag. It moves the card to the leftmost done column.
 - A column may carry a color from a fixed palette (see update_column), and may
   be collapsed, which hides its cards' bodies down to their titles.
 

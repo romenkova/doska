@@ -11,12 +11,13 @@ import {
 
 interface IProps {
   onDone: () => void
+  onCancel?: () => void
 }
 
 /**
  * Desktop sign-in: pick the server, then sign in through the system browser
  */
-export function BrowserLogin({ onDone }: IProps) {
+export function BrowserLogin({ onDone, onCancel }: IProps) {
   const [server, setServer] = useState(() => getServerUrl())
   const [attempt, setAttempt] = useState<DesktopLogin | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -72,9 +73,11 @@ export function BrowserLogin({ onDone }: IProps) {
       </div>
 
       <div className="flex justify-end gap-2">
-        <Button type="button" variant="ghost" onClick={onDone}>
-          Cancel
-        </Button>
+        {onCancel && (
+          <Button type="button" variant="ghost" onClick={onCancel}>
+            Cancel
+          </Button>
+        )}
         <Button type="submit" disabled={isPending || !server.trim()}>
           {isPending
             ? "Signing in..."

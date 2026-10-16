@@ -34,7 +34,7 @@ an access token from there on. Same URL works for Claude Desktop and claude.ai.
 | `create_card`                    | Add a card to a column — title, Markdown body, optional deadline, priority, assignees  |
 | `update_card`                    | Edit title, body, deadline, priority, or assignees; or `append` to the body            |
 | `move_card`                      | To another column, to an end of one, or directly above a named card                    |
-| `set_card_done`                  | Into the board's done column, or back out to the leftmost open one                     |
+| `set_card_done`                  | Into the board's leftmost done column, or back out to the leftmost open one            |
 | `check_task`                     | Tick or untick one task-list checkbox by index, leaving the rest of the body untouched |
 | `delete_card`                    | Delete a card                                                                          |
 | `search_cards`                   | Across every board, by text, deadline range, priority, assignee, or column             |

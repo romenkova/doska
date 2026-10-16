@@ -5,6 +5,31 @@
 ### Added
 
 - History for cards and boards: shows users' activity, and changes for past 14 days.
+- Setting to open cards in a centered modal instead of the side panel. 
+- Formatting shortcuts in the editor: Cmd/Ctrl+B bold, Cmd/Ctrl+I italic,
+  Cmd/Ctrl+E inline code, Cmd/Ctrl+Enter ticks a task or turns the line into one,
+  Tab / Shift+Tab indent.
+- Shortcuts modal on the card: editor shortcuts and tips.
+- Upcoming can be filtered by tag and assignee, same as the board.
+- Onboarding slides for new users, and a What's new toast after an update that
+  opens slides on what changed.
+- Image preview zooms.
+
+### Fixed
+
+- Retry on the offline toast crashed instead of syncing.
+- Enter in a list no longer leaves a blank line between items.
+- Assignees show in Upcoming, not only on cards from the open board.
+- The `/` and autocomplete menus respond quicker.
+- On macOS, modals no longer being overlapped by the window's traffic-light buttons.
+- A device that has never signed in no longer asks the server for a session on
+  launch.
+- Offline toast has Continue offline, which stops the offline notices and sync
+  retries until the connection comes back.
+
+### Changed
+
+- A board can have several done columns. Ticking a card in the list view, moves it to the leftmost one.
 
 ## [0.26.0] - 2026-10-08
 

@@ -23,7 +23,7 @@ import {
   revokeAllMemberships,
   writeMembers,
 } from "./db/sync"
-import { listUsers } from "./db/users"
+import { listActiveUsers } from "./db/users"
 
 const os = implement(contract).$context<{ userId: string }>()
 
@@ -124,7 +124,7 @@ export const router = os.router({
     }),
   },
   users: {
-    list: os.users.list.handler(async () => ({ users: await listUsers() })),
+    list: os.users.list.handler(async () => ({ users: await listActiveUsers() })),
   },
   accounts: {
     ownedBoards: os.accounts.ownedBoards.handler(async ({ input, context }) => {

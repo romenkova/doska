@@ -1,4 +1,7 @@
 import { defineConfig, devices } from "@playwright/test"
+import { seenModals } from "./e2e/helpers/seen-modals"
+
+const BASE_URL = process.env.BASE_URL || "http://localhost:8080"
 
 /**
  * Runs the `@container`-tagged specs against an already-running self-host stack
@@ -14,7 +17,8 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 1,
   reporter: "list",
   use: {
-    baseURL: process.env.BASE_URL || "http://localhost:8080",
+    baseURL: BASE_URL,
+    storageState: seenModals(BASE_URL),
     trace: "retain-on-failure",
     actionTimeout: 10_000,
     serviceWorkers: "block",

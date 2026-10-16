@@ -1,5 +1,10 @@
 import { closeBrackets, closeBracketsKeymap } from "@codemirror/autocomplete"
-import { defaultKeymap, history, historyKeymap } from "@codemirror/commands"
+import {
+  defaultKeymap,
+  history,
+  historyKeymap,
+  indentWithTab,
+} from "@codemirror/commands"
 import { Compartment, EditorState, type Extension } from "@codemirror/state"
 import { EditorView, keymap, placeholder } from "@codemirror/view"
 import type { RefObject } from "react"
@@ -16,6 +21,7 @@ import {
   wikilinkCompletion,
 } from "./completions"
 import { decorations, wikilinkTargets } from "./decorations"
+import { formatKeymap } from "./format-keymap"
 import { markdownSyntax } from "./language"
 import { pasteFiles } from "./paste-files"
 import { theme } from "./theme"
@@ -69,6 +75,8 @@ export function editorExtensions(
         targets.of(wikilinkTargets.of(new Set())),
         closeBrackets(),
         keymap.of(closeBracketsKeymap),
+        formatKeymap,
+        keymap.of([indentWithTab]),
         EditorState.languageData.of(() => [
           { closeBrackets: { brackets: BRACKETS } },
         ]),

@@ -10,7 +10,7 @@ import {
   getBoardHistory,
   getHistory,
 } from "../api/history/get-history"
-import { listDirectory, listMembers, listSharedBoards } from "../api/members"
+import { listActiveUsers, listMembers, listSharedBoards } from "../api/members"
 import {
   hasUnclaimedLocalBoards,
   UNCLAIMED_BOARDS_WARNING,
@@ -137,10 +137,10 @@ export function useSharedBoards(enabled: boolean) {
 }
 
 /** Every active account, for the member picker. Any session may read it. */
-export function useDirectory(enabled: boolean) {
+export function useActiveUsers(enabled: boolean) {
   return useQuery({
-    queryKey: keys.directory,
-    queryFn: listDirectory,
+    queryKey: keys.activeUsers,
+    queryFn: listActiveUsers,
     enabled,
   })
 }

@@ -46,7 +46,7 @@ See [Accounts](/accounts).
 | `create_card`                    | Add a card to a column: title, Markdown body, optional `YYYY-MM-DD` deadline           |
 | `update_card`                    | Edit title, body, or deadline; or `append` to the body without rewriting it            |
 | `move_card`                      | To another column, to an end of one, or directly above a named card                    |
-| `set_card_done`                  | Into the board's done column, or back out to the leftmost open one                     |
+| `set_card_done`                  | Into the board's leftmost done column, or back out to the leftmost open one            |
 | `check_task`                     | Tick or untick one task-list checkbox by index, leaving the rest of the body untouched |
 | `delete_card`                    | Delete a card                                                                          |
 | `search_cards`                   | Across every board, by text, deadline range, or column                                 |

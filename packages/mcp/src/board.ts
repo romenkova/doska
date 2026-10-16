@@ -114,7 +114,7 @@ export const tombstoneCard = (card: Card, at: number): Card =>
 export const tombstoneColumn = (column: Column, at: number): Column =>
   touchColumn({ ...column, deletedAt: at }, ["deleted"], at)
 
-/** The column whose cards count as finished, if the board has one. */
+/** Where ticking a card sends it: the board's leftmost done column. */
 export const doneColumn = (columns: Column[]): Column | undefined =>
   columns.find((c) => c.done)
 

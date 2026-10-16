@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react"
 import { useLocation, useRoute } from "wouter"
 import {
+  filterByTags,
+  filterByUsers,
   groupByDeadline,
   type DigestFilter,
   sync,
@@ -8,6 +10,7 @@ import {
   useDigest,
 } from "@doska/core"
 import { routes } from "@/lib/routes"
+import { useDeck } from "@/providers/deck/deck-context"
 import { Digest } from "./digest"
 import { useHiddenBoards } from "./use-hidden-boards"
 
@@ -19,6 +22,7 @@ export function DigestView() {
   const [filter, setFilter] = useState<DigestFilter>("week")
   const [hideDone, setHideDone] = useState(false)
   const { hidden, toggleBoard } = useHiddenBoards()
+  const { tagFilters = [], userFilters = [] } = useDeck()
 
   const { data: dashboards = [] } = useDashboards()
   const { data: entries = [], isPending, error } = useDigest(filter)
@@ -32,8 +36,18 @@ export function DigestView() {
     return () => void sync.watchBoards([])
   }, [boardIds])
 
+  const matching = filterByUsers(
+    filterByTags(
+      entries.map((e) => e.card),
+      tagFilters
+    ),
+    userFilters
+  )
   const visible = entries.filter(
-    (e) => !hidden.includes(e.boardId) && !(hideDone && e.isDone)
+    (e) =>
+      matching.includes(e.card) &&
+      !hidden.includes(e.boardId) &&
+      !(hideDone && e.isDone)
   )
 
   return (

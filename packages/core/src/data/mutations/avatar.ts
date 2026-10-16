@@ -13,7 +13,7 @@ export function useSetAvatar() {
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: keys.session })
       void qc.invalidateQueries({ queryKey: ["members"] })
-      void qc.invalidateQueries({ queryKey: keys.directory })
+      void qc.invalidateQueries({ queryKey: keys.activeUsers })
       void qc.invalidateQueries({ queryKey: keys.accounts })
     },
   })

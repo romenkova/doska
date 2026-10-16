@@ -39,7 +39,7 @@ export function registerColumnTools(server: McpServer, board: Board): void {
         done: z
           .boolean()
           .default(false)
-          .describe("Make this the board's done column, clearing any other"),
+          .describe("Cards in this column count as done"),
       },
     },
     async ({ boardId, title, color, done }) => {
@@ -62,7 +62,6 @@ export function registerColumnTools(server: McpServer, board: Board): void {
         now
       )
       const changes: Change[] = [{ store: "columns", record: column }]
-      if (done) changes.push(...clearOtherDone(columns, column.id, now))
 
       await board.pushBoard(boardId, changes)
       return reply(shapeColumn(column))
@@ -74,10 +73,9 @@ export function registerColumnTools(server: McpServer, board: Board): void {
     {
       title: "Update column",
       description:
-        "Change a column's title, color, collapsed state, or whether it is " +
-        "the board's done column. Omitted fields are left alone; a null " +
-        "color clears it. Only one column per board can be done, so " +
-        "marking one clears the rest.",
+        "Change a column's title, color, collapsed state, or whether its " +
+        "cards count as done. Omitted fields are left alone; a null " +
+        "color clears it.",
       inputSchema: {
         boardId: z.string(),
         columnId: z.string(),
@@ -91,7 +89,6 @@ export function registerColumnTools(server: McpServer, board: Board): void {
       },
     },
     async ({ boardId, columnId, title, color, collapsed, done }) => {
-      const { columns } = await board.board(boardId)
       const existing = await board.column(boardId, columnId)
 
       const next: Column = {
@@ -110,7 +107,6 @@ export function registerColumnTools(server: McpServer, board: Board): void {
       const now = board.now()
       const column = touchColumn(next, groups, now)
       const changes: Change[] = [{ store: "columns", record: column }]
-      if (column.done) changes.push(...clearOtherDone(columns, column.id, now))
 
       await board.pushBoard(boardId, changes)
       return reply(shapeColumn(column))
@@ -186,19 +182,4 @@ export function registerColumnTools(server: McpServer, board: Board): void {
       return reply({ deleted: column.id, cards: inColumn.length })
     }
   )
-}
-
-/** "Move this card to done" needs a single answer, so a board has at most one
- * done column: marking one clears the flag from every other. */
-function clearOtherDone(
-  columns: Column[],
-  keepId: string,
-  now: number
-): Change[] {
-  return columns
-    .filter((c) => c.done && c.id !== keepId)
-    .map((c) => ({
-      store: "columns",
-      record: touchColumn({ ...c, done: false }, ["done"], now),
-    }))
 }

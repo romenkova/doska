@@ -25,7 +25,7 @@ export function OfflineToast() {
     toast.custom(
       (toastInstance) => (
         <OfflineToastContent
-          onRetry={sync.reconcile}
+          onRetry={() => void sync.reconcile()}
           visible={toastInstance.visible}
           onContinueOffline={continueOffline}
         />

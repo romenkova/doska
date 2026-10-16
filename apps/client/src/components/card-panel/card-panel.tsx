@@ -9,6 +9,7 @@ import { CardPane } from "./card-pane"
 import { CardPanelShell } from "./card-panel-shell"
 import { useCardSave, useDeleteCard, useCard } from "@doska/core"
 import { isDesktop } from "@/lib/platform"
+import { getCardView } from "@/lib/card-view"
 import {
   openCardWindow,
   type DropPoint,
@@ -81,7 +82,7 @@ export function CardPanel({ closeHref }: IProps) {
             })
           }}
           onReveal={() => {
-            if (isMobile) close()
+            if (isMobile || getCardView() === "modal") close()
             reveal(card)
           }}
           onPopOut={popOut && (() => popOut())}

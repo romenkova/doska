@@ -243,7 +243,7 @@ describe("users.list", () => {
     expect(users.find((u) => u.id === ownerId)).toBeDefined()
   })
 
-  test("a deactivated account drops out of the directory", async () => {
+  test("a deactivated account drops out of the active users", async () => {
     await auth.api.banUser({
       body: { userId: memberId },
       headers: new Headers({ cookie: h.cookie }),
