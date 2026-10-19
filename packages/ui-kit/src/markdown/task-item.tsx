@@ -19,12 +19,24 @@ export function MdTaskItem({
   label?: string
   children: ReactNode
 }) {
+  function handleLabelClick(event: MouseEvent<HTMLLIElement>) {
+    if (!onToggle) return
+    const target = event.target as HTMLElement
+    if (target.closest("li") !== event.currentTarget) return
+    if (target.closest("a, button, input")) return
+    if (window.getSelection()?.isCollapsed === false) return
+    event.stopPropagation()
+    onToggle()
+  }
+
   return (
     <li
       className={cn(
         "relative my-1 pl-1 list-none [&>p]:m-0",
+        onToggle && "cursor-pointer",
         checked && "text-muted-foreground/70 dark:text-muted-foreground"
       )}
+      onClick={handleLabelClick}
     >
       {/* The item may sit inside a card's open-detail handler. */}
       <span className="contents" onClick={stopPropagation}>
