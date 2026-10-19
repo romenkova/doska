@@ -6,6 +6,7 @@ import { QuickNotePage } from "@/components/quick-note/quick-note-page"
 import { CardWindowPage } from "@/components/card-window/card-window-page"
 import { SignInPage } from "@/components/login/sign-in-page"
 import { TrashPage } from "@/components/app/trash-page"
+import { TemplatesPage } from "@/components/app/templates-page"
 import { routes } from "./lib/routes"
 
 export function Router() {
@@ -20,6 +21,9 @@ export function Router() {
       </Route>
       <Route path={routes.trash()}>
         <TrashPage />
+      </Route>
+      <Route path={routes.templates()}>
+        <TemplatesPage />
       </Route>
       <Route path={routes.quickNote()}>
         <QuickNotePage />

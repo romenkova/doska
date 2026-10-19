@@ -8,6 +8,7 @@ export const routes = {
   digest: () => "/digest",
   /** Deleted boards, columns and cards, restorable until they age out. */
   trash: () => "/trash",
+  templates: () => "/templates",
   /** The desktop quick-note popup, loaded in its own window. */
   quickNote: () => "/quick-note",
   /** One card torn off the panel into its own desktop window. */
