@@ -7,21 +7,30 @@ import {
 } from "@doska/ui-kit"
 import { Check, Tag } from "lucide-react"
 import { useState } from "react"
-import { useUpdateCard, useCard, useTagOptions, toggleTag } from "@doska/core"
+import {
+  toggleTag,
+  useTagOptions,
+  type Card,
+  type CardPatch,
+} from "@doska/core"
 import { useDeck } from "@/providers/deck/deck-context"
 import { NewTagInput } from "./new-tag-input"
 
 const hasTag = (tags: string[], tag: string) =>
   tags.some((t) => t.toLowerCase() === tag.toLowerCase())
 
-export function TagsSub({ cardId }: { cardId: string }) {
+export function TagsSub({
+  card,
+  onPatch,
+}: {
+  card: Card
+  onPatch: (patch: CardPatch) => void
+}) {
   const { id: deckId } = useDeck()
-  const { data: card } = useCard(cardId)
-  const { mutate: updateCard } = useUpdateCard(cardId)
   const options = useTagOptions(deckId)
   const [query, setQuery] = useState("")
 
-  const attached = card?.tags ?? []
+  const attached = card.tags
   const shown = options.filter((option) =>
     option.name
       .toLowerCase()
@@ -29,7 +38,7 @@ export function TagsSub({ cardId }: { cardId: string }) {
   )
 
   function add(tag: string) {
-    if (!hasTag(attached, tag)) updateCard({ tags: [...attached, tag] })
+    if (!hasTag(attached, tag)) onPatch({ tags: [...attached, tag] })
   }
 
   return (
@@ -51,7 +60,7 @@ export function TagsSub({ cardId }: { cardId: string }) {
               key={option.name}
               closeOnClick={false}
               onClick={() =>
-                updateCard({ tags: toggleTag(attached, option.name) })
+                onPatch({ tags: toggleTag(attached, option.name) })
               }
             >
               #{option.name}
