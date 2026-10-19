@@ -16,6 +16,7 @@ import { SettingsButton } from "@/components/settings/settings-button"
 import { TrashButton } from "@/components/trash/trash-button"
 import { HistoryButton } from "@/components/history/history-button"
 import { UpcomingButton } from "@/components/digest/upcoming-button"
+import { TemplatesButton } from "@/components/templates/templates-button"
 import { isDesktop } from "@/lib/platform"
 
 export function AppSidebar() {
@@ -32,6 +33,7 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarMenu>
             <UpcomingButton />
+            <TemplatesButton />
             <TrashButton />
           </SidebarMenu>
         </SidebarGroup>
