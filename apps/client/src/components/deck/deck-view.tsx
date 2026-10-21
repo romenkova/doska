@@ -1,5 +1,6 @@
 import {
   useCreateCard,
+  useCreateCardFromTemplate,
   useCreateColumn,
   useDeleteColumn,
   useDeleteDashboard,
@@ -51,6 +52,7 @@ export function DeckView({ dashboard }: { dashboard: Dashboard }) {
   const view = useBoardView(id)
 
   const { mutate: createCard } = useCreateCard(id)
+  const { mutate: createCardFromTemplate } = useCreateCardFromTemplate(id)
   const { mutate: moveCard } = useMoveCard(id)
   const { mutate: moveCardToBoard } = useMoveCardToBoard(id)
   const { mutate: createColumn } = useCreateColumn(id)
@@ -82,6 +84,9 @@ export function DeckView({ dashboard }: { dashboard: Dashboard }) {
         setColumnCollapsed({ id: columnId, collapsed })
       }
       onAddCard={createCard}
+      onAddFromTemplate={(columnId, template) =>
+        createCardFromTemplate({ columnId, template })
+      }
       onAddAndOpenCard={(columnId) =>
         createCard(columnId, {
           onSuccess: (cardId) => navigate(routes.card.to(cardId)),

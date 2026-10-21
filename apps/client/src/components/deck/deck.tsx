@@ -9,6 +9,7 @@ import {
   filterByUsers,
   groupCardsByColumn,
   sortCards,
+  type Card,
   type CardPatch,
 } from "@doska/core"
 import { useLandingSlot } from "@/lib/hooks"
@@ -30,6 +31,7 @@ interface IProps {
   isLoading: boolean
   onToggleBody: (columnId: string, collapsed: boolean) => void
   onAddCard: (columnId: string) => void
+  onAddFromTemplate: (columnId: string, template: Card) => void
   /** Creates a card and opens it, for the header's add. */
   onAddAndOpenCard: (columnId: string) => void
   onAddColumn: () => void
@@ -54,6 +56,7 @@ export function Deck({
   isLoading,
   onToggleBody,
   onAddCard,
+  onAddFromTemplate,
   onAddAndOpenCard,
   onAddColumn,
   onReorderColumns,
@@ -146,6 +149,9 @@ export function Deck({
                     showBody={showBody}
                     onToggleBody={() => onToggleBody(column.id, showBody)}
                     onAddCard={() => onAddCard(column.id)}
+                    onAddFromTemplate={(template) =>
+                      onAddFromTemplate(column.id, template)
+                    }
                     addCardDisabledReason={filteredReason}
                     onRename={(title) => onRenameColumn(column.id, title)}
                     onChangeColor={(color) =>

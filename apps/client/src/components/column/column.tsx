@@ -1,5 +1,6 @@
 import { Droppable } from "@hello-pangea/dnd"
 import { useState, type ReactNode } from "react"
+import type { Card } from "@doska/core"
 import { ConfirmDialog } from "../confirm-dialog"
 import { ColumnMenu } from "./column-menu"
 import { ColumnView } from "./column-view"
@@ -12,6 +13,7 @@ interface IProps {
   showBody: boolean
   onToggleBody: () => void
   onAddCard?: () => void
+  onAddFromTemplate?: (template: Card) => void
   addCardDisabledReason?: string
   onRename: (title: string) => void
   onChangeColor: (color: string) => void
@@ -29,6 +31,7 @@ export function Column({
   showBody,
   onToggleBody,
   onAddCard,
+  onAddFromTemplate,
   addCardDisabledReason,
   onRename,
   onChangeColor,
@@ -50,6 +53,9 @@ export function Column({
           onRename={onRename}
           onAddCard={onAddCard}
           addCardDisabledReason={addCardDisabledReason}
+          onAddFromTemplate={
+            addCardDisabledReason ? undefined : onAddFromTemplate
+          }
           isDraggingOver={snapshot.isDraggingOver}
           listRef={provided.innerRef}
           listProps={provided.droppableProps}
