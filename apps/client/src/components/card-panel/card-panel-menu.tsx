@@ -22,6 +22,7 @@ import { DeadlineSub } from "../card/menu/deadline-sub"
 import { MoveToColumnSub } from "../card/menu/move-to-column-sub"
 import { PrioritySub } from "../card/menu/priority-sub"
 import { TagsSub } from "../card/menu/tags-sub"
+import { TemplateItem } from "../card/menu/template-item"
 import { UsersSub } from "../card/menu/users-sub"
 import { HistoryModal } from "../history/history-modal"
 
@@ -97,6 +98,7 @@ export function CardPanelMenu({
             closeMenu={() => actionsRef.current?.close()}
           />
           <CopyIdItem cardId={cardId} />
+          <TemplateItem cardId={cardId} />
           <MenuItem onClick={() => setHistoryOpen(true)}>
             <History />
             History

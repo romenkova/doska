@@ -8,6 +8,7 @@ import { MoveToBoardSub } from "./move-to-board-sub"
 import { MoveToColumnSub } from "./move-to-column-sub"
 import { PrioritySub } from "./priority-sub"
 import { TagsSub } from "./tags-sub"
+import { TemplateItem } from "./template-item"
 import { UsersSub } from "./users-sub"
 
 interface IProps {
@@ -44,6 +45,7 @@ export function CardMenuItems({
       <UsersSub card={card} onPatch={updateCard} />
       <DeadlineSub card={card} onPatch={updateCard} closeMenu={closeMenu} />
       <CopyIdItem cardId={cardId} />
+      <TemplateItem cardId={cardId} />
       <MenuItem onClick={onShowHistory}>
         <History />
         History
