@@ -204,6 +204,14 @@ export function useTrash() {
   })
 }
 
+export function useTemplateCards() {
+  return useQuery({
+    queryKey: keys.templateCards,
+    queryFn: () => api.getTemplateCards(),
+    networkMode: "always",
+  })
+}
+
 /** Deadlined cards across every board, for the digest. */
 export function useDigest(filter: DigestFilter) {
   return useQuery({

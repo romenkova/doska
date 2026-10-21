@@ -6,9 +6,15 @@ import { newId } from "./new-id"
 import { live } from "./live"
 import { sync } from "../sync"
 import { touchCard } from "../sync/touch"
+import type { Card } from "../../types"
 
-/** Creates an empty card at the top of a column and returns its new id. */
-export async function createCard(columnId: string): Promise<string> {
+/** Creates a card at the top of a column and returns its new id. */
+export async function createCard(
+  columnId: string,
+  content: Partial<
+    Pick<Card, "title" | "body" | "priority" | "tags" | "deadline">
+  > = {}
+): Promise<string> {
   const column = await db.getColumn(columnId)
   if (!column || !live(column))
     throw new Error(`createCard: no live column ${columnId}`)
@@ -28,6 +34,7 @@ export async function createCard(columnId: string): Promise<string> {
     columnId,
     position,
     title: "",
+    ...content,
     deletedAt: null,
   }
   await db.setCard(touchCard(card, CARD_GROUPS))

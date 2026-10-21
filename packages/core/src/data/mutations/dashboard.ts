@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import * as api from "../../api/operations"
+import type { Dashboard } from "../../types"
 import { pushUndo } from "../../undo"
 import { keys } from "../keys"
 
@@ -8,6 +9,27 @@ export function useCreateDashboard() {
   return useMutation({
     mutationFn: (name: string) => api.createDashboard(name),
     onSettled: () => qc.invalidateQueries({ queryKey: keys.dashboards }),
+  })
+}
+
+export function useCreateDashboardFromTemplate() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (template: Dashboard) =>
+      api.createDashboard(template.title, template.id),
+    onSettled: () => qc.invalidateQueries({ queryKey: keys.dashboards }),
+  })
+}
+
+export function useSetDashboardTemplate() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, template }: { id: string; template: boolean }) =>
+      api.setDashboardTemplate(id, template),
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: keys.dashboards })
+      qc.invalidateQueries({ queryKey: keys.digest })
+    },
   })
 }
 

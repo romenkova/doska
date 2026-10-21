@@ -78,11 +78,12 @@ export async function getDigest(filter: DigestFilter): Promise<DigestCard[]> {
   const targets = targetsByBoard(liveColumns)
 
   return cards.filter(live).flatMap((card) => {
+    if (card.template) return []
     // A card whose column or board is tombstoned is gone from the UI's point of
     // view, even though its own record is still live.
     const column = columnById.get(card.columnId)
     const board = column && boardById.get(column.dashboardId)
-    if (!column || !board) return []
+    if (!column || !board || board.template) return []
     return [
       {
         card,
