@@ -107,6 +107,7 @@ export function registerCardTools(server: McpServer, board: Board): void {
           tags: tags ?? [],
           users: assigned,
           attachments: [],
+          template: false,
           updatedAt: now,
           deletedAt: null,
           stamps: {},
