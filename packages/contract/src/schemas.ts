@@ -23,6 +23,7 @@ export const CARD_GROUPS = [
   "tags",
   "users",
   "attachments",
+  "template",
   "deleted",
   "conflict",
 ] as const
@@ -80,6 +81,8 @@ export const CardSchema = z.object({
   users: z.array(z.string()).default([]),
   /** Attached files; travels with the card's last-writer-wins record. */
   attachments: z.array(AttachmentSchema).default([]),
+  /** Offered in the add-card template picker. */
+  template: z.boolean().default(false),
   updatedAt: z.number(),
   deletedAt: z.number().nullable(),
   stamps: z.partialRecord(z.enum(CARD_GROUPS), z.number()).default({}),
@@ -107,6 +110,7 @@ export const CARD_FIELD_GROUP: Record<
   tags: "tags",
   users: "users",
   attachments: "attachments",
+  template: "template",
   deletedAt: "deleted",
   bodyConflict: "conflict",
 }
@@ -150,6 +154,8 @@ export const DashboardSchema = z.object({
   title: z.string(),
   position: z.string(),
   sort: z.array(z.string()).default([]),
+  /** Offered as a starting point for new boards. */
+  template: z.boolean().default(false),
   updatedAt: z.number(),
   deletedAt: z.number().nullable(),
 })

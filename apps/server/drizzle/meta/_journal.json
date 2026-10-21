@@ -155,6 +155,13 @@
       "when": 1791404560980,
       "tag": "0021_history",
       "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1792500000000,
+      "tag": "0022_templates",
+      "breakpoints": true
     }
   ]
 }
