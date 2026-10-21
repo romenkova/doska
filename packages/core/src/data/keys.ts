@@ -17,6 +17,8 @@ export const keys = {
   /** The bare key is the invalidation prefix for every filter's digest. */
   digest: ["digest"] as const,
   digestFilter: (filter: DigestFilter) => ["digest", filter] as const,
+  /** Under the digest prefix, which every cross-board card change refreshes. */
+  templateCards: ["digest", "templates"] as const,
   cardDeck: (id: string) => ["card-deck", id] as const,
   /** The bare key is the invalidation prefix for every card's column. */
   cardCols: ["card-col"] as const,

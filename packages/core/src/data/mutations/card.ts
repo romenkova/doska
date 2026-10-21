@@ -13,6 +13,38 @@ export function useCreateCard(deckId: string) {
   })
 }
 
+export function useCreateCardFromTemplate(deckId: string) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({
+      columnId,
+      template,
+    }: {
+      columnId: string
+      template: Card
+    }) =>
+      api.createCard(columnId, {
+        title: template.title,
+        body: template.body,
+        priority: template.priority,
+        tags: template.tags,
+        deadline: template.deadline,
+      }),
+    onSettled: () => qc.invalidateQueries({ queryKey: keys.board(deckId) }),
+  })
+}
+
+export function useSetCardTemplate(id: string) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (template: boolean) => api.setCardTemplate(id, template),
+    onSettled: () => {
+      for (const key of cardWriteKeys(id))
+        qc.invalidateQueries({ queryKey: key })
+    },
+  })
+}
+
 export function useDeleteCard(deckId: string) {
   const qc = useQueryClient()
   return useMutation({
