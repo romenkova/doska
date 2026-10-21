@@ -41,6 +41,7 @@ function card(patch: Partial<Card> = {}): Card {
     tags: [],
     users: [],
     attachments: [],
+    template: false,
     updatedAt: created,
     deletedAt: null,
     stamps: stampAll(CARD_GROUPS, created),
