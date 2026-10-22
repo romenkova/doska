@@ -5,6 +5,7 @@ import { QueryClientProvider } from "@tanstack/react-query"
 import { MotionConfig } from "motion/react"
 import { Toaster } from "react-hot-toast"
 import { LoginPromptProvider } from "@/providers/login-prompt/login-prompt-provider"
+import { AuthGate } from "@/components/login/auth-gate"
 import { ThemeProvider } from "@/providers/theme/theme-provider"
 import { isDesktop } from "@/lib/platform"
 import { bootstrapClient, queryClient } from "@doska/core"
@@ -82,25 +83,27 @@ if (isPublicLink) {
       <ErrorBoundary>
         <QueryClientProvider client={queryClient}>
           <ThemeProvider>
-            <LoginPromptProvider>
-              <MotionConfig reducedMotion="user">
-                <Router />
-              </MotionConfig>
-              <Toaster
-                position="bottom-center"
-                gutter={8}
-                reverseOrder={false}
-              />
-              <UndoToaster />
-              <UpdateToast />
-              <OfflineToast />
-              <WhatsNewToast />
-              <OnboardingModal />
-              <WindowDragRegion />
-              <WindowControlsFlag />
-              <WindowSyncListener />
-              {import.meta.env.DEV && <DevMenu />}
-            </LoginPromptProvider>
+            <AuthGate>
+              <LoginPromptProvider>
+                <MotionConfig reducedMotion="user">
+                  <Router />
+                </MotionConfig>
+                <Toaster
+                  position="bottom-center"
+                  gutter={8}
+                  reverseOrder={false}
+                />
+                <UndoToaster />
+                <UpdateToast />
+                <OfflineToast />
+                <WhatsNewToast />
+                <OnboardingModal />
+                <WindowDragRegion />
+                <WindowControlsFlag />
+                <WindowSyncListener />
+                {import.meta.env.DEV && <DevMenu />}
+              </LoginPromptProvider>
+            </AuthGate>
           </ThemeProvider>
         </QueryClientProvider>
       </ErrorBoundary>
