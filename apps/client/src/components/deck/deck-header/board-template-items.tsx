@@ -1,7 +1,7 @@
 import { MenuItem } from "@doska/ui-kit"
 import { CopyPlus, SquareText } from "lucide-react"
 import {
-  useCreateDashboardFromTemplate,
+  useDuplicateDashboard,
   useDashboards,
   useSetDashboardTemplate,
 } from "@doska/core"
@@ -10,7 +10,7 @@ import { useDashboardNav } from "@/lib/hooks/use-dashboard-nav"
 export function BoardTemplateItems({ boardId }: { boardId: string }) {
   const { data: dashboards = [] } = useDashboards()
   const { mutate: setTemplate } = useSetDashboardTemplate()
-  const { mutate: createFromTemplate } = useCreateDashboardFromTemplate()
+  const { mutate: duplicate } = useDuplicateDashboard()
   const { selectDashboard } = useDashboardNav()
 
   const dashboard = dashboards.find((d) => d.id === boardId)
@@ -26,18 +26,16 @@ export function BoardTemplateItems({ boardId }: { boardId: string }) {
         <SquareText />
         {dashboard.template ? "Remove from templates" : "Add to templates"}
       </MenuItem>
-      {dashboard.template && (
-        <MenuItem
-          onClick={() =>
-            createFromTemplate(dashboard, {
-              onSuccess: (created) => selectDashboard(created.id),
-            })
-          }
-        >
-          <CopyPlus />
-          New board from template
-        </MenuItem>
-      )}
+      <MenuItem
+        onClick={() =>
+          duplicate(dashboard, {
+            onSuccess: (created) => selectDashboard(created.id),
+          })
+        }
+      >
+        <CopyPlus />
+        Duplicate
+      </MenuItem>
     </>
   )
 }
