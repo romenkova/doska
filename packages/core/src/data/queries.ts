@@ -3,7 +3,7 @@ import { countOwnedBoards, listAccounts } from "../api/accounts"
 import { publicBoardToken, publishedBoards } from "../api/boards"
 import { fetchSession } from "../api/auth"
 import { useServerPaused } from "../api/sync/connection"
-import { fetchLinkedProviders, fetchSsoProviders } from "../api/sso"
+import { fetchLinkedProviders, fetchSignInOptions } from "../api/sso"
 import { fetchPublicBoard } from "../api/public"
 import {
   getActivity,
@@ -28,8 +28,19 @@ export { UNCLAIMED_BOARDS_WARNING }
 export function useSsoProviders() {
   return useQuery({
     queryKey: keys.sso,
-    queryFn: fetchSsoProviders,
+    queryFn: fetchSignInOptions,
+    select: (options) => options.providers,
     networkMode: "always",
+  })
+}
+
+export function useAuthRequired() {
+  return useQuery({
+    queryKey: keys.sso,
+    queryFn: fetchSignInOptions,
+    select: (options) => options.authRequired,
+    networkMode: "always",
+    retry: false,
   })
 }
 

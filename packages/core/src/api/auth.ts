@@ -22,7 +22,7 @@ export function markSignedIn(): void {
   runtime().kv.set(SIGNED_IN_KEY, "1")
 }
 
-function hasSignedIn(): boolean {
+export function hasSignedIn(): boolean {
   return runtime().kv.get(SIGNED_IN_KEY) !== null
 }
 
