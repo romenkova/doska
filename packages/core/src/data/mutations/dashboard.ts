@@ -12,11 +12,11 @@ export function useCreateDashboard() {
   })
 }
 
-export function useCreateDashboardFromTemplate() {
+export function useDuplicateDashboard() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (template: Dashboard) =>
-      api.createDashboard(template.title, template.id),
+    mutationFn: (board: Dashboard) =>
+      api.createDashboard(board.title, board.id),
     onSettled: () => qc.invalidateQueries({ queryKey: keys.dashboards }),
   })
 }

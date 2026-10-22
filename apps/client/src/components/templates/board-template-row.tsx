@@ -1,15 +1,15 @@
 import { Button, Card as CardBase } from "@doska/ui-kit"
 import { LayoutDashboard, X } from "lucide-react"
 import {
-  useCreateDashboardFromTemplate,
+  useDuplicateDashboard,
   useSetDashboardTemplate,
   type Dashboard,
 } from "@doska/core"
 import { useDashboardNav } from "@/lib/hooks/use-dashboard-nav"
 
 export function BoardTemplateRow({ board }: { board: Dashboard }) {
-  const { mutate: createFromTemplate, isPending } =
-    useCreateDashboardFromTemplate()
+  const { mutate: duplicate, isPending } =
+    useDuplicateDashboard()
   const { mutate: setTemplate } = useSetDashboardTemplate()
   const { selectDashboard } = useDashboardNav()
 
@@ -29,7 +29,7 @@ export function BoardTemplateRow({ board }: { board: Dashboard }) {
           variant="secondary"
           disabled={isPending}
           onClick={() =>
-            createFromTemplate(board, {
+            duplicate(board, {
               onSuccess: (created) => selectDashboard(created.id),
             })
           }
