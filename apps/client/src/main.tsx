@@ -12,6 +12,7 @@ import { trackAppHeight } from "@/lib/app-height"
 import { blockEdgeSwipeNavigation } from "@/lib/edge-swipe"
 import { initErrorReporting } from "@/lib/error-reporting"
 import { initExternalLinks } from "@/lib/external-links"
+import { initFullscreen } from "@/lib/fullscreen"
 import { initZoom } from "@/lib/zoom"
 import { requestPersistentStorage } from "@/lib/persist"
 import { routes } from "@/lib/routes"
@@ -72,6 +73,8 @@ if (isPublicLink) {
   blockEdgeSwipeNavigation()
 
   initZoom()
+
+  initFullscreen()
 
   initExternalLinks()
 
