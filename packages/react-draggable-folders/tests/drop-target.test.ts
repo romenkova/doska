@@ -140,8 +140,8 @@ describe("subfolders", () => {
   })
 
   it("keeps subfolders above boards", () => {
-    // d between F's header and S.
-    expect(drop("d", 1, 1)).toBeNull()
+    // d between F's header and S goes in after S.
+    expect(drop("d", 1, 1)).toEqual(inFolder("d", "F", 0))
     // G right under f1.
     expect(drop("G", 5, 1)).toBeNull()
   })

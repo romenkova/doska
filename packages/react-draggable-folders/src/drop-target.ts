@@ -76,13 +76,11 @@ function placeAt<I, F>(
     const index = siblings.filter((one) => one.id !== dragged.id).length
     return { kind: "folder", folderId: parent.id, index }
   }
-  // Subfolders always come first: no item above one, no folder below an item.
+  // Subfolders always come first: an item dropped above one goes in after them,
+  // a folder can't land below an item.
   const siblingsAbove = above
     .slice(parentIndex + 1)
     .filter((row) => row.path.length === landed)
-  if (dragged.type === "item" && below?.type === "folder") {
-    if (below.path.length === landed) return null
-  }
   if (dragged.type === "folder") {
     if (siblingsAbove.some((row) => row.type === "item")) return null
   }

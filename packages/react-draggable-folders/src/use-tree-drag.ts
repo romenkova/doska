@@ -14,6 +14,7 @@ import {
 } from "react"
 import { bounce } from "./bounce"
 import { dropTarget } from "./drop-target"
+import { measureTops, slideFrom } from "./slide"
 import type { DepthLimits, TreeMove, TreeRow } from "./types"
 
 interface Options {
@@ -22,10 +23,11 @@ interface Options {
   onMove: (move: TreeMove) => void
   /** Folder header elements by id, for the bounce. */
   folderElements: RefObject<Map<string, HTMLElement>>
+  rowElements: RefObject<Map<string, HTMLElement>>
 }
 
 export function useTreeDrag<I, F>(rows: TreeRow<I, F>[], options: Options) {
-  const { limits, indentPx, onMove, folderElements } = options
+  const { limits, indentPx, onMove, folderElements, rowElements } = options
   const [drag, setDrag] = useState<DragUpdate | null>(null)
   const [draggingFolderId, setDraggingFolderId] = useState<string | null>(null)
   const pull = usePull(drag !== null, indentPx)
@@ -73,10 +75,13 @@ export function useTreeDrag<I, F>(rows: TreeRow<I, F>[], options: Options) {
       setDraggingFolderId(null)
       const move = dropTarget(rows, result, pull.depth, limits)
       if (!move) return
+      const from = findRow(move.id)?.path.at(-1)
+      // An item dropped above subfolders goes after them: slide it there.
+      const tops = measureTops(rowElements.current)
       onMove(move)
-      // Into a collapsed folder the row just vanishes; the folder bounces to show where.
-      if (landing?.collapsed && landing.folderId) {
-        bounce(folderElements.current.get(landing.folderId))
+      slideFrom(rowElements.current, tops)
+      if (move.target.kind === "folder" && move.target.folderId !== from) {
+        bounce(folderElements.current.get(move.target.folderId))
       }
     },
   }

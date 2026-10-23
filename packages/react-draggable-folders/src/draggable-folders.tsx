@@ -20,8 +20,6 @@ export interface RowState {
 
 export interface FolderRowState extends RowState {
   collapsed: boolean
-  /** 0 at the root. */
-  depth: number
   /** The dragged row would land in this folder. */
   isDropTarget: boolean
 }
@@ -44,7 +42,7 @@ export interface DraggableFoldersProps<I, F> {
   className?: string
 }
 
-const DEFAULT_LIMITS: DepthLimits = { item: 2, folder: 1 }
+const NO_LIMITS: DepthLimits = { item: Infinity, folder: Infinity }
 
 export function DraggableFolders<I, F>({
   tree,
@@ -52,7 +50,7 @@ export function DraggableFolders<I, F>({
   renderFolder,
   renderEmpty,
   isDragDisabled,
-  limits = DEFAULT_LIMITS,
+  limits = NO_LIMITS,
   indentPx = 16,
   dropAnimationMs = 150,
   droppableId = "react-draggable-folders",
@@ -62,6 +60,7 @@ export function DraggableFolders<I, F>({
   const List = components?.List ?? "ul"
   const Row = components?.Row ?? "li"
   const folderElements = useRef(new Map<string, HTMLElement>())
+  const rowElements = useRef(new Map<string, HTMLElement>())
   const rows = flattenTree(tree.nodes, tree.collapsedIds)
   const {
     dragging,
@@ -77,6 +76,7 @@ export function DraggableFolders<I, F>({
     // Synchronous, or dnd paints the old order for a frame
     onMove: (move) => flushSync(() => tree.move(move)),
     folderElements,
+    rowElements,
   })
 
   // The dragged row follows the depth it would land at.
@@ -119,7 +119,6 @@ export function DraggableFolders<I, F>({
         {renderFolder(row.folder, {
           dragging: isDragging,
           collapsed: row.collapsed,
-          depth: row.path.length,
           isDropTarget: id === landingFolderId,
         })}
       </div>
@@ -154,7 +153,11 @@ export function DraggableFolders<I, F>({
                     row.path.includes(draggingFolderId)
                   return (
                     <Row
-                      ref={dragProvided.innerRef}
+                      ref={(element) => {
+                        dragProvided.innerRef(element)
+                        if (element) rowElements.current.set(row.id, element)
+                        else rowElements.current.delete(row.id)
+                      }}
                       {...dragProvided.draggableProps}
                       {...dragProvided.dragHandleProps}
                       role="listitem"
