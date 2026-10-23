@@ -1,0 +1,33 @@
+{
+  "name": "react-draggable-folders",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@hello-pangea/dnd": "18.0.1",
+    "motion": "^13.4.6"
+  },
+  "peerDependencies": {
+    "react": "^19",
+    "react-dom": "^19"
+  },
+  "devDependencies": {
+    "@doska/configs": "workspace:*",
+    "@types/react": "~19.2.18",
+    "@types/react-dom": "~19.2.5",
+    "eslint": "^10.11.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "typescript": "~6",
+    "vitest": "^5.0.2"
+  }
+}
