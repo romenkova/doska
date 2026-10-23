@@ -82,6 +82,7 @@ export async function applyOne(
         tags: record.tags,
         users: record.users,
         attachments: record.attachments,
+        template: record.template,
         updatedAt: record.updatedAt,
         deletedAt: record.deletedAt,
         stamps: record.stamps,

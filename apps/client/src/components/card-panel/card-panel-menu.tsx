@@ -16,11 +16,13 @@ import {
   Trash2,
 } from "lucide-react"
 import { useRef, useState } from "react"
+import { fallbackCard, useCard, useUpdateCard } from "@doska/core"
 import { CopyIdItem } from "../card/menu/copy-id-item"
 import { DeadlineSub } from "../card/menu/deadline-sub"
 import { MoveToColumnSub } from "../card/menu/move-to-column-sub"
 import { PrioritySub } from "../card/menu/priority-sub"
 import { TagsSub } from "../card/menu/tags-sub"
+import { TemplateItem } from "../card/menu/template-item"
 import { UsersSub } from "../card/menu/users-sub"
 import { HistoryModal } from "../history/history-modal"
 
@@ -49,6 +51,8 @@ export function CardPanelMenu({
 }: IProps) {
   const actionsRef = useRef<MenuActions>(null)
   const [historyOpen, setHistoryOpen] = useState(false)
+  const { data: card = fallbackCard } = useCard(cardId)
+  const { mutate: updateCard } = useUpdateCard(cardId)
 
   return (
     <>
@@ -85,14 +89,16 @@ export function CardPanelMenu({
           <MenuSeparator />
           <MoveToColumnSub cardId={cardId} />
           <MenuSeparator />
-          <PrioritySub cardId={cardId} />
-          <TagsSub cardId={cardId} />
-          <UsersSub cardId={cardId} />
+          <PrioritySub card={card} onPatch={updateCard} />
+          <TagsSub card={card} onPatch={updateCard} />
+          <UsersSub card={card} onPatch={updateCard} />
           <DeadlineSub
-            cardId={cardId}
+            card={card}
+            onPatch={updateCard}
             closeMenu={() => actionsRef.current?.close()}
           />
           <CopyIdItem cardId={cardId} />
+          <TemplateItem cardId={cardId} />
           <MenuItem onClick={() => setHistoryOpen(true)}>
             <History />
             History

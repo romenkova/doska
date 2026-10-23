@@ -30,6 +30,7 @@ export function registerAuthRoutes(app: FastifyInstance): void {
       providers: env.oidcIssuer
         ? [{ id: OIDC_PROVIDER_ID, name: env.oidcName }]
         : [],
+      authRequired: env.authRequired,
     })
   )
 

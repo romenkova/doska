@@ -34,6 +34,7 @@ const card: Card = {
   tags: [],
   users: [],
   attachments: [],
+  template: false,
   updatedAt: synced,
   deletedAt: null,
   stamps: {},

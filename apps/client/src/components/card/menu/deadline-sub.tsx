@@ -10,22 +10,22 @@ import {
 } from "@doska/ui-kit"
 import { CalendarDays, Check } from "lucide-react"
 import { Suspense, lazy } from "react"
-import { useUpdateCard, useCard } from "@doska/core"
+import type { Card, CardPatch } from "@doska/core"
 
 const DeadlineCalendar = lazy(() => import("./deadline-calendar"))
 
 export function DeadlineSub({
-  cardId,
+  card,
+  onPatch,
   closeMenu,
 }: {
-  cardId: string
+  card: Card
+  onPatch: (patch: CardPatch) => void
   closeMenu: () => void
 }) {
-  const { data: card } = useCard(cardId)
-  const { mutate: updateCard } = useUpdateCard(cardId)
   const isMobile = useIsMobile()
 
-  const value = card?.deadline ?? null
+  const value = card.deadline
   const today = todayIso()
   const options = [
     { label: "Today", iso: today },
@@ -40,7 +40,7 @@ export function DeadlineSub({
         Deadline
       </MenuSubTrigger>
       <MenuContent align="start" sideOffset={2}>
-        <MenuItem onClick={() => updateCard({ deadline: null })}>
+        <MenuItem onClick={() => onPatch({ deadline: null })}>
           <CalendarDays className="text-muted-foreground" />
           No deadline
           {!value && <Check className="ml-auto" />}
@@ -48,7 +48,7 @@ export function DeadlineSub({
         {options.map((option) => (
           <MenuItem
             key={option.iso}
-            onClick={() => updateCard({ deadline: option.iso })}
+            onClick={() => onPatch({ deadline: option.iso })}
           >
             {option.label}
             {option.iso === value && <Check className="ml-auto" />}
@@ -60,7 +60,7 @@ export function DeadlineSub({
             <input
               type="date"
               value={value ?? ""}
-              onChange={(e) => updateCard({ deadline: e.target.value || null })}
+              onChange={(e) => onPatch({ deadline: e.target.value || null })}
               onClick={(e) => e.currentTarget.showPicker?.()}
               onBlur={closeMenu}
               className="absolute inset-0 opacity-0"
@@ -74,7 +74,7 @@ export function DeadlineSub({
               <DeadlineCalendar
                 value={value}
                 onSelect={(deadline) => {
-                  updateCard({ deadline })
+                  onPatch({ deadline })
                   closeMenu()
                 }}
               />

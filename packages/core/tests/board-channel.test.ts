@@ -56,6 +56,7 @@ const board: Dashboard = {
   title: "Board",
   position: "a0",
   sort: [],
+  template: false,
   updatedAt: 1,
   deletedAt: null,
 }
@@ -86,6 +87,7 @@ const cardAt = (at: number, fields: Partial<Card> = {}): Card => ({
   tags: [],
   users: [],
   attachments: [],
+  template: false,
   updatedAt: at,
   deletedAt: null,
   stamps: {
@@ -97,6 +99,7 @@ const cardAt = (at: number, fields: Partial<Card> = {}): Card => ({
     tags: at,
     users: at,
     attachments: at,
+    template: at,
     deleted: at,
     conflict: at,
   },

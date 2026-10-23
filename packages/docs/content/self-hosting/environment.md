@@ -15,6 +15,7 @@ defaults and won't start without them. Everything else is optional.
 | `AUTH_PASSWORD`      | yes                | That account's first password.                                                                    |
 | `AUTH_SECRET`        | yes                | Signs session tokens. Generate with `openssl rand -hex 32`.                                       |
 | `BASE_URL`           | no                 | This server's public origin, no trailing slash. Cookie sync works without it; MCP OAuth needs it. |
+| `ALWAYS_AUTH`        | no                 | `false`: the web UI works signed out, allows to use app locally with no auth (default `true`).             |
 | `WEB_PORT`           | no                 | Host port the web UI is published on (default `8080`).                                            |
 | `DOCKER_IMAGE_TAG`   | no                 | Release channel: `latest` (stable), `beta` (prerelease), or an exact version.                     |
 | `POSTGRES_PASSWORD`  | no                 | Secures the bundled Postgres.                                                                     |

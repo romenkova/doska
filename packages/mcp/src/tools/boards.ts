@@ -113,6 +113,7 @@ export function registerBoardTools(server: McpServer, board: Board): void {
         title,
         position: positionAt(existing, "bottom"),
         sort: [],
+        template: false,
         updatedAt: board.now(),
         deletedAt: null,
       }

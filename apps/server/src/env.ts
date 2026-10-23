@@ -34,6 +34,7 @@ export const env = {
   authPassword: process.env.AUTH_PASSWORD ?? "",
   authTrustedOrigins: list(process.env.AUTH_TRUSTED_ORIGINS),
   authRateLimit: process.env.AUTH_RATE_LIMIT !== "off",
+  authRequired: process.env.ALWAYS_AUTH !== "false",
 
   // Single sign-on through one OIDC provider. OIDC_ISSUER switches it on; the
   // other two are then required (auth/oidc.ts throws without them).
