@@ -121,6 +121,9 @@ importers:
       react-dom:
         specifier: 19.2.3
         version: 19.2.3(react@19.2.3)
+      react-draggable-folders:
+        specifier: workspace:*
+        version: link:../../packages/react-draggable-folders
       react-hot-toast:
         specifier: ^2.6.1
         version: 2.6.1(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -881,6 +884,40 @@ importers:
       '@types/node':
         specifier: ^22
         version: 22.20.1
+
+  packages/react-draggable-folders:
+    dependencies:
+      '@hello-pangea/dnd':
+        specifier: 18.0.1
+        version: 18.0.1(@types/react@19.2.18)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      motion:
+        specifier: ^13.4.6
+        version: 13.4.6(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+    devDependencies:
+      '@doska/configs':
+        specifier: workspace:*
+        version: link:../configs
+      '@types/react':
+        specifier: ~19.2.18
+        version: 19.2.18
+      '@types/react-dom':
+        specifier: ~19.2.5
+        version: 19.2.7(@types/react@19.2.18)
+      eslint:
+        specifier: ^10.11.0
+        version: 10.11.0(jiti@2.7.0)(supports-color@10.2.2)
+      react:
+        specifier: 19.2.3
+        version: 19.2.3
+      react-dom:
+        specifier: 19.2.3
+        version: 19.2.3(react@19.2.3)
+      typescript:
+        specifier: ~6
+        version: 6.0.3
+      vitest:
+        specifier: ^5.0.2
+        version: 5.0.2(@types/node@22.20.1)(vite@8.3.1(@types/node@22.20.1)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))
 
   packages/sync:
     dependencies:
@@ -11929,7 +11966,7 @@ snapshots:
 
   '@types/react-test-renderer@19.1.0':
     dependencies:
-      '@types/react': 19.3.0
+      '@types/react': 19.2.18
 
   '@types/react@19.2.18':
     dependencies:
