@@ -8,6 +8,7 @@
     ".": "./src/index.ts"
   },
   "scripts": {
+    "example": "vite --config example/vite.config.ts",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
@@ -22,12 +23,19 @@
   },
   "devDependencies": {
     "@doska/configs": "workspace:*",
+    "@tailwindcss/vite": "^4.3.3",
     "@types/react": "~19.2.18",
     "@types/react-dom": "~19.2.5",
+    "@vitejs/plugin-react": "^6.1.1",
+    "clsx": "2.1.1",
     "eslint": "^10.11.0",
+    "lucide-react": "1.48.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
+    "tailwind-merge": "3.7.0",
+    "tailwindcss": "^4",
     "typescript": "~6",
+    "vite": "^8.3.1",
     "vitest": "^5.0.2"
   }
 }
