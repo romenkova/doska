@@ -6,16 +6,11 @@ import {
   type CSSProperties,
   type ReactNode,
 } from "react"
+import { flushSync } from "react-dom"
 import { flattenTree } from "./flatten-tree"
 import { RowMotion } from "./row-motion"
-import type {
-  DepthLimits,
-  TreeFolder,
-  TreeItem,
-  TreeMove,
-  TreeNode,
-  TreeRow,
-} from "./types"
+import type { DepthLimits, TreeFolder, TreeItem, TreeRow } from "./types"
+import type { FolderTree } from "./use-folder-tree"
 import { useTreeDrag } from "./use-tree-drag"
 
 export interface RowState {
@@ -25,14 +20,14 @@ export interface RowState {
 
 export interface FolderRowState extends RowState {
   collapsed: boolean
+  /** 0 at the root. */
+  depth: number
   /** The dragged row would land in this folder. */
   isDropTarget: boolean
 }
 
 export interface DraggableFoldersProps<I, F> {
-  nodes: TreeNode<I, F>[]
-  collapsedIds: string[]
-  onMove: (move: TreeMove) => void
+  tree: FolderTree<I, F>
   renderItem: (item: TreeItem<I>, state: RowState) => ReactNode
   renderFolder: (folder: TreeFolder<I, F>, state: FolderRowState) => ReactNode
   /** Shown in an expanded folder that holds nothing. */
@@ -52,9 +47,7 @@ export interface DraggableFoldersProps<I, F> {
 const DEFAULT_LIMITS: DepthLimits = { item: 2, folder: 1 }
 
 export function DraggableFolders<I, F>({
-  nodes,
-  collapsedIds,
-  onMove,
+  tree,
   renderItem,
   renderFolder,
   renderEmpty,
@@ -69,7 +62,7 @@ export function DraggableFolders<I, F>({
   const List = components?.List ?? "ul"
   const Row = components?.Row ?? "li"
   const folderElements = useRef(new Map<string, HTMLElement>())
-  const rows = flattenTree(nodes, collapsedIds)
+  const rows = flattenTree(tree.nodes, tree.collapsedIds)
   const {
     dragging,
     draggingFolderId,
@@ -81,7 +74,8 @@ export function DraggableFolders<I, F>({
   } = useTreeDrag(rows, {
     limits,
     indentPx,
-    onMove,
+    // Synchronous, or dnd paints the old order for a frame
+    onMove: (move) => flushSync(() => tree.move(move)),
     folderElements,
   })
 
@@ -125,6 +119,7 @@ export function DraggableFolders<I, F>({
         {renderFolder(row.folder, {
           dragging: isDragging,
           collapsed: row.collapsed,
+          depth: row.path.length,
           isDropTarget: id === landingFolderId,
         })}
       </div>
