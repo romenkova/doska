@@ -1,7 +1,11 @@
 import { beforeEach, describe, expect, it } from "vitest"
 import { toWikilink } from "@doska/markdown/core"
 import { CARDS, COLUMNS } from "../src/api/constants"
-import { referenceable, resolveCardRef } from "../src/data/card-refs"
+import {
+  findCardByRef,
+  referenceable,
+  resolveCardRef,
+} from "../src/data/card-refs"
 import type { Card } from "../src/types"
 import { installMemoryRuntime, rows } from "./memory-runtime"
 
@@ -129,6 +133,28 @@ describe("resolveCardRef", () => {
 
   it("is null when nothing matches", async () => {
     expect(await resolveCardRef("board-a", "NOPE-999")).toBeNull()
+  })
+})
+
+describe("findCardByRef", () => {
+  const cards = [
+    card("titled", "col-a", { title: "2024" }),
+    card("numbered", "col-a", { title: "Fix sync", number: 2024 }),
+    card("local", "col-a", { title: "Local card" }),
+  ]
+
+  it("finds a number, prefixed or not", () => {
+    expect(findCardByRef(cards, "2024")?.id).toBe("numbered")
+    expect(findCardByRef(cards, "ROAD-2024")?.id).toBe("numbered")
+  })
+
+  it("finds a title, ignoring case and surrounding space", () => {
+    expect(findCardByRef(cards, " local CARD ")?.id).toBe("local")
+    expect(findCardByRef(cards, "Fix sync")?.id).toBe("numbered")
+  })
+
+  it("is undefined when nothing matches", () => {
+    expect(findCardByRef(cards, "NOPE-999")).toBeUndefined()
   })
 })
 

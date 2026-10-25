@@ -114,12 +114,30 @@ async function resolveByTitle(
   deckId: string,
   title: string
 ): Promise<ResolvedCardRef | null> {
-  const wanted = title.trim().toLowerCase()
   const { columns, cards } = await api.getBoard(deckId)
-  const card = cards.find((one) => one.title.trim().toLowerCase() === wanted)
+  const card = findByTitle(cards, title)
   const column = card && columns.find((one) => one.id === card.columnId)
   if (!card || !column) return null
   return toResolved(card, column)
+}
+
+function findByTitle<T extends Pick<Card, "title">>(
+  cards: T[],
+  title: string
+): T | undefined {
+  const wanted = title.trim().toLowerCase()
+  return cards.find((one) => one.title.trim().toLowerCase() === wanted)
+}
+
+/** `resolveCardRef` over cards already in hand, as a public snapshot. */
+export function findCardByRef<T extends Pick<Card, "number" | "title">>(
+  cards: T[],
+  displayId: string
+): T | undefined {
+  const number = refNumber(displayId)
+  const numbered =
+    number == null ? undefined : cards.find((one) => one.number === number)
+  return numbered ?? findByTitle(cards, displayId)
 }
 
 function toResolved(card: Card, column: Column): ResolvedCardRef {
