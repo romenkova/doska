@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest"
 import type { DropResult } from "@hello-pangea/dnd"
-import { dropTarget } from "../src/drop-target"
-import { flattenTree } from "../src/flatten-tree"
+import { dropTarget } from "../src/tree/drop-target"
+import { flattenTree } from "../src/tree/flatten-tree"
 import type { TreeFolder, TreeNode, TreeRow } from "../src/types"
 
 type Folder = TreeFolder<null, null>

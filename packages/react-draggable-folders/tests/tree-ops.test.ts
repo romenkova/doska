@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { moveNode, removeFolder } from "../src/tree-ops"
+import { moveNode, removeFolder } from "../src/tree/tree-ops"
 import type { TreeFolder, TreeNode } from "../src/types"
 
 type Node = TreeNode<null, null>

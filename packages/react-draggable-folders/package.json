@@ -5,17 +5,23 @@
   "type": "module",
   "sideEffects": false,
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "example": "vite --config example/vite.config.ts",
+    "dev": "vite --config example/vite.config.ts",
+    "build": "vite build && tsc -p tsconfig.build.json",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },
   "dependencies": {
-    "@hello-pangea/dnd": "18.0.1",
-    "motion": "^13.4.6"
+    "@hello-pangea/dnd": "18.0.1"
   },
   "peerDependencies": {
     "react": "^19",
@@ -32,6 +38,7 @@
     "lucide-react": "1.48.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
+    "sugar-high": "2.6.3",
     "tailwind-merge": "3.7.0",
     "tailwindcss": "^4",
     "typescript": "~6",
