@@ -63,6 +63,8 @@ export default defineConfig({
         AUTH_RATE_LIMIT: "off",
         // Same story for the public board route.
         PUBLIC_RATE_LIMIT: "off",
+        // Specs start signed out; auth-gate.spec fakes the gated server itself.
+        ALWAYS_AUTH: "false",
         // The bundle is served from :4173 and the API answers on :3100, so every
         // authenticated auth call is cross-origin here. A real deploy serves both
         // from one origin (and desktop's `tauri://` origins are trusted in the

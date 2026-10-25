@@ -11,6 +11,7 @@ import { ArrowRightLeft, History, MoreHorizontal, Trash2 } from "lucide-react"
 import { ConfirmDialog } from "../../confirm-dialog"
 import { HistoryModal } from "../../history/history-modal"
 import { ReorderColumnsModal } from "../reorder-columns/reorder-columns-modal"
+import { BoardTemplateItems } from "./board-template-items"
 import { SortSub } from "./sort-sub"
 import type { Column } from "@doska/core"
 
@@ -66,6 +67,7 @@ export function BoardActionsMenu({
             <History />
             History
           </MenuItem>
+          <BoardTemplateItems boardId={boardId} />
           <MenuSeparator />
           <MenuItem onClick={() => setConfirmOpen(true)} variant="destructive">
             <Trash2 />

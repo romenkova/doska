@@ -1,5 +1,21 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Templates: any card or board can be marked as a template from its menu. Cards
+  are created from a template with the button next to `+` in a column, boards
+  through New board on the Templates page.
+- Self-hosting: `ALWAYS_AUTH` env var. Set it to `false` to let the web UI work
+  signed out, with boards kept in the browser only. Default `true`.
+
+### Fixed
+
+- F11 toggles fullscreen in the Windows and Linux desktop apps.
+- Clicking a task's label in card preview ticks its checkbox.
+- Read-only column titles are no longer uppercased.
+
 ## [0.27.0] - 2026-10-18
 
 ### Added

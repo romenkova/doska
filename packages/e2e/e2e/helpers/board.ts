@@ -158,6 +158,7 @@ export async function remoteCreateDashboard(
           title,
           position: "a5",
           sort: [],
+          template: false,
           updatedAt: Date.now(),
           deletedAt: null,
         },

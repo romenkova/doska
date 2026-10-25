@@ -87,6 +87,10 @@ test.describe("a published board", () => {
 
     await expect(visitor.getByText(published.board)).toBeVisible()
     await expect(publicCard(visitor, published.cardTitle)).toBeVisible()
+    // innerText applies CSS text-transform, so this catches an uppercased title.
+    expect(await visitor.getByText("To Do", { exact: true }).innerText()).toBe(
+      "To Do"
+    )
 
     // Never sent to the sign-in screen, and given none of the app around the
     // board: no sidebar, no board menu, nothing that would add to it.
@@ -122,7 +126,9 @@ test.describe("a published board", () => {
     await expect(publicCard(visitor, published.cardTitle)).toBeVisible()
 
     await page.getByRole("button", { name: "Turn off" }).click()
-    await expect(page.getByRole("button", { name: "Create link" })).toBeVisible()
+    await expect(
+      page.getByRole("button", { name: "Create link" })
+    ).toBeVisible()
 
     await visitor.reload()
     await expect(visitor.getByText(/no longer|not shared/i)).toBeVisible()

@@ -29,6 +29,7 @@ function card(fields: Partial<Card> & { id: string }): Card {
     tags: [],
     users: [],
     attachments: [],
+    template: false,
     updatedAt: 0,
     deletedAt: null,
     stamps: {},
@@ -98,7 +99,11 @@ describe("searchCards", () => {
 
   it("matches the body's markup, not just its prose", () => {
     const cards = [
-      card({ id: "link", title: "x", body: "see [the docs](https://sync.dev)" }),
+      card({
+        id: "link",
+        title: "x",
+        body: "see [the docs](https://sync.dev)",
+      }),
       card({ id: "ref", title: "y", body: "blocked by [[ROAD-12]]" }),
     ]
 

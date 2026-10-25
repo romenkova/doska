@@ -2,8 +2,10 @@ import { test, expect } from "@playwright/test"
 import {
   addCard,
   card,
+  cardPanel,
   createBoard,
   editCardBody,
+  panelField,
   retitleCard,
 } from "../helpers"
 
@@ -35,6 +37,28 @@ test.describe("card tasks", () => {
     // The tick is stored, so it survives a reload.
     await page.reload()
     await expect(card(page, "Checklist")).toContainText("1/2")
+  })
+
+  test("clicking a task's label in card preview ticks it", async ({ page }) => {
+    await createBoard(page)
+    await addCard(page, "To Do")
+    await retitleCard(page, "Untitled card", "Labels")
+    await editCardBody(page, "Labels", "- [ ] First\n- [ ] Second")
+
+    // A plain click opens a card with a body in preview.
+    await card(page, "Labels").click()
+    const preview = cardPanel(page)
+    await expect(
+      page.getByRole("button", { name: "Edit", exact: true })
+    ).toBeVisible()
+
+    await preview.getByText("First", { exact: true }).click()
+    await expect(card(page, "Labels")).toContainText("1/2")
+    // Still in preview: the click ticked the box instead of opening the editor.
+    await expect(panelField(page, "Notes")).toHaveCount(0)
+
+    await preview.getByText("First", { exact: true }).click()
+    await expect(card(page, "Labels")).toContainText("0/2")
   })
 
   test("a fully checked list reads as complete", async ({ page }) => {

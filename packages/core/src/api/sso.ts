@@ -5,13 +5,23 @@ import { apiUrl, isSyncConfigured } from "./server"
 
 export type SsoProvider = { id: string; name: string }
 
-/** Providers offered at sign-in. Empty without a server, or without SSO. */
-export async function fetchSsoProviders(): Promise<SsoProvider[]> {
-  if (!isSyncConfigured()) return []
+export type SignInOptions = {
+  providers: SsoProvider[]
+  /** The server wants a session before the app shows anything. */
+  authRequired: boolean
+}
+
+const NO_SERVER: SignInOptions = { providers: [], authRequired: false }
+
+export async function fetchSignInOptions(): Promise<SignInOptions> {
+  if (!isSyncConfigured()) return NO_SERVER
   const res = await appFetch(apiUrl("/api/sso"))
-  if (!res.ok) return []
-  const body = (await res.json()) as { providers?: SsoProvider[] }
-  return body.providers ?? []
+  if (!res.ok) return NO_SERVER
+  const body = (await res.json()) as Partial<SignInOptions>
+  return {
+    providers: body.providers ?? [],
+    authRequired: body.authRequired ?? false,
+  }
 }
 
 /** Where to send the browser. It comes back at `callbackURL` signed in, or at
