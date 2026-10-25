@@ -7,6 +7,7 @@ import {
   useMembersOptions,
 } from "@doska/core"
 import { useDeck } from "@/providers/deck/deck-context"
+import { useAuth } from "@/lib/hooks"
 import { imageSlashCommands } from "../card/attachments/image-slash-commands"
 import { isRenderableImage } from "../card/attachments/renderable-image"
 import { useUploads } from "@/providers/attachment-upload/attachment-upload-context"
@@ -36,11 +37,12 @@ export function CardBodyEditor({
   overlayContainer,
 }: IProps) {
   const { id: deckId } = useDeck()
+  const { authed } = useAuth()
   const { data: card } = useCard(cardId)
   const { addFiles } = useUploads()
   const cardRefs = useCardRefOptions(deckId, cardId)
   const tags = useTagOptions(deckId)
-  const members = useMembersOptions(deckId)
+  const members = useMembersOptions(deckId, !!authed)
   const attachments = card?.attachments
 
   const slashCommands = useMemo(
