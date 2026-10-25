@@ -1,4 +1,9 @@
-import { cardDisplayId, refNumber, type Card } from "@doska/contract"
+import {
+  cardDisplayId,
+  refNumber,
+  type Card,
+  type Column,
+} from "@doska/contract"
 import { useMemo } from "react"
 import { useQuery } from "@tanstack/react-query"
 import * as api from "../api/operations"
@@ -16,20 +21,30 @@ export interface CardRefOption {
 
 const NO_OPTIONS: CardRefOption[] = []
 
-/** A card with no number yet has no display id, so it can't be referenced. */
+/** A title can't hold the characters that would end the `[[…]]` early. */
+function titleTarget(title: string): string | null {
+  const text = title.trim()
+  if (!text || /[[\]|\n]/.test(text)) return null
+  return text
+}
+
+/** Numbers come from the server, so a local-only card is linked by its title. */
 async function referenceable(deckId: string): Promise<CardRefOption[]> {
   const { cards } = await api.getBoard(deckId)
   return cards.flatMap((card) => {
     const displayId = cardDisplayId(card.number)
-    if (!displayId) return []
-    return [
-      {
-        id: card.id,
-        title: card.title || "Untitled card",
-        hint: `#${displayId}`,
-        target: displayId,
-      },
-    ]
+    if (displayId)
+      return [
+        {
+          id: card.id,
+          title: card.title || "Untitled card",
+          hint: `#${displayId}`,
+          target: displayId,
+        },
+      ]
+    const target = titleTarget(card.title)
+    if (!target) return []
+    return [{ id: card.id, title: target, hint: "", target }]
   })
 }
 
@@ -77,26 +92,42 @@ async function resolveCardRef(
   displayId: string
 ): Promise<ResolvedCardRef | null> {
   const number = refNumber(displayId)
-  if (number == null) return null
+  if (number != null) {
+    const candidates = (await api.getCardsByNumber(number)).filter(live)
+    const placed = await Promise.all(
+      candidates.map(async (card) => ({
+        card,
+        column: await api.getCardCol(card.id),
+      }))
+    )
 
-  const candidates = (await api.getCardsByNumber(number)).filter(live)
-  const placed = await Promise.all(
-    candidates.map(async (card) => ({
-      card,
-      column: await api.getCardCol(card.id),
-    }))
-  )
+    const match = placed.find(
+      ({ column }) => column && live(column) && column.dashboardId === deckId
+    )
+    if (match?.column) return toResolved(match.card, match.column)
+  }
 
-  const match = placed.find(
-    ({ column }) => column && live(column) && column.dashboardId === deckId
-  )
-  if (!match?.column) return null
+  return resolveByTitle(deckId, displayId)
+}
 
+async function resolveByTitle(
+  deckId: string,
+  title: string
+): Promise<ResolvedCardRef | null> {
+  const wanted = title.trim().toLowerCase()
+  const { columns, cards } = await api.getBoard(deckId)
+  const card = cards.find((one) => one.title.trim().toLowerCase() === wanted)
+  const column = card && columns.find((one) => one.id === card.columnId)
+  if (!card || !column) return null
+  return toResolved(card, column)
+}
+
+function toResolved(card: Card, column: Column): ResolvedCardRef {
   return {
-    card: match.card,
-    columnTitle: match.column.title,
-    columnColor: match.column.color ?? "",
-    columnDone: match.column.done ?? false,
+    card,
+    columnTitle: column.title,
+    columnColor: column.color ?? "",
+    columnDone: column.done ?? false,
   }
 }
 

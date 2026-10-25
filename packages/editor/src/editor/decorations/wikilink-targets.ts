@@ -12,5 +12,6 @@ export const wikilinkTargets = Facet.define<Set<string>, Set<string>>({
  */
 export function normalizeTarget(target: string): string {
   const text = target.trim().toLowerCase()
-  return text.slice(text.indexOf("-") + 1)
+  const prefixed = /^[a-z0-9]*-(\d+)$/.exec(text)
+  return prefixed ? prefixed[1] : text
 }
