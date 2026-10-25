@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## [0.28.0] - 2026-10-26
 
 ### Added
 
@@ -15,6 +15,10 @@
 - F11 toggles fullscreen in the Windows and Linux desktop apps.
 - Clicking a task's label in card preview ticks its checkbox.
 - Read-only column titles are no longer uppercased.
+
+## [0.27.1] - 2026-10-24
+
+Versions bump for security updates.
 
 ## [0.27.0] - 2026-10-18
 
