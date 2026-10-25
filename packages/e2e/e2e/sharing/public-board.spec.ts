@@ -8,7 +8,9 @@ import {
 import {
   addCard,
   authenticate,
+  cardDisplayId,
   createBoard,
+  editCardBody,
   openShare,
   renameBoard,
   retitleCard,
@@ -56,6 +58,10 @@ async function publish(
   await retitleCard(page, "Untitled card", cardTitle)
   await waitForChange(request, boardId, "cards", cardTitle)
 
+  return { url: await createLink(page), board, cardTitle }
+}
+
+async function createLink(page: Page): Promise<string> {
   await openShare(page)
   await page.getByRole("button", { name: "Create link" }).click()
 
@@ -63,8 +69,7 @@ async function publish(
   await expect(link).toBeVisible()
   const url = await link.inputValue()
   expect(url).toContain("/p/")
-
-  return { url, board, cardTitle }
+  return url
 }
 
 /** A browser that has never seen this app: no session, no local database. */
@@ -111,6 +116,41 @@ test.describe("a published board", () => {
     await expect(
       visitor.getByRole("button", { name: "Card actions" })
     ).toHaveCount(0)
+
+    await visitor.context().close()
+  })
+
+  test("resolves card links by number and by title", async ({
+    page,
+    request,
+    browser,
+  }) => {
+    await signIn(page)
+    await authenticate(request)
+    const boardId = await createBoard(page)
+    await addCard(page, "To Do")
+    await retitleCard(page, "Untitled card", "Target card")
+    const targetId = await cardDisplayId(page, "Target card")
+
+    // The body goes in before the title, so the title reaching the server
+    // means the body has too.
+    await addCard(page, "To Do")
+    await editCardBody(
+      page,
+      "Untitled card",
+      `By number [[${targetId}]], by title [[target CARD]]`
+    )
+    await retitleCard(page, "Untitled card", "Source card")
+    await waitForChange(request, boardId, "cards", "Source card")
+
+    const visitor = await visitorPage(browser, await createLink(page))
+    await publicCard(visitor, "Source card").click()
+
+    const panel = visitor.getByRole("region", { name: "Card" })
+    await expect(
+      panel.getByRole("link").filter({ hasText: "Target card" })
+    ).toHaveCount(2)
+    await expect(panel.getByTitle("No such card")).toHaveCount(0)
 
     await visitor.context().close()
   })
