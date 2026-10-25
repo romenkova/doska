@@ -17,7 +17,7 @@ export function UsersSub({
 
   if (!authed) return null
 
-  const attached = card.users
+  const attached = card.users ?? []
 
   function toggle(userId: string) {
     const next = attached.includes(userId)
