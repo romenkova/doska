@@ -29,7 +29,7 @@ function titleTarget(title: string): string | null {
 }
 
 /** Numbers come from the server, so a local-only card is linked by its title. */
-async function referenceable(deckId: string): Promise<CardRefOption[]> {
+export async function referenceable(deckId: string): Promise<CardRefOption[]> {
   const { cards } = await api.getBoard(deckId)
   return cards.flatMap((card) => {
     const displayId = cardDisplayId(card.number)
@@ -87,7 +87,7 @@ export interface ResolvedCardRef {
  * Deletes are tombstones, so the number index still returns a deleted card;
  * skipping it is what turns the link into the "no such card" state.
  */
-async function resolveCardRef(
+export async function resolveCardRef(
   deckId: string,
   displayId: string
 ): Promise<ResolvedCardRef | null> {

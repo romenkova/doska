@@ -19,7 +19,7 @@ import {
 
 /**
  * References store the target's display id, which the server only stamps on
- * sync — so every test here needs a signed-in board. Type with
+ * sync, so these need a signed-in board; local-only cards link by title. Type with
  * `pressSequentially`, not `fill`: the `[[` menu opens on typed input.
  */
 async function boardWithCards(
@@ -41,6 +41,15 @@ async function boardWithCards(
 async function boardWithTwoCards(page: Page) {
   const ids = await boardWithCards(page, ["Target card", "Source card"])
   return { targetId: ids["Target card"], sourceId: ids["Source card"] }
+}
+
+/** No sign-in, so nothing syncs and no card ever gets a display id. */
+async function localBoardWithTwoCards(page: Page) {
+  await createBoard(page)
+  await addCard(page, "To Do")
+  await retitleCard(page, "Untitled card", "Target card")
+  await addCard(page, "To Do")
+  await retitleCard(page, "Untitled card", "Source card")
 }
 
 /** A row in the `[[` menu, matched on the title and display id it shows. */
@@ -444,21 +453,31 @@ test.describe("card references", () => {
     await expect(cardRef(page, "Untitled card")).toBeVisible()
   })
 
-  test("cards the server hasn't numbered yet aren't offered", async ({
+  test("cards the server hasn't numbered yet are linked by title", async ({
     page,
   }) => {
-    // No sign-in, so nothing syncs and no card ever gets a display id.
-    await createBoard(page)
-    await addCard(page, "To Do")
-    await retitleCard(page, "Untitled card", "Target card")
-    await addCard(page, "To Do")
-    await retitleCard(page, "Untitled card", "Source card")
+    await localBoardWithTwoCards(page)
 
     await openCard(page, "Source card")
     const notes = panelField(page, "Notes")
     await notes.click()
-    await notes.pressSequentially("[[")
+    await notes.pressSequentially("[[Targ")
 
-    await expect(refMenuRows(page)).toHaveCount(0)
+    const item = page.getByRole("option", { name: "Target card", exact: true })
+    await expect(item).toBeVisible()
+    await item.click()
+
+    await expect.poll(() => fieldText(notes)).toBe("[[Target card]]")
+
+    await closeCard(page)
+    await expect(cardRef(page, "Target card")).toBeVisible()
+  })
+
+  test("a typed title link resolves, whatever its case", async ({ page }) => {
+    await localBoardWithTwoCards(page)
+
+    await editCardBody(page, "Source card", "See [[target CARD]]")
+
+    await expect(cardRef(page, "Target card")).toBeVisible()
   })
 })
