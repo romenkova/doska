@@ -1,6 +1,7 @@
 import { useIsMobile } from "@doska/ui-kit"
 import { useCallback, useEffect, useState } from "react"
 import { useLocation, useRoute } from "wouter"
+import { useHistoryState } from "wouter/use-browser-location"
 import { routes } from "@/lib/routes"
 import { useDeck } from "@/providers/deck/deck-context"
 import { useRevealCard } from "@/providers/card-reveal/card-reveal-context"
@@ -24,6 +25,7 @@ export function CardPanel({ closeHref }: IProps) {
   const [, navigate] = useLocation()
   const [, routeParams] = useRoute(routes.card.pattern)
   const routeId = routeParams?.id ?? null
+  const isNew = useHistoryState<{ new?: boolean } | null>()?.new === true
 
   // Outlives the route change, so the card stays on screen while the panel sweeps shut.
   const [lastCard, setLastCard] = useState(routeId)
@@ -69,6 +71,7 @@ export function CardPanel({ closeHref }: IProps) {
           key={card}
           cardId={card}
           content={content}
+          isNew={isNew}
           onQueue={queue}
           onFlush={flush}
           onClose={close}

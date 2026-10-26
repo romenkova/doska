@@ -1,4 +1,5 @@
 import type {
+  Card,
   Dashboard,
   DigestCard,
   DigestFilter,
@@ -12,6 +13,7 @@ interface IProps {
   filter: DigestFilter
   onChangeFilter: (filter: DigestFilter) => void
   groups: DigestGroup[]
+  cards: Card[]
   isLoading: boolean
   /** A failed read renders as a failure, not as an empty week. */
   error: Error | null
@@ -30,6 +32,7 @@ export function Digest({
   filter,
   onChangeFilter,
   groups,
+  cards,
   isLoading,
   error,
   hideDone,
@@ -51,7 +54,7 @@ export function Digest({
         hiddenBoards={hiddenBoards}
         onToggleBoard={onToggleBoard}
       />
-      <TagFilterPills />
+      <TagFilterPills cards={cards} />
 
       <div className="min-h-0 flex-1 overflow-y-auto px-4 py-10 sm:px-4">
         <div className="mx-auto max-w-lg">
