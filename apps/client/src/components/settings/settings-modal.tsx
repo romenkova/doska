@@ -1,6 +1,7 @@
 import { CardContent, Modal, ModalContent, ModalHeader } from "@doska/ui-kit"
-import { BookOpen, Bot, Users } from "lucide-react"
+import { BookOpen, Bot, Server, Users } from "lucide-react"
 import { FaGithub } from "react-icons/fa"
+import { isSyncConfigured } from "@doska/core"
 import { useAuth } from "@/lib/hooks"
 import { isDesktop } from "@/lib/platform"
 import { SettingsSection } from "./section"
@@ -14,6 +15,7 @@ interface IProps {
   onOpenChange: (open: boolean) => void
   onOpenAccounts: () => void
   onOpenLocalMcp: () => void
+  onOpenServerMcp: () => void
 }
 
 export function SettingsModal({
@@ -21,8 +23,9 @@ export function SettingsModal({
   onOpenChange,
   onOpenAccounts,
   onOpenLocalMcp,
+  onOpenServerMcp,
 }: IProps) {
-  const { isAdmin } = useAuth()
+  const { isAdmin, authed } = useAuth()
 
   return (
     <Modal open={open} onOpenChange={onOpenChange}>
@@ -46,6 +49,13 @@ export function SettingsModal({
                   icon={<Bot className="size-4" />}
                   label="Local MCP"
                   onClick={onOpenLocalMcp}
+                />
+              )}
+              {isSyncConfigured() && authed === true && (
+                <SettingsRow
+                  icon={<Server className="size-4" />}
+                  label="Server MCP"
+                  onClick={onOpenServerMcp}
                 />
               )}
               <SettingsRow
