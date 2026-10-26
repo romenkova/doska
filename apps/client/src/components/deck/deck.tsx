@@ -129,7 +129,7 @@ export function Deck({
                     : filteredReason
                 }
               />
-              <TagFilterPills />
+              <TagFilterPills cards={board.cards} />
             </>
           }
         >
