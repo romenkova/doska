@@ -32,8 +32,6 @@ interface IProps {
   onToggleBody: (columnId: string, collapsed: boolean) => void
   onAddCard: (columnId: string) => void
   onAddFromTemplate: (columnId: string, template: Card) => void
-  /** Creates a card and opens it, for the header's add. */
-  onAddAndOpenCard: (columnId: string) => void
   onAddColumn: () => void
   onReorderColumns: (changed: Board["columns"]) => void
   onChangeColumnColor: (columnId: string, color: string) => void
@@ -57,7 +55,6 @@ export function Deck({
   onToggleBody,
   onAddCard,
   onAddFromTemplate,
-  onAddAndOpenCard,
   onAddColumn,
   onReorderColumns,
   onChangeColumnColor,
@@ -121,7 +118,7 @@ export function Deck({
                 view={view}
                 onChangeView={onChangeView}
                 onAddCard={() => {
-                  if (orderedColumns[0]) onAddAndOpenCard(orderedColumns[0].id)
+                  if (orderedColumns[0]) onAddCard(orderedColumns[0].id)
                 }}
                 addCardDisabledReason={
                   orderedColumns.length === 0

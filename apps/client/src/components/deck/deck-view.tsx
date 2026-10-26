@@ -83,14 +83,16 @@ export function DeckView({ dashboard }: { dashboard: Dashboard }) {
       onToggleBody={(columnId, collapsed) =>
         setColumnCollapsed({ id: columnId, collapsed })
       }
-      onAddCard={createCard}
-      onAddFromTemplate={(columnId, template) =>
-        createCardFromTemplate({ columnId, template })
-      }
-      onAddAndOpenCard={(columnId) =>
+      onAddCard={(columnId) =>
         createCard(columnId, {
           onSuccess: (cardId) => navigate(routes.card.to(cardId)),
         })
+      }
+      onAddFromTemplate={(columnId, template) =>
+        createCardFromTemplate(
+          { columnId, template },
+          { onSuccess: (cardId) => navigate(routes.card.to(cardId)) }
+        )
       }
       onAddColumn={() => createColumn("New column")}
       onReorderColumns={moveColumn}
