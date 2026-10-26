@@ -5,9 +5,13 @@ import { CardEditor } from "./card-editor"
 import { ConflictBanner } from "./conflict-banner"
 import { rebaseDraft, type DraftState } from "./draft"
 
+const PREVIEW_MAX_CHARS = 100_000
+
 interface IProps {
   cardId: string
   content: Card
+  /** Just created: opens in edit mode */
+  isNew?: boolean
   onQueue: (id: string, patch: CardPatch) => void
   onFlush: () => void
   /** Just the editor: no header */
@@ -23,6 +27,7 @@ interface IProps {
 export function CardPane({
   cardId,
   content,
+  isNew = false,
   onQueue,
   onFlush,
   bare = false,
@@ -45,7 +50,11 @@ export function CardPane({
   }, [typed, cardId, onQueue])
 
   const [isPreview, setPreview] = useState(
-    () => !bare && Boolean(content.body.trim())
+    () =>
+      !bare &&
+      !isNew &&
+      Boolean(content.body.trim()) &&
+      content.body.length < PREVIEW_MAX_CHARS
   )
 
   const resolve = (patch: CardPatch) => {

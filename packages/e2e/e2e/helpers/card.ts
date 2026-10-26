@@ -121,6 +121,8 @@ export async function addCard(page: Page, name: string): Promise<void> {
   await column(page, name)
     .getByRole("button", { name: `Add card to ${name}` })
     .click()
+  await page.waitForURL(/\/c\//)
+  await closeCard(page)
   await expect(seeded).toHaveCount(before + 1)
 }
 
@@ -163,7 +165,8 @@ export async function retitleCard(
  * tests.
  */
 export async function openCard(page: Page, title: string): Promise<void> {
-  await card(page, title).click()
+  // The title, not the card's center: a [[link]] in the body there opens the linked card instead.
+  await card(page, title).getByText(title, { exact: true }).first().click()
   await expect(cardPanel(page)).toBeVisible()
   // Exact: a board card with a conflict marker is named "... Edit conflict".
   const edit = page.getByRole("button", { name: "Edit", exact: true })

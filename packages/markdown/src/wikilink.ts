@@ -38,7 +38,8 @@ export function matchWikilinkTrigger(
  */
 export function toWikilink(target: string, alias?: string): string {
   const label = alias?.trim()
-  if (!label || /[[\]|\n]/.test(label)) return `[[${target}]]`
+  if (!label || label === target || /[[\]|\n]/.test(label))
+    return `[[${target}]]`
   return `[[${target}|${label}]]`
 }
 

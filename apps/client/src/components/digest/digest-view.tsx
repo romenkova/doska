@@ -36,25 +36,19 @@ export function DigestView() {
     return () => void sync.watchBoards([])
   }, [boardIds])
 
-  const matching = filterByUsers(
-    filterByTags(
-      entries.map((e) => e.card),
-      tagFilters
-    ),
-    userFilters
+  const shown = entries.filter(
+    (e) => !hidden.includes(e.boardId) && !(hideDone && e.isDone)
   )
-  const visible = entries.filter(
-    (e) =>
-      matching.includes(e.card) &&
-      !hidden.includes(e.boardId) &&
-      !(hideDone && e.isDone)
-  )
+  const cards = shown.map((e) => e.card)
+  const matching = filterByUsers(filterByTags(cards, tagFilters), userFilters)
+  const visible = shown.filter((e) => matching.includes(e.card))
 
   return (
     <Digest
       filter={filter}
       onChangeFilter={setFilter}
       groups={groupByDeadline(visible)}
+      cards={cards}
       isLoading={isPending}
       error={error}
       hideDone={hideDone}

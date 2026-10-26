@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Card links by title: `[[Card title]]` links to a card on the same board,
+  case-insensitive. 
+- Filtering by a tag no card has shows a hint that a `#tag` in a card body is
+  only a link, and tags are set through the card menu. On the board and in
+  Upcoming.
+
+### Changed
+
+- New cards open in edit mode, whether added with a column's `+` or from a
+  template, same as the header's add button.
+
 ## [0.28.0] - 2026-10-26
 
 ### Added
