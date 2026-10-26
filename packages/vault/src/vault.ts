@@ -269,7 +269,7 @@ export class Vault {
       // The vault wrote this file and can't find it any more, so it was
       // deleted. A copy goes to the trash.
       if (!found && last && !wiped.has(dirOf(last.path))) {
-        await this.trash.copy(card.id, last, inTrash)
+        await this.trash.copy(card, last.path, inTrash)
         await this.board.deleteCard(card.id)
         changed = true
         continue
@@ -359,7 +359,7 @@ export class Vault {
       users: card.users,
     })
     await folder.save(card, file.path)
-    this.written.set(id, { path: file.path, text: card.text })
+    await this.written.set(id, { path: file.path, text: card.text })
   }
 
   /** One card against its file. Returns whether the board changed. */
@@ -372,7 +372,7 @@ export class Vault {
       const folder = byColumn.get(card.columnId)
       if (!folder) return false
       const file = CardFile.fromCard(card)
-      this.written.set(card.id, {
+      await this.written.set(card.id, {
         path: await folder.save(file),
         text: file.text,
       })
@@ -383,13 +383,13 @@ export class Vault {
     const last = this.written.get(card.id)
     let changed = false
 
-    if (!last || last.text !== file.text) {
+    if (!last || !(await this.written.wrote(card.id, file.text))) {
       const patch = file.card.patchFor(card)
       if (patch) {
         await this.board.updateCard(card.id, patch)
         changed = true
       }
-      this.written.set(card.id, { path: file.path, text: file.text })
+      await this.written.set(card.id, { path: file.path, text: file.text })
     }
 
     if (folder.columnId !== card.columnId) {
@@ -398,11 +398,11 @@ export class Vault {
         const target = byColumn.get(card.columnId)
         if (target) {
           const path = await target.take(file.path, file.card)
-          this.written.set(card.id, { path, text: file.text })
+          await this.written.set(card.id, { path, text: file.text })
         }
       } else {
         await this.board.moveCardToColumn(card.id, folder.columnId)
-        this.written.set(card.id, { path: file.path, text: file.text })
+        await this.written.set(card.id, { path: file.path, text: file.text })
         changed = true
       }
       return changed
@@ -413,7 +413,7 @@ export class Vault {
     if (!changed && wanted.text !== file.text) {
       const path = await folder.retitle(file.path, wanted)
       await folder.save(wanted, path)
-      this.written.set(card.id, { path, text: wanted.text })
+      await this.written.set(card.id, { path, text: wanted.text })
     }
     return changed
   }

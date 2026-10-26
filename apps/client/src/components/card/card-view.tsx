@@ -23,6 +23,9 @@ import { ImageCard } from "./image-card"
 import { cardSoleImage } from "./sole-image"
 
 const BOARD_MARKERS = [cut]
+// Parsing a huge body on every board refresh freezes the app for seconds.
+const PREVIEW_LINES = 50
+const PREVIEW_CHARS = 5000
 
 /** Cancels `MdImage`'s standalone-image spacing so the image can fill the card. */
 const FULL_BLEED = "my-0 w-full rounded-none"
@@ -86,9 +89,15 @@ export function CardView({
   ...props
 }: IProps) {
   const { title, body } = card
-  const { body: preview, applied } = useMarkers(body, BOARD_MARKERS, "card")
+  const { body: marked, applied } = useMarkers(body, BOARD_MARKERS, "card")
+  const preview = marked
+    .split("\n")
+    .slice(0, PREVIEW_LINES)
+    .join("\n")
+    .slice(0, PREVIEW_CHARS)
+  const clipped = preview.length < marked.length
   const hasBody = preview.trim().length > 0
-  const hasMore = applied.includes(cut.name)
+  const hasMore = clipped || applied.includes(cut.name)
   const files = card.attachments ?? []
   const bodyImage = hasBody && !hasMore ? soleImage(preview) : null
   const image = imageCard ? cardSoleImage(hasBody, bodyImage, files) : null
