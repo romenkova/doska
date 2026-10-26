@@ -1,4 +1,4 @@
 {
   "extends": "@doska/configs/tsconfig/neutral.json",
-  "include": ["src", "tests", "integration-tests"]
+  "include": ["src", "tests", "integration-tests", "vitest.config.ts"]
 }

@@ -11,6 +11,8 @@ import { tauriFs } from "./tauri-fs"
 
 const PATHS = "deck:vault:"
 const pathKey = (boardId: string) => `${PATHS}${boardId}`
+// Each pass rereads every card file, so wait out a burst of typing.
+const SYNC_DELAY_MS = 2000
 
 /** The other board already mirroring `path` on this device, if there is one. */
 function holder(path: string, boardId: string): string | null {
@@ -111,13 +113,17 @@ export function useVault(boardId: string) {
       },
     })
 
+    let timer: ReturnType<typeof setTimeout> | undefined
     const off = qc.getQueryCache().subscribe((event) => {
       if (event.type !== "updated" || event.action.type !== "success") return
       if (event.query.queryKey[0] !== keys.boards[0]) return
-      vault
-        .sync()
-        .then(() => setError(null))
-        .catch((cause: unknown) => setError(message(cause)))
+      clearTimeout(timer)
+      timer = setTimeout(() => {
+        vault
+          .sync()
+          .then(() => setError(null))
+          .catch((cause: unknown) => setError(message(cause)))
+      }, SYNC_DELAY_MS)
     })
 
     void vault
@@ -135,6 +141,7 @@ export function useVault(boardId: string) {
 
     return () => {
       live = false
+      clearTimeout(timer)
       off()
       unwatch?.()
     }

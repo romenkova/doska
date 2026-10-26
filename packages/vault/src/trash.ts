@@ -1,4 +1,5 @@
 import type { Card } from "@doska/contract"
+import { CardFile } from "./card-file"
 import { cardFiles, claim, type VaultFs } from "./column-folder"
 import { dirOf, stemOf } from "./utils"
 import type { Written } from "./written"
@@ -45,18 +46,15 @@ export class Trash {
   ): Promise<void> {
     const path = this.pathFor(stemOf(file.path), taken)
     await this.fs.rename(file.path, path)
-    this.written.set(id, { path, text: file.text })
+    await this.written.set(id, { path, text: file.text })
   }
 
-  /** Copies in the text of a file that is already gone from its column. */
-  async copy(
-    id: string,
-    file: { path: string; text: string },
-    taken: Set<string>
-  ): Promise<void> {
-    const path = this.pathFor(stemOf(file.path), taken)
-    await this.fs.write(path, file.text)
-    this.written.set(id, { path, text: file.text })
+  /** Writes a card whose file is already gone from its column. */
+  async copy(card: Card, gonePath: string, taken: Set<string>): Promise<void> {
+    const path = this.pathFor(stemOf(gonePath), taken)
+    const text = CardFile.fromCard(card).text
+    await this.fs.write(path, text)
+    await this.written.set(card.id, { path, text })
   }
 
   /**
@@ -85,7 +83,7 @@ export class Trash {
 
       await this.deleteCard(card.id)
       cards.delete(card.id)
-      this.written.set(card.id, { path, text })
+      await this.written.set(card.id, { path, text })
       changed = true
     }
 

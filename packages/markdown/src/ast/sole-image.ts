@@ -14,6 +14,7 @@ function isBlank(node: MdNode): boolean {
  * The image a body consists of, when there is only image
  */
 export function soleImage(markdown: string): SoleImage | null {
+  if (!markdown.includes("![")) return null
   const blocks = parseMarkdown(markdown).children as MdNode[]
   if (blocks.length !== 1) return null
 

@@ -5,6 +5,8 @@ import { CardEditor } from "./card-editor"
 import { ConflictBanner } from "./conflict-banner"
 import { rebaseDraft, type DraftState } from "./draft"
 
+const PREVIEW_MAX_CHARS = 100_000
+
 interface IProps {
   cardId: string
   content: Card
@@ -45,7 +47,10 @@ export function CardPane({
   }, [typed, cardId, onQueue])
 
   const [isPreview, setPreview] = useState(
-    () => !bare && Boolean(content.body.trim())
+    () =>
+      !bare &&
+      Boolean(content.body.trim()) &&
+      content.body.length < PREVIEW_MAX_CHARS
   )
 
   const resolve = (patch: CardPatch) => {

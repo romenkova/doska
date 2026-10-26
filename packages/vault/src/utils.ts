@@ -23,3 +23,13 @@ export function dirOf(path: string): string {
 export function stemOf(path: string): string {
   return path.slice(path.lastIndexOf("/") + 1).replace(/\.md$/, "")
 }
+
+export async function hashOf(text: string): Promise<string> {
+  const digest = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(text)
+  )
+  return Array.from(new Uint8Array(digest), (byte) =>
+    byte.toString(16).padStart(2, "0")
+  ).join("")
+}

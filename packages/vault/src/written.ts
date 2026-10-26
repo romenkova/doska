@@ -1,5 +1,5 @@
 import type { VaultFs } from "./column-folder"
-import { dirOf } from "./utils"
+import { dirOf, hashOf } from "./utils"
 
 const META = "_meta.json"
 
@@ -25,7 +25,7 @@ interface Meta {
 /** A file the vault wrote, as it wrote it. */
 export interface WrittenFile {
   path: string
-  text: string
+  hash: string
 }
 
 /** A column's folder, as the vault last left it. */
@@ -82,8 +82,13 @@ export class Written {
     return this.entries.get(id)
   }
 
-  set(id: string, file: WrittenFile): void {
-    this.entries.set(id, file)
+  async set(id: string, file: { path: string; text: string }): Promise<void> {
+    this.entries.set(id, { path: file.path, hash: await hashOf(file.text) })
+  }
+
+  /** Whether `text` is what the vault last wrote for this card. */
+  async wrote(id: string, text: string): Promise<boolean> {
+    return this.entries.get(id)?.hash === (await hashOf(text))
   }
 
   delete(id: string): void {
@@ -115,7 +120,7 @@ export class Written {
     for (const [id, entry] of this.entries) {
       if (dirOf(entry.path) !== from) continue
       const name = entry.path.slice(from.length)
-      this.entries.set(id, { path: `${to}${name}`, text: entry.text })
+      this.entries.set(id, { path: `${to}${name}`, hash: entry.hash })
     }
   }
 
@@ -128,10 +133,13 @@ export class Written {
     this.held = typeof meta.board === "string" ? meta.board : this.boardId
 
     for (const [id, entry] of section(meta.cards)) {
-      if (typeof entry.path !== "string" || typeof entry.text !== "string") {
-        continue
+      if (typeof entry.path !== "string") continue
+      // Vaults from before hashing kept the full text
+      if (typeof entry.text === "string") {
+        await this.set(id, { path: entry.path, text: entry.text })
+      } else if (typeof entry.hash === "string") {
+        this.entries.set(id, { path: entry.path, hash: entry.hash })
       }
-      this.entries.set(id, { path: entry.path, text: entry.text })
     }
 
     for (const [id, entry] of section(meta.columns)) {
