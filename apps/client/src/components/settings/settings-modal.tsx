@@ -1,7 +1,8 @@
 import { CardContent, Modal, ModalContent, ModalHeader } from "@doska/ui-kit"
-import { BookOpen, Users } from "lucide-react"
+import { BookOpen, Bot, Users } from "lucide-react"
 import { FaGithub } from "react-icons/fa"
 import { useAuth } from "@/lib/hooks"
+import { isDesktop } from "@/lib/platform"
 import { SettingsSection } from "./section"
 import { SettingsRow } from "./settings-row"
 import { CardViewSection } from "./sections/card-view"
@@ -12,9 +13,15 @@ interface IProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onOpenAccounts: () => void
+  onOpenLocalMcp: () => void
 }
 
-export function SettingsModal({ open, onOpenChange, onOpenAccounts }: IProps) {
+export function SettingsModal({
+  open,
+  onOpenChange,
+  onOpenAccounts,
+  onOpenLocalMcp,
+}: IProps) {
   const { isAdmin } = useAuth()
 
   return (
@@ -32,6 +39,13 @@ export function SettingsModal({ open, onOpenChange, onOpenAccounts }: IProps) {
                   icon={<Users className="size-4" />}
                   label="Accounts"
                   onClick={onOpenAccounts}
+                />
+              )}
+              {isDesktop() && (
+                <SettingsRow
+                  icon={<Bot className="size-4" />}
+                  label="Local MCP"
+                  onClick={onOpenLocalMcp}
                 />
               )}
               <SettingsRow
