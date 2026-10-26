@@ -122,8 +122,8 @@ importers:
         specifier: 19.2.3
         version: 19.2.3(react@19.2.3)
       react-draggable-folders:
-        specifier: ^0.0.2
-        version: 0.0.2(@types/react@19.2.18)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+        specifier: ^0.0.3
+        version: 0.0.3(@types/react@19.2.18)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       react-hot-toast:
         specifier: ^2.6.1
         version: 2.6.1(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -7207,8 +7207,8 @@ packages:
     peerDependencies:
       react: 19.2.3
 
-  react-draggable-folders@0.0.2:
-    resolution: {integrity: sha512-x9H7swmACyb2hzIhYAffby6K8APpZIiX2p3KDlU+d5KeF5GenKq0izFIHsXo0sNcgvYSHk9fJs+VzytzTPkZoA==}
+  react-draggable-folders@0.0.3:
+    resolution: {integrity: sha512-TUn/sVerSX6DDeQM8r/w/Wjs9BORMk31h7SBNwWfQTTWlzwHHxTmUFuX9J7XCxPs3/To5sI7B3UG1q4bW1Weow==}
     peerDependencies:
       react: 19.2.3
       react-dom: 19.2.3
@@ -16036,7 +16036,7 @@ snapshots:
       react: 19.2.3
       scheduler: 0.27.0
 
-  react-draggable-folders@0.0.2(@types/react@19.2.18)(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
+  react-draggable-folders@0.0.3(@types/react@19.2.18)(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
     dependencies:
       '@hello-pangea/dnd': 18.0.1(@types/react@19.2.18)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       react: 19.2.3

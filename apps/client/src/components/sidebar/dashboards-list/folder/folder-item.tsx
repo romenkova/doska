@@ -17,7 +17,7 @@ interface IProps {
   onRename: (title: string) => void
   onRenameEnd: () => void
   onCollapsedChange: (collapsed: boolean) => void
-  onNewSubfolder: () => void
+  onNewSubfolder?: () => void
   onDelete: () => void
 }
 

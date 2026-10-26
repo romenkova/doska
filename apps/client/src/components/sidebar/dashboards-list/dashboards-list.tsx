@@ -20,6 +20,8 @@ import { BoardsHeader } from "./boards-header"
 import { FolderItem } from "./folder/folder-item"
 
 const SIDEBAR_COMPONENTS = { List: SidebarMenu, Row: SidebarMenuItem }
+// Five levels of folders; boards can still go inside the deepest one.
+const DEPTH_LIMITS = { item: 5, folder: 4 }
 
 // Module-level so the tree doesn't reset on every render while loading
 const NO_NODES: SidebarNode[] = []
@@ -73,6 +75,7 @@ export function DashboardsList({
         <DraggableFolders
           tree={tree}
           isDragDisabled={(id) => id === renamingId}
+          limits={DEPTH_LIMITS}
           dropAnimationMs={DROP_ANIMATION_MS}
           droppableId="sidebar"
           components={SIDEBAR_COMPONENTS}
@@ -89,7 +92,10 @@ export function DashboardsList({
               </div>
             </div>
           )}
-          renderFolder={(folder, { dragging, collapsed, isDropTarget }) => (
+          renderFolder={(
+            folder,
+            { dragging, collapsed, isDropTarget, depth }
+          ) => (
             <div className="pt-1">
               <div className={lifted(dragging)}>
                 <FolderItem
@@ -103,7 +109,11 @@ export function DashboardsList({
                   onCollapsedChange={(collapsed) =>
                     tree.setCollapsed(folder.id, collapsed)
                   }
-                  onNewSubfolder={() => createFolder(folder.id)}
+                  onNewSubfolder={
+                    depth < DEPTH_LIMITS.folder
+                      ? () => createFolder(folder.id)
+                      : undefined
+                  }
                   onDelete={() => tree.removeFolder(folder.id)}
                 />
               </div>

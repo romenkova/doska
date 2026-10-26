@@ -10,7 +10,8 @@ import { FolderPlus, MoreVertical, Pencil, Trash2 } from "lucide-react"
 
 interface IProps {
   onRename: () => void
-  onNewSubfolder: () => void
+  /** Left out at the max depth. */
+  onNewSubfolder?: () => void
   onDelete: () => void
 }
 
@@ -38,10 +39,12 @@ export function FolderMenu({ onRename, onNewSubfolder, onDelete }: IProps) {
           <Pencil />
           Rename
         </MenuItem>
-        <MenuItem onClick={onNewSubfolder}>
-          <FolderPlus />
-          New subfolder
-        </MenuItem>
+        {onNewSubfolder && (
+          <MenuItem onClick={onNewSubfolder}>
+            <FolderPlus />
+            New subfolder
+          </MenuItem>
+        )}
         <MenuItem onClick={onDelete} variant="destructive">
           <Trash2 />
           Delete folder
