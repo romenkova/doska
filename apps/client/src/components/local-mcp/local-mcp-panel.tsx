@@ -4,6 +4,13 @@ import { CopyField } from "./copy-field"
 
 export function LocalMcpPanel() {
   const mcp = useLocalMcp()
+  if (!mcp) return null
+
+  const note =
+    mcp.error ??
+    (mcp.saveError
+      ? `Settings didn't save, so they won't survive a restart: ${mcp.saveError}`
+      : "Local MCP works only when the app is open.")
 
   return (
     <div className="flex flex-col gap-4">
@@ -28,9 +35,7 @@ export function LocalMcpPanel() {
               {mcp.error ? "Not running" : mcp.enabled ? "Enabled" : "Disabled"}
             </span>
           </span>
-          <span className="text-xs text-muted-foreground">
-            {mcp.error ?? "Local MCP works only when the app is open."}
-          </span>
+          <span className="text-xs text-muted-foreground">{note}</span>
         </span>
         <Button
           type="button"
@@ -42,7 +47,23 @@ export function LocalMcpPanel() {
         </Button>
       </div>
 
-      {mcp.enabled && (
+      {mcp.error && (
+        <div className="flex items-center justify-between gap-3">
+          <span className="text-xs text-muted-foreground">
+            A new port means pasting the command into your agents again.
+          </span>
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            onClick={mcp.pickPort}
+          >
+            Pick a new port
+          </Button>
+        </div>
+      )}
+
+      {mcp.enabled && mcp.url && mcp.token && (
         <>
           <div className="flex flex-col gap-1.5">
             <span className="text-xs text-muted-foreground">Claude Code</span>
