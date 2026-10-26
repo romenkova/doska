@@ -5,12 +5,15 @@ import {
   boardTitle,
   card,
   cardTitled,
+  closeCard,
   column,
   createBoard,
   editCardBody,
+  fieldText,
   menu,
   openBoardMenu,
   openCardMenu,
+  panelField,
   renameBoard,
   retitleCard,
 } from "../helpers"
@@ -67,6 +70,12 @@ test.describe("templates", () => {
 
     await fromTemplateButton(page, "In Progress").click()
     await page.getByRole("menuitem", { name: "Standup" }).click()
+
+    await page.waitForURL(/\/c\//)
+    await expect
+      .poll(() => fieldText(panelField(page, "Title")))
+      .toBe("Standup")
+    await closeCard(page)
 
     const copy = column(page, "In Progress").locator(
       cardTitled(page, "Standup")

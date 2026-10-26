@@ -44,4 +44,21 @@ test.describe("card lifecycle", { tag: "@container" }, () => {
     await page.reload()
     await expect(card(page, "My E2E Card")).toHaveCount(0)
   })
+
+  test("a card added from a column opens with its title focused", async ({
+    page,
+  }) => {
+    await createBoard(page)
+
+    await column(page, "To Do")
+      .getByRole("button", { name: "Add card to To Do" })
+      .click()
+
+    await page.waitForURL(/\/c\//)
+    await expect(panelField(page, "Title")).toBeFocused()
+    await closeCard(page)
+    await expect(
+      column(page, "To Do").locator(card(page, "Untitled card"))
+    ).toBeVisible()
+  })
 })

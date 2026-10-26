@@ -85,13 +85,17 @@ export function DeckView({ dashboard }: { dashboard: Dashboard }) {
       }
       onAddCard={(columnId) =>
         createCard(columnId, {
-          onSuccess: (cardId) => navigate(routes.card.to(cardId)),
+          onSuccess: (cardId) =>
+            navigate(routes.card.to(cardId), { state: { new: true } }),
         })
       }
       onAddFromTemplate={(columnId, template) =>
         createCardFromTemplate(
           { columnId, template },
-          { onSuccess: (cardId) => navigate(routes.card.to(cardId)) }
+          {
+            onSuccess: (cardId) =>
+              navigate(routes.card.to(cardId), { state: { new: true } }),
+          }
         )
       }
       onAddColumn={() => createColumn("New column")}

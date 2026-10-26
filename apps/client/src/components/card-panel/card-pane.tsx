@@ -10,6 +10,8 @@ const PREVIEW_MAX_CHARS = 100_000
 interface IProps {
   cardId: string
   content: Card
+  /** Just created: opens in edit mode */
+  isNew?: boolean
   onQueue: (id: string, patch: CardPatch) => void
   onFlush: () => void
   /** Just the editor: no header */
@@ -25,6 +27,7 @@ interface IProps {
 export function CardPane({
   cardId,
   content,
+  isNew = false,
   onQueue,
   onFlush,
   bare = false,
@@ -49,6 +52,7 @@ export function CardPane({
   const [isPreview, setPreview] = useState(
     () =>
       !bare &&
+      !isNew &&
       Boolean(content.body.trim()) &&
       content.body.length < PREVIEW_MAX_CHARS
   )
