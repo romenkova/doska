@@ -1,4 +1,6 @@
 mod hide_window;
+#[cfg(desktop)]
+mod local_mcp;
 mod quick_note;
 mod shortcuts;
 mod tear_off;
@@ -36,7 +38,17 @@ pub fn run() {
             shortcuts::set_shortcut,
             shortcuts::clear_shortcut,
             updates::check_update,
-            updates::install_update
+            updates::install_update,
+            #[cfg(desktop)]
+            local_mcp::get_local_mcp,
+            #[cfg(desktop)]
+            local_mcp::set_local_mcp_enabled,
+            #[cfg(desktop)]
+            local_mcp::reset_local_mcp_token,
+            #[cfg(desktop)]
+            local_mcp::pick_local_mcp_port,
+            #[cfg(desktop)]
+            local_mcp::bridge::local_mcp_reply
         ])
         .plugin(
             tauri_plugin_window_state::Builder::default()
@@ -58,6 +70,8 @@ pub fn run() {
             }
             quick_note::init(app.handle());
             shortcuts::init(app.handle())?;
+            #[cfg(desktop)]
+            local_mcp::init(app.handle());
             Ok(())
         })
         .on_window_event(|window, event| {
