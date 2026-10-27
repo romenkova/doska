@@ -121,6 +121,9 @@ importers:
       react-dom:
         specifier: 19.2.3
         version: 19.2.3(react@19.2.3)
+      react-draggable-folders:
+        specifier: ^0.0.3
+        version: 0.0.3(@types/react@19.2.18)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       react-hot-toast:
         specifier: ^2.6.1
         version: 2.6.1(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -7204,6 +7207,12 @@ packages:
     peerDependencies:
       react: 19.2.3
 
+  react-draggable-folders@0.0.3:
+    resolution: {integrity: sha512-TUn/sVerSX6DDeQM8r/w/Wjs9BORMk31h7SBNwWfQTTWlzwHHxTmUFuX9J7XCxPs3/To5sI7B3UG1q4bW1Weow==}
+    peerDependencies:
+      react: 19.2.3
+      react-dom: 19.2.3
+
   react-fast-compare@3.2.2:
     resolution: {integrity: sha512-nsO+KSNgo1SbJqJEYRE9ERzo7YtYbou/OqjSQKxV7jcKox7+usiUVZOAC+XnDOABXggQTno0Y1CpVnuWEc1boQ==}
 
@@ -11929,7 +11938,7 @@ snapshots:
 
   '@types/react-test-renderer@19.1.0':
     dependencies:
-      '@types/react': 19.3.0
+      '@types/react': 19.2.18
 
   '@types/react@19.2.18':
     dependencies:
@@ -16026,6 +16035,14 @@ snapshots:
     dependencies:
       react: 19.2.3
       scheduler: 0.27.0
+
+  react-draggable-folders@0.0.3(@types/react@19.2.18)(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
+    dependencies:
+      '@hello-pangea/dnd': 18.0.1(@types/react@19.2.18)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      react: 19.2.3
+      react-dom: 19.2.3(react@19.2.3)
+    transitivePeerDependencies:
+      - '@types/react'
 
   react-fast-compare@3.2.2: {}
 

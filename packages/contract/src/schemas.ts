@@ -169,6 +169,8 @@ export const SidebarItemSchema = z.discriminatedUnion("type", [
     type: z.literal("folder"),
     id: z.string(),
     title: z.string(),
+    /** Set on a subfolder */
+    parentId: z.string().optional(),
     boardIds: z.array(z.string()).default([]),
   }),
 ])

@@ -1,8 +1,8 @@
-import { useRenameFolder } from "@doska/core"
 import { SheetScreen } from "@doska/ui-kit-mobile"
 import { router, useLocalSearchParams } from "expo-router"
 import { NameForm } from "@/components/shell/name-form"
 import { useFolder } from "@/lib/use-folder"
+import { useRenameFolder } from "@/lib/sidebar-stubs"
 
 export default function RenameFolderSheet() {
   const { id } = useLocalSearchParams<{ id: string }>()
@@ -16,7 +16,7 @@ export default function RenameFolderSheet() {
         title="Rename folder"
         placeholder="Folder name"
         confirmLabel="Save"
-        initial={folder.title}
+        initial={folder.data.title}
         onCommit={(title) => rename({ id: folder.id, title })}
         // Past the actions sheet underneath, back to the sidebar.
         onClose={() => router.dismissAll()}

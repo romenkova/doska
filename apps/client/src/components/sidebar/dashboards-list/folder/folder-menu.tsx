@@ -6,14 +6,16 @@ import {
   MenuTrigger,
   cn,
 } from "@doska/ui-kit"
-import { MoreVertical, Pencil, Trash2 } from "lucide-react"
+import { FolderPlus, MoreVertical, Pencil, Trash2 } from "lucide-react"
 
 interface IProps {
   onRename: () => void
+  /** Left out at the max depth. */
+  onNewSubfolder?: () => void
   onDelete: () => void
 }
 
-export function FolderMenu({ onRename, onDelete }: IProps) {
+export function FolderMenu({ onRename, onNewSubfolder, onDelete }: IProps) {
   return (
     <Menu>
       <MenuTrigger
@@ -37,6 +39,12 @@ export function FolderMenu({ onRename, onDelete }: IProps) {
           <Pencil />
           Rename
         </MenuItem>
+        {onNewSubfolder && (
+          <MenuItem onClick={onNewSubfolder}>
+            <FolderPlus />
+            New subfolder
+          </MenuItem>
+        )}
         <MenuItem onClick={onDelete} variant="destructive">
           <Trash2 />
           Delete folder

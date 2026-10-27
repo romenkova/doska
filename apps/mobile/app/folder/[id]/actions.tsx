@@ -1,10 +1,10 @@
-import { useDeleteFolder } from "@doska/core"
 import { Separator, SheetItem, SheetScreen } from "@doska/ui-kit-mobile"
 import { router, useLocalSearchParams } from "expo-router"
 import Pencil from "lucide-react-native/icons/pencil"
 import Trash2 from "lucide-react-native/icons/trash-2"
 import { ROUTES } from "@/lib/routes"
 import { useFolder } from "@/lib/use-folder"
+import { useDeleteFolder } from "@/lib/sidebar-stubs"
 
 export default function FolderActionsSheet() {
   const { id } = useLocalSearchParams<{ id: string }>()

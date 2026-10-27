@@ -1,9 +1,5 @@
-import type {
-  SidebarFolderNode,
-  SidebarNode,
-  SidebarTarget,
-  Dashboard,
-} from "@doska/core"
+import type { SidebarFolderNode, SidebarNode, Dashboard } from "@doska/core"
+import type { SidebarTarget } from "@/lib/sidebar-stubs"
 
 // Every folder block closes with an `end` row, so a board dropped between a
 // folder and its end is in that folder, and anywhere else is at the root.
@@ -32,12 +28,12 @@ export function sidebarRows(
   collapsedIds: string[]
 ): SidebarRow[] {
   return nodes.flatMap((node): SidebarRow[] => {
-    if (node.type === "board") {
-      const { dashboard } = node
+    if (node.type === "item") {
+      const dashboard = node.data
       return [{ kind: "board", key: dashboard.id, dashboard, folderId: null }]
     }
     const collapsed = collapsedIds.includes(node.id)
-    const boards = collapsed ? [] : node.boards
+    const boards = collapsed ? [] : node.items.map((item) => item.data)
     return [
       { kind: "folder", key: node.id, folder: node, collapsed },
       ...boards.map((dashboard): SidebarRow => ({
@@ -66,7 +62,7 @@ export function sidebarTarget(
       const { folder } = row
       // A collapsed folder shows no boards, so the board goes in last.
       const count = row.collapsed
-        ? folder.boards.filter((board) => board.id !== boardId).length
+        ? folder.items.filter((board) => board.id !== boardId).length
         : boardsAbove
       return { kind: "folder", folderId: folder.id, index: count }
     }
