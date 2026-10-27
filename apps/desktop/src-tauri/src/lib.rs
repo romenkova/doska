@@ -7,9 +7,25 @@ mod vault;
 
 use tauri::{Manager, RunEvent, WindowEvent};
 
+fn show_main(app: &tauri::AppHandle) {
+    if let Some(main) = app.get_webview_window("main") {
+        let _ = main.unminimize();
+        let _ = main.show();
+        let _ = main.set_focus();
+    }
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    tauri::Builder::default()
+    let builder = tauri::Builder::default();
+    // Must be the first plugin. Closing only hides the main window, so a
+    // relaunch would otherwise start a second process on the same vault.
+    #[cfg(desktop)]
+    let builder = builder.plugin(tauri_plugin_single_instance::init(|app, _, _| {
+        show_main(app);
+    }));
+
+    builder
         .invoke_handler(tauri::generate_handler![
             vault::ignore_vault,
             quick_note::hide_quick_note,
@@ -62,10 +78,7 @@ pub fn run() {
         .run(|app, event| {
             #[cfg(target_os = "macos")]
             if let RunEvent::Reopen { .. } = event {
-                if let Some(main) = app.get_webview_window("main") {
-                    let _ = main.show();
-                    let _ = main.set_focus();
-                }
+                show_main(app);
             }
             let _ = (app, &event);
         });
