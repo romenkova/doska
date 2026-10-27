@@ -33,6 +33,8 @@ semver = "1"
 tauri-plugin-process = "2"
 tauri-plugin-global-shortcut = "2"
 tauri-plugin-single-instance = "2"
+tiny_http = "0.12"
+uuid = { version = "1", features = ["v4"] }
 
 # The quick-note popup is re-classed into a non-activating NSPanel, so it can
 # take the keyboard over another app's fullscreen Space without activating
