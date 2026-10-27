@@ -29,6 +29,7 @@ import { UndoToaster } from "@/components/toasts/card-delete/undo-toaster"
 import { WindowDragRegion } from "@/components/window-drag-region"
 import { WindowControlsFlag } from "@/components/window-controls-flag"
 import { WindowSyncListener } from "@/components/card-window/window-sync-listener"
+import { LocalMcpListener } from "@/components/local-mcp/local-mcp-listener"
 import { DevMenu } from "@/components/dev-menu/dev-menu"
 import "./index.css"
 
@@ -104,6 +105,7 @@ if (isPublicLink) {
                 <WindowDragRegion />
                 <WindowControlsFlag />
                 <WindowSyncListener />
+                <LocalMcpListener />
                 {import.meta.env.DEV && <DevMenu />}
               </LoginPromptProvider>
             </AuthGate>

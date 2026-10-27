@@ -1,4 +1,6 @@
 mod hide_window;
+#[cfg(desktop)]
+mod local_mcp;
 mod quick_note;
 mod shortcuts;
 mod tear_off;
@@ -7,9 +9,25 @@ mod vault;
 
 use tauri::{Manager, RunEvent, WindowEvent};
 
+fn show_main(app: &tauri::AppHandle) {
+    if let Some(main) = app.get_webview_window("main") {
+        let _ = main.unminimize();
+        let _ = main.show();
+        let _ = main.set_focus();
+    }
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    tauri::Builder::default()
+    let builder = tauri::Builder::default();
+    // Must be the first plugin. Closing only hides the main window, so a
+    // relaunch would otherwise start a second process on the same vault.
+    #[cfg(desktop)]
+    let builder = builder.plugin(tauri_plugin_single_instance::init(|app, _, _| {
+        show_main(app);
+    }));
+
+    builder
         .invoke_handler(tauri::generate_handler![
             vault::ignore_vault,
             quick_note::hide_quick_note,
@@ -20,7 +38,17 @@ pub fn run() {
             shortcuts::set_shortcut,
             shortcuts::clear_shortcut,
             updates::check_update,
-            updates::install_update
+            updates::install_update,
+            #[cfg(desktop)]
+            local_mcp::get_local_mcp,
+            #[cfg(desktop)]
+            local_mcp::set_local_mcp_enabled,
+            #[cfg(desktop)]
+            local_mcp::reset_local_mcp_token,
+            #[cfg(desktop)]
+            local_mcp::pick_local_mcp_port,
+            #[cfg(desktop)]
+            local_mcp::bridge::local_mcp_reply
         ])
         .plugin(
             tauri_plugin_window_state::Builder::default()
@@ -42,6 +70,8 @@ pub fn run() {
             }
             quick_note::init(app.handle());
             shortcuts::init(app.handle())?;
+            #[cfg(desktop)]
+            local_mcp::init(app.handle());
             Ok(())
         })
         .on_window_event(|window, event| {
@@ -62,10 +92,7 @@ pub fn run() {
         .run(|app, event| {
             #[cfg(target_os = "macos")]
             if let RunEvent::Reopen { .. } = event {
-                if let Some(main) = app.get_webview_window("main") {
-                    let _ = main.show();
-                    let _ = main.set_focus();
-                }
+                show_main(app);
             }
             let _ = (app, &event);
         });

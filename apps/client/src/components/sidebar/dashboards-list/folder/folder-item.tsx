@@ -1,15 +1,10 @@
 import { SidebarMenuButton, cn } from "@doska/ui-kit"
 import { Folder, FolderOpen } from "lucide-react"
-import {
-  type SidebarFolderNode,
-  setFolderCollapsed,
-  useDeleteFolder,
-  useRenameFolder,
-} from "@doska/core"
+import type { SidebarFolderNode } from "@doska/core"
 import { useCardDrop } from "@/providers/card-drop/card-drop-context"
 import { FolderMenu } from "./folder-menu"
 import { FolderTitleInput } from "./folder-title-input"
-import { useEffect, useMemo } from "react"
+import { useEffect, useEffectEvent, useMemo } from "react"
 
 const OPEN_ON_HOVER_MS = 500
 
@@ -19,7 +14,11 @@ interface IProps {
   renaming: boolean
   isDropTarget: boolean
   onRenameStart: () => void
+  onRename: (title: string) => void
   onRenameEnd: () => void
+  onCollapsedChange: (collapsed: boolean) => void
+  onNewSubfolder?: () => void
+  onDelete: () => void
 }
 
 export function FolderItem({
@@ -28,23 +27,22 @@ export function FolderItem({
   renaming,
   isDropTarget,
   onRenameStart,
+  onRename,
   onRenameEnd,
+  onCollapsedChange,
+  onNewSubfolder,
+  onDelete,
 }: IProps) {
-  const { mutate: rename } = useRenameFolder()
-  const { mutate: remove } = useDeleteFolder()
-
   // A dragged card hovers a collapsed folder: it opens to offer its boards.
   const { target } = useCardDrop()
   const opensOnHover =
     target?.kind === "folder" && target.id === node.id && collapsed
+  const open = useEffectEvent(() => onCollapsedChange(false))
   useEffect(() => {
     if (!opensOnHover) return
-    const timer = setTimeout(
-      () => setFolderCollapsed(node.id, false),
-      OPEN_ON_HOVER_MS
-    )
+    const timer = setTimeout(open, OPEN_ON_HOVER_MS)
     return () => clearTimeout(timer)
-  }, [opensOnHover, node.id])
+  }, [opensOnHover])
 
   const FolderIcon = useMemo(() => {
     if (collapsed || isDropTarget) return Folder
@@ -55,16 +53,16 @@ export function FolderItem({
     <>
       {renaming ? (
         <FolderTitleInput
-          value={node.title}
-          onCommit={(title) => rename({ id: node.id, title })}
+          value={node.data.title}
+          onCommit={onRename}
           onDone={onRenameEnd}
         />
       ) : (
         <>
           <SidebarMenuButton
-            tooltip={node.title}
+            tooltip={node.data.title}
             aria-expanded={!collapsed}
-            onClick={() => setFolderCollapsed(node.id, !collapsed)}
+            onClick={() => onCollapsedChange(!collapsed)}
             data-drop-folder={node.id}
             className={cn(
               "pr-8",
@@ -78,11 +76,12 @@ export function FolderItem({
                 isDropTarget && "fill-current"
               )}
             />
-            <span className="truncate">{node.title}</span>
+            <span className="truncate">{node.data.title}</span>
           </SidebarMenuButton>
           <FolderMenu
             onRename={onRenameStart}
-            onDelete={() => remove(node.id)}
+            onNewSubfolder={onNewSubfolder}
+            onDelete={onDelete}
           />
         </>
       )}

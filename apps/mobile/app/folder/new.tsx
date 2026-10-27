@@ -1,7 +1,7 @@
-import { useCreateFolder } from "@doska/core"
 import { SheetScreen } from "@doska/ui-kit-mobile"
 import { router } from "expo-router"
 import { NameForm } from "@/components/shell/name-form"
+import { useCreateFolder } from "@/lib/sidebar-stubs"
 
 export default function NewFolderSheet() {
   const { mutate: createFolder } = useCreateFolder()
