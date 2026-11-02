@@ -11,10 +11,11 @@ export function useDashboardNav() {
     navigate(`~${routes.deck.to(id)}`)
   }
 
-  function createAndOpenDashboard() {
-    createDashboard("Untitled board", {
-      onSuccess: (created) => selectDashboard(created.id),
-    })
+  function createAndOpenDashboard(folderId?: string) {
+    createDashboard(
+      { name: "Untitled board", folderId },
+      { onSuccess: (created) => selectDashboard(created.id) }
+    )
   }
 
   return { selectDashboard, createAndOpenDashboard }

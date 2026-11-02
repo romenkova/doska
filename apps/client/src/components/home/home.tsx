@@ -39,7 +39,7 @@ export function Home({
               <ArrowRight className="size-4" />
             </Button>
           )}
-          <Button onClick={onCreateDashboard}>
+          <Button onClick={() => onCreateDashboard()}>
             <Plus className="size-4" />
             Create a board
           </Button>

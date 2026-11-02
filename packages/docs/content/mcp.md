@@ -1,19 +1,51 @@
 ---
 title: MCP
 nav: MCP
-description: "Connect Claude Code, Claude Desktop or claude.ai to your Doska server so an agent can read and edit your boards."
+description: "Connect Claude Code, Claude Desktop or claude.ai to Doska so an agent can read and edit your boards: through your server, or straight to the desktop app."
 order: 5
-updated: "2026-08-09"
+updated: "2026-11-02"
 ---
 
-Your server exposes the board as MCP tools, so an agent can read and edit it.
+Doska exposes your boards as MCP tools, so an agent can read and edit them.
+There are two ways in:
+
+- **Local MCP**: the desktop app serves the tools itself, to agents on the same
+  computer. No server or account needed.
+- **Server MCP**: your Doska server serves them over the internet, behind OAuth.
+
+Both give the agent the same [tools](#tools).
+
+## Local MCP
+
+Open **Settings > Local MCP** in the desktop app and turn it on. The app starts
+an endpoint at `http://127.0.0.1:<port>/mcp` and shows a ready-made command for
+Claude Code:
+
+```sh
+claude mcp add --transport http doska-local http://127.0.0.1:<port>/mcp --header "Authorization: Bearer <token>"
+```
+
+For other clients, copy the URL and the token from the same window and send
+the token as a `Bearer` header.
+
+Edits land in the app's own database, the same as clicking around in it, and
+sync wherever the app syncs to.
+
+- It only answers while the app is open.
+- It listens on 127.0.0.1 only, so nothing outside your computer can reach it.
+- The port stays the same across restarts, because your agents have the URL. If
+  something else takes it, **Pick a new port** finds a free one; paste the new
+  command into your agents.
+- **Reset token** cuts off every agent using the old one.
+- Signed out, there are no members to assign cards to.
+
+## Server MCP
 
 Edits go through the same sync tables the apps use: they land in Postgres and
 reach your other devices on their next sync.
 
-## Connecting
-
-The tools are served at `https://your-server/mcp`, behind OAuth. 
+The tools are served at `https://your-server/mcp`, behind OAuth. Signed in, the
+app shows the address under **Settings > Server MCP**.
 
 For example, with Claude Code:
 
@@ -39,7 +71,7 @@ See [Accounts](/accounts).
 | `list_folders`                   | The sidebar tree: folders, nested subfolders, their boards, and boards in no folder    |
 | `get_board`                      | One board in full: columns with color and done flag, each with its cards               |
 | `get_card`                       | One card, without pulling the whole board                                              |
-| `create_board`                   | New board with the default To Do / In Progress / Done columns                          |
+| `create_board`                   | New board with the default To Do / In Progress / Done columns, Done marked done        |
 | `rename_board`, `delete_board`   | Rename; delete along with its columns and cards                                        |
 | `create_column`, `delete_column` | Delete takes the column's cards with it                                                |
 | `update_column`                  | Title, color, collapsed, or which column counts as done                                |

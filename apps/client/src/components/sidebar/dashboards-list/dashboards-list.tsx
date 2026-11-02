@@ -14,7 +14,7 @@ import {
 } from "@doska/core"
 import { DraggableFolders, useFolderTree } from "react-draggable-folders"
 import { useState } from "react"
-import { DROP_ANIMATION_MS } from "@/lib/hooks"
+import { DROP_ANIMATION_MS, useDashboardNav } from "@/lib/hooks"
 import { BoardItem } from "./board-item"
 import { BoardsHeader } from "./boards-header"
 import { FolderItem } from "./folder/folder-item"
@@ -40,6 +40,7 @@ export function DashboardsList({
   const { data: nodes = NO_NODES } = useSidebarTree()
   const { mutate: saveTree } = useSaveSidebarTree()
   const [renamingId, setRenamingId] = useState<string | null>(null)
+  const { createAndOpenDashboard } = useDashboardNav()
   const collapsedIds = useCollapsedFolders()
   const shared = new Set(sharedIds)
   const published = new Set(publishedIds)
@@ -69,9 +70,9 @@ export function DashboardsList({
     dragging ? "rounded-md bg-sidebar shadow-e2" : undefined
 
   return (
-    <SidebarGroup className="mt-4">
+    <SidebarGroup className="mt-4 flex-1">
       <BoardsHeader onNewFolder={() => createFolder()} />
-      <SidebarGroupContent>
+      <SidebarGroupContent className="flex flex-1 flex-col">
         <DraggableFolders
           tree={tree}
           isDragDisabled={(id) => id === renamingId}
@@ -79,7 +80,7 @@ export function DashboardsList({
           dropAnimationMs={DROP_ANIMATION_MS}
           droppableId="sidebar"
           components={SIDEBAR_COMPONENTS}
-          className="-mt-1 space-y-0"
+          className="-mt-1 flex-1 space-y-0"
           renderItem={(item, { dragging }) => (
             <div className="pt-1">
               <div className={lifted(dragging)}>
@@ -109,6 +110,10 @@ export function DashboardsList({
                   onCollapsedChange={(collapsed) =>
                     tree.setCollapsed(folder.id, collapsed)
                   }
+                  onNewBoard={() => {
+                    tree.setCollapsed(folder.id, false)
+                    createAndOpenDashboard(folder.id)
+                  }}
                   onNewSubfolder={
                     depth < DEPTH_LIMITS.folder
                       ? () => createFolder(folder.id)

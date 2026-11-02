@@ -25,7 +25,7 @@ export function BoardsHeader({ onNewFolder }: IProps) {
         size="icon-sm"
         aria-label="New board"
         className="text-muted-foreground"
-        onClick={createAndOpenDashboard}
+        onClick={() => createAndOpenDashboard()}
       >
         <Plus />
       </Button>

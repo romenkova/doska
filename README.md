@@ -40,7 +40,7 @@ I wanted a kanban app that is quick, Markdown-first, minimal, and still feature-
 
 Doska keeps everything in IndexedDB first, because it's fast and persistent. Then it syncs to a destination of your choice, a folder or a server, shortly after every change.
 
-When the destination is a server, you also get multiple users with live updates, public boards, SSO, and MCP.
+When the destination is a server, you also get multiple users with live updates, public boards, SSO, and MCP over the internet.
 
 Doska never makes you wait on the server, doesn't keep features behind a paywall, and aims to have everything necessary without looking bloated.
 
@@ -54,7 +54,9 @@ Doska never makes you wait on the server, doesn't keep features behind a paywall
 - **Attachments:** files, images
 - **SSO:** OIDC-compatible auth provider
 - **Deadlines, priorities** and sorting for cards on the board
-- **MCP** server
+- **MCP**: on the server, or local from the desktop app
+- **Folders** and subfolders for boards in the sidebar
+- **Templates** for cards and boards
 - **Cross-board deadlines view**
 - **Quick note window**: always on top, opened with a keyboard shortcut
 - **Tags**
@@ -122,6 +124,9 @@ The server exposes your boards to an MCP client at `/mcp`:
 ```sh
 claude mcp add --transport http doska https://your-server/mcp
 ```
+
+The desktop app can serve the same tools to agents on your computer, no server
+needed: turn it on in Settings > Local MCP and paste the command it shows.
 
 Tools are listed in [packages/mcp/README.md](packages/mcp/README.md); setup is at
 [doska.sh/docs/mcp](https://doska.sh/docs/mcp).

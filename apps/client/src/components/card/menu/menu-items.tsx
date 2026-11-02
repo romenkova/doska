@@ -4,6 +4,7 @@ import { fallbackCard, useCard, useUpdateCard } from "@doska/core"
 import { CopyIdItem } from "./copy-id-item"
 import { DeadlineSub } from "./deadline-sub"
 import { DeleteItem } from "./delete-item"
+import { DuplicateItem } from "./duplicate-item"
 import { MoveToBoardSub } from "./move-to-board-sub"
 import { MoveToColumnSub } from "./move-to-column-sub"
 import { PrioritySub } from "./priority-sub"
@@ -36,6 +37,7 @@ export function CardMenuItems({
         <Pencil />
         Edit
       </MenuItem>
+      <DuplicateItem cardId={cardId} />
       <MenuSeparator />
       <MoveToColumnSub cardId={cardId} />
       <MoveToBoardSub cardId={cardId} />

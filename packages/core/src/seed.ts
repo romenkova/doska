@@ -363,7 +363,7 @@ export const BOARD_COLUMNS: Column[] = [
     position: "a2",
     dashboardId: "",
     collapsed: false,
-    done: false,
+    done: true,
     stamps: {},
     color: "",
     updatedAt: 0,

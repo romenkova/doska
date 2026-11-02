@@ -12,12 +12,13 @@ import { touchCard } from "../sync/touch"
 import { live } from "./live"
 
 /**
- * Creates a board at the top of the sidebar, returns it. With `templateId` it
- * copies that board's columns and cards
+ * Creates a board at the top of the sidebar, or of `folderId`, returns it.
+ * With `templateId` it copies that board's columns and cards
  */
 export async function createDashboard(
   name: string,
-  templateId?: string
+  templateId?: string,
+  folderId?: string
 ): Promise<Dashboard> {
   const id = newId("board")
   const list = await db.getDashboards()
@@ -37,7 +38,7 @@ export async function createDashboard(
   }
   await db.setDashboard(dashboard)
   sync.markDirty("dashboards", id)
-  await prependBoard(id)
+  await prependBoard(id, folderId)
 
   const allColumns = await db.getColumns()
   const sourceColumns: Column[] = templateId

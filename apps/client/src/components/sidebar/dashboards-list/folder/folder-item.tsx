@@ -17,6 +17,7 @@ interface IProps {
   onRename: (title: string) => void
   onRenameEnd: () => void
   onCollapsedChange: (collapsed: boolean) => void
+  onNewBoard: () => void
   onNewSubfolder?: () => void
   onDelete: () => void
 }
@@ -30,6 +31,7 @@ export function FolderItem({
   onRename,
   onRenameEnd,
   onCollapsedChange,
+  onNewBoard,
   onNewSubfolder,
   onDelete,
 }: IProps) {
@@ -80,6 +82,7 @@ export function FolderItem({
           </SidebarMenuButton>
           <FolderMenu
             onRename={onRenameStart}
+            onNewBoard={onNewBoard}
             onNewSubfolder={onNewSubfolder}
             onDelete={onDelete}
           />

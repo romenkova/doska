@@ -48,6 +48,17 @@ export function saveSidebarItems(items: SidebarItem[]): Promise<void> {
   return updateSidebarLayout(() => items)
 }
 
-export function prependBoard(id: string): Promise<void> {
-  return updateSidebarLayout((items) => [{ type: "board", id }, ...items])
+/** Puts the board at the top of the folder, or of the root without one. */
+export function prependBoard(id: string, folderId?: string): Promise<void> {
+  return updateSidebarLayout((items) => {
+    const folder = items.find(
+      (item) => item.type === "folder" && item.id === folderId
+    )
+    if (!folder) return [{ type: "board", id }, ...items]
+    return items.map((item) =>
+      item === folder && item.type === "folder"
+        ? { ...item, boardIds: [id, ...item.boardIds] }
+        : item
+    )
+  })
 }
