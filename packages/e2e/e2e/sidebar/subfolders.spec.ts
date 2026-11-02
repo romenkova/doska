@@ -150,7 +150,7 @@ test.describe("sidebar subfolders sync", () => {
     page,
     request,
   }) => {
-    const account = await createAccount(request, "subfolders")
+    const account = await createAccount(request, "nested")
     await signIn(page, account)
     await authenticate(request, account)
 
@@ -171,7 +171,7 @@ test.describe("sidebar subfolders sync", () => {
     page,
     request,
   }) => {
-    const account = await createAccount(request, "subfolders")
+    const account = await createAccount(request, "nested")
     await signIn(page, account)
     await authenticate(request, account)
     const id = await remoteCreateDashboard(request, "Remote board")
@@ -194,7 +194,7 @@ test.describe("sidebar subfolders sync", () => {
     page,
     request,
   }) => {
-    const account = await createAccount(request, "subfolders")
+    const account = await createAccount(request, "nested")
     await signIn(page, account)
     await authenticate(request, account)
     const id = await remoteCreateDashboard(request, "Remote board")
