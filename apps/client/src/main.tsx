@@ -7,7 +7,7 @@ import { Toaster } from "react-hot-toast"
 import { LoginPromptProvider } from "@/providers/login-prompt/login-prompt-provider"
 import { AuthGate } from "@/components/login/auth-gate"
 import { ThemeProvider } from "@/providers/theme/theme-provider"
-import { isDesktop } from "@/lib/platform"
+import { isDesktop, isLinuxDesktop } from "@/lib/platform"
 import { bootstrapClient, queryClient } from "@doska/core"
 import { trackAppHeight } from "@/lib/app-height"
 import { blockEdgeSwipeNavigation } from "@/lib/edge-swipe"
@@ -38,6 +38,8 @@ const root = createRoot(document.getElementById("root")!)
 const isPublicLink = routes.public.matches(window.location.pathname)
 
 trackAppHeight()
+
+if (isLinuxDesktop()) document.documentElement.classList.add("no-blur")
 
 initErrorReporting()
 

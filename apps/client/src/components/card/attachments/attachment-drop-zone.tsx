@@ -60,7 +60,7 @@ export function AttachmentDropZone({
           className={cn(
             "pointer-events-none absolute inset-0 z-10",
             "flex items-center justify-center rounded-lg",
-            "bg-background/80 backdrop-blur-xs"
+            "bg-background/80 backdrop-blur-xs in-[.no-blur]:bg-background"
           )}
         >
           <div className="flex flex-col items-center gap-2 text-muted-foreground">

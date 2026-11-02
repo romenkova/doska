@@ -11,6 +11,11 @@ export function hasOverlayTitleBar(): boolean {
   return isDesktop() && navigator.userAgent.includes("Mac")
 }
 
+/** Linux webviews get no backdrop blur: suspected cause of low FPS there (#146). */
+export function isLinuxDesktop(): boolean {
+  return isDesktop() && navigator.userAgent.includes("Linux")
+}
+
 /** True when launched from the home screen / dock as an installed PWA. */
 export function isStandalone(): boolean {
   if (typeof window === "undefined") return false

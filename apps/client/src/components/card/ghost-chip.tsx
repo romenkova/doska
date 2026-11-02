@@ -35,7 +35,7 @@ export function GhostChip({ box, compact, grab, title }: IProps) {
           opacity: compact ? 1 : 0,
         }}
       >
-        <CardBase className="h-full justify-center bg-card/70 py-0 shadow-e3 backdrop-blur-md">
+        <CardBase className="h-full justify-center bg-card/70 py-0 shadow-e3 backdrop-blur-md in-[.no-blur]:bg-card">
           <div className="truncate px-3 text-sm font-medium">
             {title || "Untitled card"}
           </div>

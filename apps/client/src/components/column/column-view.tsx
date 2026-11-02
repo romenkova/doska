@@ -57,7 +57,7 @@ export function ColumnView({
       <div
         className={cn(
           "sticky top-0 z-10 flex h-15 shrink-0 items-center justify-between gap-2 px-4 py-3 md:px-0",
-          "bg-background/80 backdrop-blur-xs",
+          "bg-background/80 backdrop-blur-xs in-[.no-blur]:bg-background",
           "text-muted-foreground"
         )}
       >
