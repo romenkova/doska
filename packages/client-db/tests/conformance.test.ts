@@ -1,9 +1,9 @@
 import "fake-indexeddb/auto"
 import { beforeEach, describe, expect, it } from "vitest"
 import { IDB } from "../src/adapters/idb"
-import { SQLiteDB, type Schema } from "../src/adapters/sqlite-db"
 import type { ClientDB } from "../src/client-db"
-import { openNodeDatabase } from "./node-sqlite"
+
+type Schema = Record<string, readonly string[]>
 
 const CARDS = "cards"
 const META = "meta"
@@ -50,9 +50,7 @@ const cards: Card[] = [
 let sequence = 0
 
 const adapters: [string, () => ClientDB][] = [
-  ["IDB", () => new TestIDB(`conformance-${++sequence}`, schema)],
-  ["SQLiteDB", () => new SQLiteDB(":memory:", 1, schema, openNodeDatabase)],
-]
+  ["IDB", () => new TestIDB(`conformance-${++sequence}`, schema)],]
 
 describe.each(adapters)("%s", (_name, create) => {
   let db: ClientDB

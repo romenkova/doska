@@ -5,8 +5,7 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./client-db": "./src/client-db.ts",
-    "./sqlite": "./src/adapters/sqlite-db.ts"
+    "./client-db": "./src/client-db.ts"
   },
   "scripts": {
     "test": "vitest run",

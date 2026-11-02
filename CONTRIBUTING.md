@@ -29,9 +29,9 @@ Node 22+ and pnpm 11+ are required.
 
 Dev setup spins up client and server, including local MySQL db, and performs migrations on it.
 
-To spin up a desktop app, run `pnpm desktop`. For mobile (very early beta), `pnpm mobile`.
+To spin up a desktop app, run `pnpm desktop`.
 
-The repo is a pnpm + turbo monorepo: `apps/` has the runnable apps (client, server, desktop, mobile), `packages/` has everything they share.
+The repo is a pnpm + turbo monorepo: `apps/` has the runnable apps (client, server, desktop), `packages/` has everything they share.
 
 ## Tests
 
