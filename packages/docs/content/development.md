@@ -13,7 +13,6 @@ Doska is a pnpm + Turborepo monorepo. Requires **Node 22+** and **pnpm 11+**
 pnpm install
 pnpm dev        # web client + server, in watch mode
 pnpm desktop    # native desktop shell (Tauri)
-pnpm mobile     # Expo dev server
 ```
 
 The client dev server proxies the sync API to the local server, so sync works
@@ -37,7 +36,6 @@ end to end with no extra setup.
 | `apps/client`  | The web client, the board UI itself.                  |
 | `apps/server`  | Sync API, auth, file endpoints, and the MCP endpoint. |
 | `apps/desktop` | Tauri shell around the same client.                   |
-| `apps/mobile`  | Expo app.                                             |
 | `apps/landing` | This site.                                            |
 
 The shared code lives in `packages/`:
@@ -48,7 +46,7 @@ The shared code lives in `packages/`:
   adapter, platform agnostic.
 - `highlight`: the editor's syntax highlighting, platform agnostic.
 - `sync`: the sync engine, platform agnostic.
-- `ui-kit` / `ui-kit-mobile`: components, per platform.
+- `ui-kit`: components.
 - `mcp`: the board as MCP tools, transport-agnostic.
 
 ## Self-host smoke tests

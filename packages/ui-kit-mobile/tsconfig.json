@@ -1,8 +1,0 @@
-{
-  "extends": "@doska/configs/tsconfig/base.json",
-  "compilerOptions": {
-    "jsx": "react-jsx",
-    "jsxImportSource": "nativewind"
-  },
-  "include": ["src", "nativewind-env.d.ts"]
-}

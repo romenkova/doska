@@ -1,8 +1,0 @@
-# Expo
-.expo
-expo-env.d.ts
-
-# Continuous Native Generation: `expo prebuild` regenerates both from app.json,
-# so the checked-in source of truth is the config, not the projects.
-/ios
-/android

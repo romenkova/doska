@@ -1,2 +1,0 @@
-/* Imported first in `global.css` so the shared tokens land after it, and theming works. */
-@cssInterop set darkMode class dark;
