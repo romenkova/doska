@@ -4,6 +4,7 @@ import type {
   Dashboard,
   DashboardChange,
   Member,
+  SidebarLayout,
 } from "@doska/contract"
 import {
   clock,
@@ -41,6 +42,10 @@ class LocalStore implements BoardStore {
     }
     for (const change of changes) clock.receive(change.record.updatedAt)
     return changes
+  }
+
+  readSidebar(): Promise<SidebarLayout> {
+    return db.getSidebarLayout()
   }
 
   async pushDashboards(changes: DashboardChange[]): Promise<void> {

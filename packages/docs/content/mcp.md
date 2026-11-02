@@ -36,6 +36,7 @@ See [Accounts](/accounts).
 | Tool                             | What it does                                                                           |
 | -------------------------------- | -------------------------------------------------------------------------------------- |
 | `list_boards`                    | Every board with its id and title                                                      |
+| `list_folders`                   | The sidebar tree: folders, nested subfolders, their boards, and boards in no folder    |
 | `get_board`                      | One board in full: columns with color and done flag, each with its cards               |
 | `get_card`                       | One card, without pulling the whole board                                              |
 | `create_board`                   | New board with the default To Do / In Progress / Done columns                          |

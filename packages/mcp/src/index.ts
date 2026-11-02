@@ -4,6 +4,7 @@ import { INSTRUCTIONS } from "./guide"
 import { registerBoardTools } from "./tools/boards"
 import { registerCardTools } from "./tools/cards"
 import { registerColumnTools } from "./tools/columns"
+import { registerFolderTools } from "./tools/folders"
 import { registerSearchTools } from "./tools/search"
 import type { BoardStore } from "./store"
 
@@ -40,6 +41,7 @@ export function createBoardServer(
   const board = createBoard(store)
 
   registerBoardTools(server, board)
+  registerFolderTools(server, board)
   registerColumnTools(server, board)
   registerCardTools(server, board)
   registerSearchTools(server, board)

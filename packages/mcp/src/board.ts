@@ -9,6 +9,7 @@ import {
   type Dashboard,
   type DashboardChange,
   type Member,
+  type SidebarLayout,
 } from "@doska/contract"
 import { generateKeyBetween } from "fractional-indexing"
 import type { BoardStore } from "./store"
@@ -156,6 +157,10 @@ export function createBoard(store: BoardStore) {
         columns: columns.filter(live).sort(byPosition),
         cards: cards.filter(live).sort(byPosition),
       }
+    },
+
+    sidebar(): Promise<SidebarLayout> {
+      return store.readSidebar()
     },
 
     async column(boardId: string, columnId: string): Promise<Column> {

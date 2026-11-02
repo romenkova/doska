@@ -4,6 +4,7 @@ import type {
   Dashboard,
   DashboardChange,
   Member,
+  SidebarLayout,
 } from "@doska/contract"
 import { ORPCError } from "@orpc/server"
 import { HybridClock } from "@doska/sync"
@@ -48,6 +49,14 @@ export class DbStore implements BoardStore {
       if (change.store === "dashboards") records.push(change.record)
     }
     return records
+  }
+
+  async readSidebar(): Promise<SidebarLayout> {
+    const { changes } = await boardsListSync.readSince(0, this.userId)
+    for (const change of changes) {
+      if (change.store === "sidebar") return change.record
+    }
+    return { id: "layout", items: [], updatedAt: 0, deletedAt: null }
   }
 
   async readBoard(boardId: string): Promise<Change[]> {

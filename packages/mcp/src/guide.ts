@@ -12,6 +12,12 @@ Ids and references
   another as [[12]]. Nothing else addresses a card by it, so reach for it only
   when writing a reference — get_board and search_cards report it as cardId.
 
+Folders
+- The sidebar groups boards into folders, which can nest. list_folders returns
+  that tree in sidebar order; boards outside any folder sit at its top level.
+- Folders are only a way of arranging the sidebar: no tool reads or writes
+  through one, and a board's own tools never mention its folder.
+
 Columns
 - Column order is left to right; card order is top to bottom.
 - Any number of columns per board may be done columns (done: true), e.g. Done,

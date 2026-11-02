@@ -52,6 +52,13 @@ class MemoryStore implements BoardStore {
   pushed: Change[] = []
   now = () => now
   readDashboards = () => Promise.resolve([])
+  readSidebar = () =>
+    Promise.resolve({
+      id: "layout" as const,
+      items: [],
+      updatedAt: 0,
+      deletedAt: null,
+    })
   readBoard = () =>
     Promise.resolve<Change[]>([
       { store: "columns", record: column },
