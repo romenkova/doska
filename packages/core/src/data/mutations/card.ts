@@ -34,6 +34,17 @@ export function useCreateCardFromTemplate(deckId: string) {
   })
 }
 
+export function useDuplicateCard() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => api.duplicateCard(id),
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: keys.boards })
+      qc.invalidateQueries({ queryKey: keys.digest })
+    },
+  })
+}
+
 export function useSetCardTemplate(id: string) {
   const qc = useQueryClient()
   return useMutation({

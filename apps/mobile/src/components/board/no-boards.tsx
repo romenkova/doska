@@ -21,9 +21,12 @@ export function NoBoards({ isPending }: IProps) {
           <Button
             label="Add a dashboard"
             onPress={() =>
-              createDashboard("Untitled board", {
-                onSuccess: (created) => setLastBoard(created.id),
-              })
+              createDashboard(
+                { name: "Untitled board" },
+                {
+                  onSuccess: (created) => setLastBoard(created.id),
+                }
+              )
             }
           />
         </EmptyState>

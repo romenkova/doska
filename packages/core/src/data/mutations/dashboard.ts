@@ -7,7 +7,8 @@ import { keys } from "../keys"
 export function useCreateDashboard() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (name: string) => api.createDashboard(name),
+    mutationFn: ({ name, folderId }: { name: string; folderId?: string }) =>
+      api.createDashboard(name, undefined, folderId),
     onSettled: () => qc.invalidateQueries({ queryKey: keys.dashboards }),
   })
 }

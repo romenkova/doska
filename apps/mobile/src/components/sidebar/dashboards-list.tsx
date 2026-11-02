@@ -1,7 +1,6 @@
 import {
   setFolderCollapsed,
   useCollapsedFolders,
-  useMoveSidebarItem,
   useSidebarTree,
   type Dashboard,
 } from "@doska/core"
@@ -16,6 +15,7 @@ import Sortable, {
   type SortableGridRenderItem,
 } from "react-native-sortables"
 import { ROUTES } from "@/lib/routes"
+import { useMoveSidebarItem } from "@/lib/sidebar-stubs"
 import { FolderRow } from "./folder-row"
 import { SidebarButton } from "./sidebar-button"
 import {
@@ -51,7 +51,7 @@ export function DashboardsList({
         return <FolderRow folder={item.folder} collapsed={item.collapsed} />
       }
       if (item.kind === "end") {
-        const isEmpty = !item.collapsed && !item.folder.boards.length
+        const isEmpty = !item.collapsed && !item.folder.items.length
         return (
           <Sortable.Handle mode="non-draggable">
             {isEmpty ? (

@@ -52,12 +52,12 @@ export function ColumnView({
     <div
       role="group"
       aria-label={title}
-      className="flex w-full shrink-0 snap-center flex-col overflow-y-auto overscroll-y-contain pb-6 xs:w-sm"
+      className="flex w-full shrink-0 snap-center flex-col pb-6 xs:w-sm"
     >
       <div
         className={cn(
           "sticky top-0 z-10 flex h-15 shrink-0 items-center justify-between gap-2 px-4 py-3 md:px-0",
-          "bg-background/80 backdrop-blur-xs",
+          "bg-background/80 backdrop-blur-xs in-[.no-blur]:bg-background",
           "text-muted-foreground"
         )}
       >

@@ -144,7 +144,7 @@ export function CardEditor({
             {withHeader && !isMobile && (
               <div
                 className={cn(
-                  "absolute right-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-10 rounded-md bg-card/80 backdrop-blur-xs",
+                  "absolute right-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-10 rounded-md bg-card/80 backdrop-blur-xs in-[.no-blur]:bg-card",
                   inWindow && "fixed"
                 )}
               >

@@ -34,8 +34,8 @@ export function folder(page: Page, title: string) {
 }
 
 /**
- * The tree as the user reads it, top to bottom. A board inside a folder is
- * indented, so it comes back with two leading spaces: `["Work", "  Alpha"]`.
+ * The tree as the user reads it, top to bottom. Each level of nesting is two
+ * leading spaces: `["Work", "  Drafts", "    Alpha"]`.
  * The "No boards yet" placeholder is left out — it's asserted on its own.
  */
 export async function sidebarTree(page: Page): Promise<string[]> {
@@ -51,7 +51,8 @@ export async function sidebarTree(page: Page): Promise<string[]> {
         if (!button) continue
         const indent = button.getBoundingClientRect().left - left
         const title = (button.textContent ?? "").trim()
-        tree.push(`${indent > 8 ? "  " : ""}${title}`)
+        // 16px per level, the tree's default indent
+        tree.push(`${"  ".repeat(Math.round(indent / 16))}${title}`)
       }
       return tree
     })
@@ -75,6 +76,21 @@ export function emptyFolderNotes(page: Page) {
  */
 export async function createFolder(page: Page, title: string): Promise<void> {
   await page.getByRole("button", { name: "New folder" }).click()
+  const input = page.getByRole("textbox", { name: "Folder name" })
+  await expect(input).toHaveValue("New folder")
+  await input.fill(title)
+  await input.press("Enter")
+  await expect(folder(page, title)).toBeVisible()
+}
+
+/** Creates a subfolder from the parent's menu; it opens in rename mode too. */
+export async function createSubfolder(
+  page: Page,
+  parent: string,
+  title: string
+): Promise<void> {
+  await openFolderMenu(page, parent)
+  await page.getByRole("menuitem", { name: "New subfolder" }).click()
   const input = page.getByRole("textbox", { name: "Folder name" })
   await expect(input).toHaveValue("New folder")
   await input.fill(title)
@@ -206,12 +222,14 @@ export async function remoteSetSidebarLayout(
 
 export function remoteFolder(
   title: string,
-  boardIds: string[] = []
+  boardIds: string[] = [],
+  parentId?: string
 ): SidebarItem {
   return {
     type: "folder",
     id: `folder-${crypto.randomUUID().slice(0, 8)}`,
     title,
     boardIds,
+    parentId,
   }
 }

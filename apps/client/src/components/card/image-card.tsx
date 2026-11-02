@@ -39,7 +39,7 @@ export function ImageCard({ title, isDragging, action, children }: IProps) {
         </CardHeader>
       ) : (
         action && (
-          <div className="absolute top-1 right-1 z-10 rounded-md bg-card/70 backdrop-blur-sm">
+          <div className="absolute top-1 right-1 z-10 rounded-md bg-card/70 backdrop-blur-sm in-[.no-blur]:bg-card">
             {action}
           </div>
         )

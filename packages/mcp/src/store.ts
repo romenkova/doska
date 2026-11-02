@@ -3,6 +3,7 @@ import type {
   Dashboard,
   DashboardChange,
   Member,
+  SidebarLayout,
 } from "@doska/contract"
 
 /**
@@ -19,6 +20,7 @@ import type {
 export type BoardStore = {
   readDashboards(): Promise<Dashboard[]>
   readBoard(boardId: string): Promise<Change[]>
+  readSidebar(): Promise<SidebarLayout>
   pushDashboards(changes: DashboardChange[]): Promise<void>
   pushBoard(boardId: string, changes: Change[]): Promise<void>
   /** Everyone with access to the board, the people a card can be assigned to. */

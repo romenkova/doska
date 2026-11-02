@@ -67,9 +67,12 @@ export function AppSidebar({
             icon={Plus}
             label="Add a dashboard"
             onPress={() =>
-              createDashboard("Untitled board", {
-                onSuccess: (created) => openBoard(created.id),
-              })
+              createDashboard(
+                { name: "Untitled board" },
+                {
+                  onSuccess: (created) => openBoard(created.id),
+                }
+              )
             }
           />
         </View>

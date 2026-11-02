@@ -153,6 +153,13 @@ export default defineConfig({
           // overrides Rollup's dynamic-import split — so they fall through to
           // keep the deferral `date-input-calendar` is written to get.
           if (/[\\/](date-fns|react-day-picker)[\\/]/.test(id)) return
+          // Same for Local MCP, which only the desktop app loads.
+          if (
+            /[\\/](@modelcontextprotocol|ajv|ajv-formats|fast-uri|fast-deep-equal|json-schema-traverse|require-from-string|content-type|json-schema-typed)[\\/]/.test(
+              id
+            )
+          )
+            return
           // Editor
           if (
             /[\\/](@codemirror|@lezer|@marijn|style-mod|w3c-keyname|crelt)[\\/]/.test(

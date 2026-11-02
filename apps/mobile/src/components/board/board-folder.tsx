@@ -1,13 +1,10 @@
-import {
-  useMoveSidebarItem,
-  type SidebarTarget,
-  useSidebarTree,
-} from "@doska/core"
+import { useSidebarTree } from "@doska/core"
 import { useTokens } from "@doska/ui-kit-mobile"
 import Check from "lucide-react-native/icons/check"
 import Folder from "lucide-react-native/icons/folder"
 import Inbox from "lucide-react-native/icons/inbox"
 import { Pressable, Text, View } from "react-native"
+import { type SidebarTarget, useMoveSidebarItem } from "@/lib/sidebar-stubs"
 
 interface IProps {
   boardId: string
@@ -24,11 +21,11 @@ export function BoardFolder({ boardId, onDone }: IProps) {
     node.type === "folder" ? [node] : []
   )
   const home = folders.find((folder) =>
-    folder.boards.some((board) => board.id === boardId)
+    folder.items.some((board) => board.id === boardId)
   )
   // `index` counts with the board already taken out.
   const rootCount = nodes.filter(
-    (node) => node.type === "folder" || node.dashboard.id !== boardId
+    (node) => node.type === "folder" || node.id !== boardId
   ).length
 
   const options = [
@@ -41,13 +38,13 @@ export function BoardFolder({ boardId, onDone }: IProps) {
     },
     ...folders.map((folder) => ({
       key: folder.id,
-      label: folder.title || "Untitled folder",
+      label: folder.data.title || "Untitled folder",
       icon: Folder,
       current: folder.id === home?.id,
       target: {
         kind: "folder",
         folderId: folder.id,
-        index: folder.boards.filter((board) => board.id !== boardId).length,
+        index: folder.items.filter((board) => board.id !== boardId).length,
       } satisfies SidebarTarget,
     })),
   ]

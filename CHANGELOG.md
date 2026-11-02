@@ -9,11 +9,21 @@
 - Filtering by a tag no card has shows a hint that a `#tag` in a card body is
   only a link, and tags are set through the card menu. On the board and in
   Upcoming.
+- Subfolders in the sidebar, up to five levels deep.
+- New board from a folder's menu, created inside that folder.
+- Duplicate in the card menu: puts a copy right below the card.
+- Local MCP in the desktop app: agents on the same computer can read and edit
+  boards, no server needed. Turned on in Settings > Local MCP.
+- Settings > Server MCP shows the server's MCP command and URL when signed in.
+- MCP `list_folders` tool: the sidebar tree with folders and their boards.
 
 ### Changed
 
 - New cards open in edit mode, whether added with a column's `+` or from a
   template, same as the header's add button.
+- A new board's Done column is marked done from the start.
+- The sidebar's board list takes the full height, so a board can be dropped
+  below the last one.
 
 ## [0.28.0] - 2026-10-26
 

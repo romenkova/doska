@@ -6,6 +6,7 @@ minimumReleaseAgeStrict: true
 # My own package
 minimumReleaseAgeExclude:
   - bakemd
+  - react-draggable-folders
 
 allowBuilds:
   esbuild: true

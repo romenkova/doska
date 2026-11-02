@@ -1,15 +1,9 @@
 import { useEffect, useState } from "react"
+import { bounce } from "react-draggable-folders"
 import {
   useCardDrop,
   type CardDropTarget,
 } from "@/providers/card-drop/card-drop-context"
-
-const BOUNCE: Keyframe[] = [
-  { scale: 1 },
-  { scale: 1.05, offset: 0.3 },
-  { scale: 0.98, offset: 0.6 },
-  { scale: 1 },
-]
 
 /**
  * Follows the pointer while a card is dragged
@@ -42,9 +36,7 @@ export function useSidebarCardDrop(dragging: boolean) {
       setTarget(null)
       setOverSidebar(false)
       if (target?.kind !== "board") return null
-      document
-        .querySelector(`[data-drop-board="${target.id}"]`)
-        ?.animate(BOUNCE, { duration: 350, easing: "ease-out" })
+      bounce(document.querySelector(`[data-drop-board="${target.id}"]`))
       return target.id
     },
   }

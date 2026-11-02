@@ -228,3 +228,43 @@ describe("getTemplateCards", () => {
     expect(found[0]).toMatchObject({ boardId: "b", boardTitle: "b" })
   })
 })
+
+describe("duplicateCard", () => {
+  it("copies the card to just below itself, without its number or files", async () => {
+    rows.set(`${COLUMNS}/todo`, column("todo", "b", "a0"))
+    rows.set(`${CARDS}/first`, card("first", "todo", { position: "a0" }))
+    rows.set(`${CARDS}/second`, card("second", "todo", { position: "a1" }))
+
+    const { duplicateCard } =
+      await import("../src/api/operations/duplicate-card")
+    const copyId = await duplicateCard("first")
+
+    const copy = all<Card>(CARDS).find((c) => c.id === copyId)!
+    expect(copy.title).toBe("first")
+    expect(copy.body).toBe("notes")
+    expect(copy.tags).toEqual(["ops"])
+    expect(copy.number).toBeNull()
+    expect(copy.attachments).toEqual([])
+    expect(copy.position > "a0" && copy.position < "a1").toBe(true)
+  })
+})
+
+describe("createDashboard into a folder", () => {
+  it("puts the board at the top of that folder", async () => {
+    const { db } = await import("../src/api/db/db")
+    const layout = await db.getSidebarLayout()
+    await db.setSidebarLayout({
+      ...layout,
+      items: [{ type: "folder", id: "f", title: "Work", boardIds: ["old"] }],
+    })
+
+    const { createDashboard } =
+      await import("../src/api/operations/create-dashboard")
+    const created = await createDashboard("Fresh", undefined, "f")
+
+    const { items } = await db.getSidebarLayout()
+    expect(items).toEqual([
+      { type: "folder", id: "f", title: "Work", boardIds: [created.id, "old"] },
+    ])
+  })
+})

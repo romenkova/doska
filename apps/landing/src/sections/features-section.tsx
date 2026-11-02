@@ -23,7 +23,11 @@ const features = [
   },
   {
     title: "MCP",
-    text: "Let agents manage your boards and cards.",
+    text: "Let agents manage your boards and cards. Through your server, or locally from the desktop app.",
+  },
+  {
+    title: "Templates",
+    text: "Mark any card or board as a template and start new ones from it.",
   },
   {
     title: "Undo",
@@ -43,11 +47,11 @@ const features = [
   },
   {
     title: "Desktop app",
-    text: "Same boards as the browser, plus folder sync.",
+    text: "Same boards as the browser, plus folder sync and local MCP.",
   },
   {
     title: "Sidebar folders",
-    text: "Group boards into folders and reorder them. The layout syncs between devices.",
+    text: "Group boards into folders and subfolders, and reorder them. The layout syncs between devices.",
   },
   {
     title: "MIT licensed",

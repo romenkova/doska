@@ -1,23 +1,12 @@
 export { getDashboards } from "./get-dashboards"
-export {
-  buildTree,
-  getSidebarTree,
-  treeDashboards,
-  treeItems,
-} from "./get-sidebar-tree"
+export { buildTree, getSidebarTree, treeItems } from "./get-sidebar-tree"
 export type {
   SidebarBoardNode,
   SidebarFolderNode,
   SidebarNode,
 } from "./get-sidebar-tree"
-export {
-  createFolder,
-  deleteFolder,
-  moveItem,
-  moveSidebarItem,
-  renameFolder,
-} from "./sidebar-layout"
-export type { SidebarTarget } from "./sidebar-layout"
+export { saveSidebarItems } from "./sidebar-layout"
+export { newId } from "./new-id"
 export { getBoard } from "./get-board"
 export { getDeletedIds } from "./get-deleted-ids"
 export type { DeletedIds } from "./get-deleted-ids"
@@ -45,6 +34,7 @@ export { deleteColumn } from "./delete-column"
 export { moveColumn } from "./move-column"
 export { getCard } from "./get-card"
 export { createCard } from "./create-card"
+export { duplicateCard } from "./duplicate-card"
 export { setCardTemplate, setDashboardTemplate } from "./set-template"
 export { getTemplateCards } from "./get-template-cards"
 export type { TemplateCard } from "./get-template-cards"

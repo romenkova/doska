@@ -35,7 +35,7 @@ export function BoardActions({ board }: IProps) {
     node.type === "folder" ? [node] : []
   )
   const home = folders.find((folder) =>
-    folder.boards.some((one) => one.id === board.id)
+    folder.items.some((one) => one.id === board.id)
   )
 
   return (
@@ -56,7 +56,7 @@ export function BoardActions({ board }: IProps) {
       <SheetItem
         icon={FolderInput}
         label="Move to folder"
-        trailing={home?.title ?? "None"}
+        trailing={home?.data.title ?? "None"}
         disabled={folders.length === 0}
         onPress={() => router.push(ROUTES.boardFolder)}
       />

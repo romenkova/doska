@@ -24,14 +24,14 @@ export function FolderRow({ folder, collapsed }: IProps) {
           >
             <SidebarButton
               icon={collapsed ? Folder : FolderOpen}
-              label={folder.title || "Untitled folder"}
+              label={folder.data.title || "Untitled folder"}
             />
           </Sortable.Touchable>
         </Sortable.Handle>
       </View>
       <IconButton
         icon={MoreHorizontal}
-        label={`${folder.title} actions`}
+        label={`${folder.data.title} actions`}
         size={16}
         onPress={() => router.push(ROUTES.folderActions(folder.id))}
       />

@@ -131,7 +131,7 @@ export function registerBoardTools(server: McpServer, board: Board): void {
               position: positionAt(columns, "bottom"),
               dashboardId: dashboard.id,
               collapsed: false,
-              done: false,
+              done: columnTitle === "Done",
               color: "",
               updatedAt: now,
               deletedAt: null,

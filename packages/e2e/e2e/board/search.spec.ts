@@ -8,7 +8,6 @@ import {
   fieldText,
   panelField,
   retitleCard,
-  setColumnDone,
   signIn,
 } from "../helpers"
 
@@ -73,7 +72,11 @@ test.describe("card search", () => {
   }) => {
     await createBoard(page)
     await seedCard(page, "To Do", "Quarterly plan")
-    await editCardBody(page, "Quarterly plan", "Numbers live in the spreadsheet")
+    await editCardBody(
+      page,
+      "Quarterly plan",
+      "Numbers live in the spreadsheet"
+    )
 
     await openSearch(page)
     await searchInput(page).pressSequentially("spreadsheet")
@@ -151,7 +154,6 @@ test.describe("card search", () => {
     page,
   }) => {
     await createBoard(page)
-    await setColumnDone(page, "Done", true)
     await seedCard(page, "Done", "Shipped the redesign")
 
     await openSearch(page)

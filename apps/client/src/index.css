@@ -60,6 +60,9 @@
   html.quick-note {
     --menu-max-height: 9rem;
   }
+  html.no-blur * {
+    backdrop-filter: none !important;
+  }
   /* Disable the macOS WKWebView rubber-band/overscroll */
   html,
   body {

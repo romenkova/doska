@@ -14,8 +14,8 @@ import {
 
 /**
  * The card's "⋯" menu. Delete is exercised by the lifecycle spec; this covers
- * the other two ways in — Edit, and the "Move to" submenu, which is the only
- * way to move a card without dragging it.
+ * Edit, Duplicate, and the "Move to" submenu, which is the only way to move a
+ * card without dragging it.
  */
 test.describe("card actions menu", () => {
   test("Move to puts the card in the chosen column", async ({ page }) => {
@@ -38,6 +38,28 @@ test.describe("card actions menu", () => {
     await expect
       .poll(() => columnCardTitles(page, "In Progress"))
       .toEqual(["Plan launch"])
+  })
+
+  test("Duplicate puts a copy right below the card", async ({ page }) => {
+    await createBoard(page)
+    await addCard(page, "To Do")
+    await retitleCard(page, "Untitled card", "Older")
+    await addCard(page, "To Do")
+    await retitleCard(page, "Untitled card", "Plan launch")
+
+    await card(page, "Plan launch")
+      .getByRole("button", { name: "Card actions" })
+      .click()
+    await page.getByRole("menuitem", { name: "Duplicate" }).click()
+
+    await expect
+      .poll(() => columnCardTitles(page, "To Do"))
+      .toEqual(["Plan launch", "Plan launch", "Older"])
+
+    await page.reload()
+    await expect
+      .poll(() => columnCardTitles(page, "To Do"))
+      .toEqual(["Plan launch", "Plan launch", "Older"])
   })
 
   test("the column the card is already in can't be picked", async ({

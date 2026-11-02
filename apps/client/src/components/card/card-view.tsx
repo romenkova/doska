@@ -138,7 +138,7 @@ export function CardView({
         ) : (
           <CardBase
             className={cn(
-              isDragging && "bg-card/70 shadow-e3 backdrop-blur-md"
+              isDragging && "bg-card/70 shadow-e3 backdrop-blur-md in-[.no-blur]:bg-card"
             )}
           >
             <CardHeader>
