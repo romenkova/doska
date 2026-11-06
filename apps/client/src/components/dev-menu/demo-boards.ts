@@ -1,6 +1,7 @@
 import {
   createCard,
   createDashboard,
+  fillBoard,
   getBoard,
   queryClient,
   updateCard,
@@ -65,6 +66,7 @@ const BOARDS: { title: string; columns: Record<string, DemoCard>[] }[] = [
 export async function seedDemoBoards() {
   for (const board of BOARDS) {
     const dashboard = await createDashboard(board.title)
+    await fillBoard(dashboard.id)
     const { columns } = await getBoard(dashboard.id)
     for (const [index, cards] of board.columns.entries()) {
       const column = columns[index]

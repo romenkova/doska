@@ -8,7 +8,7 @@ export function useCreateDashboard() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: ({ name, folderId }: { name: string; folderId?: string }) =>
-      api.createDashboard(name, undefined, folderId),
+      api.createDashboard(name, folderId),
     onSettled: () => qc.invalidateQueries({ queryKey: keys.dashboards }),
   })
 }
@@ -16,9 +16,21 @@ export function useCreateDashboard() {
 export function useDuplicateDashboard() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (board: Dashboard) =>
-      api.createDashboard(board.title, board.id),
+    mutationFn: async (board: Dashboard) => {
+      const created = await api.createDashboard(board.title)
+      await api.fillBoard(created.id, board.id)
+      return created
+    },
     onSettled: () => qc.invalidateQueries({ queryKey: keys.dashboards }),
+  })
+}
+
+/** Default columns, or a copy of `templateId`'s columns and cards. */
+export function useFillBoard(deckId: string) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (templateId?: string) => api.fillBoard(deckId, templateId),
+    onSettled: () => qc.invalidateQueries({ queryKey: keys.board(deckId) }),
   })
 }
 
