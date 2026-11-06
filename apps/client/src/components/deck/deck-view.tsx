@@ -24,8 +24,9 @@ import { useCallback } from "react"
 import { useLocation } from "wouter"
 import { useDragEnd, useSyncShortcut } from "@/lib/hooks"
 import { routes } from "@/lib/routes"
-import { unlinkDeletedBoard } from "@/lib/vault/use-vault"
+import { unlinkDeletedBoard, useVault } from "@/lib/vault/use-vault"
 import { useDeck } from "@/providers/deck/deck-context"
+import { VaultProvider } from "@/providers/vault/vault-context"
 import { Deck } from "./deck"
 
 /**
@@ -50,6 +51,7 @@ export function DeckView({ dashboard }: { dashboard: Dashboard }) {
   const { data: board, isPending } = useBoard(id)
 
   const view = useBoardView(id)
+  const vault = useVault(id)
 
   const { mutate: createCard } = useCreateCard(id)
   const { mutate: createCardFromTemplate } = useCreateCardFromTemplate(id)
@@ -76,51 +78,53 @@ export function DeckView({ dashboard }: { dashboard: Dashboard }) {
   )
 
   return (
-    <Deck
-      dashboard={dashboard}
-      board={board ?? { columns: [], cards: [] }}
-      isLoading={isPending}
-      onToggleBody={(columnId, collapsed) =>
-        setColumnCollapsed({ id: columnId, collapsed })
-      }
-      onAddCard={(columnId) =>
-        createCard(columnId, {
-          onSuccess: (cardId) =>
-            navigate(routes.card.to(cardId), { state: { new: true } }),
-        })
-      }
-      onAddFromTemplate={(columnId, template) =>
-        createCardFromTemplate(
-          { columnId, template },
-          {
+    <VaultProvider value={vault}>
+      <Deck
+        dashboard={dashboard}
+        board={board ?? { columns: [], cards: [] }}
+        isLoading={isPending}
+        onToggleBody={(columnId, collapsed) =>
+          setColumnCollapsed({ id: columnId, collapsed })
+        }
+        onAddCard={(columnId) =>
+          createCard(columnId, {
             onSuccess: (cardId) =>
               navigate(routes.card.to(cardId), { state: { new: true } }),
-          }
-        )
-      }
-      onAddColumn={() => createColumn("New column")}
-      onReorderColumns={moveColumn}
-      onChangeColumnColor={(columnId, color) =>
-        setColumnColor({ id: columnId, color })
-      }
-      onChangeColumnDone={(columnId, done) =>
-        setColumnDone({ id: columnId, done })
-      }
-      onRenameColumn={(columnId, title) =>
-        renameColumn({ id: columnId, title })
-      }
-      onDeleteColumn={deleteColumn}
-      onRenameDashboard={(name) => renameDashboard({ id, name })}
-      onDeleteDashboard={() => {
-        unlinkDeletedBoard(id)
-        deleteDashboard(id)
-      }}
-      onChangeSort={(sort) => setDashboardSort({ id, sort })}
-      view={view}
-      onChangeView={(next) => setBoardView(id, next)}
-      onDragEnd={handleDragEnd}
-      onMoveCardToBoard={moveCardToBoard}
-      onPatchCard={patchCard}
-    />
+          })
+        }
+        onAddFromTemplate={(columnId, template) =>
+          createCardFromTemplate(
+            { columnId, template },
+            {
+              onSuccess: (cardId) =>
+                navigate(routes.card.to(cardId), { state: { new: true } }),
+            }
+          )
+        }
+        onAddColumn={() => createColumn("New column")}
+        onReorderColumns={moveColumn}
+        onChangeColumnColor={(columnId, color) =>
+          setColumnColor({ id: columnId, color })
+        }
+        onChangeColumnDone={(columnId, done) =>
+          setColumnDone({ id: columnId, done })
+        }
+        onRenameColumn={(columnId, title) =>
+          renameColumn({ id: columnId, title })
+        }
+        onDeleteColumn={deleteColumn}
+        onRenameDashboard={(name) => renameDashboard({ id, name })}
+        onDeleteDashboard={() => {
+          unlinkDeletedBoard(id)
+          deleteDashboard(id)
+        }}
+        onChangeSort={(sort) => setDashboardSort({ id, sort })}
+        view={view}
+        onChangeView={(next) => setBoardView(id, next)}
+        onDragEnd={handleDragEnd}
+        onMoveCardToBoard={moveCardToBoard}
+        onPatchCard={patchCard}
+      />
+    </VaultProvider>
   )
 }
