@@ -5,13 +5,14 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarMenu,
+  cn,
 } from "@doska/ui-kit"
 import { usePublishedBoards, useSharedBoards } from "@doska/core"
 import { useAuth } from "@/lib/hooks"
 import { AppSidebarHeader } from "./app-sidebar-header"
-import { ThemeToggle } from "@/components/theme-toggle"
 import { DashboardsList } from "./dashboards-list/dashboards-list"
 import { SidebarAccount } from "./sidebar-account"
+import { SidebarThemeButton } from "./sidebar-theme-button"
 import { SettingsButton } from "@/components/settings/settings-button"
 import { TrashButton } from "@/components/trash/trash-button"
 import { HistoryButton } from "@/components/history/history-button"
@@ -29,7 +30,11 @@ export function AppSidebar() {
   return (
     <Sidebar className="ml-1">
       {!isDesktop() && <AppSidebarHeader />}
-      <SidebarContent className="group/sidebar mt-6">
+      <SidebarContent className="group/sidebar">
+        <div
+          aria-hidden
+          className="pointer-events-none sticky top-0 z-10 h-6 shrink-0 bg-linear-to-b from-sidebar to-transparent"
+        />
         <SidebarGroup>
           <SidebarMenu>
             <UpcomingButton />
@@ -43,10 +48,18 @@ export function AppSidebar() {
           publishedIds={publishedIds}
         />
       </SidebarContent>
-      <SidebarFooter>
-        <ThemeToggle />
-        <HistoryButton />
-        <SettingsButton />
+      <SidebarFooter
+        className={cn(
+          "relative pt-2",
+          "before:pointer-events-none before:absolute before:inset-x-0 before:bottom-full before:h-8",
+          "before:bg-linear-to-t before:from-sidebar before:to-transparent"
+        )}
+      >
+        <SidebarMenu>
+          <SidebarThemeButton />
+          <HistoryButton />
+          <SettingsButton />
+        </SidebarMenu>
         <SidebarAccount />
       </SidebarFooter>
     </Sidebar>

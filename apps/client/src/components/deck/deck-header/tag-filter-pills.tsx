@@ -11,6 +11,7 @@ import { TriangleAlert } from "lucide-react"
 import { Fragment } from "react"
 import { useDeck } from "@/providers/deck/deck-context"
 import { useAuth } from "@/lib/hooks"
+import { TagContextMenu } from "../../card/tag-context-menu"
 import { FilterPill } from "./filter-pill"
 
 function names(list: string[]) {
@@ -62,13 +63,14 @@ export function TagFilterPills({ cards }: IProps) {
           ))}
         {toggleTagFilter &&
           tagFilters.map((tag) => (
-            <FilterPill
-              key={tag}
-              label={tag}
-              prefix="#"
-              hue={columnHue(tagColor(tagColors, tag))}
-              onClear={() => toggleTagFilter(tag)}
-            />
+            <TagContextMenu key={tag} tag={tag}>
+              <FilterPill
+                label={tag}
+                prefix="#"
+                hue={columnHue(tagColor(tagColors, tag))}
+                onClear={() => toggleTagFilter(tag)}
+              />
+            </TagContextMenu>
           ))}
       </div>
       {(unusedTags.length > 0 || noMatches) && (
