@@ -8,6 +8,7 @@ const board = (id: string, deletedAt: number | null = null) => ({
   title: id,
   position: "a0",
   sort: [],
+  tagColors: {},
   template: true,
   updatedAt: 1,
   deletedAt,

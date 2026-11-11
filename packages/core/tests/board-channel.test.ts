@@ -56,6 +56,7 @@ const board: Dashboard = {
   title: "Board",
   position: "a0",
   sort: [],
+  tagColors: {},
   template: false,
   updatedAt: 1,
   deletedAt: null,
