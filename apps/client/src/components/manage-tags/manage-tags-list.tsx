@@ -18,7 +18,12 @@ interface IProps {
 
 export function ManageTagsList({ boardId }: IProps) {
   const isOwner = useIsBoardOwner(boardId)
-  const options = useTagOptions(boardId)
+  const options = [...useTagOptions(boardId)].sort((a, b) =>
+    a.name.localeCompare(b.name, undefined, {
+      numeric: true,
+      sensitivity: "base",
+    })
+  )
   const colors = useTagColors(boardId)
   const renameTag = useRenameTag(boardId)
   const deleteTag = useDeleteTag(boardId)

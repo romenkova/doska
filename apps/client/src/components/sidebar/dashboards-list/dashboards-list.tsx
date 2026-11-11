@@ -70,7 +70,7 @@ export function DashboardsList({
     dragging ? "rounded-md bg-sidebar shadow-e2" : undefined
 
   return (
-    <SidebarGroup className="mt-4 flex-1">
+    <SidebarGroup className="mt-4 flex-1 pb-8">
       <BoardsHeader onNewFolder={() => createFolder()} />
       <SidebarGroupContent className="flex flex-1 flex-col">
         <DraggableFolders
