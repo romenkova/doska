@@ -1,5 +1,6 @@
 import { Calendar } from "lucide-react"
 import { cn } from "./lib/cn"
+import { useDayChanged } from "./lib/use-day-changed"
 import {
   deadlineRelative,
   deadlineStatus,
@@ -24,6 +25,7 @@ interface IProps {
  * Soon reads as relative time ("in 3 days"); anything further out shows the date.
  */
 export function DeadlineChip({ value, className, done }: IProps) {
+  useDayChanged()
   const status = done || !value ? "upcoming" : deadlineStatus(value)
   const label = value
     ? status === "soon" || status === "overdue"
