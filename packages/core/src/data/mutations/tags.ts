@@ -12,9 +12,10 @@ const retag = (
   change: (tags: string[]) => string[]
 ): Board => ({
   ...board,
-  cards: board.cards.map((card) =>
-    hasTag(card.tags, tag) ? { ...card, tags: change(card.tags) } : card
-  ),
+  cards: board.cards.map((card) => {
+    const tags = card.tags ?? []
+    return hasTag(tags, tag) ? { ...card, tags: change(tags) } : card
+  }),
 })
 
 export function useRenameTag(deckId: string) {
