@@ -144,6 +144,9 @@ importers:
       tw-animate-css:
         specifier: 1.4.0
         version: 1.4.0
+      uuid:
+        specifier: ^14.0.3
+        version: 14.0.3
       wouter:
         specifier: 3.11.1
         version: 3.11.1(react@19.2.3)
