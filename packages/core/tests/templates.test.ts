@@ -8,6 +8,7 @@ const board = (id: string, deletedAt: number | null = null) => ({
   title: id,
   position: "a0",
   sort: [],
+  tagColors: {},
   template: true,
   updatedAt: 1,
   deletedAt,
@@ -58,10 +59,23 @@ const all = <T>(store: string) =>
 beforeEach(installMemoryRuntime)
 
 describe("createDashboard", () => {
-  it("without a template, gets the default columns and no cards", async () => {
+  it("starts with no columns", async () => {
     const { createDashboard } =
       await import("../src/api/operations/create-dashboard")
     const created = await createDashboard("Fresh")
+
+    expect(all<Column>(COLUMNS)).toEqual([])
+    expect(created.template).toBe(false)
+  })
+})
+
+describe("fillBoard", () => {
+  it("without a template, adds the default columns and no cards", async () => {
+    const { createDashboard } =
+      await import("../src/api/operations/create-dashboard")
+    const { fillBoard } = await import("../src/api/operations/fill-board")
+    const created = await createDashboard("Fresh")
+    await fillBoard(created.id)
 
     const columns = all<Column>(COLUMNS).filter(
       (c) => c.dashboardId === created.id
@@ -70,10 +84,9 @@ describe("createDashboard", () => {
       ["Done", "In Progress", "To Do"].sort()
     )
     expect(all<Card>(CARDS)).toEqual([])
-    expect(created.template).toBe(false)
   })
 
-  it("from a template, copies its live columns and cards onto the new board", async () => {
+  it("from a template, copies its live columns and cards onto the board", async () => {
     rows.set(`${DASHBOARDS}/tpl`, board("tpl"))
     rows.set(`${COLUMNS}/backlog`, column("backlog", "tpl", "a0"))
     rows.set(`${COLUMNS}/shipped`, column("shipped", "tpl", "a1"))
@@ -84,7 +97,9 @@ describe("createDashboard", () => {
 
     const { createDashboard } =
       await import("../src/api/operations/create-dashboard")
-    const created = await createDashboard("Copy", "tpl")
+    const { fillBoard } = await import("../src/api/operations/fill-board")
+    const created = await createDashboard("Copy")
+    await fillBoard(created.id, "tpl")
 
     expect(created.id).not.toBe("tpl")
     expect(created.template).toBe(false)
@@ -260,7 +275,7 @@ describe("createDashboard into a folder", () => {
 
     const { createDashboard } =
       await import("../src/api/operations/create-dashboard")
-    const created = await createDashboard("Fresh", undefined, "f")
+    const created = await createDashboard("Fresh", "f")
 
     const { items } = await db.getSidebarLayout()
     expect(items).toEqual([

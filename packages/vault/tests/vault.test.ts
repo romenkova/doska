@@ -579,6 +579,27 @@ describe("Vault", () => {
     await expect(theirs.sync()).rejects.toThrow(/another board/)
   })
 
+  it("keeps the board title in the folder", async () => {
+    board.name = "Work"
+    await vault.sync()
+    expect(JSON.parse(fs.files.get(`${ROOT}/_meta.json`)!).title).toBe("Work")
+
+    await board.rename("Home")
+    await vault.sync()
+    expect(JSON.parse(fs.files.get(`${ROOT}/_meta.json`)!).title).toBe("Home")
+  })
+
+  it("takes the board title from the folder it claims", async () => {
+    const other = new FakeBoard([makeColumn("col-their-todo", "To do")])
+    other.name = "Work"
+    await new Vault({ fs, board: other, boardId: "board-2", root: ROOT }).sync()
+
+    await vault.claim()
+    await vault.sync()
+
+    expect(board.name).toBe("Work")
+  })
+
   it("names a folder after its column when the title has no letters", async () => {
     const odd = makeColumn("col-odd", "***")
     const only = new FakeBoard([odd])

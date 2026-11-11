@@ -1,27 +1,8 @@
-import {
-  Button,
-  Menu,
-  MenuContent,
-  MenuItem,
-  MenuTrigger,
-  cn,
-} from "@doska/ui-kit"
-import { FolderPlus, MoreVertical, Pencil, Plus, Trash2 } from "lucide-react"
+import { Button, Menu, MenuTrigger, cn } from "@doska/ui-kit"
+import { MoreVertical } from "lucide-react"
+import { type FolderActions, FolderMenuItems } from "./folder-menu-items"
 
-interface IProps {
-  onRename: () => void
-  onNewBoard: () => void
-  /** Left out at the max depth. */
-  onNewSubfolder?: () => void
-  onDelete: () => void
-}
-
-export function FolderMenu({
-  onRename,
-  onNewBoard,
-  onNewSubfolder,
-  onDelete,
-}: IProps) {
+export function FolderMenu(actions: FolderActions) {
   return (
     <Menu>
       <MenuTrigger
@@ -40,26 +21,7 @@ export function FolderMenu({
       >
         <MoreVertical />
       </MenuTrigger>
-      <MenuContent>
-        <MenuItem onClick={onRename}>
-          <Pencil />
-          Rename
-        </MenuItem>
-        <MenuItem onClick={onNewBoard}>
-          <Plus />
-          New board
-        </MenuItem>
-        {onNewSubfolder && (
-          <MenuItem onClick={onNewSubfolder}>
-            <FolderPlus />
-            New subfolder
-          </MenuItem>
-        )}
-        <MenuItem onClick={onDelete} variant="destructive">
-          <Trash2 />
-          Delete folder
-        </MenuItem>
-      </MenuContent>
+      <FolderMenuItems {...actions} />
     </Menu>
   )
 }

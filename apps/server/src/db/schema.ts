@@ -66,6 +66,10 @@ export const dashboards = pgTable(
     title: text("title").notNull(),
     position: text("position").notNull(),
     sort: jsonb("sort").$type<string[]>().notNull().default([]),
+    tagColors: jsonb("tag_colors")
+      .$type<Record<string, string>>()
+      .notNull()
+      .default({}),
     template: boolean("template").notNull().default(false),
     ownerId: text("owner_id"),
     publicToken: text("public_token").unique(),

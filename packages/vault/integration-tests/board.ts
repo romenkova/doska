@@ -84,6 +84,7 @@ export async function installBoard(columns: Column[]): Promise<TestBoard> {
     title: "Board",
     position: "a0",
     sort: [],
+    tagColors: {},
     template: false,
     updatedAt: 1,
     deletedAt: null,
@@ -96,15 +97,19 @@ export async function installBoard(columns: Column[]): Promise<TestBoard> {
     deleteCard,
     createColumn,
     getBoard,
+    getDashboard,
     getDeletedIds,
     moveCardToColumn,
     renameColumn,
+    renameDashboard,
     restore,
     updateCard,
   } = await import("@doska/core")
 
   return {
     load: () => getBoard(BOARD_ID),
+    title: async () => (await getDashboard(BOARD_ID))?.title ?? "",
+    rename: (title: string) => renameDashboard(BOARD_ID, title),
     createCard,
     createColumn: (title: string) => createColumn(BOARD_ID, title),
     updateCard,

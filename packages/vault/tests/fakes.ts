@@ -144,6 +144,7 @@ export class FakeBoard implements VaultBoard {
   readonly trashed = new Map<string, Card>()
   readonly deleteCalls: string[] = []
   readonly droppedCols: string[] = []
+  name = "Board"
 
   private readonly cols: Column[]
 
@@ -169,6 +170,15 @@ export class FakeBoard implements VaultBoard {
       columns: this.cols,
       cards: [...this.cardsById.values()],
     })
+  }
+
+  title() {
+    return Promise.resolve(this.name)
+  }
+
+  rename(title: string) {
+    this.name = title
+    return Promise.resolve()
   }
 
   deleted() {

@@ -8,7 +8,6 @@ import { ShareButton } from "./share-button"
 import { UserFilter } from "./user-filter"
 import type { Column, DashboardView } from "@doska/core"
 import { VaultButton } from "./vault-button"
-import { isDesktop } from "@/lib/platform"
 
 interface IProps {
   boardId: string
@@ -64,7 +63,7 @@ export function DeckHeader({
         <SearchButton boardId={boardId} />
         <RowViewButton view={view} onChangeView={onChangeView} />
         <ShareButton boardId={boardId} title={title} />
-        {isDesktop() && <VaultButton boardId={boardId} />}
+        <VaultButton />
         <BoardActionsMenu
           boardId={boardId}
           title={title}

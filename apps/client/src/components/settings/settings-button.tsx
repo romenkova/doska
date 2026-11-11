@@ -1,4 +1,4 @@
-import { Button } from "@doska/ui-kit"
+import { SidebarMenuButton, SidebarMenuItem } from "@doska/ui-kit"
 import { Settings } from "lucide-react"
 import { useState } from "react"
 import { AccountsModal } from "@/components/accounts/accounts-modal"
@@ -15,15 +15,12 @@ export function SettingsButton() {
 
   return (
     <>
-      <Button
-        variant="ghost"
-        size="sm"
-        className="justify-start gap-2 px-2"
-        onClick={() => setOpen(true)}
-      >
-        <Settings className="size-4" />
-        <span>Settings</span>
-      </Button>
+      <SidebarMenuItem>
+        <SidebarMenuButton onClick={() => setOpen(true)}>
+          <Settings className="size-4" />
+          <span>Settings</span>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
       <SettingsModal
         open={open}
         onOpenChange={setOpen}

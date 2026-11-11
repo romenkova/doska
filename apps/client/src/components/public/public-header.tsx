@@ -29,7 +29,7 @@ export function PublicHeader({ title }: IProps) {
         </>
       )}
       <span className="flex-1" />
-      <ThemeToggle iconOnly />
+      <ThemeToggle />
     </header>
   )
 }
