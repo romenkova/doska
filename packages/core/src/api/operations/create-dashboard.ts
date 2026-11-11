@@ -27,6 +27,7 @@ export async function createDashboard(
     title: name,
     position,
     sort: [],
+    tagColors: {},
     template: false,
     updatedAt: stamp(),
     deletedAt: null,
