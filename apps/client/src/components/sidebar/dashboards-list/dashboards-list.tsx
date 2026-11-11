@@ -15,7 +15,7 @@ import {
 import { DraggableFolders, useFolderTree } from "react-draggable-folders"
 import { useState } from "react"
 import { DROP_ANIMATION_MS, useDashboardNav } from "@/lib/hooks"
-import { BoardItem } from "./board-item"
+import { BoardItem } from "./board/board-item"
 import { BoardsHeader } from "./boards-header"
 import { FolderItem } from "./folder/folder-item"
 

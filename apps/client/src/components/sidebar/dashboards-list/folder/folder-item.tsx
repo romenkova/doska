@@ -2,6 +2,7 @@ import { SidebarMenuButton, cn } from "@doska/ui-kit"
 import { Folder, FolderOpen } from "lucide-react"
 import type { SidebarFolderNode } from "@doska/core"
 import { useCardDrop } from "@/providers/card-drop/card-drop-context"
+import { FolderContextMenu } from "./folder-context-menu"
 import { FolderMenu } from "./folder-menu"
 import { FolderTitleInput } from "./folder-title-input"
 import { useEffect, useEffectEvent, useMemo } from "react"
@@ -46,6 +47,13 @@ export function FolderItem({
     return () => clearTimeout(timer)
   }, [opensOnHover])
 
+  const actions = {
+    onRename: onRenameStart,
+    onNewBoard,
+    onNewSubfolder,
+    onDelete,
+  }
+
   const FolderIcon = useMemo(() => {
     if (collapsed || isDropTarget) return Folder
     return FolderOpen
@@ -61,31 +69,28 @@ export function FolderItem({
         />
       ) : (
         <>
-          <SidebarMenuButton
-            tooltip={node.data.title}
-            aria-expanded={!collapsed}
-            onClick={() => onCollapsedChange(!collapsed)}
-            data-drop-folder={node.id}
-            className={cn(
-              "pr-8",
-              opensOnHover &&
-                "bg-sidebar-accent ring-2 ring-primary/60 ring-inset"
-            )}
-          >
-            <FolderIcon
+          <FolderContextMenu {...actions}>
+            <SidebarMenuButton
+              tooltip={node.data.title}
+              aria-expanded={!collapsed}
+              onClick={() => onCollapsedChange(!collapsed)}
+              data-drop-folder={node.id}
               className={cn(
-                "size-3.5 text-muted-foreground",
-                isDropTarget && "fill-current"
+                "pr-8",
+                opensOnHover &&
+                  "bg-sidebar-accent ring-2 ring-primary/60 ring-inset"
               )}
-            />
-            <span className="truncate">{node.data.title}</span>
-          </SidebarMenuButton>
-          <FolderMenu
-            onRename={onRenameStart}
-            onNewBoard={onNewBoard}
-            onNewSubfolder={onNewSubfolder}
-            onDelete={onDelete}
-          />
+            >
+              <FolderIcon
+                className={cn(
+                  "size-3.5 text-muted-foreground",
+                  isDropTarget && "fill-current"
+                )}
+              />
+              <span className="truncate">{node.data.title}</span>
+            </SidebarMenuButton>
+          </FolderContextMenu>
+          <FolderMenu {...actions} />
         </>
       )}
     </>
