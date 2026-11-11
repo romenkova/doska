@@ -1,8 +1,9 @@
-import { CardContent, MdTag, cn } from "@doska/ui-kit"
-import { useBoardMembers } from "@doska/core"
+import { CardContent, MdTag, cn, columnHue } from "@doska/ui-kit"
+import { tagColor, useBoardMembers, useTagColors } from "@doska/core"
 import { AtSign } from "lucide-react"
 import { useDeck } from "@/providers/deck/deck-context"
 import { useAuth } from "@/lib/hooks"
+import { TagContextMenu } from "./tag-context-menu"
 
 interface IProps {
   tags: string[]
@@ -14,6 +15,7 @@ export function CardTags({ tags, users, className }: IProps) {
   const { id: deckId, toggleTagFilter, toggleUserFilter } = useDeck()
   const { authed } = useAuth()
   const { data: roster } = useBoardMembers(deckId, !!authed)
+  const tagColors = useTagColors(deckId)
 
   const members = (roster?.members ?? []).filter((member) =>
     users.includes(member.userId)
@@ -32,11 +34,13 @@ export function CardTags({ tags, users, className }: IProps) {
         />
       ))}
       {tags.map((tag) => (
-        <MdTag
-          key={tag}
-          name={tag}
-          onSelect={toggleTagFilter && (() => toggleTagFilter(tag))}
-        />
+        <TagContextMenu key={tag} tag={tag}>
+          <MdTag
+            name={tag}
+            hue={columnHue(tagColor(tagColors, tag))}
+            onSelect={toggleTagFilter && (() => toggleTagFilter(tag))}
+          />
+        </TagContextMenu>
       ))}
     </CardContent>
   )

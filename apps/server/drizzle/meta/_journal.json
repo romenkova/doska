@@ -162,6 +162,13 @@
       "when": 1792500000000,
       "tag": "0022_templates",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1792600000000,
+      "tag": "0023_tag_colors",
+      "breakpoints": true
     }
   ]
 }

@@ -119,7 +119,8 @@ jobs:
           releaseDraft: false
           prerelease: ${{ contains(github.ref_name, '-') }}
           includeUpdaterJson: true
-          args: ${{ matrix.args }}
+          # rpm rejects '-' in versions, so prereleases ship without it
+          args: ${{ matrix.platform == 'ubuntu-latest' && contains(github.ref_name, '-') && '--bundles deb,appimage' || matrix.args }}
 
       - name: Check AppImage does not bundle libwayland-client
         if: matrix.platform == 'ubuntu-latest'
