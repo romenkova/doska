@@ -4,10 +4,12 @@ import {
   createColumn,
   deleteCard,
   getBoard,
+  getDashboard,
   getDeletedIds,
   listMembers,
   moveCardToColumn,
   renameColumn,
+  renameDashboard,
   restore,
   updateCard,
 } from "@doska/core"
@@ -51,6 +53,8 @@ export function boardOps(boardId: string): VaultBoard {
       }))
       return { ...board, cards }
     },
+    title: async () => (await getDashboard(boardId))?.title ?? "",
+    rename: (title) => renameDashboard(boardId, title),
     createCard,
     createColumn: (title) => createColumn(boardId, title),
     updateCard: async (id, patch) => {

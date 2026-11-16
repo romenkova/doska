@@ -14,7 +14,8 @@ export { groupCardsByColumn } from "./group-cards"
 export { initials } from "./initials"
 export { byPosition, keyBetween } from "./position"
 export { isAuthed, subscribeAuthed } from "./is-authed"
-export { filterByTags, filterByUsers, toggleTag } from "./tag-filter"
+export { filterByTags, filterByUsers, hasTag, toggleTag } from "./tag-filter"
+export { tagColor, tagKey } from "./tag-color"
 export {
   dropNeighbours,
   sameSortGroup,

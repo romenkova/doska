@@ -18,6 +18,7 @@ function sorted<T>(map: Map<string, T>): Record<string, T> {
 /** `_meta.json` as it comes off disk, before any of it is trusted. */
 interface Meta {
   board?: unknown
+  title?: unknown
   cards?: unknown
   columns?: unknown
 }
@@ -45,6 +46,7 @@ export class Written {
   private readonly path: string
   private readonly boardId: string
   private held: string | null = null
+  private title: string | null = null
   private readonly entries = new Map<string, WrittenFile>()
   private readonly folders = new Map<string, WrittenFolder>()
   /** The last `_meta.json` on disk, so an unchanged pass doesn't rewrite it. */
@@ -64,6 +66,15 @@ export class Written {
 
   claim(): void {
     this.held = this.boardId
+  }
+
+  /** The board's title as the vault last wrote it, null for older folders. */
+  boardTitle(): string | null {
+    return this.title
+  }
+
+  setBoardTitle(title: string): void {
+    this.title = title
   }
 
   [Symbol.iterator](): IterableIterator<[string, WrittenFile]> {
@@ -131,6 +142,7 @@ export class Written {
     const meta = await this.read()
     if (meta === null) return
     this.held = typeof meta.board === "string" ? meta.board : this.boardId
+    if (typeof meta.title === "string") this.title = meta.title
 
     for (const [id, entry] of section(meta.cards)) {
       if (typeof entry.path !== "string") continue
@@ -176,6 +188,7 @@ export class Written {
     return JSON.stringify(
       {
         board: this.held ?? this.boardId,
+        title: this.title ?? undefined,
         cards: sorted(this.entries),
         columns: sorted(this.folders),
       },

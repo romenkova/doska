@@ -7,13 +7,20 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from "@doska/ui-kit"
-import { ArrowRightLeft, History, MoreHorizontal, Trash2 } from "lucide-react"
+import {
+  ArrowRightLeft,
+  History,
+  MoreHorizontal,
+  Tags,
+  Trash2,
+} from "lucide-react"
 import { ConfirmDialog } from "../../confirm-dialog"
 import { HistoryModal } from "../../history/history-modal"
 import { ReorderColumnsModal } from "../reorder-columns/reorder-columns-modal"
 import { BoardTemplateItems } from "./board-template-items"
 import { SortSub } from "./sort-sub"
 import type { Column } from "@doska/core"
+import { useManageTags } from "../../manage-tags/use-manage-tags"
 
 interface IProps {
   boardId: string
@@ -37,6 +44,7 @@ export function BoardActionsMenu({
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [reorderOpen, setReorderOpen] = useState(false)
   const [historyOpen, setHistoryOpen] = useState(false)
+  const { open: openManageTags } = useManageTags()
 
   return (
     <>
@@ -62,6 +70,10 @@ export function BoardActionsMenu({
           >
             <ArrowRightLeft />
             Reorder columns
+          </MenuItem>
+          <MenuItem onClick={() => openManageTags(boardId)}>
+            <Tags />
+            Manage tags
           </MenuItem>
           <MenuItem onClick={() => setHistoryOpen(true)}>
             <History />

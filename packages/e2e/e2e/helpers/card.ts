@@ -239,8 +239,8 @@ export async function addCardTags(
     await expect(input).toHaveValue("")
     await expect(
       menu(page, "Tags")
-        .getByRole("menuitem", { name: new RegExp(`^#${tag}$`, "i") })
-        .locator("svg")
+        .getByRole("menuitem", { name: new RegExp(`^${tag}\\b`, "i") })
+        .locator(".lucide-check")
     ).toBeVisible()
   }
   // Escape closes the submenu first, then the menu.

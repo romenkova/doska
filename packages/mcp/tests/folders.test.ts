@@ -7,6 +7,7 @@ const dashboard = (id: string, position: string): Dashboard => ({
   title: id,
   position,
   sort: [],
+  tagColors: {},
   template: false,
   updatedAt: 0,
   deletedAt: null,

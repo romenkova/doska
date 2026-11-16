@@ -12,15 +12,17 @@ import { sidebarRow } from "./sidebar"
 /**
  * Creates a fresh board from the sidebar's "New board" button and returns its
  * generated deck id (read off the URL — the one identifier a user can actually
- * see, in their address bar). A new board lands with the three default columns
- * (To Do / In Progress / Done) and no cards; seed any cards a test needs with
- * `addCard`.
+ * see, in their address bar). Starts it empty from the board's empty state, so
+ * it has the three default columns (To Do / In Progress / Done) and no cards;
+ * seed any cards a test needs with `addCard`.
  */
 export async function createBoard(page: Page): Promise<string> {
   await page.goto("/")
   // Home's button, not the sidebar's: the sidebar is hidden on narrow viewports.
   await page.getByRole("button", { name: "Create a board" }).click()
   await page.waitForURL(/\/d\/board-/)
+  await page.getByRole("button", { name: "Empty", exact: true }).click()
+  await expect(page.getByRole("group", { name: "To Do" })).toBeVisible()
   return new URL(page.url()).pathname.split("/d/")[1]
 }
 
@@ -158,6 +160,7 @@ export async function remoteCreateDashboard(
           title,
           position: "a5",
           sort: [],
+          tagColors: {},
           template: false,
           updatedAt: Date.now(),
           deletedAt: null,

@@ -12,7 +12,8 @@
   },
   "devDependencies": {
     "@doska/configs": "workspace:*",
-    "@types/node": "^22"
+    "@types/node": "^22",
+    "typescript": "~6"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"

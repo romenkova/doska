@@ -154,6 +154,8 @@ export const DashboardSchema = z.object({
   title: z.string(),
   position: z.string(),
   sort: z.array(z.string()).default([]),
+  /** Keyed by lowercased tag name. Values come from `COLUMN_COLORS`. */
+  tagColors: z.record(z.string(), z.string()).default({}),
   /** Offered as a starting point for new boards. */
   template: z.boolean().default(false),
   updatedAt: z.number(),

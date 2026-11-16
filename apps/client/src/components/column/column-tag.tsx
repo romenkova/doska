@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react"
-import { cn, columnHue } from "@doska/ui-kit"
+import { TINT_TEXT, cn, columnHue } from "@doska/ui-kit"
 
 interface IProps {
   title: string
@@ -24,12 +24,7 @@ export function ColumnTag({
       className={cn(
         "shrink-0 whitespace-nowrap",
         "text-xs font-semibold tracking-[0.02em]",
-        hue === null
-          ? "text-muted-foreground"
-          : [
-              "text-[oklch(0.44_0.13_var(--tag-h))]",
-              "dark:text-[oklch(0.84_0.11_var(--tag-h))]",
-            ],
+        hue === null ? "text-muted-foreground" : TINT_TEXT,
         className
       )}
     >

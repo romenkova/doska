@@ -1,5 +1,6 @@
 import { createElement, useCallback, useState } from "react"
 import { toast } from "react-hot-toast"
+import { v4 as uuid } from "uuid"
 import {
   type Attachment,
   useCard,
@@ -61,7 +62,7 @@ export function useAttachmentUpload(cardId: string) {
         return []
       }
       const queued = list.map((file) => ({
-        id: crypto.randomUUID(),
+        id: uuid(),
         name: file.name,
         mime: file.type || "application/octet-stream",
       }))

@@ -17,6 +17,7 @@ import { useDeck } from "@/providers/deck/deck-context"
 import { Column } from "../column/column"
 import { AddColumn } from "../column/add-column"
 import { DraggableCard } from "../card/draggable-card"
+import { BoardEmptyState } from "./board-empty-state"
 import { BoardView } from "./board-view"
 import { DragStateProvider } from "./drag-state"
 import { DeckHeader } from "./deck-header/deck-header"
@@ -82,6 +83,7 @@ export function Deck({
   }
   const grouped = groupCardsByColumn(visible)
   const orderedColumns = [...board.columns].sort(byPosition)
+  const isEmpty = !isLoading && orderedColumns.length === 0
   const sort = dashboard.sort ?? []
   const { hold, release, place } = useLandingSlot(sort.length > 0)
 
@@ -130,9 +132,11 @@ export function Deck({
             </>
           }
         >
-          {view === "rows" ? (
+          {isEmpty && <BoardEmptyState boardId={dashboard.id} />}
+          {!isEmpty && view === "rows" && (
             <DeckRowsView board={visible} title={dashboard.title} />
-          ) : (
+          )}
+          {!isEmpty && view !== "rows" && (
             <>
               {grouped.map(({ column, cards }) => {
                 const ordered = place(sortCards(cards, sort), column.id)

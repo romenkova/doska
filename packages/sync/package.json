@@ -12,6 +12,7 @@
   "devDependencies": {
     "@doska/configs": "workspace:*",
     "@types/node": "^22",
+    "typescript": "~6",
     "vitest": "^5.0.5"
   },
   "scripts": {

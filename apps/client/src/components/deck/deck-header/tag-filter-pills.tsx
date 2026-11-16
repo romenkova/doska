@@ -1,13 +1,17 @@
 import {
   filterByTags,
   filterByUsers,
+  tagColor,
   useActiveUsers,
+  useTagColors,
   type Card,
 } from "@doska/core"
+import { columnHue } from "@doska/ui-kit"
 import { TriangleAlert } from "lucide-react"
 import { Fragment } from "react"
 import { useDeck } from "@/providers/deck/deck-context"
 import { useAuth } from "@/lib/hooks"
+import { TagContextMenu } from "../../card/tag-context-menu"
 import { FilterPill } from "./filter-pill"
 
 function names(list: string[]) {
@@ -26,6 +30,7 @@ interface IProps {
 /** The strip under the board header listing the active user and tag filters. */
 export function TagFilterPills({ cards }: IProps) {
   const {
+    id: deckId,
     tagFilters = [],
     toggleTagFilter,
     userFilters = [],
@@ -33,6 +38,7 @@ export function TagFilterPills({ cards }: IProps) {
   } = useDeck()
   const { authed } = useAuth()
   const { data: activeUsers = [] } = useActiveUsers(!!authed)
+  const tagColors = useTagColors(deckId)
 
   const users = activeUsers.filter((user) => userFilters.includes(user.id))
   if (tagFilters.length === 0 && users.length === 0) return null
@@ -57,12 +63,14 @@ export function TagFilterPills({ cards }: IProps) {
           ))}
         {toggleTagFilter &&
           tagFilters.map((tag) => (
-            <FilterPill
-              key={tag}
-              label={tag}
-              prefix="#"
-              onClear={() => toggleTagFilter(tag)}
-            />
+            <TagContextMenu key={tag} tag={tag}>
+              <FilterPill
+                label={tag}
+                prefix="#"
+                hue={columnHue(tagColor(tagColors, tag))}
+                onClear={() => toggleTagFilter(tag)}
+              />
+            </TagContextMenu>
           ))}
       </div>
       {(unusedTags.length > 0 || noMatches) && (

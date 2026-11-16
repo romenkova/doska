@@ -21,6 +21,8 @@ interface Found {
 /** The board, as much of it as the vault needs. The app wires this to its store. */
 export interface VaultBoard {
   load(): Promise<{ columns: Column[]; cards: Card[] }>
+  title(): Promise<string>
+  rename(title: string): Promise<void>
   createCard(columnId: string): Promise<string>
   createColumn(title: string): Promise<string>
   updateCard(id: string, patch: CardPatch): Promise<void>
@@ -100,11 +102,16 @@ export class Vault {
   }
 
   /**
-   * Takes the folder for this board, whoever mirrored it before. The board the
-   * folder is taken from stops on its next pass.
+   * Takes the folder for this board, whoever mirrored it before, along with
+   * the board title it carries. The board the folder is taken from stops on
+   * its next pass.
    */
   async claim(): Promise<void> {
     await this.written.load()
+    const title = this.written.boardTitle()
+    if (title !== null && title !== (await this.board.title())) {
+      await this.board.rename(title)
+    }
     this.written.claim()
     await this.written.save()
   }
@@ -180,6 +187,7 @@ export class Vault {
     const deleted = new Set(dropped.cards)
     if (await this.syncOrphans(cards, files, deleted, inTrash)) changed = true
 
+    this.written.setBoardTitle(await this.board.title())
     await this.written.save()
     if (changed) this.onBoardChange?.()
   }

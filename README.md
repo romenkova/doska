@@ -59,7 +59,7 @@ Doska never makes you wait on the server, doesn't keep features behind a paywall
 - **Templates** for cards and boards
 - **Cross-board deadlines view**
 - **Quick note window**: always on top, opened with a keyboard shortcut
-- **Tags**
+- **Tags** with colors, renaming and merging
 - **Assign users** to cards
 - **Activity history view**
 

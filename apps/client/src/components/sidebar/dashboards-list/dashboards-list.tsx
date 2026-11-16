@@ -15,7 +15,7 @@ import {
 import { DraggableFolders, useFolderTree } from "react-draggable-folders"
 import { useState } from "react"
 import { DROP_ANIMATION_MS, useDashboardNav } from "@/lib/hooks"
-import { BoardItem } from "./board-item"
+import { BoardItem } from "./board/board-item"
 import { BoardsHeader } from "./boards-header"
 import { FolderItem } from "./folder/folder-item"
 
@@ -70,7 +70,7 @@ export function DashboardsList({
     dragging ? "rounded-md bg-sidebar shadow-e2" : undefined
 
   return (
-    <SidebarGroup className="mt-4 flex-1">
+    <SidebarGroup className="mt-4 flex-1 pb-8">
       <BoardsHeader onNewFolder={() => createFolder()} />
       <SidebarGroupContent className="flex flex-1 flex-col">
         <DraggableFolders

@@ -5,10 +5,11 @@ interface IProps {
   label: string
   prefix: "#" | "@"
   onClear: () => void
+  hue?: number | null
 }
 
 /** One active filter, cleared by clicking it. */
-export function FilterPill({ label, prefix, onClear }: IProps) {
+export function FilterPill({ label, prefix, onClear, hue }: IProps) {
   return (
     <button
       type="button"
@@ -20,6 +21,7 @@ export function FilterPill({ label, prefix, onClear }: IProps) {
       <TagChip
         label={label}
         icon={prefix === "@" ? AtSign : Hash}
+        hue={hue}
         className="transition-colors group-hover:border-primary/50"
       >
         <X className="mt-[1px] ml-0.5 size-3 shrink-0 text-muted-foreground group-hover:text-foreground" />

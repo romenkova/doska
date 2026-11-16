@@ -86,6 +86,7 @@ export function useVault(boardId: string) {
     qc.invalidateQueries({ queryKey: keys.cardCols })
     qc.invalidateQueries({ queryKey: keys.digest })
     qc.invalidateQueries({ queryKey: keys.trash })
+    qc.invalidateQueries({ queryKey: keys.dashboards })
   }, [qc])
 
   useEffect(() => {
@@ -173,7 +174,8 @@ export function useVault(boardId: string) {
     }
     localStorage.setItem(pathKey(boardId), picked)
     setPath(picked)
-  }, [boardId])
+    invalidate()
+  }, [boardId, invalidate])
 
   const unmount = useCallback(() => {
     unlinkVault(boardId)
@@ -182,3 +184,5 @@ export function useVault(boardId: string) {
 
   return { available: isDesktop(), path, error, mount, unmount }
 }
+
+export type VaultState = ReturnType<typeof useVault>

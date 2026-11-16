@@ -7,20 +7,16 @@ import {
   TooltipTrigger,
 } from "@doska/ui-kit"
 import { Folder, FolderSync } from "lucide-react"
-import { useVault } from "@/lib/vault/use-vault"
+import { useVaultContext } from "@/providers/vault/vault-context"
 import { VaultModal } from "./vault-modal"
-
-interface IProps {
-  boardId: string
-}
 
 /**
  * Opens the folder sync settings. The files are left behind when the sync
  * stops: unmounting stops the sync, it doesn't undo it.
  */
-export function VaultButton({ boardId }: IProps) {
+export function VaultButton() {
   const [open, setOpen] = useState(false)
-  const { available, path, error, mount, unmount } = useVault(boardId)
+  const { available, path, error, mount, unmount } = useVaultContext()
   if (!available) return null
 
   const label = path ? `Syncing with ${path}` : "Sync with a folder"

@@ -4,11 +4,16 @@ import {
   MenuSeparator,
   MenuSub,
   MenuSubTrigger,
+  TagChip,
+  cn,
+  columnHue,
 } from "@doska/ui-kit"
 import { Check, Tag } from "lucide-react"
 import { useState } from "react"
 import {
+  tagColor,
   toggleTag,
+  useTagColors,
   useTagOptions,
   type Card,
   type CardPatch,
@@ -28,14 +33,19 @@ export function TagsSub({
 }) {
   const { id: deckId } = useDeck()
   const options = useTagOptions(deckId)
+  const tagColors = useTagColors(deckId)
   const [query, setQuery] = useState("")
 
   const attached = card.tags
-  const shown = options.filter((option) =>
-    option.name
-      .toLowerCase()
-      .includes(query.trim().replace(/^#/, "").toLowerCase())
-  )
+  const needle = query.trim().replace(/^#/, "").toLowerCase()
+  const shown = options
+    .filter((option) => option.name.toLowerCase().includes(needle))
+    .sort((a, b) =>
+      a.name.localeCompare(b.name, undefined, {
+        numeric: true,
+        sensitivity: "base",
+      })
+    )
 
   function add(tag: string) {
     if (!hasTag(attached, tag)) onPatch({ tags: [...attached, tag] })
@@ -50,10 +60,15 @@ export function TagsSub({
       <MenuContent
         align="start"
         sideOffset={2}
-        className="flex max-h-80 w-56 flex-col"
+        className="flex max-h-80 w-60 flex-col"
       >
         <NewTagInput onChangeQuery={setQuery} onAdd={add} />
-        {shown.length > 0 && <MenuSeparator />}
+        <MenuSeparator />
+        {shown.length === 0 && (
+          <p className="px-3 py-1.5 text-xs text-muted-foreground">
+            {options.length === 0 ? "No tags on this board yet" : "No matches"}
+          </p>
+        )}
         <div className="overflow-y-auto">
           {shown.map((option) => (
             <MenuItem
@@ -62,9 +77,22 @@ export function TagsSub({
               onClick={() =>
                 onPatch({ tags: toggleTag(attached, option.name) })
               }
+              className="[&_svg]:size-3.5"
             >
-              #{option.name}
-              {hasTag(attached, option.name) && <Check className="ml-auto" />}
+              <TagChip
+                label={option.name}
+                hue={columnHue(tagColor(tagColors, option.name))}
+                className="min-w-0"
+              />
+              <span className="ml-auto shrink-0 text-xs text-muted-foreground">
+                {option.hint}
+              </span>
+              <Check
+                className={cn(
+                  "text-primary",
+                  !hasTag(attached, option.name) && "invisible"
+                )}
+              />
             </MenuItem>
           ))}
         </div>
