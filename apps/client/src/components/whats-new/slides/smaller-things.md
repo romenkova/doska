@@ -1,5 +1,6 @@
 # Smaller things
 
-- `F11` toggles fullscreen in the Windows and Linux apps
-- Clicking a task's label in card preview ticks its checkbox
-- Self-hosting: set `ALWAYS_AUTH=false` to let the web app work signed out, with boards kept in the browser
+- A new board starts empty and asks how to fill it: from a folder, a template, or the default columns
+- Right-click a board or folder in the sidebar for its menu
+- Deadline chips update when the day changes, no reload needed
+- Self-hosting: attachment uploads work over plain HTTP

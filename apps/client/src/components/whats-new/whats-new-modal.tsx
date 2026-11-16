@@ -1,9 +1,9 @@
 import { SlidesModal } from "@doska/ui-kit"
-import templates from "./slides/templates.md?raw"
+import tags from "./slides/tags.md?raw"
 import smallerThings from "./slides/smaller-things.md?raw"
 import feedback from "./slides/feedback.md?raw"
 
-const SLIDES = [templates, smallerThings, feedback]
+const SLIDES = [tags, smallerThings, feedback]
 
 interface IProps {
   open: boolean

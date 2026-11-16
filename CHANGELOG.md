@@ -1,5 +1,32 @@
 # Changelog
 
+## [0.30.0] - 2026-11-16
+
+### Added
+
+- Manage tags, from the board menu: rename a tag on every card of the board,
+  delete it, or give it a color. Renaming onto an existing tag merges the two.
+- Tag colors, set by the board owner. Tags show their color on cards and in
+  filter pills.
+- Right-click a tag on a card or a filter pill to filter by it, change its
+  color, or open Manage tags.
+- Search in the card menu's Tags list.
+- A new board starts empty and asks how to fill it: from a folder, from a board
+  template, or with the default columns.
+- Right-click a board or folder in the sidebar for its menu.
+
+### Changed
+
+- The theme toggle in the sidebar footer is a regular button, next to History
+  and Settings.
+
+### Fixed
+
+- Deadline chips update when the day rolls over, instead of showing yesterday's
+  status until a reload.
+- Attachment uploads work on self-hosted servers served over plain HTTP.
+- Deleting a tag no longer throws an error.
+
 ## [0.29.0] - 2026-11-02
 
 ### Added
