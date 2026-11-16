@@ -40,6 +40,7 @@ test.describe("home", () => {
     await page.getByRole("button", { name: "Create a board" }).click()
 
     await page.waitForURL(/\/d\/board-/)
+    await page.getByRole("button", { name: "Empty", exact: true }).click()
     await expect(page.getByRole("group", { name: "To Do" })).toBeVisible()
     await expect(boardTitle(page, "Untitled board")).toBeVisible()
   })
