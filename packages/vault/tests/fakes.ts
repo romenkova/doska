@@ -116,6 +116,7 @@ export function makeCard(fields: Partial<Card> & { columnId: string }): Card {
     users: [],
     attachments: [],
     template: false,
+    archived: false,
     updatedAt: 0,
     deletedAt: null,
     stamps: {},

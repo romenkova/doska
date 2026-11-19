@@ -24,6 +24,7 @@
     "@doska/sync": "workspace:*",
     "@doska/tokens": "workspace:*",
     "@doska/ui-kit": "workspace:*",
+    "@doska/utils": "workspace:*",
     "@doska/vault": "workspace:*",
     "@fontsource-variable/geist-mono": "5.3.0",
     "@fontsource-variable/mulish": "5.3.0",

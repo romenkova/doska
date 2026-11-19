@@ -1,24 +1,25 @@
 import { MenuItem } from "@doska/ui-kit"
 import { Archive, ArchiveRestore } from "lucide-react"
-import { restoreCards, useIsArchived } from "@/lib/archive-prototype"
-import { archiveWithUndo } from "@/components/toasts/card-archive/show-archive-toast"
+import { useArchiveCards } from "@/components/toasts/card-archive/use-archive-cards"
 
 export function ArchiveItem({
   cardId,
   title,
+  archived,
   onRestore,
 }: {
   cardId: string
   title: string
+  archived: boolean
   onRestore?: () => void
 }) {
-  const isArchived = useIsArchived(cardId)
+  const { archive, restore } = useArchiveCards()
 
-  if (isArchived)
+  if (archived)
     return (
       <MenuItem
         onClick={() => {
-          restoreCards([cardId])
+          restore([cardId])
           onRestore?.()
         }}
       >
@@ -28,7 +29,7 @@ export function ArchiveItem({
     )
 
   return (
-    <MenuItem onClick={() => archiveWithUndo([cardId], title.trim() || "Card")}>
+    <MenuItem onClick={() => archive([cardId], title.trim() || "Card")}>
       <Archive />
       Archive
     </MenuItem>

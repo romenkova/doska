@@ -2,7 +2,7 @@ import { Input } from "@doska/ui-kit"
 import { useState } from "react"
 import { useLocation } from "wouter"
 import { byPosition, useBoard } from "@doska/core"
-import { restoreCards, useArchivedIds } from "@/lib/archive-prototype"
+import { useArchiveCards } from "@/components/toasts/card-archive/use-archive-cards"
 import { routes } from "@/lib/routes"
 import { CardAttachmentImage } from "../card/attachments/card-attachment-image"
 import { CardMarkdown } from "../card/card-markdown"
@@ -21,12 +21,12 @@ export function ArchivePane({ deckId, onClose, onReveal }: IProps) {
   const [query, setQuery] = useState("")
   const [, navigate] = useLocation()
   const { data: board } = useBoard(deckId)
-  const ids = useArchivedIds()
+  const { restore } = useArchiveCards()
 
   const columns = [...(board?.columns ?? [])].sort(byPosition)
   const needle = query.trim().toLowerCase()
 
-  const archived = (board?.cards ?? []).filter((card) => ids.has(card.id))
+  const archived = (board?.cards ?? []).filter((card) => card.archived)
   const entries = columns.flatMap((column) =>
     archived
       .filter(
@@ -76,7 +76,7 @@ export function ArchivePane({ deckId, onClose, onReveal }: IProps) {
                       cardId={card.id}
                       title={card.title}
                       onRestore={() => {
-                        restoreCards([card.id])
+                        restore([card.id])
                         onReveal(card.id)
                       }}
                     />

@@ -2,6 +2,7 @@ import { useAccounts } from "@doska/core"
 import { useAuth } from "@/lib/hooks"
 import { AccountRow } from "./account-row"
 import { CreateAccountForm } from "./create-account-form"
+import { pluralize } from "@doska/utils"
 
 /**
  * Who can sign in to this server.
@@ -20,7 +21,7 @@ export function AccountList() {
       {accounts && (
         <div className="flex flex-col gap-2">
           <div className="text-xs text-muted-foreground">
-            {accounts.length} {accounts.length === 1 ? "account" : "accounts"}
+            {pluralize(accounts.length, "account")}
           </div>
           <ul className="flex flex-col rounded-lg border border-border">
             {accounts.map((account) => (

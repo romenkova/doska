@@ -54,7 +54,11 @@ export function CardMenuItems({
         History
       </MenuItem>
       <MenuSeparator />
-      <ArchiveItem cardId={cardId} title={card.title} />
+      <ArchiveItem
+        cardId={cardId}
+        title={card.title}
+        archived={Boolean(card.archived)}
+      />
       <DeleteItem cardId={cardId} />
     </MenuContent>
   )

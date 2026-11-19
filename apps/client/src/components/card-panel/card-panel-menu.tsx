@@ -106,6 +106,7 @@ export function CardPanelMenu({
           </MenuItem>
           <MenuSeparator />
           <ArchiveItem
+            archived={Boolean(card.archived)}
             cardId={cardId}
             title={card.title}
             onRestore={onReveal}

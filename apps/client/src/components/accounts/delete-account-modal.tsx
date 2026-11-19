@@ -6,6 +6,7 @@ import {
   ModalHeader,
 } from "@doska/ui-kit"
 import { useDeleteAccount, useOwnedBoards, type Account } from "@doska/core"
+import { pluralize } from "@doska/utils"
 
 interface IProps {
   account: Account
@@ -80,8 +81,8 @@ function OwnsBoards({ login, boards }: { login: string; boards: number }) {
   return (
     <div className="flex flex-col gap-3 text-sm">
       <p>
-        {login} still owns {boards} {boards === 1 ? "board" : "boards"}. Boards
-        belong to the account that made them, so they have to go before it does.
+        {login} still owns {pluralize(boards, "board")}. Boards belong to the
+        account that made them, so they have to go before it does.
       </p>
       <ol className="flex list-decimal flex-col gap-1 pl-5 text-muted-foreground">
         <li>Activate it and change its password, so you can sign in as it.</li>
