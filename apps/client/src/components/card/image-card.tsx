@@ -22,11 +22,7 @@ interface IProps {
 export function ImageCard({ title, isDragging, action, children }: IProps) {
   return (
     <CardBase
-      className={cn(
-        "gap-0 py-0",
-        title && "pt-2",
-        isDragging && "shadow-e3"
-      )}
+      className={cn("gap-0 py-0", title && "pt-2", isDragging && "shadow-e3")}
     >
       {title ? (
         <CardHeader className="pb-2">

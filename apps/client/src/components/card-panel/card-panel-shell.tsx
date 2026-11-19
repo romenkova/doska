@@ -14,6 +14,8 @@ interface IProps {
   onClosed: () => void
   /** Desktop only: the panel was dragged out past the window's edge and dropped. */
   onTearOff?: (at: DropPoint) => void
+  /** Modal mode only: a list rather than a card. */
+  narrow?: boolean
   children: ReactNode
 }
 
@@ -23,6 +25,7 @@ export function CardPanelShell({
   onClose,
   onClosed,
   onTearOff,
+  narrow,
   children,
 }: IProps) {
   const { width, isResizing, startResizing, resetWidth } = usePanelResize()
@@ -47,6 +50,7 @@ export function CardPanelShell({
         onClose={onClose}
         onClosed={onClosed}
         onTearOff={onTearOff}
+        narrow={narrow}
       >
         {children}
       </CardModalShell>

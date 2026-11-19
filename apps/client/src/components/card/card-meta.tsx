@@ -14,6 +14,7 @@ interface IProps {
   body?: string
   /** Already-counted progress, for a caller that needed the count itself. */
   tasks?: TaskProgress
+  isArchived?: boolean
   /** Omit to show the deadline without a picker. */
   onChangeDeadline?: (deadline: string | null) => void
   /** Omit to show the priority without a picker. */
@@ -29,6 +30,7 @@ export function CardMeta({
   column,
   body,
   tasks,
+  isArchived,
   onChangeDeadline,
   onChangePriority,
   className,
@@ -43,7 +45,7 @@ export function CardMeta({
       {total > 0 && <TaskIndicator done={done} total={total} />}
       {(showEmpty || !!card.deadline) && (
         <CardDeadline
-          done={column?.done ?? false}
+          done={isArchived || (column?.done ?? false)}
           value={card.deadline}
           onChange={onChangeDeadline}
         />

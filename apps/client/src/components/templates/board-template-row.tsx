@@ -8,8 +8,7 @@ import {
 import { useDashboardNav } from "@/lib/hooks/use-dashboard-nav"
 
 export function BoardTemplateRow({ board }: { board: Dashboard }) {
-  const { mutate: duplicate, isPending } =
-    useDuplicateDashboard()
+  const { mutate: duplicate, isPending } = useDuplicateDashboard()
   const { mutate: setTemplate } = useSetDashboardTemplate()
   const { selectDashboard } = useDashboardNav()
 

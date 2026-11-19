@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useLocation } from "wouter"
 import {
   Button,
   Menu,
@@ -8,6 +9,7 @@ import {
   MenuTrigger,
 } from "@doska/ui-kit"
 import {
+  Archive,
   ArrowRightLeft,
   History,
   MoreHorizontal,
@@ -20,12 +22,14 @@ import { ReorderColumnsModal } from "../reorder-columns/reorder-columns-modal"
 import { BoardTemplateItems } from "./board-template-items"
 import { SortSub } from "./sort-sub"
 import type { Column } from "@doska/core"
+import { routes } from "@/lib/routes"
 import { useManageTags } from "../../manage-tags/use-manage-tags"
 
 interface IProps {
   boardId: string
   title: string
   columns: Column[]
+  archivedCount: number
   sort: string[]
   onChangeSort: (sort: string[]) => void
   onDelete: () => void
@@ -36,6 +40,7 @@ export function BoardActionsMenu({
   boardId,
   title,
   columns,
+  archivedCount,
   sort,
   onChangeSort,
   onDelete,
@@ -44,6 +49,7 @@ export function BoardActionsMenu({
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [reorderOpen, setReorderOpen] = useState(false)
   const [historyOpen, setHistoryOpen] = useState(false)
+  const [, navigate] = useLocation()
   const { open: openManageTags } = useManageTags()
 
   return (
@@ -78,6 +84,15 @@ export function BoardActionsMenu({
           <MenuItem onClick={() => setHistoryOpen(true)}>
             <History />
             History
+          </MenuItem>
+          <MenuItem onClick={() => navigate(routes.archived())}>
+            <Archive />
+            Archived cards
+            {archivedCount > 0 && (
+              <span className="ml-auto text-muted-foreground tabular-nums">
+                {archivedCount}
+              </span>
+            )}
           </MenuItem>
           <BoardTemplateItems boardId={boardId} />
           <MenuSeparator />
