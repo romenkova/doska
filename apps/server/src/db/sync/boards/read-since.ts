@@ -63,6 +63,7 @@ export async function readSince(
         users: r.users,
         attachments: r.attachments,
         template: r.template,
+        archived: r.archived,
         updatedAt: r.updatedAt,
         deletedAt: r.deletedAt,
         stamps: r.stamps,

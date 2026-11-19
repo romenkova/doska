@@ -30,6 +30,7 @@ function card(fields: Partial<Card> & { id: string }): Card {
     users: [],
     attachments: [],
     template: false,
+    archived: false,
     updatedAt: 0,
     deletedAt: null,
     stamps: {},
@@ -70,6 +71,15 @@ describe("searchCards", () => {
     ]
 
     expect(hitIds(cards, "sync")).toEqual(["a", "b", "c"])
+  })
+
+  it("puts archived cards after every live one", () => {
+    const cards = [
+      card({ id: "archived", title: "sync", archived: true }),
+      card({ id: "live", columnId: "done", title: "sync later" }),
+    ]
+
+    expect(hitIds(cards, "sync")).toEqual(["live", "archived"])
   })
 
   it("returns a title-only match with no snippet", () => {
