@@ -17,6 +17,7 @@ import {
 } from "lucide-react"
 import { useRef, useState } from "react"
 import { fallbackCard, useCard, useUpdateCard } from "@doska/core"
+import { ArchiveItem } from "../card/menu/archive-item"
 import { CopyIdItem } from "../card/menu/copy-id-item"
 import { DeadlineSub } from "../card/menu/deadline-sub"
 import { MoveToColumnSub } from "../card/menu/move-to-column-sub"
@@ -104,6 +105,11 @@ export function CardPanelMenu({
             History
           </MenuItem>
           <MenuSeparator />
+          <ArchiveItem
+            cardId={cardId}
+            title={card.title}
+            onRestore={onReveal}
+          />
           <MenuItem onClick={onDelete} variant="destructive">
             <Trash2 />
             Delete

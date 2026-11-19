@@ -8,6 +8,7 @@ interface IProps {
   onClose: () => void
   onClosed: () => void
   onTearOff?: (at: DropPoint) => void
+  narrow?: boolean
   children: ReactNode
 }
 
@@ -17,6 +18,7 @@ export function CardModalShell({
   onClose,
   onClosed,
   onTearOff,
+  narrow,
   children,
 }: IProps) {
   const popupRef = useRef<HTMLDivElement>(null)
@@ -38,7 +40,8 @@ export function CardModalShell({
         aria-label="Card"
         onMouseDown={tearOff.onMouseDown}
         className={cn(
-          "overflow-hidden outline-none md:h-[85svh] md:max-w-3xl",
+          "overflow-hidden outline-none md:h-[85svh]",
+          narrow ? "md:max-w-lg" : "md:max-w-3xl",
           onTearOff && "[&_[data-tear-handle]]:cursor-grab",
           tearOff.isOutside && "opacity-40"
         )}

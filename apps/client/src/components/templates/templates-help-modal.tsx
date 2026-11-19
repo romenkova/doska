@@ -21,9 +21,9 @@ const SECTIONS: Section[] = [
     text: (
       <>
         Every card or board can be a template. Then they can be duplicated:
-        cards through the button next to <span className={LABEL}>+</span> in
-        any column, boards through <span className={LABEL}>New board</span> on
-        this page.
+        cards through the button next to <span className={LABEL}>+</span> in any
+        column, boards through <span className={LABEL}>New board</span> on this
+        page.
       </>
     ),
   },

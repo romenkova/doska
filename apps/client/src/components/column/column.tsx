@@ -21,6 +21,8 @@ interface IProps {
   done: boolean
   onChangeDone: (done: boolean) => void
   onDelete: () => void
+  /** Absent when the column has nothing to archive. */
+  onArchiveAll?: () => void
 }
 
 export function Column({
@@ -38,6 +40,7 @@ export function Column({
   done,
   onChangeDone,
   onDelete,
+  onArchiveAll,
 }: IProps) {
   const [confirmOpen, setConfirmOpen] = useState(false)
 
@@ -68,6 +71,7 @@ export function Column({
                 done={done}
                 onChangeDone={onChangeDone}
                 onDelete={() => setConfirmOpen(true)}
+                onArchiveAll={onArchiveAll}
               />
               <ConfirmDialog
                 open={confirmOpen}

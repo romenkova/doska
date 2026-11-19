@@ -4,5 +4,6 @@ import { routes } from "@/lib/routes"
 
 export function useIsPanelOpen(): boolean {
   const [isCardRoute] = useRoute(routes.card.pattern)
-  return isCardRoute && getCardView() === "panel"
+  const [isArchiveRoute] = useRoute(routes.archived())
+  return (isCardRoute || isArchiveRoute) && getCardView() === "panel"
 }

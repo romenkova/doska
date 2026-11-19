@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react"
 import type { CardPatch, Card } from "@doska/core"
+import { restoreCards, useIsArchived } from "@/lib/archive-prototype"
 import { CardTags } from "../card/card-tags"
 import { CardEditor } from "./card-editor"
+import { ArchivedBanner } from "./archived-banner"
 import { ConflictBanner } from "./conflict-banner"
 import { rebaseDraft, type DraftState } from "./draft"
 
@@ -63,6 +65,7 @@ export function CardPane({
   }
 
   const { bodyConflict } = content
+  const isArchived = useIsArchived(cardId)
 
   return (
     <CardEditor
@@ -71,17 +74,27 @@ export function CardPane({
       body={typed ?? content.body}
       isPreview={isPreview}
       notice={
-        bodyConflict && (
-          <ConflictBanner
-            body={typed ?? content.body}
-            conflict={bodyConflict}
-            onKeepMine={() => resolve({ bodyConflict: null })}
-            onUseTheirs={() => {
-              setDraft(({ base, title }) => ({ base, title }))
-              resolve({ body: bodyConflict.body, bodyConflict: null })
-            }}
-          />
-        )
+        <>
+          {isArchived && (
+            <ArchivedBanner
+              onRestore={() => {
+                restoreCards([cardId])
+                onReveal?.()
+              }}
+            />
+          )}
+          {bodyConflict && (
+            <ConflictBanner
+              body={typed ?? content.body}
+              conflict={bodyConflict}
+              onKeepMine={() => resolve({ bodyConflict: null })}
+              onUseTheirs={() => {
+                setDraft(({ base, title }) => ({ base, title }))
+                resolve({ body: bodyConflict.body, bodyConflict: null })
+              }}
+            />
+          )}
+        </>
       }
       tags={
         <CardTags

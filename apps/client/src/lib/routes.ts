@@ -39,4 +39,5 @@ export const routes = {
     pattern: "/c/:id",
     to: (id: string) => `/c/${id}`,
   },
+  archived: () => "/archived",
 } as const

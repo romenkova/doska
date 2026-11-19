@@ -1,6 +1,7 @@
 import { useLocation, useRoute } from "wouter"
 import { useCardRef } from "@doska/core"
 import { columnHue, MdWikilink } from "@doska/ui-kit"
+import { useIsArchived } from "@/lib/archive-prototype"
 import { routes } from "@/lib/routes"
 import { revealInMain } from "@/components/card-window/card-window-event"
 import { useDeck } from "@/providers/deck/deck-context"
@@ -21,6 +22,7 @@ export function CardRefLink({
   const [inWindow] = useRoute(routes.cardWindow.pattern)
   const { id: deckId } = useDeck()
   const ref = useCardRef(deckId, displayId)
+  const isArchived = useIsArchived(ref?.card.id ?? null)
 
   if (!ref)
     return (
@@ -34,6 +36,8 @@ export function CardRefLink({
 
   const { card, columnTitle, columnColor, columnDone } = ref
   const title = alias || card.title || "Untitled card"
+  const suffix = isArchived ? "archived" : columnTitle
+  const tooltip = suffix ? `${title} — ${suffix}` : title
 
   return (
     <MdWikilink
@@ -42,7 +46,8 @@ export function CardRefLink({
       badge={columnTitle || undefined}
       hue={columnHue(columnColor)}
       done={columnDone}
-      title={columnTitle ? `${title} — ${columnTitle}` : title}
+      archived={isArchived}
+      title={tooltip}
       onOpen={() =>
         inWindow
           ? revealInMain({ cardId: card.id, deckId })
