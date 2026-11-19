@@ -22,6 +22,7 @@ export function shapeCard(card: Card) {
     // User ids; get_board maps them to members.
     users: card.users,
     tasks: total > 0 ? { done, total } : null,
+    archived: Boolean(card.archived),
     attachments: card.attachments.map(({ name, mime, size }) => ({
       name,
       mime,
