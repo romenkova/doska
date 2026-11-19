@@ -11,6 +11,7 @@ import {
   renameColumn,
   renameDashboard,
   restore,
+  setCardsArchived,
   updateCard,
 } from "@doska/core"
 import type { Member } from "@doska/contract"
@@ -57,7 +58,9 @@ export function boardOps(boardId: string): VaultBoard {
     rename: (title) => renameDashboard(boardId, title),
     createCard,
     createColumn: (title) => createColumn(boardId, title),
-    updateCard: async (id, patch) => {
+    updateCard: async (id, { archived, ...patch }) => {
+      if (archived !== undefined) await setCardsArchived([id], archived)
+      if (Object.keys(patch).length === 0) return
       const names = patch.users
       if (!names) return updateCard(id, patch)
       const members = await membersOf(boardId)

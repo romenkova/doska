@@ -1,6 +1,7 @@
 import { Button, Card as CardBase } from "@doska/ui-kit"
 import { Columns3, LayoutDashboard, StickyNote } from "lucide-react"
 import { expiryLabel, type TrashEntry, type TrashKind } from "@doska/core"
+import { pluralize } from "@doska/utils"
 
 const ICONS: Record<TrashKind, typeof StickyNote> = {
   cards: StickyNote,
@@ -25,8 +26,7 @@ export function TrashRow({ entry, isRestoring, onRestore }: IProps) {
           <span className="truncate text-base font-medium">{entry.title}</span>
           <span className="truncate text-sm text-muted-foreground">
             {entry.context}
-            {entry.cardCount > 0 &&
-              ` · ${entry.cardCount} ${entry.cardCount === 1 ? "card" : "cards"}`}
+            {entry.cardCount > 0 && ` · ${pluralize(entry.cardCount, "card")}`}
           </span>
         </span>
         <span className="shrink-0 text-sm text-muted-foreground max-sm:hidden">

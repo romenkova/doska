@@ -21,6 +21,7 @@ const KNOWN = [
   "priority",
   "tags",
   "users",
+  "archived",
   "attachments",
   "stamps",
   "bodyConflict",
@@ -28,7 +29,10 @@ const KNOWN = [
 ]
 
 export type CardPatch = Partial<
-  Pick<Card, "title" | "body" | "deadline" | "priority" | "tags" | "users">
+  Pick<
+    Card,
+    "title" | "body" | "deadline" | "priority" | "tags" | "users" | "archived"
+  >
 >
 
 /**
@@ -45,6 +49,7 @@ export class CardFile {
   readonly priority: string
   readonly tags: string[]
   readonly users: string[]
+  readonly archived: boolean
   readonly attachments: Attachment[]
   readonly extra: Record<string, unknown>
 
@@ -57,6 +62,7 @@ export class CardFile {
     priority?: string
     tags?: string[]
     users?: string[]
+    archived?: boolean
     attachments?: Attachment[]
     extra?: Record<string, unknown>
   }) {
@@ -68,6 +74,7 @@ export class CardFile {
     this.priority = fields.priority ?? ""
     this.tags = fields.tags ?? []
     this.users = fields.users ?? []
+    this.archived = fields.archived ?? false
     this.attachments = fields.attachments ?? []
     this.extra = fields.extra ?? {}
   }
@@ -82,6 +89,7 @@ export class CardFile {
       priority: card.priority,
       tags: card.tags ?? [],
       users: card.users ?? [],
+      archived: Boolean(card.archived),
       attachments: card.attachments,
       extra,
     })
@@ -105,6 +113,7 @@ export class CardFile {
       priority: str(front.priority),
       tags: tagList(front.tags),
       users: nameList(front.users),
+      archived: front.archived === true,
       extra,
     })
   }
@@ -118,6 +127,7 @@ export class CardFile {
     if (this.priority) front.priority = this.priority
     if (this.tags.length > 0) front.tags = this.tags
     if (this.users.length > 0) front.users = this.users
+    if (this.archived) front.archived = true
     const unshown = unshownIn(body, this.attachments)
     if (unshown.length > 0) front.attachments = unshown
     Object.assign(front, this.extra)
@@ -136,6 +146,7 @@ export class CardFile {
     if (this.priority !== card.priority) patch.priority = this.priority
     if (!sameList(this.tags, card.tags ?? [])) patch.tags = this.tags
     if (!sameList(this.users, card.users ?? [])) patch.users = this.users
+    if (this.archived !== Boolean(card.archived)) patch.archived = this.archived
     return Object.keys(patch).length > 0 ? patch : null
   }
 }

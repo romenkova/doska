@@ -191,11 +191,18 @@ export async function readPublicBoard(
         tags: cards.tags,
         attachments: cards.attachments,
         template: cards.template,
+        archived: cards.archived,
         updatedAt: cards.updatedAt,
         deletedAt: cards.deletedAt,
       })
       .from(cards)
-      .where(and(eq(cards.boardId, boardId), isNull(cards.deletedAt))),
+      .where(
+        and(
+          eq(cards.boardId, boardId),
+          isNull(cards.deletedAt),
+          eq(cards.archived, false)
+        )
+      ),
   ])
 
   // A card in a deleted column would otherwise render with no column to sit in.

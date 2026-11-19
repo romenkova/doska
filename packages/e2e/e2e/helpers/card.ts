@@ -326,6 +326,7 @@ export async function remoteAddCard(
           users: [],
           attachments: [],
           template: false,
+          archived: false,
           updatedAt: Date.now(),
           deletedAt: null,
           stamps: {},

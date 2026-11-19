@@ -21,11 +21,17 @@ Folders
 Columns
 - Column order is left to right; card order is top to bottom.
 - Any number of columns per board may be done columns (done: true), e.g. Done,
-  Canceled, Archived. Cards in them count as finished. That is what "mark this
+  Canceled. Cards in them count as finished. That is what "mark this
   done" means, so use set_card_done rather than inventing a checkbox or a
   [done] tag. It moves the card to the leftmost done column.
 - A column may carry a color from a fixed palette (see update_column), and may
   be collapsed, which hides its cards' bodies down to their titles.
+
+Archive
+- An archived card is off its board but kept, in the board's archived list.
+  Use set_card_archived to archive or restore one; it keeps its column.
+- get_board and list_upcoming leave archived cards out. search_cards skips
+  them unless includeArchived is set.
 
 Deadlines
 - A card's deadline is a plain YYYY-MM-DD date, no time, no timezone.

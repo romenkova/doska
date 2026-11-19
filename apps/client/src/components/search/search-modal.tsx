@@ -6,6 +6,7 @@ import { useLocation } from "wouter"
 import { useRevealCard } from "@/providers/card-reveal/card-reveal-context"
 import { routes } from "@/lib/routes"
 import { SearchResultRow } from "./search-result-row"
+import { pluralize } from "@doska/utils"
 
 const LIST_ID = "search-results"
 const optionId = (index: number) => `search-result-${index}`
@@ -99,7 +100,7 @@ export function SearchModal({ open, onOpenChange, boardId }: IProps) {
           />
           {trimmed !== "" && (
             <span className="shrink-0 text-xs text-muted-foreground">
-              {hits.length === 1 ? "1 result" : `${hits.length} results`}
+              {pluralize(hits.length, "result")}
             </span>
           )}
           <Button

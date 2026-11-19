@@ -1,6 +1,7 @@
 import { cardDisplayId } from "@doska/contract"
 import type { SearchHit, Segment } from "@doska/core"
 import { cn } from "@doska/ui-kit"
+import { Archive } from "lucide-react"
 import { useEffect, useRef } from "react"
 import { ColumnSwatch } from "../column/column-swatch"
 
@@ -77,7 +78,13 @@ export function SearchResultRow({
           </span>
         )}
       </span>
-      {hit.column && (
+      {hit.card.archived && (
+        <span className="flex shrink-0 items-center gap-1.5 text-xs text-muted-foreground">
+          <Archive className="size-3.5" />
+          Archived
+        </span>
+      )}
+      {!hit.card.archived && hit.column && (
         <span className="flex shrink-0 items-center gap-1.5 text-xs text-muted-foreground">
           <ColumnSwatch color={hit.column.color} />
           <span className="line-clamp-1 max-w-32">{hit.column.title}</span>

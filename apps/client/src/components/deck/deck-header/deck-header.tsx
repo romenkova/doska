@@ -13,6 +13,7 @@ interface IProps {
   boardId: string
   title: string
   columns: Column[]
+  archivedCount: number
   sort: string[]
   view: DashboardView
   onRename: (name: string) => void
@@ -28,6 +29,7 @@ export function DeckHeader({
   boardId,
   title,
   columns,
+  archivedCount,
   sort,
   view,
   onRename,
@@ -68,6 +70,7 @@ export function DeckHeader({
           boardId={boardId}
           title={title}
           columns={columns}
+          archivedCount={archivedCount}
           sort={sort}
           onChangeSort={onChangeSort}
           onDelete={onDelete}

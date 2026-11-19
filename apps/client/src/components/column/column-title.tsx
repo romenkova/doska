@@ -8,8 +8,7 @@ interface IProps {
 
 /** A column's name, editable in place wherever renaming is possible. */
 export function ColumnTitle({ title, onRename }: IProps) {
-  if (!onRename)
-    return <span className="line-clamp-1 px-2">{title}</span>
+  if (!onRename) return <span className="line-clamp-1 px-2">{title}</span>
 
   return (
     <InvisibleInput

@@ -13,6 +13,7 @@ import {
   type CardPatch,
 } from "@doska/core"
 import { useLandingSlot } from "@/lib/hooks"
+import { useArchiveCards } from "../toasts/card-archive/use-archive-cards"
 import { useDeck } from "@/providers/deck/deck-context"
 import { Column } from "../column/column"
 import { AddColumn } from "../column/add-column"
@@ -77,9 +78,11 @@ export function Deck({
   const { tagFilters = [], userFilters = [] } = useDeck()
   const isFiltered = tagFilters.length > 0 || userFilters.length > 0
   const filteredReason = isFiltered ? "Clear filters to add cards" : undefined
+  const { archive } = useArchiveCards()
+  const unarchived = board.cards.filter((card) => !card.archived)
   const visible = {
     ...board,
-    cards: filterByUsers(filterByTags(board.cards, tagFilters), userFilters),
+    cards: filterByUsers(filterByTags(unarchived, tagFilters), userFilters),
   }
   const grouped = groupCardsByColumn(visible)
   const orderedColumns = [...board.columns].sort(byPosition)
@@ -114,6 +117,7 @@ export function Deck({
                 onRename={onRenameDashboard}
                 onDelete={onDeleteDashboard}
                 columns={orderedColumns}
+                archivedCount={board.cards.length - unarchived.length}
                 onReorderColumns={onReorderColumns}
                 sort={sort}
                 onChangeSort={onChangeSort}
@@ -161,6 +165,11 @@ export function Deck({
                     done={column.done}
                     onChangeDone={(done) => onChangeColumnDone(column.id, done)}
                     onDelete={() => onDeleteColumn(column.id)}
+                    onArchiveAll={
+                      cards.length === 0
+                        ? undefined
+                        : () => archive(cards.map((card) => card.id))
+                    }
                   >
                     {ordered.map((card, index) => (
                       <DraggableCard

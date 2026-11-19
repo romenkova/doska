@@ -169,6 +169,13 @@
       "when": 1792600000000,
       "tag": "0023_tag_colors",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1795099027164,
+      "tag": "0024_archived",
+      "breakpoints": true
     }
   ]
 }

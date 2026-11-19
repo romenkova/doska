@@ -6,7 +6,7 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from "@doska/ui-kit"
-import { CircleCheck, MoreHorizontal, Trash2 } from "lucide-react"
+import { Archive, CircleCheck, MoreHorizontal, Trash2 } from "lucide-react"
 import { ColumnColorSubmenu } from "./column-color"
 
 interface IProps {
@@ -16,6 +16,7 @@ interface IProps {
   done: boolean
   onChangeDone: (done: boolean) => void
   onDelete: () => void
+  onArchiveAll?: () => void
 }
 
 /** The column's rarely-reached actions, behind a ⋯ in its header. */
@@ -26,6 +27,7 @@ export function ColumnMenu({
   done,
   onChangeDone,
   onDelete,
+  onArchiveAll,
 }: IProps) {
   return (
     <Menu>
@@ -45,6 +47,10 @@ export function ColumnMenu({
         <MenuItem onClick={() => onChangeDone(!done)}>
           <CircleCheck />
           {done ? "Unmark cards as done" : "Mark cards as done"}
+        </MenuItem>
+        <MenuItem onClick={onArchiveAll} disabled={!onArchiveAll}>
+          <Archive />
+          Archive all cards
         </MenuItem>
         <MenuSeparator />
         <MenuItem onClick={onDelete} variant="destructive">

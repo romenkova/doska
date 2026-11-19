@@ -118,6 +118,7 @@ export const cards = pgTable(
       .notNull()
       .default([]),
     template: boolean("template").notNull().default(false),
+    archived: boolean("archived").notNull().default(false),
     updatedAt: bigint("updated_at", { mode: "number" }).notNull(),
     deletedAt: bigint("deleted_at", { mode: "number" }),
     stamps: jsonb("stamps").$type<Card["stamps"]>().notNull().default({}),
