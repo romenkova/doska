@@ -35,6 +35,31 @@ describe("CardFile", () => {
     expect(parsed.patchFor(card)).toBeNull()
   })
 
+  it("writes archived only when set and reads it back", () => {
+    const card = makeCard({ columnId: "col-1", title: "T", archived: true })
+    const text = CardFile.fromCard(card).text
+
+    expect(text).toContain("archived: true")
+    expect(CardFile.parse(text).archived).toBe(true)
+    expect(
+      CardFile.fromCard(makeCard({ columnId: "col-1" })).text
+    ).not.toContain("archived")
+  })
+
+  it("reads a file without archived as not archived", () => {
+    const parsed = CardFile.parse("---\nid: card-x\ntitle: Old\n---\nbody\n")
+
+    expect(parsed.archived).toBe(false)
+  })
+
+  it("leaves a card stored before archived existed alone", () => {
+    const legacy = makeCard({ columnId: "col-1", title: "T" })
+    delete (legacy as Partial<typeof legacy>).archived
+    const parsed = CardFile.parse(CardFile.fromCard(legacy).text)
+
+    expect(parsed.patchFor(legacy)).toBeNull()
+  })
+
   it("writes and reads back the card's own tags", () => {
     const card = makeCard({
       columnId: "col-1",

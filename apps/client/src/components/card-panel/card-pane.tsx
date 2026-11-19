@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import type { CardPatch, Card } from "@doska/core"
-import { restoreCards, useIsArchived } from "@/lib/archive-prototype"
+import { useArchiveCards } from "@/components/toasts/card-archive/use-archive-cards"
 import { CardTags } from "../card/card-tags"
 import { CardEditor } from "./card-editor"
 import { ArchivedBanner } from "./archived-banner"
@@ -65,7 +65,7 @@ export function CardPane({
   }
 
   const { bodyConflict } = content
-  const isArchived = useIsArchived(cardId)
+  const { restore } = useArchiveCards()
 
   return (
     <CardEditor
@@ -75,10 +75,10 @@ export function CardPane({
       isPreview={isPreview}
       notice={
         <>
-          {isArchived && (
+          {content.archived && (
             <ArchivedBanner
               onRestore={() => {
-                restoreCards([cardId])
+                restore([cardId])
                 onReveal?.()
               }}
             />

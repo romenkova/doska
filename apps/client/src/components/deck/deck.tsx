@@ -12,9 +12,8 @@ import {
   type Card,
   type CardPatch,
 } from "@doska/core"
-import { useArchivedIds } from "@/lib/archive-prototype"
 import { useLandingSlot } from "@/lib/hooks"
-import { archiveWithUndo } from "../toasts/card-archive/show-archive-toast"
+import { useArchiveCards } from "../toasts/card-archive/use-archive-cards"
 import { useDeck } from "@/providers/deck/deck-context"
 import { Column } from "../column/column"
 import { AddColumn } from "../column/add-column"
@@ -79,8 +78,8 @@ export function Deck({
   const { tagFilters = [], userFilters = [] } = useDeck()
   const isFiltered = tagFilters.length > 0 || userFilters.length > 0
   const filteredReason = isFiltered ? "Clear filters to add cards" : undefined
-  const archivedIds = useArchivedIds()
-  const unarchived = board.cards.filter((card) => !archivedIds.has(card.id))
+  const { archive } = useArchiveCards()
+  const unarchived = board.cards.filter((card) => !card.archived)
   const visible = {
     ...board,
     cards: filterByUsers(filterByTags(unarchived, tagFilters), userFilters),
@@ -169,7 +168,7 @@ export function Deck({
                     onArchiveAll={
                       cards.length === 0
                         ? undefined
-                        : () => archiveWithUndo(cards.map((card) => card.id))
+                        : () => archive(cards.map((card) => card.id))
                     }
                   >
                     {ordered.map((card, index) => (

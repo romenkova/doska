@@ -2,6 +2,7 @@ import { useRemoveMember, useBoardMembers, useConnection } from "@doska/core"
 import { useAuth } from "@/lib/hooks"
 import { AddMember } from "./add-member"
 import { MemberRow } from "./member-row"
+import { pluralize } from "@doska/utils"
 
 interface IProps {
   boardId: string
@@ -40,7 +41,7 @@ export function ShareRoster({ boardId, title }: IProps) {
       {isOwner && <AddMember boardId={boardId} members={members} />}
       <div className="flex flex-col gap-2">
         <div className="text-xs text-muted-foreground">
-          {members.length} {members.length === 1 ? "member" : "members"}
+          {pluralize(members.length, "member")}
         </div>
         <ul className="flex flex-col rounded-lg border border-border">
           {members.map((member) => (

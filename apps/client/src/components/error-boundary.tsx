@@ -3,6 +3,7 @@ import { Component, type ErrorInfo, type ReactNode } from "react"
 import { Check, Copy } from "lucide-react"
 import { errorLog, type ReportedError } from "@doska/core"
 import { isDesktop } from "@/lib/platform"
+import { pluralize } from "@doska/utils"
 
 const ISSUE_URL = "https://github.com/romenkova/doska/issues/new"
 
@@ -118,7 +119,7 @@ export class ErrorBoundary extends Component<IProps, IState> {
         {log.length > 0 && (
           <details className="max-w-full text-left">
             <summary className="cursor-pointer text-xs text-muted-foreground">
-              {log.length} earlier {log.length === 1 ? "error" : "errors"}
+              {pluralize(log.length, "earlier error")}
             </summary>
             <pre className="mt-2 max-h-48 max-w-full overflow-auto rounded-lg bg-muted p-3 font-mono text-xs text-muted-foreground">
               {this.logText(false)}
