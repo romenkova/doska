@@ -56,6 +56,18 @@ export function useSetCardTemplate(id: string) {
   })
 }
 
+export function useSetCardsArchived() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ ids, archived }: { ids: string[]; archived: boolean }) =>
+      api.setCardsArchived(ids, archived),
+    onSettled: (_data, _error, { ids }) => {
+      for (const key of ids.flatMap(cardWriteKeys))
+        void qc.invalidateQueries({ queryKey: key })
+    },
+  })
+}
+
 export function useDeleteCard(deckId: string) {
   const qc = useQueryClient()
   return useMutation({
