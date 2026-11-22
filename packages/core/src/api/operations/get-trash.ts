@@ -104,5 +104,8 @@ export async function getTrash(): Promise<TrashEntry[]> {
     })
   }
 
-  return entries.sort((a, b) => b.deletedAt - a.deletedAt)
+  const now = Date.now()
+  return entries
+    .filter((entry) => entry.expiresAt > now)
+    .sort((a, b) => b.deletedAt - a.deletedAt)
 }

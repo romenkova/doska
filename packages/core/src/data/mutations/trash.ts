@@ -22,3 +22,15 @@ export function useRestore() {
     },
   })
 }
+
+export function useDeleteForever() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ kind, id }: { kind: TrashKind; id: string }) =>
+      api.deleteForever(kind, id),
+    onSettled: () => {
+      void qc.invalidateQueries({ queryKey: keys.trash })
+      void qc.invalidateQueries({ queryKey: keys.boards })
+    },
+  })
+}

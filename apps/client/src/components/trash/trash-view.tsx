@@ -2,6 +2,7 @@ import { useEffect } from "react"
 import {
   purgeExpired,
   sync,
+  useDeleteForever,
   useRestore,
   useDashboards,
   useTrash,
@@ -15,7 +16,9 @@ import { Trash } from "./trash"
 export function TrashView() {
   const { data: dashboards = [] } = useDashboards()
   const { data: entries = [], isPending, error, refetch } = useTrash()
-  const { mutate: restore, variables, isPending: isRestoring } = useRestore()
+  const restore = useRestore()
+  const deleteForever = useDeleteForever()
+  const pending = [restore, deleteForever].find((m) => m.isPending)
 
   const boardIds = dashboards.map((d) => d.id).join(",")
   useEffect(() => {
@@ -36,8 +39,11 @@ export function TrashView() {
       entries={entries}
       isLoading={isPending}
       error={error}
-      restoringId={isRestoring ? (variables?.id ?? null) : null}
-      onRestore={(entry) => restore({ kind: entry.kind, id: entry.id })}
+      busyId={pending?.variables?.id ?? null}
+      onRestore={(entry) => restore.mutate({ kind: entry.kind, id: entry.id })}
+      onDeleteForever={(entry) =>
+        deleteForever.mutate({ kind: entry.kind, id: entry.id })
+      }
     />
   )
 }

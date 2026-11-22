@@ -8,8 +8,9 @@ interface IProps {
   entries: TrashEntry[]
   isLoading: boolean
   error: Error | null
-  restoringId: string | null
+  busyId: string | null
   onRestore: (entry: TrashEntry) => void
+  onDeleteForever: (entry: TrashEntry) => void
 }
 
 /** Everything deleted across every board, newest first. */
@@ -17,8 +18,9 @@ export function Trash({
   entries,
   isLoading,
   error,
-  restoringId,
+  busyId,
   onRestore,
+  onDeleteForever,
 }: IProps) {
   return (
     <div className="flex h-full min-h-0 flex-col">
@@ -32,8 +34,9 @@ export function Trash({
             entries={entries}
             isLoading={isLoading}
             error={error}
-            restoringId={restoringId}
+            busyId={busyId}
             onRestore={onRestore}
+            onDeleteForever={onDeleteForever}
           />
         </div>
       </div>
@@ -45,11 +48,12 @@ function Body({
   entries,
   isLoading,
   error,
-  restoringId,
+  busyId,
   onRestore,
+  onDeleteForever,
 }: Pick<
   IProps,
-  "entries" | "isLoading" | "error" | "restoringId" | "onRestore"
+  "entries" | "isLoading" | "error" | "busyId" | "onRestore" | "onDeleteForever"
 >) {
   if (error)
     return (
@@ -82,8 +86,9 @@ function Body({
           <TrashRow
             key={`${entry.kind}/${entry.id}`}
             entry={entry}
-            isRestoring={restoringId === entry.id}
+            isBusy={busyId === entry.id}
             onRestore={() => onRestore(entry)}
+            onDeleteForever={() => onDeleteForever(entry)}
           />
         ))}
       </ul>
