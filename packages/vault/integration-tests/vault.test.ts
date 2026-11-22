@@ -9,6 +9,7 @@ import {
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { afterEach, beforeEach, describe, expect, it } from "vitest"
+import { deleteForever } from "@doska/core"
 import { Vault } from "../src/vault"
 import { BOARD_ID, installBoard, makeColumn, type TestBoard } from "./board"
 import { nodeFs } from "./node-fs"
@@ -161,6 +162,20 @@ describe("Vault on disk", () => {
     // And it stays put, rather than reading as a file dragged to the trash.
     await vault.sync()
     expect((await board.cards()).map((c) => c.id)).toEqual([id])
+  })
+
+  it("drops the trash copy of a card deleted forever", async () => {
+    const id = await board.createCard(TODO.id)
+    await board.updateCard(id, { title: "Ship it" })
+    await vault.sync()
+    await board.deleteCard(id)
+    await vault.sync()
+    expect(await names("_trash")).toEqual(["ship_it.md"])
+
+    await deleteForever("cards", id)
+    await vault.sync()
+
+    expect(await names("_trash")).toEqual([])
   })
 
   it("survives a restart, remembering what it wrote", async () => {
