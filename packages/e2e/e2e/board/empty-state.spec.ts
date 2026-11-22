@@ -53,6 +53,13 @@ test.describe("board empty state", () => {
     await menu(page, "Board actions")
       .getByRole("menuitem", { name: "Add to templates" })
       .click()
+    await openBoardMenu(page)
+    await expect(
+      menu(page, "Board actions").getByRole("menuitem", {
+        name: "Remove from templates",
+      })
+    ).toBeVisible()
+    await page.keyboard.press("Escape")
 
     await createEmptyBoard(page)
     await page.getByRole("button", { name: "From template" }).click()
