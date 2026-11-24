@@ -22,14 +22,13 @@ async function createEmptyBoard(page: Page): Promise<void> {
 }
 
 test.describe("board empty state", () => {
-  test("Empty gives the default columns", async ({ page }) => {
+  test("Empty shows the board with no columns", async ({ page }) => {
     await createEmptyBoard(page)
 
     await page.getByRole("button", { name: "Empty", exact: true }).click()
 
-    await expect(page.getByRole("group", { name: "To Do" })).toBeVisible()
-    await expect(page.getByRole("group", { name: "In Progress" })).toBeVisible()
-    await expect(page.getByRole("group", { name: "Done" })).toBeVisible()
+    await expect(page.getByRole("button", { name: "Add column" })).toBeVisible()
+    await expect(page.getByRole("group")).toHaveCount(0)
   })
 
   test("From template is off until there is a board template", async ({

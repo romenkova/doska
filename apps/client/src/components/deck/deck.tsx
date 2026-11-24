@@ -73,6 +73,7 @@ export function Deck({
   onPatchCard,
 }: IProps) {
   const [isDragging, setIsDragging] = useState(false)
+  const [blankBoardId, setBlankBoardId] = useState<string | null>(null)
   const sidebarDrop = useSidebarCardDrop(isDragging)
 
   const { tagFilters = [], userFilters = [] } = useDeck()
@@ -86,7 +87,10 @@ export function Deck({
   }
   const grouped = groupCardsByColumn(visible)
   const orderedColumns = [...board.columns].sort(byPosition)
-  const isEmpty = !isLoading && orderedColumns.length === 0
+  const isEmpty =
+    !isLoading &&
+    orderedColumns.length === 0 &&
+    blankBoardId !== dashboard.id
   const sort = dashboard.sort ?? []
   const { hold, release, place } = useLandingSlot(sort.length > 0)
 
@@ -136,7 +140,12 @@ export function Deck({
             </>
           }
         >
-          {isEmpty && <BoardEmptyState boardId={dashboard.id} />}
+          {isEmpty && (
+            <BoardEmptyState
+              boardId={dashboard.id}
+              onStartBlank={() => setBlankBoardId(dashboard.id)}
+            />
+          )}
           {!isEmpty && view === "rows" && (
             <DeckRowsView board={visible} title={dashboard.title} />
           )}
