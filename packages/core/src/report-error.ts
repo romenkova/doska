@@ -26,12 +26,17 @@ export function errorLog(): readonly ReportedError[] {
   return log
 }
 
-export function reportError(error: unknown): void {
+/** Keeps the error for the crash report without showing it to the user. */
+export function logError(error: unknown): void {
   log.push({
     at: Date.now(),
     message: errorMessage(error),
     stack: error instanceof Error ? error.stack : undefined,
   })
   if (log.length > LOG_LIMIT) log.shift()
+}
+
+export function reportError(error: unknown): void {
+  logError(error)
   sink(error)
 }
