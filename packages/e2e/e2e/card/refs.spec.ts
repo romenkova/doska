@@ -11,6 +11,7 @@ import {
   editCardBody,
   fieldText,
   openCard,
+  openNewCard,
   panelField,
   retitleCard,
   setColumnColor,
@@ -435,12 +436,12 @@ test.describe("card references", () => {
   }) => {
     await signIn(page)
     await createBoard(page)
-    await addCard(page, "To Do")
-    await retitleCard(page, "Untitled card", "Source card")
+    await addCard(page, "To Do", "Source card")
     // Left untitled on purpose — it still has an id, so it can still be linked.
     // Search reads title and body only, so the body is what finds it here.
-    await addCard(page, "To Do")
-    await editCardBody(page, "Untitled card", "needle")
+    await openNewCard(page, "To Do")
+    await panelField(page, "Notes").fill("needle")
+    await closeCard(page)
     const targetId = await cardDisplayId(page, "needle")
 
     await openCard(page, "Source card")
