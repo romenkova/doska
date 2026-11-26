@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { CARDS } from "../src/api/constants"
+import { errorLog } from "../src/report-error"
 import { runtime } from "../src/runtime"
 import { installMemoryRuntime, rows } from "./memory-runtime"
 
@@ -21,10 +22,11 @@ describe("record writes", () => {
     expect(rows.get("cards/card-1")).toMatchObject({ tags: [], users: [] })
   })
 
-  it("keeps a record that doesn't fit its schema as is", async () => {
+  it("keeps a record that doesn't fit its schema as is and logs it", async () => {
     vi.spyOn(console, "warn").mockImplementation(() => {})
     const odd = { ...legacyCard, tags: "idea" }
     await runtime().db.set(CARDS, "card-1", odd)
     expect(rows.get("cards/card-1")).toEqual(odd)
+    expect(errorLog().at(-1)?.message).toContain("tags")
   })
 })

@@ -1,5 +1,6 @@
 import { CardSchema, ColumnSchema, DashboardSchema } from "@doska/contract"
 import type { ClientDB, KeyRange, Query } from "@doska/ports"
+import { logError } from "../../report-error"
 import { CARDS, COLUMNS, DASHBOARDS } from "../constants"
 
 const SCHEMAS: Record<
@@ -17,7 +18,12 @@ export function withDefaults(store: string, value: unknown): unknown {
   if (!schema) return value
   const result = schema.safeParse(value)
   if (result.success) return result.data
-  console.warn(`${store} record doesn't match its schema`, result.error)
+  const issues = result.error.issues
+    .map((issue) => `${issue.path.join(".")}: ${issue.message}`)
+    .join("; ")
+  const error = new Error(`${store} record doesn't match its schema: ${issues}`)
+  console.warn(error)
+  logError(error)
   return value
 }
 
