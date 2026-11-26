@@ -2,7 +2,7 @@ import { test, expect, type Page } from "@playwright/test"
 import {
   authenticate,
   createAccount,
-  createBoard,
+  createBoardInSidebar,
   createFolder,
   createSubfolder,
   deleteFolder,
@@ -27,7 +27,7 @@ import {
 async function nestedFolders(page: Page): Promise<void> {
   await page.goto("/")
   await createFolder(page, "Work")
-  await createBoard(page)
+  await createBoardInSidebar(page)
   await renameBoard(page, "Untitled board", "Alpha")
   await dragSidebarRow(page, "Alpha", ["ArrowDown"])
   await createSubfolder(page, "Work", "Drafts")

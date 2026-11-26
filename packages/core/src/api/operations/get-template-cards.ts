@@ -20,7 +20,7 @@ export async function getTemplateCards(): Promise<TemplateCard[]> {
   const boardById = new Map(dashboards.filter(live).map((d) => [d.id, d]))
 
   return cards
-    .filter((card) => card.template && live(card))
+    .filter((card) => card.template && !card.archived && live(card))
     .sort(byPosition)
     .flatMap((card) => {
       const column = columnById.get(card.columnId)

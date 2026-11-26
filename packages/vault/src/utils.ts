@@ -20,7 +20,7 @@ export function dirOf(path: string): string {
 }
 
 /** A file's name without its `.md`. */
-export function stemOf(path: string): string {
+export function baseNameOf(path: string): string {
   return path.slice(path.lastIndexOf("/") + 1).replace(/\.md$/, "")
 }
 

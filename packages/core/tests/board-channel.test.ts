@@ -89,6 +89,7 @@ const cardAt = (at: number, fields: Partial<Card> = {}): Card => ({
   users: [],
   attachments: [],
   template: false,
+  archived: false,
   updatedAt: at,
   deletedAt: null,
   stamps: {
@@ -101,6 +102,7 @@ const cardAt = (at: number, fields: Partial<Card> = {}): Card => ({
     users: at,
     attachments: at,
     template: at,
+    archived: at,
     deleted: at,
     conflict: at,
   },

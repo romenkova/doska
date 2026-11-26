@@ -56,6 +56,18 @@ export function useSetCardTemplate(id: string) {
   })
 }
 
+export function useSetCardsArchived() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ ids, archived }: { ids: string[]; archived: boolean }) =>
+      api.setCardsArchived(ids, archived),
+    onSettled: (_data, _error, { ids }) => {
+      for (const key of ids.flatMap(cardWriteKeys))
+        void qc.invalidateQueries({ queryKey: key })
+    },
+  })
+}
+
 export function useDeleteCard(deckId: string) {
   const qc = useQueryClient()
   return useMutation({
@@ -66,6 +78,19 @@ export function useDeleteCard(deckId: string) {
       qc.invalidateQueries({ queryKey: keys.card(id) })
       qc.invalidateQueries({ queryKey: keys.digest })
       qc.invalidateQueries({ queryKey: keys.trash })
+    },
+  })
+}
+
+export function useDiscardBlankCard(deckId: string) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => api.discardIfBlank(deckId, id),
+    onSettled: (_data, _error, id) => {
+      void qc.invalidateQueries({ queryKey: keys.board(deckId) })
+      void qc.invalidateQueries({ queryKey: keys.card(id) })
+      void qc.invalidateQueries({ queryKey: keys.digest })
+      void qc.invalidateQueries({ queryKey: keys.trash })
     },
   })
 }

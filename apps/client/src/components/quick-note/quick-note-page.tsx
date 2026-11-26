@@ -37,7 +37,7 @@ export function QuickNotePage() {
     }
     const empty = note.isEmpty()
     if (empty) await note.discard()
-    else note.flush()
+    else void note.flush()
     await announceChange()
     await hideWindow()
     if (empty) note.forget()
@@ -46,7 +46,7 @@ export function QuickNotePage() {
   /** Files the current card and starts a blank one; a blank one is kept as is. */
   async function startNew() {
     if (!note.cardId || note.isEmpty()) return
-    note.flush()
+    void note.flush()
     await announceChange()
     note.forget()
   }

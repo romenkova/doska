@@ -13,18 +13,17 @@ import {
 /**
  * A card with a body opens read-only: its notes render instead of showing the
  * raw markdown field. Double-clicking the content (or the Edit toggle) switches
- * to the editor. An empty card has nothing to preview, so it opens straight in
+ * to the editor. A card without notes has nothing to preview, so it opens straight in
  * the editor. These drive the panel's preview controls the way a user does.
  */
 test.describe("card preview & edit", () => {
-  test("an empty card opens in the editor", async ({ page }) => {
+  test("a card without notes opens in the editor", async ({ page }) => {
     await createBoard(page)
     await addCard(page, "To Do")
 
-    // No body yet — opens straight in the editor, not preview.
     await card(page, "Untitled card").click()
-    await expect(panelField(page, "Title")).toBeFocused()
-    await expect(panelField(page, "Notes")).toBeVisible()
+    await expect(panelField(page, "Notes")).toBeFocused()
+    await expect(page.getByRole("button", { name: "Edit" })).toHaveCount(0)
   })
 
   test("a card with a body opens in read-only preview", async ({ page }) => {

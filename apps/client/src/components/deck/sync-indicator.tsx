@@ -16,6 +16,7 @@ import {
   type Connection,
 } from "@doska/core"
 import { useAuth, useSyncStatus } from "@/lib/hooks"
+import { pluralize } from "@doska/utils"
 
 /** Resolves the live sync state into the icon, label, and tint to render. */
 function view(
@@ -49,7 +50,7 @@ function view(
   if (pending > 0)
     return {
       Icon: PencilLine,
-      label: `${pending} ${pending === 1 ? "change" : "changes"}`,
+      label: pluralize(pending, "change"),
       spin: false,
       className: "text-muted-foreground",
     }

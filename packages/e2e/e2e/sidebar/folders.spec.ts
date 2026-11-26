@@ -1,6 +1,6 @@
 import { test, expect, type Page } from "@playwright/test"
 import {
-  createBoard,
+  createBoardInSidebar,
   createFolder,
   deleteBoard,
   deleteFolder,
@@ -29,7 +29,7 @@ async function folderWithBoard(page: Page): Promise<void> {
   await createFolder(page, "Work")
   // A new board lands on top of the root, right above the folder; one step
   // down drops it under the folder's header, which is inside it.
-  await createBoard(page)
+  await createBoardInSidebar(page)
   await renameBoard(page, "Untitled board", "Alpha")
   await dragSidebarRow(page, "Alpha", ["ArrowDown"])
   await expect
@@ -140,7 +140,7 @@ test.describe("sidebar folders", () => {
     await page.goto("/")
     await createFolder(page, "Work")
 
-    await createBoard(page)
+    await createBoardInSidebar(page)
     await renameBoard(page, "Untitled board", "Beta")
 
     await expect

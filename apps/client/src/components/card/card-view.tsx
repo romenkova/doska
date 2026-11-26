@@ -49,6 +49,8 @@ interface IProps extends DetailedHTMLProps<
   /** Off where a card whose whole body is one image should still read as an
    * ordinary card, as in the digest. */
   imageCard?: boolean
+  /** Archived cards don't flag their deadline as due. */
+  isArchived?: boolean
   /** Omit to leave the body's task checkboxes inert. */
   onChangeBody?: (body: string) => void
   onChangeDeadline?: (deadline: string | null) => void
@@ -79,6 +81,7 @@ export function CardView({
   lead,
   metaLead,
   imageCard = true,
+  isArchived,
   onChangeBody,
   onChangeDeadline,
   onChangePriority,
@@ -138,7 +141,8 @@ export function CardView({
         ) : (
           <CardBase
             className={cn(
-              isDragging && "bg-card/70 shadow-e3 backdrop-blur-md in-[.no-blur]:bg-card"
+              isDragging &&
+                "bg-card/70 shadow-e3 backdrop-blur-md in-[.no-blur]:bg-card"
             )}
           >
             <CardHeader>
@@ -159,6 +163,7 @@ export function CardView({
                   column={column}
                   tasks={tasks}
                   lead={metaLead}
+                  isArchived={isArchived}
                   onChangeDeadline={onChangeDeadline}
                   onChangePriority={onChangePriority}
                   className="mt-2"

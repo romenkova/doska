@@ -1,6 +1,7 @@
 import { MenuContent, MenuItem, MenuSeparator } from "@doska/ui-kit"
 import { History, Pencil } from "lucide-react"
 import { fallbackCard, useCard, useUpdateCard } from "@doska/core"
+import { ArchiveItem } from "./archive-item"
 import { CopyIdItem } from "./copy-id-item"
 import { DeadlineSub } from "./deadline-sub"
 import { DeleteItem } from "./delete-item"
@@ -53,6 +54,11 @@ export function CardMenuItems({
         History
       </MenuItem>
       <MenuSeparator />
+      <ArchiveItem
+        cardId={cardId}
+        title={card.title}
+        archived={Boolean(card.archived)}
+      />
       <DeleteItem cardId={cardId} />
     </MenuContent>
   )

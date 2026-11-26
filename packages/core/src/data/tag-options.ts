@@ -1,6 +1,7 @@
 import { useMemo } from "react"
 import type { PrefixOption } from "@doska/markdown/core"
 import { useBoard } from "./queries"
+import { pluralize } from "@doska/utils"
 
 /**
  * Every tag on the board, most used first, for the `#` menu
@@ -24,7 +25,7 @@ export function useTagOptions(deckId: string): PrefixOption[] {
       .sort((a, b) => b.count - a.count)
       .map(({ name, count }) => ({
         name,
-        hint: count === 1 ? "1 card" : `${count} cards`,
+        hint: pluralize(count, "card"),
       }))
   }, [board])
 }

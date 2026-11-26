@@ -15,6 +15,7 @@ import {
 } from "../board"
 import { reply } from "./reply"
 import { shapeCard } from "./shape"
+import { pluralize } from "@doska/utils"
 
 const deadline = z
   .string()
@@ -108,6 +109,7 @@ export function registerCardTools(server: McpServer, board: Board): void {
           users: assigned,
           attachments: [],
           template: false,
+          archived: false,
           updatedAt: now,
           deletedAt: null,
           stamps: {},
@@ -296,6 +298,36 @@ export function registerCardTools(server: McpServer, board: Board): void {
   )
 
   server.registerTool(
+    "set_card_archived",
+    {
+      title: "Archive card",
+      description:
+        "Archive a card or restore it. An archived card leaves the board " +
+        "but stays in its archived list, column and all, so restoring puts " +
+        "it back where it was. Prefer this to delete_card for finished work " +
+        "worth keeping.",
+      inputSchema: {
+        boardId: z.string(),
+        cardId,
+        archived: z.boolean().default(true),
+      },
+    },
+    async ({ boardId, cardId, archived }) => {
+      const existing = await board.card(boardId, cardId)
+      if (Boolean(existing.archived) === archived)
+        return reply(shapeCard(existing))
+
+      const card = touchCard(
+        { ...existing, archived },
+        ["archived"],
+        board.now()
+      )
+      await board.pushBoard(boardId, [{ store: "cards", record: card }])
+      return reply(shapeCard(card))
+    }
+  )
+
+  server.registerTool(
     "check_task",
     {
       title: "Check task",
@@ -316,7 +348,7 @@ export function registerCardTools(server: McpServer, board: Board): void {
       const before = taskProgress(existing.body)
       if (index >= before.total)
         throw new Error(
-          `Card ${cardId} has ${before.total} task${before.total === 1 ? "" : "s"}, so there is no task ${index}`
+          `Card ${cardId} has ${pluralize(before.total, "task")}, so there is no task ${index}`
         )
 
       // The helper only toggles, so check where a toggle would land: if it

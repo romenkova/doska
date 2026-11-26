@@ -33,7 +33,6 @@ services:
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
       S3_ENDPOINT: ${S3_ENDPOINT:-}
       FILE_MAX_BYTES: ${FILE_MAX_BYTES:-}
-      PORT: 3000
       NODE_ENV: production
       BASE_URL: ${BASE_URL:?set BASE_URL in .env, e.g. https://doska.example.com}
     volumes:

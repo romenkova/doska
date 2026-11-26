@@ -1,6 +1,7 @@
 import { expect, type APIRequestContext, type Page } from "@playwright/test"
 import type { Dashboard } from "@doska/contract"
 import { dashboardSync, newerThan } from "./rpc"
+import { addColumn, renameColumn, setColumnDone } from "./column"
 import { menu } from "./menu"
 import { sidebarRow } from "./sidebar"
 
@@ -12,9 +13,9 @@ import { sidebarRow } from "./sidebar"
 /**
  * Creates a fresh board from the sidebar's "New board" button and returns its
  * generated deck id (read off the URL — the one identifier a user can actually
- * see, in their address bar). Starts it empty from the board's empty state, so
- * it has the three default columns (To Do / In Progress / Done) and no cards;
- * seed any cards a test needs with `addCard`.
+ * see, in their address bar). "Empty" starts it with no columns, so this adds
+ * To Do / In Progress / Done (Done flagged as done) and no cards; seed any cards
+ * a test needs with `addCard`.
  */
 export async function createBoard(page: Page): Promise<string> {
   await page.goto("/")
@@ -22,7 +23,11 @@ export async function createBoard(page: Page): Promise<string> {
   await page.getByRole("button", { name: "Create a board" }).click()
   await page.waitForURL(/\/d\/board-/)
   await page.getByRole("button", { name: "Empty", exact: true }).click()
-  await expect(page.getByRole("group", { name: "To Do" })).toBeVisible()
+  for (const title of ["To Do", "In Progress", "Done"]) {
+    await addColumn(page)
+    await renameColumn(page, "New column", title)
+  }
+  await setColumnDone(page, "Done", true)
   return new URL(page.url()).pathname.split("/d/")[1]
 }
 

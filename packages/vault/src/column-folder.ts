@@ -1,5 +1,5 @@
 import { CardFile } from "./card-file"
-import { snakeName, stemOf } from "./utils"
+import { snakeName, baseNameOf } from "./utils"
 
 /** The filesystem, as much of it as the vault needs. */
 export interface VaultFs {
@@ -75,7 +75,7 @@ export class ColumnFolder {
 
   async list(): Promise<VaultFile[]> {
     const files = (await cardFiles(this.fs, this.path)) ?? []
-    for (const file of files) this.used.add(stemOf(file.path).toLowerCase())
+    for (const file of files) this.used.add(baseNameOf(file.path).toLowerCase())
     return files
   }
 
@@ -95,7 +95,7 @@ export class ColumnFolder {
 
   async retitle(path: string, card: CardFile): Promise<string> {
     const wanted = snakeName(card.title) || "card"
-    const stem = stemOf(path)
+    const stem = baseNameOf(path)
     // `name_2` counts as `name`
     const suffix = stem.slice(wanted.length)
     if (stem.startsWith(wanted) && /^(_\d+)?$/.test(suffix)) return path

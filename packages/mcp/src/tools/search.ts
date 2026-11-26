@@ -95,6 +95,10 @@ export function registerSearchTools(server: McpServer, board: Board): void {
           .boolean()
           .default(true)
           .describe("Include cards sitting in a board's done column"),
+        includeArchived: z
+          .boolean()
+          .default(false)
+          .describe("Include archived cards"),
         bodies: z.boolean().default(false).describe("Include card bodies"),
         limit: z.number().int().min(1).max(200).default(50),
       },
@@ -108,6 +112,7 @@ export function registerSearchTools(server: McpServer, board: Board): void {
       priority,
       userId,
       includeDone,
+      includeArchived,
       bodies,
       limit,
     }) => {
@@ -117,6 +122,8 @@ export function registerSearchTools(server: McpServer, board: Board): void {
       const criteria: ((entry: Located) => boolean)[] = []
 
       if (!includeDone) criteria.push(({ column }) => !column.done)
+
+      if (!includeArchived) criteria.push(({ card }) => !card.archived)
 
       if (hasDeadline !== undefined)
         criteria.push(({ card }) => (card.deadline !== null) === hasDeadline)
@@ -179,6 +186,7 @@ export function registerSearchTools(server: McpServer, board: Board): void {
       const due = (await collect()).flatMap((entry) => {
         const { card, column } = entry
         if (card.deadline === null || card.deadline > to) return []
+        if (card.archived) return []
         if (column.done && !includeDone) return []
         // Carried alongside so the sort and the overdue flag don't have to
         // re-narrow it away from null.

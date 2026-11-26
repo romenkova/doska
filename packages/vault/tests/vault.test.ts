@@ -363,7 +363,9 @@ describe("Vault", () => {
     const theirTodo = makeColumn("col-their-todo", "To do")
     const theirDone = makeColumn("col-their-done", "Done")
     const other = new FakeBoard([theirTodo, theirDone])
-    other.add(makeCard({ columnId: theirTodo.id, title: "Ship it", body: "soon" }))
+    other.add(
+      makeCard({ columnId: theirTodo.id, title: "Ship it", body: "soon" })
+    )
     other.add(makeCard({ columnId: theirDone.id, title: "Shipped" }))
     await new Vault({ fs, board: other, boardId: "board-2", root: ROOT }).sync()
 
@@ -571,7 +573,12 @@ describe("Vault", () => {
 
   it("takes a folder over once the board claims it", async () => {
     const other = new FakeBoard([makeColumn("col-their-todo", "To do")])
-    const theirs = new Vault({ fs, board: other, boardId: "board-2", root: ROOT })
+    const theirs = new Vault({
+      fs,
+      board: other,
+      boardId: "board-2",
+      root: ROOT,
+    })
     await theirs.sync()
 
     await vault.claim()
@@ -685,6 +692,31 @@ describe("Vault restore", () => {
     await vault.sync()
     expect(board.cardsById.has(card.id)).toBe(true)
     expect(fs.files.has(`${ROOT}/to_do/ship_it.md`)).toBe(true)
+  })
+
+  it("drops the trash copy of a card the board no longer has", async () => {
+    const card = board.add(makeCard({ columnId: TODO.id, title: "Ship it" }))
+    await vault.sync()
+    await board.deleteCard(card.id)
+    await vault.sync()
+
+    board.trashed.delete(card.id)
+    await vault.sync()
+
+    expect(fs.files.has(`${ROOT}/_trash/ship_it.md`)).toBe(false)
+    expect(fs.files.get(`${ROOT}/_meta.json`)).not.toContain(card.id)
+  })
+
+  it("keeps a file someone put in _trash for a card it never had", async () => {
+    await vault.sync()
+    const stray = makeCard({ columnId: TODO.id, title: "Stray" })
+    await fs.write(
+      `${ROOT}/_trash/stray.md`,
+      `---\nid: ${stray.id}\n---\nhello\n`
+    )
+    await vault.sync()
+
+    expect(fs.files.has(`${ROOT}/_trash/stray.md`)).toBe(true)
   })
 
   it("forgets a trash copy someone emptied by hand", async () => {

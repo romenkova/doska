@@ -9,7 +9,7 @@ import {
 } from "./column-folder"
 import { Folders } from "./folders"
 import { Trash } from "./trash"
-import { dirOf, stemOf, titleOf } from "./utils"
+import { dirOf, baseNameOf, titleOf } from "./utils"
 import { Written } from "./written"
 
 /** A card file on disk, with the folder it was found in. */
@@ -172,8 +172,9 @@ export class Vault {
     const cards = new Map(board.cards.map((card) => [card.id, card]))
     await this.mirrorFiles(board.cards)
 
+    const deleted = new Set(dropped.cards)
     const inTrash = new Set<string>()
-    if (await this.trash.sweep(cards, inTrash)) changed = true
+    if (await this.trash.sweep(cards, deleted, inTrash)) changed = true
     await this.retire(gone, inTrash)
 
     const { files, empty, adopted } = await this.index(folders)
@@ -184,7 +185,6 @@ export class Vault {
     if (await this.syncCards(cards, files, wiped, byColumn, inTrash)) {
       changed = true
     }
-    const deleted = new Set(dropped.cards)
     if (await this.syncOrphans(cards, files, deleted, inTrash)) changed = true
 
     this.written.setBoardTitle(await this.board.title())
@@ -349,12 +349,13 @@ export class Vault {
     const id = await this.board.createCard(folder.columnId)
     const card = new CardFile({
       id,
-      title: file.card.title || titleOf(stemOf(file.path)),
+      title: file.card.title || titleOf(baseNameOf(file.path)),
       body: file.card.body,
       deadline: file.card.deadline,
       priority: file.card.priority,
       tags: file.card.tags,
       users: file.card.users,
+      archived: file.card.archived,
       extra: file.card.extra,
     })
 
@@ -365,6 +366,7 @@ export class Vault {
       priority: card.priority,
       tags: card.tags,
       users: card.users,
+      archived: card.archived,
     })
     await folder.save(card, file.path)
     await this.written.set(id, { path: file.path, text: card.text })

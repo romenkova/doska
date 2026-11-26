@@ -66,7 +66,7 @@ export function registerBoardTools(server: McpServer, board: Board): void {
         columns: columns.map((column) => ({
           ...shapeColumn(column),
           cards: cards
-            .filter((card) => card.columnId === column.id)
+            .filter((card) => card.columnId === column.id && !card.archived)
             .map((card) => {
               const shaped = shapeCard(card)
               return bodies ? shaped : { ...shaped, body: undefined }

@@ -35,6 +35,7 @@ const card: Card = {
   users: [],
   attachments: [],
   template: false,
+  archived: false,
   updatedAt: synced,
   deletedAt: null,
   stamps: {},
@@ -192,5 +193,24 @@ describe("delete_card", () => {
     expect(record.deletedAt).toBe(now)
     expect(record.stamps.deleted).toBe(now)
     expect(record.stamps.body).toBe(synced)
+  })
+})
+
+describe("set_card_archived", () => {
+  it("touches only archived", async () => {
+    const { call, pushedCard } = cardTools()
+    await call("set_card_archived", { archived: true })
+
+    const { record } = pushedCard()
+    expect(record.archived).toBe(true)
+    expect(record.stamps.archived).toBe(now)
+    expect(record.stamps.place).toBe(synced)
+  })
+
+  it("pushes nothing when the card is already there", async () => {
+    const { call, store } = cardTools()
+    await call("set_card_archived", { archived: false })
+
+    expect(store.pushed).toEqual([])
   })
 })

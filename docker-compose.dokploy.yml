@@ -30,7 +30,6 @@ services:
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
       S3_ENDPOINT: ${S3_ENDPOINT:-}
       FILE_MAX_BYTES: ${FILE_MAX_BYTES:-}
-      PORT: 3000
       NODE_ENV: production
       # This server's public origin, e.g. https://doska.example.com — no trailing
       # slash. OAuth discovery advertises absolute URLs (issuer, token endpoint,

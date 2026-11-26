@@ -109,21 +109,32 @@ export function fieldText(field: Locator): Promise<string> {
 }
 
 /**
- * Adds a card to the named column via the column's "add card" control, which now
- * lives as a full-width button at the top of the column body (it used to sit in
- * the column header). New cards have an empty title and render the "Untitled
- * card" fallback on the board, so this waits on that count rising rather than on
- * a specific title; pair with `retitleCard` to give it a distinct name.
+ * Opens a new card from the column's "add card" control and leaves the panel
+ * open. Close it blank and the card is discarded, so give it some content first.
  */
-export async function addCard(page: Page, name: string): Promise<void> {
-  const seeded = card(page, "Untitled card")
-  const before = await seeded.count()
+export async function openNewCard(page: Page, name: string): Promise<void> {
   await column(page, name)
     .getByRole("button", { name: `Add card to ${name}` })
     .click()
   await page.waitForURL(/\/c\//)
+}
+
+/**
+ * Adds a card to the named column via the column's "add card" control and types
+ * `title` into it. It has to be typed: a new card closed with nothing in it is
+ * discarded. Defaults to "Untitled card" so a spec can `retitleCard` it after.
+ */
+export async function addCard(
+  page: Page,
+  name: string,
+  title = "Untitled card"
+): Promise<void> {
+  const added = cardTitled(page, title)
+  const before = await added.count()
+  await openNewCard(page, name)
+  await panelField(page, "Title").fill(title)
   await closeCard(page)
-  await expect(seeded).toHaveCount(before + 1)
+  await expect(added).toHaveCount(before + 1)
 }
 
 // Reopening before the panel unmounts reuses the stale instance, so wait it fully out, not just off the route.
@@ -326,6 +337,7 @@ export async function remoteAddCard(
           users: [],
           attachments: [],
           template: false,
+          archived: false,
           updatedAt: Date.now(),
           deletedAt: null,
           stamps: {},

@@ -15,6 +15,7 @@ const card: Card = {
   users: [],
   attachments: [],
   template: false,
+  archived: false,
   updatedAt: 10,
   deletedAt: null,
   stamps: {},
@@ -58,6 +59,7 @@ describe("touchCard", () => {
       users: 10,
       attachments: 10,
       template: 10,
+      archived: 10,
       deleted: 10,
       conflict: 10,
     })

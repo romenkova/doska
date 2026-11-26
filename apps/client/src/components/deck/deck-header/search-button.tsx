@@ -20,11 +20,7 @@ export function SearchButton({ boardId }: { boardId: string }) {
       >
         <Search />
       </Button>
-      <SearchModal
-        open={open}
-        onOpenChange={setOpen}
-        boardId={boardId}
-      />
+      <SearchModal open={open} onOpenChange={setOpen} boardId={boardId} />
     </>
   )
 }

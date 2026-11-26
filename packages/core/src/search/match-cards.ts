@@ -63,7 +63,12 @@ export function searchCards(input: {
     body: searchable(card),
   }))
 
-  return ranked.slice(0, limit).map(({ item: card, score }) => ({
+  const archivedLast = [
+    ...ranked.filter(({ item }) => !item.archived),
+    ...ranked.filter(({ item }) => item.archived),
+  ]
+
+  return archivedLast.slice(0, limit).map(({ item: card, score }) => ({
     card,
     column: byId.get(card.columnId),
     score,

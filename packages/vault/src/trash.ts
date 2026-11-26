@@ -1,7 +1,7 @@
 import type { Card } from "@doska/contract"
 import { CardFile } from "./card-file"
 import { cardFiles, claim, type VaultFs } from "./column-folder"
-import { dirOf, stemOf } from "./utils"
+import { dirOf, baseNameOf } from "./utils"
 import type { Written } from "./written"
 
 const TRASH = "_trash"
@@ -44,14 +44,14 @@ export class Trash {
     file: { path: string; text: string },
     taken: Set<string>
   ): Promise<void> {
-    const path = this.pathFor(stemOf(file.path), taken)
+    const path = this.pathFor(baseNameOf(file.path), taken)
     await this.fs.rename(file.path, path)
     await this.written.set(id, { path, text: file.text })
   }
 
   /** Writes a card whose file is already gone from its column. */
   async copy(card: Card, gonePath: string, taken: Set<string>): Promise<void> {
-    const path = this.pathFor(stemOf(gonePath), taken)
+    const path = this.pathFor(baseNameOf(gonePath), taken)
     const text = CardFile.fromCard(card).text
     await this.fs.write(path, text)
     await this.written.set(card.id, { path, text })
@@ -59,19 +59,37 @@ export class Trash {
 
   /**
    * Files under `_trash` whose card is still live: someone dragged them there.
+   * Also drops the vault's own copies of cards the board no longer has at all.
    * Fills `taken` with the names already in use. Returns whether the board
    * changed.
    */
-  async sweep(cards: Map<string, Card>, taken: Set<string>): Promise<boolean> {
+  async sweep(
+    cards: Map<string, Card>,
+    deleted: Set<string>,
+    taken: Set<string>
+  ): Promise<boolean> {
     const files = await cardFiles(this.fs, this.path)
     if (files === null) return false
 
     let changed = false
     const present = new Set<string>()
     for (const { path, text, card } of files) {
-      taken.add(stemOf(path).toLowerCase())
+      if (!card.id) {
+        taken.add(baseNameOf(path).toLowerCase())
+        present.add(path)
+        continue
+      }
+
+      const vaultCopy = this.written.get(card.id)?.path === path
+      if (vaultCopy && !cards.has(card.id) && !deleted.has(card.id)) {
+        await this.fs.remove(path)
+        this.written.delete(card.id)
+        continue
+      }
+
+      taken.add(baseNameOf(path).toLowerCase())
       present.add(path)
-      if (!card.id || !cards.has(card.id)) continue
+      if (!cards.has(card.id)) continue
 
       // The card is live and the vault is what trashed its file
       if (this.written.get(card.id)?.path === path) {

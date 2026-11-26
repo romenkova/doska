@@ -6,10 +6,11 @@ import { CenteredState } from "../digest/centered-state"
 
 interface IProps {
   boardId: string
+  onStartBlank: () => void
 }
 
 /** A board with no columns: start it from a folder, a template, or blank. */
-export function BoardEmptyState({ boardId }: IProps) {
+export function BoardEmptyState({ boardId, onStartBlank }: IProps) {
   const vault = useVaultContext()
   const { data: dashboards = [] } = useDashboards()
   const { mutate: fill, isPending } = useFillBoard(boardId)
@@ -60,7 +61,7 @@ export function BoardEmptyState({ boardId }: IProps) {
           <Button
             variant="secondary"
             disabled={isPending}
-            onClick={() => fill(undefined)}
+            onClick={onStartBlank}
           >
             <Plus />
             Empty

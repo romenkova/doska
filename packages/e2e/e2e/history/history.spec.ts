@@ -1,6 +1,7 @@
 import { test, expect, type Page } from "@playwright/test"
 import {
   addCard,
+  authenticate,
   boardTitle,
   cardPanel,
   createBoard,
@@ -11,9 +12,11 @@ import {
   openCard,
   openCardMenu,
   panelField,
+  remoteAddCard,
   renameBoard,
   retitleCard,
   setCardPriority,
+  signIn,
 } from "../helpers"
 
 /**
@@ -64,8 +67,7 @@ async function newBoard(page: Page, name: string): Promise<void> {
 test.describe("history", () => {
   test("a card's history lists its changes, newest first", async ({ page }) => {
     await createBoard(page)
-    await addCard(page, "To Do")
-    await retitleCard(page, "Untitled card", "Plan")
+    await addCard(page, "To Do", "Plan")
     await retitleCard(page, "Plan", "Ship")
     await setCardPriority(page, "Ship", "High")
 
@@ -79,11 +81,16 @@ test.describe("history", () => {
     ])
   })
 
-  test("an empty card has no history", async ({ page }) => {
-    await createBoard(page)
-    await addCard(page, "To Do")
+  test("a card another client added has no history", async ({
+    page,
+    request,
+  }) => {
+    await signIn(page)
+    await authenticate(request)
+    const boardId = await createBoard(page)
+    await remoteAddCard(request, boardId, "To Do", "From a teammate")
 
-    await openCardHistory(page, "Untitled card")
+    await openCardHistory(page, "From a teammate")
 
     await expect(historyDialog(page)).toContainText("No history yet")
     await expect(historyDialog(page)).not.toContainText("last 14 days")
@@ -91,8 +98,7 @@ test.describe("history", () => {
 
   test("the card panel's menu opens the card's history", async ({ page }) => {
     await createBoard(page)
-    await addCard(page, "To Do")
-    await retitleCard(page, "Untitled card", "Plan")
+    await addCard(page, "To Do", "Plan")
 
     await openCard(page, "Plan")
     await cardPanel(page).getByRole("button", { name: "Card actions" }).click()
@@ -108,8 +114,7 @@ test.describe("history", () => {
     page,
   }) => {
     await createBoard(page)
-    await addCard(page, "To Do")
-    await retitleCard(page, "Untitled card", "Plan")
+    await addCard(page, "To Do", "Plan")
     await openCardMenu(page, "Plan")
     await menu(page, "Card actions")
       .getByRole("menuitem", { name: "Move to", exact: true })
@@ -135,8 +140,7 @@ test.describe("history", () => {
   }) => {
     await newBoard(page, "Alpha")
     await newBoard(page, "Beta")
-    await addCard(page, "To Do")
-    await retitleCard(page, "Untitled card", "Roamer")
+    await addCard(page, "To Do", "Roamer")
     await openCardMenu(page, "Roamer")
     await menu(page, "Card actions")
       .getByRole("menuitem", { name: "Move to board" })
@@ -169,11 +173,9 @@ test.describe("history", () => {
     page,
   }) => {
     await createBoard(page)
-    await addCard(page, "To Do")
-    await retitleCard(page, "Untitled card", "One")
+    await addCard(page, "To Do", "One")
     await newBoard(page, "Alpha")
-    await addCard(page, "To Do")
-    await retitleCard(page, "Untitled card", "Two")
+    await addCard(page, "To Do", "Two")
     await openBoardInSidebar(page, "Untitled board")
 
     await page.getByRole("button", { name: "History" }).click()

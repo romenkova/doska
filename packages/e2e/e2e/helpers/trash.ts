@@ -29,3 +29,17 @@ export async function restoreFromTrash(
   await entry.getByRole("button", { name: "Restore" }).click()
   await expect(entry).toHaveCount(0)
 }
+
+/** Deletes the entry titled `title` for good, through the confirm dialog. */
+export async function deleteForeverFromTrash(
+  page: Page,
+  title: string
+): Promise<void> {
+  const entry = trashEntry(page, title)
+  await entry.getByRole("button", { name: "Delete" }).click()
+  await page
+    .getByRole("dialog")
+    .getByRole("button", { name: "Delete forever" })
+    .click()
+  await expect(entry).toHaveCount(0)
+}

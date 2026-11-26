@@ -74,6 +74,9 @@ importers:
       '@doska/ui-kit':
         specifier: workspace:*
         version: link:../../packages/ui-kit
+      '@doska/utils':
+        specifier: workspace:*
+        version: link:../../packages/utils
       '@doska/vault':
         specifier: workspace:*
         version: link:../../packages/vault

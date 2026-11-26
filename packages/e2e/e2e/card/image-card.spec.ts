@@ -2,16 +2,15 @@ import { test, expect, type Page } from "@playwright/test"
 import {
   addCard,
   attachmentRow,
-  card,
   cardPanel,
   closeCard,
   createBoard,
   editCardBody,
   fieldText,
   openCard,
+  openNewCard,
   panelField,
   pngDataTransfer,
-  retitleCard,
   signIn,
 } from "../helpers"
 
@@ -59,8 +58,7 @@ test.describe("image-only cards", { tag: "@container" }, () => {
     await signIn(page)
     await createBoard(page)
 
-    await addCard(page, "To Do")
-    await card(page, "Untitled card").click()
+    await openNewCard(page, "To Do")
     await bodyOfOneImage(page, "poster")
 
     const shown = imageCard(page, "poster.png")
@@ -77,8 +75,7 @@ test.describe("image-only cards", { tag: "@container" }, () => {
   }) => {
     await signIn(page)
     await createBoard(page)
-    await addCard(page, "To Do")
-    await card(page, "Untitled card").click()
+    await openNewCard(page, "To Do")
 
     const transfer = await pngDataTransfer(page, "scan.png")
     await panelField(page, "Notes").dispatchEvent("drop", {
@@ -98,8 +95,7 @@ test.describe("image-only cards", { tag: "@container" }, () => {
   test("the ⋯ menu still works on an untitled image card", async ({ page }) => {
     await signIn(page)
     await createBoard(page)
-    await addCard(page, "To Do")
-    await card(page, "Untitled card").click()
+    await openNewCard(page, "To Do")
     await bodyOfOneImage(page, "chart")
 
     const shown = imageCard(page, "chart.png")
@@ -112,8 +108,7 @@ test.describe("image-only cards", { tag: "@container" }, () => {
   test("a titled image card keeps its title", async ({ page }) => {
     await signIn(page)
     await createBoard(page)
-    await addCard(page, "To Do")
-    await retitleCard(page, "Untitled card", "Launch poster")
+    await addCard(page, "To Do", "Launch poster")
 
     await openCard(page, "Launch poster")
     await bodyOfOneImage(page, "launch")
@@ -127,12 +122,10 @@ test.describe("image-only cards", { tag: "@container" }, () => {
   }) => {
     await signIn(page)
     await createBoard(page)
-    await addCard(page, "To Do")
-    await retitleCard(page, "Untitled card", "Notes card")
+    await addCard(page, "To Do", "Notes card")
     await editCardBody(page, "Notes card", "Decision: ship it")
 
-    await addCard(page, "To Do")
-    await card(page, "Untitled card").click()
+    await openNewCard(page, "To Do")
     await bodyOfOneImage(page, "banner")
 
     await page.getByRole("button", { name: "Hide body in To Do" }).click()

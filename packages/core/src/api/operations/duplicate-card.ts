@@ -32,6 +32,7 @@ export async function duplicateCard(id: string): Promise<string> {
       number: null,
       attachments: [],
       template: false,
+      archived: false,
       bodyConflict: null,
       updatedAt: 0,
       stamps: {},

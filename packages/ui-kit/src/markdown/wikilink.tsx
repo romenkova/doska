@@ -15,6 +15,7 @@ interface IProps {
   hue?: number | null
   /** The target sits in the board's done column. */
   done?: boolean
+  archived?: boolean
   title?: string
   onOpen?: () => void
 }
@@ -32,6 +33,7 @@ export function MdWikilink({
   badge,
   hue,
   done,
+  archived,
   title,
   onOpen,
 }: IProps) {
@@ -71,7 +73,8 @@ export function MdWikilink({
         "wikilink inline leading-[1.6] not-italic",
         "transition-[filter] duration-150",
         "hover:brightness-[0.96] hover:saturate-[1.1] dark:hover:brightness-[1.15]",
-        onOpen && "cursor-pointer"
+        onOpen && "cursor-pointer",
+        archived && "opacity-60"
       )}
     >
       <span
@@ -94,7 +97,9 @@ export function MdWikilink({
             }
           />
         )}
-        <span className="leading-4.5 py-0.5">{label}</span>
+        <span className={cn("leading-4.5 py-0.5", archived && "line-through")}>
+          {label}
+        </span>
         {done && <Check className="inline size-3 mt-1.5 shrink-0" />}
       </span>
     </span>

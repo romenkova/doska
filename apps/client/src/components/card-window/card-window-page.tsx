@@ -21,7 +21,7 @@ export function CardWindowPage({ cardId }: IProps) {
   // Hidden, not closed: tearing down the webview races WebKit's display
   // link on macOS and segfaults. The window is reused on the next open.
   const close = useCallback(() => {
-    flush()
+    void flush()
     if (isDesktop()) void getCurrentWindow().hide()
   }, [flush])
 

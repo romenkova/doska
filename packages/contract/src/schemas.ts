@@ -24,6 +24,7 @@ export const CARD_GROUPS = [
   "users",
   "attachments",
   "template",
+  "archived",
   "deleted",
   "conflict",
 ] as const
@@ -83,6 +84,8 @@ export const CardSchema = z.object({
   attachments: z.array(AttachmentSchema).default([]),
   /** Offered in the add-card template picker. */
   template: z.boolean().default(false),
+  /** Off the board, kept in its archived list. */
+  archived: z.boolean().default(false),
   updatedAt: z.number(),
   deletedAt: z.number().nullable(),
   stamps: z.partialRecord(z.enum(CARD_GROUPS), z.number()).default({}),
@@ -111,6 +114,7 @@ export const CARD_FIELD_GROUP: Record<
   users: "users",
   attachments: "attachments",
   template: "template",
+  archived: "archived",
   deletedAt: "deleted",
   bodyConflict: "conflict",
 }

@@ -39,15 +39,23 @@ export { getCard } from "./get-card"
 export { createCard } from "./create-card"
 export { duplicateCard } from "./duplicate-card"
 export { setCardTemplate, setDashboardTemplate } from "./set-template"
+export { setCardsArchived } from "./set-archived"
 export { getTemplateCards } from "./get-template-cards"
 export type { TemplateCard } from "./get-template-cards"
 export { updateCard } from "./update-card"
 export { deleteCard } from "./delete-card"
+export {
+  discardCard,
+  discardIfBlank,
+  holdForUpload,
+  isBlankCard,
+} from "./discard-card"
 export { moveCard } from "./move-card"
 export { moveCardToColumn } from "./move-card-to-column"
 export { moveCardToBoard } from "./move-card-to-board"
 export { restore } from "./restore"
 export type { TrashKind } from "./restore"
+export { deleteForever } from "./delete-forever"
 export { getTrash, expiryLabel } from "./get-trash"
 export type { TrashEntry } from "./get-trash"
 export { purgeExpired } from "./purge-expired"

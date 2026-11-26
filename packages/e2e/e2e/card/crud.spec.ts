@@ -1,12 +1,5 @@
 import { test, expect } from "@playwright/test"
-import {
-  addCard,
-  card,
-  closeCard,
-  column,
-  createBoard,
-  panelField,
-} from "../helpers"
+import { addCard, card, column, createBoard, panelField } from "../helpers"
 
 test.describe("card lifecycle", { tag: "@container" }, () => {
   test("create, edit, persist, then delete a card", async ({ page }) => {
@@ -19,15 +12,7 @@ test.describe("card lifecycle", { tag: "@container" }, () => {
       column(page, "To Do").getByRole("button", { name: "Add card to To Do" })
     ).toBeVisible()
 
-    // Create a card in To Do — it seeds with the fallback title.
-    await addCard(page, "To Do")
-
-    // Open it and give it a distinct title via the modal editor.
-    await card(page, "Untitled card").click()
-    const title = panelField(page, "Title")
-    await expect(title).toBeFocused()
-    await title.fill("My E2E Card")
-    await closeCard(page)
+    await addCard(page, "To Do", "My E2E Card")
 
     // It renders on the board with the new title...
     await expect(card(page, "My E2E Card")).toBeVisible()
@@ -56,9 +41,5 @@ test.describe("card lifecycle", { tag: "@container" }, () => {
 
     await page.waitForURL(/\/c\//)
     await expect(panelField(page, "Title")).toBeFocused()
-    await closeCard(page)
-    await expect(
-      column(page, "To Do").locator(card(page, "Untitled card"))
-    ).toBeVisible()
   })
 })

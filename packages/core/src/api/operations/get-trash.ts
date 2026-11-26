@@ -2,6 +2,7 @@ import { RETENTION_MS } from "@doska/contract"
 import { db } from "../db/db"
 import { live } from "./live"
 import type { TrashKind } from "./restore"
+import { pluralize } from "@doska/utils"
 
 export interface TrashEntry {
   kind: TrashKind
@@ -22,7 +23,7 @@ const DAY_MS = 24 * 60 * 60 * 1000
 export function expiryLabel(expiresAt: number): string {
   const days = Math.ceil((expiresAt - Date.now()) / DAY_MS)
   if (days <= 0) return "Deleting shortly"
-  return days === 1 ? "1 day left" : `${days} days left`
+  return `${pluralize(days, "day")} left`
 }
 
 /**
@@ -103,5 +104,8 @@ export async function getTrash(): Promise<TrashEntry[]> {
     })
   }
 
-  return entries.sort((a, b) => b.deletedAt - a.deletedAt)
+  const now = Date.now()
+  return entries
+    .filter((entry) => entry.expiresAt > now)
+    .sort((a, b) => b.deletedAt - a.deletedAt)
 }
