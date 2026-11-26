@@ -1,5 +1,4 @@
 import { CardSchema, ColumnSchema, DashboardSchema } from "@doska/contract"
-import type { ClientDB, KeyRange, Query } from "@doska/ports"
 import { logError } from "../../report-error"
 import { CARDS, COLUMNS, DASHBOARDS } from "../constants"
 
@@ -25,36 +24,4 @@ export function withDefaults(store: string, value: unknown): unknown {
   console.warn(error)
   logError(error)
   return value
-}
-
-export function validatedDb(db: ClientDB): ClientDB {
-  return {
-    get name() {
-      return db.name
-    },
-    get version() {
-      return db.version
-    },
-    get<T>(store: string, key: string) {
-      return db.get<T>(store, key)
-    },
-    getAll<T>(store: string, query?: Query<T>) {
-      return db.getAll<T>(store, query)
-    },
-    set(store: string, key: string, value: unknown) {
-      return db.set(store, key, withDefaults(store, value))
-    },
-    delete(store: string, key: string) {
-      return db.delete(store, key)
-    },
-    count(store: string) {
-      return db.count(store)
-    },
-    keys(store: string, range?: KeyRange) {
-      return db.keys(store, range)
-    },
-    clear(store: string) {
-      return db.clear(store)
-    },
-  }
 }
