@@ -32,7 +32,7 @@ test.describe("home", () => {
     await expect(boardTitle(page, "Roadmap")).toBeVisible()
   })
 
-  test("Create a board opens a fresh board with its default columns", async ({
+  test("Create a board opens a fresh, empty board", async ({
     page,
   }) => {
     await page.goto("/")
@@ -41,7 +41,7 @@ test.describe("home", () => {
 
     await page.waitForURL(/\/d\/board-/)
     await page.getByRole("button", { name: "Empty", exact: true }).click()
-    await expect(page.getByRole("group", { name: "To Do" })).toBeVisible()
+    await expect(page.getByRole("button", { name: "Add column" })).toBeVisible()
     await expect(boardTitle(page, "Untitled board")).toBeVisible()
   })
 

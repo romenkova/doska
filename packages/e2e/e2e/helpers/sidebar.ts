@@ -85,13 +85,14 @@ export async function createFolder(page: Page, title: string): Promise<void> {
 
 /**
  * Like `createBoard`, from the sidebar's "+" instead: no page load, which would
- * drop a folder edit still on its way to the database.
+ * drop a folder edit still on its way to the database. Leaves the board with no
+ * columns — folder tests only need it in the sidebar.
  */
 export async function createBoardInSidebar(page: Page): Promise<void> {
   await boardsGroup(page).getByRole("button", { name: "New board" }).click()
   await page.waitForURL(/\/d\/board-/)
   await page.getByRole("button", { name: "Empty", exact: true }).click()
-  await expect(page.getByRole("group", { name: "To Do" })).toBeVisible()
+  await expect(page.getByRole("button", { name: "Add column" })).toBeVisible()
 }
 
 /** Creates a subfolder from the parent's menu; it opens in rename mode too. */

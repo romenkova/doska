@@ -77,21 +77,28 @@ test.describe("delete forever", () => {
 
     // Past retention, so the server's own sweep will drop them.
     const cutoff = Date.now() - RETENTION_MS
+    // Trash pulls every board in the shared account first; the push queues behind it.
+    const timeout = 20_000
     await expect
-      .poll(async () => {
-        const column = await waitForChange(
-          request,
-          boardId,
-          "columns",
-          columnName
-        )
-        return column.record.deletedAt ?? Infinity
-      })
+      .poll(
+        async () => {
+          const column = await waitForChange(
+            request,
+            boardId,
+            "columns",
+            columnName
+          )
+          return column.record.deletedAt ?? Infinity
+        },
+        { timeout }
+      )
       .toBeLessThan(cutoff)
     await expect
       .poll(
         async () =>
-          (await serverCard(request, boardId, cardTitle))?.deletedAt ?? Infinity
+          (await serverCard(request, boardId, cardTitle))?.deletedAt ??
+          Infinity,
+        { timeout }
       )
       .toBeLessThan(cutoff)
   })
