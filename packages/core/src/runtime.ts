@@ -6,6 +6,7 @@ import type {
   KeyValue,
   Net,
 } from "@doska/ports"
+import { validatedDb } from "./api/db/validated-db"
 
 /**
  * Everything this package needs from the platform underneath it, installed once
@@ -32,7 +33,7 @@ export interface Runtime {
 let installed: Runtime | null = null
 
 export function installRuntime(next: Runtime): void {
-  installed = next
+  installed = { ...next, db: validatedDb(next.db) }
 }
 
 export function runtime(): Runtime {
