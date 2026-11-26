@@ -9,7 +9,12 @@ import { useCardDeleteToast } from "@/components/toasts/card-delete/use-card-del
 import { ArchivePane } from "./archive-pane"
 import { CardPane } from "./card-pane"
 import { CardPanelShell } from "./card-panel-shell"
-import { useCardSave, useDeleteCard, useCard } from "@doska/core"
+import {
+  useCardSave,
+  useDeleteCard,
+  useDiscardBlankCard,
+  useCard,
+} from "@doska/core"
 import { isDesktop } from "@/lib/platform"
 import { getCardView } from "@/lib/card-view"
 import {
@@ -39,6 +44,7 @@ export function CardPanel({ closeHref }: IProps) {
   const { queue, flush } = useCardSave()
   const { id: deckId } = useDeck()
   const { mutate: deleteCard } = useDeleteCard(deckId)
+  const { mutate: discardBlankCard } = useDiscardBlankCard(deckId)
   const reveal = useRevealCard()
   const { showCardDeleteToast } = useCardDeleteToast()
 
@@ -49,9 +55,20 @@ export function CardPanel({ closeHref }: IProps) {
   const { data: content } = useCard(card)
 
   const close = useCallback(() => {
-    flush()
+    void flush()
     navigate(closeHref)
   }, [flush, navigate, closeHref])
+
+  // A card just added and closed untouched was never wanted. Checked after the
+  // flush, so an edit still in the queue keeps it.
+  const dismiss = () => {
+    const saved = flush()
+    if (isNew && routeId) {
+      const id = routeId
+      void saved.then(() => discardBlankCard(id))
+    }
+    navigate(closeHref)
+  }
 
   useEffect(() => {
     if (isOpen && content?.deletedAt) close()
@@ -73,7 +90,7 @@ export function CardPanel({ closeHref }: IProps) {
   return (
     <CardPanelShell
       isOpen={isOpen}
-      onClose={close}
+      onClose={dismiss}
       onClosed={() => {
         setLastCard(null)
         setLastArchive(false)
@@ -92,7 +109,7 @@ export function CardPanel({ closeHref }: IProps) {
           isNew={isNew}
           onQueue={queue}
           onFlush={flush}
-          onClose={close}
+          onClose={dismiss}
           onDelete={() => {
             deleteCard(card, {
               onSuccess: () =>

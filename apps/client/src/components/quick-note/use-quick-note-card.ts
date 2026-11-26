@@ -2,18 +2,15 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { useQueryClient } from "@tanstack/react-query"
 import { getCurrentWindow } from "@tauri-apps/api/window"
 import {
-  CARDS,
-  HISTORY,
-  db,
   keys,
   LAST_CARD_KEY,
   useCardSave,
   createCard,
-  deleteCard,
+  discardCard,
+  isBlankCard,
   moveCardToColumn,
   useCard,
   useCardCol,
-  sync,
   type Column,
   type CardPatch,
 } from "@doska/core"
@@ -82,7 +79,7 @@ export function useQuickNoteCard(target: Target) {
 
   /** Picks up the card edited last, which the main window may have changed or moved meanwhile. */
   function refresh() {
-    flush()
+    void flush()
     const id = localStorage.getItem(LAST_CARD_KEY)
     if (!id || (id === keptCard && !cardId)) {
       void create()
@@ -103,25 +100,15 @@ export function useQuickNoteCard(target: Target) {
   )
 
   function isEmpty() {
-    const title = draft.current.title ?? content?.title ?? ""
-    const body = draft.current.body ?? content?.body ?? ""
-    return (
-      !title.trim() && !body.trim() && (content?.attachments.length ?? 0) === 0
-    )
+    return isBlankCard({
+      title: draft.current.title ?? content?.title ?? "",
+      body: draft.current.body ?? content?.body ?? "",
+      attachments: content?.attachments ?? [],
+    })
   }
 
-  /** A card the server never saw can vanish; one it has needs a tombstone. */
   async function discard() {
-    if (!cardId) return
-    if (content?.number == null) {
-      const historyIds = (await db.getHistory(cardId)).map((entry) => entry.id)
-      sync.dropDirty(CARDS, [cardId])
-      sync.dropDirty(HISTORY, historyIds)
-      await db.hardDelete(CARDS, cardId)
-      for (const id of historyIds) await db.hardDelete(HISTORY, id)
-    } else {
-      await deleteCard(column?.dashboardId ?? "", cardId)
-    }
+    if (cardId) await discardCard(column?.dashboardId ?? "", cardId)
   }
 
   /** To the top of that column. Across boards the note follows the copy. */

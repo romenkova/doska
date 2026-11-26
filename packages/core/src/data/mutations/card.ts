@@ -82,6 +82,19 @@ export function useDeleteCard(deckId: string) {
   })
 }
 
+export function useDiscardBlankCard(deckId: string) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => api.discardIfBlank(deckId, id),
+    onSettled: (_data, _error, id) => {
+      void qc.invalidateQueries({ queryKey: keys.board(deckId) })
+      void qc.invalidateQueries({ queryKey: keys.card(id) })
+      void qc.invalidateQueries({ queryKey: keys.digest })
+      void qc.invalidateQueries({ queryKey: keys.trash })
+    },
+  })
+}
+
 export type CardPatch = Partial<
   Pick<
     Card,

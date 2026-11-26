@@ -14,21 +14,27 @@ const SAVE_DELAY = 500
  * typed into, even if the panel has since moved on to another one.
  */
 export function useCardSave() {
-  const { mutate } = useSaveCard()
+  const { mutateAsync } = useSaveCard()
   const pending = useRef<{ id: string; patch: CardPatch } | null>(null)
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
 
-  const flush = useCallback(() => {
+  /** Resolves once the queued write has landed, failed or not. */
+  const flush = useCallback(async () => {
     clearTimeout(timer.current)
     const queued = pending.current
     pending.current = null
-    if (queued) mutate(queued)
-  }, [mutate])
+    if (!queued) return
+    try {
+      await mutateAsync(queued)
+    } catch {
+      // As with mutate(), the failure is the mutation's to report.
+    }
+  }, [mutateAsync])
 
   const queue = useCallback(
     (id: string, patch: CardPatch) => {
       // Edits for a card we've navigated away from go out on their own.
-      if (pending.current && pending.current.id !== id) flush()
+      if (pending.current && pending.current.id !== id) void flush()
       runtime().kv.set(LAST_CARD_KEY, id)
       pending.current = { id, patch: { ...pending.current?.patch, ...patch } }
       clearTimeout(timer.current)
@@ -37,7 +43,7 @@ export function useCardSave() {
     [flush]
   )
 
-  useEffect(() => () => flush(), [flush])
+  useEffect(() => () => void flush(), [flush])
 
   return { queue, flush }
 }
