@@ -31,15 +31,15 @@ test.describe("what's new", () => {
     await page.getByRole("button", { name: "What's new" }).click()
     await expect(toast(page)).toBeHidden()
 
+    // Slides change every release, so walk them without naming any.
     const modal = page.getByRole("dialog")
-    for (const name of ["Archive", "Smaller things"]) {
-      await expect(modal.getByRole("heading", { name })).toBeVisible()
-      await modal.getByRole("button", { name: "Next", exact: true }).click()
+    const next = modal.getByRole("button", { name: "Next", exact: true })
+    const done = modal.getByRole("button", { name: "Done", exact: true })
+    await expect(next.or(done)).toBeVisible()
+    while (await next.isVisible()) {
+      await next.click()
     }
-    await expect(
-      modal.getByRole("heading", { name: "Got feedback?" })
-    ).toBeVisible()
-    await modal.getByRole("button", { name: "Done", exact: true }).click()
+    await done.click()
     await expect(modal).toBeHidden()
 
     await page.reload()
