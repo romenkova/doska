@@ -16,7 +16,7 @@ import {
 
 const DB_NAME = "deck"
 // Bump when a record schema gains a field: the upgrade backfills its default.
-const VERSION = 17
+export const VERSION = 17
 
 function backfillDefaults(store: IDBObjectStore) {
   const request = store.openCursor()
