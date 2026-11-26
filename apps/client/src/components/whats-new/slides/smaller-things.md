@@ -1,6 +1,5 @@
 # Smaller things
 
-- A new board starts empty and asks how to fill it: from a folder, a template, or the default columns
-- Right-click a board or folder in the sidebar for its menu
-- Deadline chips update when the day changes, no reload needed
-- Self-hosting: attachment uploads work over plain HTTP
+- A new card closed without any edits is discarded
+- **Delete forever** button in the Trash
+- **Empty** on a new board now really starts with no columns

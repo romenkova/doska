@@ -32,7 +32,7 @@ test.describe("what's new", () => {
     await expect(toast(page)).toBeHidden()
 
     const modal = page.getByRole("dialog")
-    for (const name of ["Tags", "Smaller things"]) {
+    for (const name of ["Archive", "Smaller things"]) {
       await expect(modal.getByRole("heading", { name })).toBeVisible()
       await modal.getByRole("button", { name: "Next", exact: true }).click()
     }

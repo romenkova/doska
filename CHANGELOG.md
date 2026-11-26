@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.31.0] - 2026-11-26
+
+### Added
+
+- Archive: archive a card from its menu, or a whole column with Archive all
+  cards. Archived cards leave the board but are kept, listed under Archived
+  cards in the board menu, and can be restored to their column.
+- Archived cards still show up in search, after the rest, marked Archived.
+- Delete forever in the Trash, with a confirmation.
+- MCP `set_card_archived` tool. `search_cards` skips archived cards unless
+  `includeArchived` is set.
+
+### Changed
+
+- A new card closed without a title, notes or attachments is discarded.
+- The compose files no longer set `PORT`: the server has to run on 3000.
+
+### Fixed
+
+- Empty on a new board's start screen gives a board with no columns, instead of
+  the default three.
+
 ## [0.30.0] - 2026-11-16
 
 ### Added
