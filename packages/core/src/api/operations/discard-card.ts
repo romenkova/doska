@@ -32,7 +32,21 @@ export async function discardCard(deckId: string, id: string): Promise<void> {
   await deleteCard(deckId, id)
 }
 
+// Per card, since a second drop can start before the first one lands.
+const uploads = new Map<string, number>()
+
+/** Keeps the card from being discarded until the returned release is called. */
+export function holdForUpload(cardId: string): () => void {
+  uploads.set(cardId, (uploads.get(cardId) ?? 0) + 1)
+  return () => {
+    const left = (uploads.get(cardId) ?? 1) - 1
+    if (left > 0) uploads.set(cardId, left)
+    else uploads.delete(cardId)
+  }
+}
+
 export async function discardIfBlank(deckId: string, id: string) {
+  if (uploads.has(id)) return
   const card = await db.getCard(id)
   if (card && live(card) && isBlankCard(card)) await discardCard(deckId, id)
 }

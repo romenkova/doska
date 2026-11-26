@@ -6,6 +6,7 @@ import {
   useCard,
   useUpdateCard,
   activeStorage,
+  holdForUpload,
   isSyncConfigured,
 } from "@doska/core"
 import { useAuth } from "@/lib/hooks"
@@ -39,7 +40,7 @@ function showError(message: string) {
 
 export function useAttachmentUpload(cardId: string) {
   const { data: card } = useCard(cardId)
-  const { mutate: save } = useUpdateCard(cardId)
+  const { mutateAsync: save } = useUpdateCard(cardId)
   const [pending, setPending] = useState<PendingUpload[]>([])
 
   const { authed } = useAuth()
@@ -67,6 +68,7 @@ export function useAttachmentUpload(cardId: string) {
         mime: file.type || "application/octet-stream",
       }))
       setPending((prev) => [...prev, ...queued])
+      const release = holdForUpload(cardId)
       try {
         const storage = activeStorage()
         const added: Attachment[] = []
@@ -85,12 +87,13 @@ export function useAttachmentUpload(cardId: string) {
             size: stored.size,
           })
         }
-        save({ attachments: [...(existing ?? []), ...added] })
+        await save({ attachments: [...(existing ?? []), ...added] })
         return added
       } catch (err) {
         showError(err instanceof Error ? err.message : "Upload failed")
         return []
       } finally {
+        release()
         setPending((prev) =>
           prev.filter((p) => !queued.some((q) => q.id === p.id))
         )
